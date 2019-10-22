@@ -53,10 +53,17 @@ void Camera::TranslateGlobal(const vec3 &delta)
     recomputeViewMatrix();
 }
 
+
 void Camera::TranslateLocal(const vec3 &delta)
 {
     vec4 d = vec4(delta,0.0f);
-    d = mat4_cast(inverse(_forward))*d;
+    if( (_forward.x == 0) & (_forward.y == 0) & (_forward.z == 0) & (_forward.w == 0) )
+        d = mat4_cast((_forward))*d;
+    else
+         d = mat4_cast(inverse(_forward))*d;
+
+
+
     _position += vec3(d.x,d.y,d.z);
 }
 
@@ -74,8 +81,11 @@ void Camera::LocalRotate(const vec3 &axis, float angle)
     float s = cosa;
 
     fquat offset(s,ax);
-
-    _forward = offset * _forward;
+    if( (_forward.x == 0) & (_forward.y == 0) & (_forward.z == 0) & (_forward.w == 0) )
+        _forward = offset;
+    else
+        _forward = offset * _forward;
+    //_forward = offset * _forward;
 
 }
 

@@ -133,6 +133,7 @@ void TerrainFluidSimulation::cameraMovement(double dt)
 
     vec3 yAxis(0,1,0);
     vec3 xAxis(1,0,0);
+    vec3 zAxis(0,0,1);
 
     if (glfwGetKey(_window,'D')) _cam.TranslateLocal(vec3(camSpeed,0,0));
     if (glfwGetKey(_window,'A')) _cam.TranslateLocal(vec3(-camSpeed,0,0));
@@ -144,6 +145,8 @@ void TerrainFluidSimulation::cameraMovement(double dt)
     if (glfwGetKey(_window,'E')) _cam.GlobalRotate(yAxis,rotSpeed);
     if (glfwGetKey(_window,'T')) _cam.LocalRotate(xAxis,-rotSpeed);
     if (glfwGetKey(_window,'G')) _cam.LocalRotate(xAxis,rotSpeed);
+    if (glfwGetKey(_window,'Z')) _cam.LocalRotate(zAxis,-rotSpeed);
+    if (glfwGetKey(_window,'X')) _cam.LocalRotate(zAxis,rotSpeed);
 }
 
 void TerrainFluidSimulation::updatePhysics(double dt)
