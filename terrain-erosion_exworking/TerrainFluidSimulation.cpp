@@ -137,8 +137,7 @@ void TerrainFluidSimulation::checkInput()
 
     // move rain position
     float d = 1.0f;
-    if (glfwGetKey(_window,GLFW_KEY_UP))
-        _rainPos.y += d;
+    if (glfwGetKey(_window,GLFW_KEY_UP)) _rainPos.y += d;
     if (glfwGetKey(_window,GLFW_KEY_DOWN)) _rainPos.y -= d;
     if (glfwGetKey(_window,GLFW_KEY_RIGHT)) _rainPos.x += d;
     if (glfwGetKey(_window,GLFW_KEY_LEFT)) _rainPos.x -= d;
@@ -169,10 +168,8 @@ void TerrainFluidSimulation::cameraMovement(double dt)
     if (glfwGetKey(_window,'W')) _cam.TranslateLocal(vec3(0,0,-camSpeed));
     if (glfwGetKey(_window,'S')) _cam.TranslateLocal(vec3(0,0,camSpeed));
 
-    if (glfwGetKey(_window,'Q'))
-        _cam.GlobalRotate(yAxis,-rotSpeed);
-    if (glfwGetKey(_window,'E'))
-        _cam.GlobalRotate(yAxis,rotSpeed);
+    if (glfwGetKey(_window,'Q')) _cam.GlobalRotate(yAxis,-rotSpeed);
+    if (glfwGetKey(_window,'E')) _cam.GlobalRotate(yAxis,rotSpeed);
 
     if (glfwGetKey(_window,'T')) _cam.LocalRotate(xAxis,-rotSpeed);
     if (glfwGetKey(_window,'G')) _cam.LocalRotate(xAxis,rotSpeed);

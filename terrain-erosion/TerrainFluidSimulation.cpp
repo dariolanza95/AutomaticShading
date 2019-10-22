@@ -65,8 +65,12 @@ void TerrainFluidSimulation::runMainloop()
         currentTime = newTime;
         accumulator += frameTime;
 
-        // physics simulation
-        updatePhysics(dt);
+        if(!IsInPause())
+        {
+            // physics simulation
+            updatePhysics(dt);
+        }
+
 
         // check for input events
         glfwPollEvents();
@@ -112,6 +116,10 @@ void TerrainFluidSimulation::checkInput()
     if (glfwGetKey(_window,'K')) _flood = true;
     if (glfwGetKey(_window,'L')) _flood = false;
 
+    if (glfwGetKey(_window,'U')) _inPause = true;
+    if (glfwGetKey(_window,'J')) _inPause = false;
+
+
 
     // move rain position
     float d = 1.0f;
@@ -120,7 +128,14 @@ void TerrainFluidSimulation::checkInput()
     if (glfwGetKey(_window,GLFW_KEY_RIGHT)) _rainPos.x += d;
     if (glfwGetKey(_window,GLFW_KEY_LEFT)) _rainPos.x -= d;
 
+
     _simulation.rainPos = _rainPos;
+}
+
+bool TerrainFluidSimulation::IsInPause()
+{
+
+    return _inPause;
 }
 
 void TerrainFluidSimulation::cameraMovement(double dt)
@@ -271,7 +286,7 @@ void TerrainFluidSimulation::init()
     _waterHeightBuffer.SetData(_simulationState.water);
     _sedimentBuffer.SetData(_simulationState.suspendedSediment);
     _normalBuffer.SetData(_simulationState.surfaceNormals);
-    
+    _inPause = false;
 }
 
 

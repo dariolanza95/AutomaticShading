@@ -56,9 +56,10 @@ protected:
 
     void init();
 
+    bool IsInPause();
 protected:
     bool _finished;
-
+    bool _inPause;
     bool _rain;
     bool _flood;
     glm::vec2 _rainPos;
