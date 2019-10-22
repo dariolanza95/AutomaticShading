@@ -13,7 +13,7 @@
 
 #include <chrono>
 #include <iostream>
-
+#include <fstream>
 #include "platform_includes.h"
 
 using namespace glm;
@@ -65,7 +65,7 @@ void TerrainFluidSimulation::runMainloop()
         currentTime = newTime;
         accumulator += frameTime;
 
-        if(!IsInPause())
+        if(! _inPause)
         {
             // physics simulation
             updatePhysics(dt);
@@ -119,7 +119,16 @@ void TerrainFluidSimulation::checkInput()
     if (glfwGetKey(_window,'U')) _inPause = true;
     if (glfwGetKey(_window,'J')) _inPause = false;
 
-
+    if (glfwGetKey(_window,'V'))
+    {
+     if(_inPause)
+     {
+        std::cout<<"Exporting"<<std::endl;
+        TerrainFluidSimulation::ExportSimulationInObjFormat();
+     }
+     else
+         std::cout<<"Can't save the simulation while it's running "<<std::endl;
+    }
 
     // move rain position
     float d = 1.0f;
@@ -132,11 +141,6 @@ void TerrainFluidSimulation::checkInput()
     _simulation.rainPos = _rainPos;
 }
 
-bool TerrainFluidSimulation::IsInPause()
-{
-
-    return _inPause;
-}
 
 void TerrainFluidSimulation::cameraMovement(double dt)
 {
@@ -176,6 +180,72 @@ void TerrainFluidSimulation::updatePhysics(double dt)
     _normalBuffer.SetData(_simulationState.surfaceNormals);
 
 }
+
+void TerrainFluidSimulation::ExportSimulationInObjFormat()
+{
+
+           std::cout << "inside exportSimulation function"<<std::endl;
+           const char filename[ ] = "mesh_1.obj";
+           std::fstream objfile;
+
+           objfile.open(filename, std::fstream::in | std::fstream::out );
+
+
+            // If file does not exist, Create new file
+            if (!objfile )
+            {
+              std::cout << "Cannot open file, file does not exist. Creating new file..";
+
+              objfile.open(filename,  std::fstream::in | std::fstream::out | std::fstream::trunc);
+              objfile <<"\n";
+
+
+             }
+
+
+            else
+            {    // use existing file
+               std::cout<<"success "<<filename <<" found. \n";
+               std::cout<<"\nAppending writing and working with existing file"<<"\n---\n";
+
+               std::cout<<"\n";
+
+            }
+            TerrainFluidSimulation::SaveTerrain( &objfile);
+
+
+
+    objfile.close();
+
+}
+
+
+void TerrainFluidSimulation:: SaveTerrain (std::fstream *objfile)
+{
+
+
+   // (*objfile )<<"new mesh" <<std::endl;
+   //_simulationState.terrain
+           float z = 0;
+           for (uint y=0; y<_simulationState.terrain.height(); y++)
+           {
+               for (uint x=0; x<_simulationState.terrain.width(); x++)
+               {
+                   z = _simulationState.terrain(x,y);
+                   (*objfile )<<"v " << x << " " << y << " "<< z << std::endl;
+               }
+           }
+           std::vector<uint> gridIndices;
+           Grid2DHelper::MakeGridIndices(gridIndices,_simulationState.terrain.width(),_simulationState.terrain.height());
+           for (uint i = 0;i<gridIndices.size();i += 3)
+           {
+               (*objfile )<<"f " << gridIndices.at(i)+1 << " " << gridIndices.at(i+1)+1 << " "<< gridIndices.at(i+2)+1 << std::endl;
+           }
+
+
+}
+
+
 
 void TerrainFluidSimulation::render()
 {
