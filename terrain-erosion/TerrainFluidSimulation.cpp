@@ -124,7 +124,7 @@ void TerrainFluidSimulation::checkInput()
      if(_inPause)
      {
         std::cout<<"Exporting"<<std::endl;
-        TerrainFluidSimulation::ExportSimulationInObjFormat();
+        TerrainFluidSimulation::ExportSimulationData();
      }
      else
          std::cout<<"Can't save the simulation while it's running "<<std::endl;
@@ -181,44 +181,90 @@ void TerrainFluidSimulation::updatePhysics(double dt)
 
 }
 
-void TerrainFluidSimulation::ExportSimulationInObjFormat()
+void TerrainFluidSimulation::OpenFile(const char filename [],std::fstream *objfile)
 {
-
-           std::cout << "inside exportSimulation function"<<std::endl;
-           const char filename[ ] = "mesh_1.obj";
-           std::fstream objfile;
-
-           objfile.open(filename, std::fstream::in | std::fstream::out );
+    (*objfile).open(filename, std::fstream::in | std::fstream::out );
 
 
-            // If file does not exist, Create new file
-            if (!objfile )
-            {
-              std::cout << "Cannot open file, file does not exist. Creating new file..";
+     // If file does not exist, Create new file
+     if (!(*objfile))
+     {
+       std::cout << "Cannot open file, file does not exist. Creating new file..";
 
-              objfile.open(filename,  std::fstream::in | std::fstream::out | std::fstream::trunc);
-              objfile <<"\n";
+       (*objfile).open(filename,  std::fstream::in | std::fstream::out | std::fstream::trunc);
+       (*objfile) <<"\n";
+      }
+     else
+     {    // use existing file
+        std::cout<<"success "<<filename <<" found. \n";
+        std::cout<<"\nAppending writing and working with existing file"<<"\n---\n";
 
+        std::cout<<"\n";
 
-             }
-
-
-            else
-            {    // use existing file
-               std::cout<<"success "<<filename <<" found. \n";
-               std::cout<<"\nAppending writing and working with existing file"<<"\n---\n";
-
-               std::cout<<"\n";
-
-            }
-            TerrainFluidSimulation::SaveTerrain( &objfile);
-
-
-
-    objfile.close();
-
+     }
 }
 
+void TerrainFluidSimulation::ExportSimulationData()
+{
+
+           const char filename[ ] = "mesh_1.obj";
+           const char filename_2[ ] = "simulation_data.txt";
+           std::fstream objfile;
+           std::fstream datafile;
+           TerrainFluidSimulation::OpenFile(filename,&objfile);
+           TerrainFluidSimulation::OpenFile(filename_2,&datafile);
+           TerrainFluidSimulation::SaveTerrain( &objfile);
+           TerrainFluidSimulation::SaveSimulationData(&datafile);
+           objfile.close();
+           datafile.close();
+/*
+
+    datafile.open(filename_2, std::fstream::in | std::fstream::out );
+
+
+     // If file does not exist, Create new file
+     if (!datafile)
+     {
+       std::cout << "Cannot open file, file does not exist. Creating new file..";
+
+       datafile.open(filename_2,  std::fstream::in | std::fstream::out | std::fstream::trunc);
+       datafile <<"\n";
+
+
+      }
+
+
+     else
+     {    // use existing file
+        std::cout<<"success "<<filename_2 <<" found. \n";
+        std::cout<<"\nAppending writing and working with existing file"<<"\n---\n";
+
+        std::cout<<"\n";
+
+     }
+    TerrainFluidSimulation::SaveSimulationData(&datafile);
+      datafile.close();
+*/
+}
+
+void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
+{
+    int counter = 0;
+    std::cout<<"Writing to some file"<<std::endl;
+    for (uint y=0; y<_simulationState.counter_ocean_has_passed.height(); y++)
+    {
+        for (uint x=0; x<_simulationState.counter_ocean_has_passed.width(); x++)
+        {
+
+            float data = _simulationState.counter_ocean_has_passed(x,y);
+            (*datafile )<< data << " ";
+            counter = ((counter + 1 ) % 5);
+            if(counter == 0)
+                (*datafile )<< counter << std::endl;
+        }
+        (*datafile )<< counter << std::endl;
+    }
+}
 
 void TerrainFluidSimulation:: SaveTerrain (std::fstream *objfile)
 {

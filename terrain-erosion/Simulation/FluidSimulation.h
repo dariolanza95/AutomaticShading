@@ -32,9 +32,11 @@ public:
     Grid2D<float>& water;
     Grid2D<float>& terrain;
     Grid2D<float>& sediment;
+    Grid2D<float>& counter_ocean_has_passed;
     Grid2D<float> tmpSediment;
     Grid2D<float> uVel;
     Grid2D<float> vVel;
+
 
     Grid2D<float> lFlux;
     Grid2D<float> rFlux;

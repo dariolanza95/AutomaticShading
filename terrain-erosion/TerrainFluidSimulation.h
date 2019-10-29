@@ -56,11 +56,13 @@ protected:
 
     void init();
 
+    void OpenFile(char const filename[],std::fstream *objfile);
 
-
-    void ExportSimulationInObjFormat();
+    void ExportSimulationData();
 
     void SaveTerrain( std::fstream *objfile);
+
+    void SaveSimulationData(std::fstream *datafile);
 protected:
     bool _finished;
     bool _inPause;

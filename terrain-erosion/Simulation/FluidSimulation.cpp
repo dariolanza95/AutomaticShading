@@ -34,6 +34,7 @@ FluidSimulation::FluidSimulation(SimulationState& state)
       water(state.water),
       terrain(state.terrain),
       sediment(state.suspendedSediment),
+      counter_ocean_has_passed(state.counter_ocean_has_passed),
       tmpSediment(state.water.width(),state.water.height()),
       uVel(water.width(), water.height()),
       vVel(water.width(), water.height()),
@@ -221,6 +222,7 @@ void FluidSimulation::simulateFlow(double dt)
     float l = 1;
     float A = 0.00005;
 
+    const float ocean_level = 10;
     const float dx = lX;
     const float dy = lY;
 
@@ -318,6 +320,9 @@ void FluidSimulation::simulateFlow(double dt)
             float oldWater = water(y,x);
             water(y,x) += dV/(dx*dy);
             water(y,x) = std::max(water(y,x),0.0f);
+            if(water(y,x)> ocean_level)
+                counter_ocean_has_passed(y,x)++;
+
             float meanWater = 0.5*(oldWater+water(y,x));
 
             if (meanWater == 0.0f)
