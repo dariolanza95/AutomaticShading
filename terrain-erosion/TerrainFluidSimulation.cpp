@@ -181,9 +181,10 @@ void TerrainFluidSimulation::updatePhysics(double dt)
 
 }
 
-void TerrainFluidSimulation::OpenFile(const char filename [],std::fstream *objfile)
+void TerrainFluidSimulation::OpenFile(const char filename [],std::fstream *objfile,bool append)
 {
-    (*objfile).open(filename, std::fstream::in | std::fstream::out );
+
+       (*objfile).open(filename, std::fstream::in | std::fstream::out );
 
 
      // If file does not exist, Create new file
@@ -207,12 +208,12 @@ void TerrainFluidSimulation::OpenFile(const char filename [],std::fstream *objfi
 void TerrainFluidSimulation::ExportSimulationData()
 {
 
-           const char filename[ ] = "mesh_1.obj";
-           const char filename_2[ ] = "simulation_data.txt";
+           const char filename[ ] = "/home/pandora/thesis/AutomaticShading/Data/input.obj";
+           const char filename_2[ ] = "/home/pandora/thesis/AutomaticShading/Data/simulationData.txt";
            std::fstream objfile;
            std::fstream datafile;
-           TerrainFluidSimulation::OpenFile(filename,&objfile);
-           TerrainFluidSimulation::OpenFile(filename_2,&datafile);
+           TerrainFluidSimulation::OpenFile(filename,&objfile,false);
+           TerrainFluidSimulation::OpenFile(filename_2,&datafile,false);
            TerrainFluidSimulation::SaveTerrain( &objfile);
            TerrainFluidSimulation::SaveSimulationData(&datafile);
            objfile.close();
@@ -250,20 +251,24 @@ void TerrainFluidSimulation::ExportSimulationData()
 void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
 {
     int counter = 0;
+    int temp = 0;
     std::cout<<"Writing to some file"<<std::endl;
-    for (uint y=0; y<_simulationState.counter_ocean_has_passed.height(); y++)
+    std::cout<<"h == "<<_simulationState.vegetation.height()<<std::endl;
+    std::cout<<"w == "<<_simulationState.vegetation.width()<<std::endl;
+    for (uint y=0; y<_simulationState.vegetation.height(); y++)
     {
-        for (uint x=0; x<_simulationState.counter_ocean_has_passed.width(); x++)
+        for (uint x=0; x<_simulationState.vegetation.width(); x++)
         {
-
-            float data = _simulationState.counter_ocean_has_passed(x,y);
-            (*datafile )<< data << " ";
-            counter = ((counter + 1 ) % 5);
+            temp++;
+            float data = _simulationState.vegetation(x,y);
+            (*datafile )<< " "<< data << std::endl;
+         /*   counter = ((counter + 1 ) % 30);
             if(counter == 0)
-                (*datafile )<< counter << std::endl;
+                (*datafile )<<  std::endl;*/
         }
-        (*datafile )<< counter << std::endl;
+        //(*datafile )<<  std::endl;
     }
+    std::cout<< "temp is "<< temp << std::endl;
 }
 
 void TerrainFluidSimulation:: SaveTerrain (std::fstream *objfile)
@@ -283,9 +288,16 @@ void TerrainFluidSimulation:: SaveTerrain (std::fstream *objfile)
            }
            std::vector<uint> gridIndices;
            Grid2DHelper::MakeGridIndices(gridIndices,_simulationState.terrain.width(),_simulationState.terrain.height());
-           for (uint i = 0;i<gridIndices.size();i += 3)
+           //(_simulationState.terrain.width()-1)*(_simulationState.terrain.height()-1)*6
+
+           std::cout<<"gridIndices.size() "<< gridIndices.size()<<std::endl;
+           std::cout<<"(_simulationState.terrain.width()-1)*(_simulationState.terrain.height()-1)*6 "<< (_simulationState.terrain.width()-1)*(_simulationState.terrain.height()-1)*6<<std::endl;
+           uint i = 0;
+           for (i = 0;i<gridIndices.size();i += 3)
            {
-               (*objfile )<<"f " << gridIndices.at(i)+1 << " " << gridIndices.at(i+1)+1 << " "<< gridIndices.at(i+2)+1 << std::endl;
+
+               (*objfile )<<"f " << gridIndices[i]+1 << " " << gridIndices.at(i+1)+1 << " "<< gridIndices.at(i+2)+1 << std::endl;
+
            }
 
 

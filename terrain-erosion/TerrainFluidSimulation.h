@@ -56,7 +56,7 @@ protected:
 
     void init();
 
-    void OpenFile(char const filename[],std::fstream *objfile);
+    void OpenFile(char const filename[],std::fstream *objfile,bool append);
 
     void ExportSimulationData();
 

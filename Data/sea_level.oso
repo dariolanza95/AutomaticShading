@@ -1,0 +1,42 @@
+OpenShadingLanguage 1.00
+# Compiled by oslc 1.8.2.pixar1697a56
+# options: 
+shader sea_level
+param	color	white	0.89999998 0.89999998 0.89999998		%read{6,6} %write{2147483647,-1}
+param	color	black	0.1 0.1 0.1		%read{4,4} %write{2147483647,-1}
+param	color	grass	0.1 0.5 0		%read{2147483647,-1} %write{2147483647,-1}
+param	float	simulation_data	0		%meta{int,lockgeom,0}  %read{2,2} %write{2147483647,-1}
+oparam	color	resultRGB	0 0 0		%read{2147483647,-1} %write{4,6}
+oparam	float	resultF	0		%read{2147483647,-1} %write{0,7} %initexpr
+global	point	P	%read{1,1} %write{2147483647,-1}
+local	float	Pz	%read{2147483647,-1} %write{1,1}
+const	int	$const1	0		%read{2,5} %write{2147483647,-1}
+const	float	$const2	0		%read{0,0} %write{2147483647,-1}
+const	int	$const3	2		%read{1,1} %write{2147483647,-1}
+temp	int	$tmp1	%read{3,3} %write{2,2}
+const	int	$const4	1		%read{7,7} %write{2147483647,-1}
+code resultF
+# sealevel.osl:47
+#     output float resultF = float(0)
+	assign		resultF $const2 	%filename{"sealevel.osl"} %line{47} %argrw{"wr"}
+code ___main___
+# sealevel.osl:52
+#     float Pz = P[2];
+	compref		Pz P $const3 	%filename{"sealevel.osl"} %line{52} %argrw{"wrr"}
+# sealevel.osl:54
+# 	if(simulation_data > 0)
+	gt		$tmp1 simulation_data $const1 	%line{54} %argrw{"wrr"}
+	if		$tmp1 6 8 	%argrw{"r"}
+# sealevel.osl:56
+# 		resultRGB = black;
+	assign		resultRGB black 	%line{56} %argrw{"wr"}
+# sealevel.osl:57
+# 		resultF = 0;
+	assign		resultF $const1 	%line{57} %argrw{"wr"}
+# sealevel.osl:61
+# 	resultRGB = white;
+	assign		resultRGB white 	%line{61} %argrw{"wr"}
+# sealevel.osl:62
+# 	resultF=1;
+	assign		resultF $const4 	%line{62} %argrw{"wr"}
+	end

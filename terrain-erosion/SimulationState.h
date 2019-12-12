@@ -25,7 +25,7 @@ public:
     Grid2D<float> water;
     Grid2D<float> terrain;
     Grid2D<float> suspendedSediment;
-    Grid2D<float> counter_ocean_has_passed;
+    Grid2D<float> vegetation;
     Grid2D<vec3> surfaceNormals;
 public:
 
@@ -34,7 +34,7 @@ public:
             terrain(w,h),
             suspendedSediment(w,h),
             surfaceNormals(w,h),
-            counter_ocean_has_passed(w,h)
+            vegetation(w,h)
     {
 
         createPerlinTerrain();
@@ -66,7 +66,7 @@ public:
                 h += perlin.Sample(y*f,x*f)*8; f /= 2;
                 terrain(y,x) = h*4*1.3;
                 suspendedSediment(y,x) = 0.0f;// 0.1*terrain(y,x);
-                counter_ocean_has_passed(y,x) = 0.0f;
+                vegetation(y,x) = 0.0f;
             }
         }
     }
