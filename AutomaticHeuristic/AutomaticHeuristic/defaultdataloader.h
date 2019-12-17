@@ -1,4 +1,4 @@
-
+/*
 
 #ifndef DEFAULTDATALOADER_H
 #define DEFAULTDATALOADER_H
@@ -8,25 +8,31 @@
 #include <OpenMesh/Core/Utils/PropertyManager.hh>
 #include <istream>
 
-typedef OpenMesh::TriMesh_ArrayKernelT<>  TryMesh;
+
+
+typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
 using namespace std;
 using namespace OpenMesh;
-/*
-template <class Kernel>
-class TriMeshT : public PolyMeshT<Kernel>
-{
 
-
-}*/
-template <class TryMesh>
-class DefaultDataLoader : public DataLoader<TryMesh>
+template <class MyMesh>
+class DefaultDataLoader : public DataLoader<MyMesh>
 {
 public:
-    DefaultDataLoader(istream& objfile);
-private:
-    istream& obj;
+    DefaultDataLoader<MyMesh>(string objfile,string simulation_file,MyMesh mesh);
+    void LoadData();
+protected:
+    void LoadMesh();
+    void CalculateNormals();
+    void LoadGeometryData();
+    void AttachDataFromSimulationToEachVertex();
+    void LoadGeometryData(ifstream& mesh_ifstream,MyMesh& mesh);
+
+    string obj_file;
+    string simulation_file;
+    MyMesh mesh;
+
 };
 
 #endif // DEFAULTDATALOADER_H
 
-
+*/

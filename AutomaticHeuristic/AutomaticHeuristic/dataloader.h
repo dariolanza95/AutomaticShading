@@ -3,7 +3,6 @@
 #define DATALOADER_H
 
 /*
-
 template <typename T>
 class Array {
 private:
@@ -35,7 +34,7 @@ class DataLoader
 
 public:
     DataLoader<T>();
-    virtual T Load() = 0;
+    virtual void LoadData() = 0;
 
 };
 

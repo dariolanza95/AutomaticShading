@@ -53,13 +53,13 @@ sea_level(
 
 	if(simulation_data > 0)
 	{
-		resultRGB = black;
-		resultF = 0;
+		resultRGB = white;
+		resultF = 1;
 	}
 	else
 	{
-	resultRGB = white;
-	resultF=1;
+	resultRGB = black;
+	resultF=0;
 	}
 		
  

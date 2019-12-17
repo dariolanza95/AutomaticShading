@@ -70,72 +70,78 @@ int main(int argc, char **argv)
 #include <sstream>
 #include <fstream>
 #include <string.h>
+#include <math.h>
 #include <stdlib.h>
 // --------------------
 #include <OpenMesh/Core/IO/MeshIO.hh>
+
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
 #include <OpenMesh/Core/Utils/PropertyManager.hh>
 #include "dataloader.h"
+#include "defaultdataloader.h"
 typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
 using namespace std;
 using namespace OpenMesh;
+# define M_PI           3.14159265358979323846  /* pi */
 
 
-vector<MyMesh::Face>  SelectFacesBasedOnSlope(MyMesh mesh,float angle,float treshold)
+vector<MyMesh::FaceHandle>  SelectFacesBasedOnSlope(MyMesh& mesh,float angle,float treshold)
 {
     MyMesh::Face face;
-    MyMesh::Normal up_direction;
+
+    MyMesh::Normal up_direction = Vec3f(1,0,0);
     MyMesh::FaceIter face_iterator,face_iterator_end(mesh.faces_end());
-    vector<MyMesh::Face> selected_faces ;
+    vector<MyMesh::FaceHandle> selected_faces ;
+    int counter = 0;
     for(face_iterator=mesh.faces_begin();face_iterator != face_iterator_end;++face_iterator)
     {
         face = mesh.face(*face_iterator);
         MyMesh::Normal mynormal = mesh.normal(*face_iterator);
+
         float dot_result = dot(mynormal,up_direction);
-         if(dot_result <= angle + treshold || dot_result >= angle - treshold)
-         {
-             selected_faces.push_back(face);
-         }
+        float resulting_angle_in_radians = acos(dot_result);
+        float resulting_angle_in_degree = resulting_angle_in_radians* (180.0/  M_PI);
+        resulting_angle_in_degree = 90 - resulting_angle_in_degree;
+        resulting_angle_in_degree > 0 ? resulting_angle_in_degree:0;
+
+        if(resulting_angle_in_degree <= angle + treshold && resulting_angle_in_degree >= angle - treshold)
+        {
+              cout<<"dot res "<< resulting_angle_in_degree <<endl;
+              MyMesh::FaceHandle face_handle = face_iterator.handle();
+              selected_faces.push_back(face_handle);
+              counter++;
+        }
+
     }
     return selected_faces;
 }
 
-void UpdateSimulationData(MyMesh mesh, vector<MyMesh::Face> selected_faces)
+void UpdateSimulationData(MyMesh& mesh, vector<MyMesh::FaceHandle> selected_faces)
 {
 
     for(uint i = 0;i<selected_faces.size();i++)
     {
-        MyMesh::Face f = selected_faces[i];
-        MyMesh::FaceHandle face_handle;
-        face_handle =  PolyConnectivity::handle(selected_faces[i]);
-        //MyMesh::FaceHandle face_handle = mesh.handle((f));
+
+        MyMesh::FaceHandle face_handle = selected_faces[i];
 
         auto simulation_data = getOrMakeProperty<VertexHandle, float>(mesh, "simulation_data");
-
         MyMesh::FaceVertexIter face_vertex_circulator = mesh.fv_iter(face_handle);
 
-       /* for(; face_vertex_circulator.is_valid(); ++face_vertex_circulator)
+        for(; face_vertex_circulator.is_valid(); ++face_vertex_circulator)
         {
 
-            MyMesh::Vertex vertex = mesh.vertex(*face_vertex_circulator);
-            MyMesh::VertexHandle vertex_handle = mesh.handle(vertex);
-            //    std::cout << "face vertex iterator " << *face_vertex_circulator << std::endl;
-            //   std::cout << "face iterator " << *face_iterator << std::endl;
-            //MyMesh::Vertex vh = mesh.point(*face_vertex_circulator);
+            MyMesh::VertexHandle vertex_handle = face_vertex_circulator.handle();
             simulation_data[vertex_handle] = 3.14;
-            if(simulation_data[vertex_handle] == 3.14)
-               cout<<"simulation data is valid here "<<endl;
-        }*/
-
+        }
     }
 }
 
-void FindTaluses(MyMesh mesh)
+void FindTaluses(MyMesh& mesh)
 {
     //angle of repose is usually between 33-37 degreee depending on the rock type
-    float angle = 0;
-    float treshold = 0.1;
-     vector<MyMesh::Face> selected_faces;
+    float angle = 34;
+    float treshold = 3;
+     vector<MyMesh::FaceHandle> selected_faces;
      selected_faces = SelectFacesBasedOnSlope(mesh,angle,treshold);
      UpdateSimulationData(mesh,selected_faces);
 
@@ -148,6 +154,7 @@ void WriteSimulationDataOnOutputFile(MyMesh& mesh,ostream& outputfile)
     auto simulation_data = getOrMakeProperty<VertexHandle, float>(mesh, "simulation_data");
     for (auto& vertex_handle : mesh.vertices())
     {
+
         outputfile<<simulation_data[vertex_handle] << endl;
     }
 }
@@ -313,7 +320,8 @@ void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &me
     {
         getline(inputfile,line);
         counter++;
-        simulation_data[vertex_handle] = stof(line );
+       // simulation_data[vertex_handle] = stof(line );
+        simulation_data[vertex_handle] = 0;
     }
 cout<<"total == "<< counter<<endl;
 }
@@ -322,12 +330,19 @@ void WriteOnRibFile()
 {
       string line;
       MyMesh mesh;
+
       char target[] = " \"vertex point P\"";
       char target2[] = "\"facevarying float[2] st\"";
+
+      string obj_file = "../../Data/input.obj";
+      string data_file = "../../Data/simulationData.txt";
+
       ifstream myfile ("../../Data/mountainsceneTemplate.rib");
       ifstream geometryfile ("../../Data/input.obj");
       ifstream datafile ("../../Data/simulationData.txt");
       ostringstream ss_newline;
+
+//      DefaultDataLoader<MyMesh> dl = DefaultDataLoader<MyMesh>(obj_file,data_file,mesh);
       string newline ;
       newline = ss_newline.str();
       ostringstream ss_out_name_file;
