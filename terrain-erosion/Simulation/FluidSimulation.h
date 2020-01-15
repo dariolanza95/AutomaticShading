@@ -33,6 +33,7 @@ public:
     Grid2D<float>& terrain;
     Grid2D<float>& sediment;
     Grid2D<float>& counter_from_last_time_water_passed;
+    Grid2D<float>& counter_times_water_was_still;
     Grid2D<float> tmpSediment;
     Grid2D<float> uVel;
     Grid2D<float> vVel;

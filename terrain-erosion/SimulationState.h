@@ -26,6 +26,8 @@ public:
     Grid2D<float> terrain;
     Grid2D<float> suspendedSediment;
     Grid2D<float> vegetation;
+    Grid2D<float> simData;
+    Grid2D<float> rivers;
     Grid2D<vec3> surfaceNormals;
 public:
 
@@ -34,7 +36,9 @@ public:
             terrain(w,h),
             suspendedSediment(w,h),
             surfaceNormals(w,h),
-            vegetation(w,h)
+            vegetation(w,h),
+            rivers(w,h),
+            simData(w,h)
     {
 
         createPerlinTerrain();
@@ -67,6 +71,8 @@ public:
                 terrain(y,x) = h*4*1.3;
                 suspendedSediment(y,x) = 0.0f;// 0.1*terrain(y,x);
                 vegetation(y,x) = 0.0f;
+                simData(y,x) = 0.0f;
+                rivers(y,x) = 0.0f;
             }
         }
     }

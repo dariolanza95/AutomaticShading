@@ -2,7 +2,6 @@ QT -= gui
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
-
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -15,7 +14,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += *.cpp \
-    defaultdataloader.cpp
+    defaultdataloader.cpp \
+    screeclassifier.cpp \
+    simulationdata.cpp \
+    riverclassifier.cpp \
+    riverclassifiertester.cpp
 
 
 
@@ -36,4 +39,35 @@ else:unix: PRE_TARGETDEPS += $$PWD/../../../../OpenMesh-8.0/build/Build/lib/libO
 
 HEADERS += *.h\
     defaultdataloader.h \
-    dataloader.h
+    dataloader.h \
+    aclassifier.h \
+    screeclassifier.h \
+    simulationdata.h \
+    riverclassifier.h \
+    riverclassifiertester.h
+
+unix|win32: LIBS += -lglfw
+
+unix: CONFIG += link_pkgconfig
+unix: PKGCONFIG += glfw3
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/release/ -lglfw
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/debug/ -lglfw
+else:unix: LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/ -lglfw
+
+INCLUDEPATH += $$PWD/../../../../../../usr/lib/x86_64-linux-gnu
+DEPENDPATH += $$PWD/../../../../../../usr/lib/x86_64-linux-gnu
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/release/ -lGLEW
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/debug/ -lGLEW
+else:unix: LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/ -lGLEW
+
+INCLUDEPATH += $$PWD/../../../../../../usr/lib/x86_64-linux-gnu
+DEPENDPATH += $$PWD/../../../../../../usr/lib/x86_64-linux-gnu
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/release/ -lGL
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/debug/ -lGL
+else:unix: LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/ -lGL
+
+INCLUDEPATH += $$PWD/../../../../../../usr/lib/x86_64-linux-gnu
+DEPENDPATH += $$PWD/../../../../../../usr/lib/x86_64-linux-gnu

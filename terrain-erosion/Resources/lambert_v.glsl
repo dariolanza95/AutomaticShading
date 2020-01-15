@@ -31,6 +31,7 @@ in vec2     inGridCoord;
 in float    inTerrainHeight;
 in float    inWaterHeight;
 in float    inSediment;
+in float    inSimData;
 in vec3     inNormal;
 
 in float    inDebugXVelocity;
@@ -48,6 +49,7 @@ out vec4  vNormal;
 
 out vec3  vColor;
 out float vSediment;
+out float vSimData;
 
 // Main
 /////////////////////////////////////////////////
@@ -60,7 +62,7 @@ void main(void)
     // pass on some values
     vGridCoord = inGridCoord;
     vSediment = inSediment;
-
+    vSimData = inSimData;
     // surface normal
     vec4 N = vec4(normalize(inNormal),1);
     N = vec4(N.x,N.z,-N.y,1);

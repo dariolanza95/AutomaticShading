@@ -35,6 +35,7 @@ FluidSimulation::FluidSimulation(SimulationState& state)
       terrain(state.terrain),
       sediment(state.suspendedSediment),
       counter_from_last_time_water_passed(state.vegetation),
+      counter_times_water_was_still(state.simData),
       tmpSediment(state.water.width(),state.water.height()),
       uVel(water.width(), water.height()),
       vVel(water.width(), water.height()),
@@ -221,8 +222,14 @@ void FluidSimulation::simulateFlow(double dt)
     ////////////////////////////////////////////////////////////
     float l = 1;
     float A = 0.00005;
+    float treshold_time = 100;
+    float still_water_treshold = 0.05;
+    float river_min_speed_treshold = 0.01;//0.043;
+    float river_max_speed_treshold = 1;
 
-    const float ocean_level = 30;
+    float river_height_treshold = 1;
+    float river_min_height_treshold = 0.001;
+    const float ocean_level = 0.75;
     const float dx = lX;
     const float dy = lY;
 
@@ -336,6 +343,40 @@ void FluidSimulation::simulateFlow(double dt)
                 uVel(y,x) = 0.5*(getRFlux(y,x-1)-getLFlux(y,x)-getLFlux(y,x+1)+getRFlux(y,x))/(dy*meanWater);
                 vVel(y,x) = 0.5*(getTFlux(y-1,x)-getBFlux(y,x)-getBFlux(y+1,x)+getTFlux(y,x))/(dx*meanWater);
             }
+
+            //we define lakes and seas as places where the incoming and the outcoming water flux is almost zero
+           /* if( inFlow  >= 0 - still_water_treshold && inFlow  <= 0 + still_water_treshold &&
+                outFlow  >= 0 - still_water_treshold && outFlow  <= 0 + still_water_treshold && water(y,x)>ocean_level)
+            {
+                counter_times_water_was_still(y,x)++;
+            }
+            else
+            {
+                if(counter_times_water_was_still(y,x) < treshold_time )
+                {
+                    counter_times_water_was_still(y,x) = 0;
+                }
+            }
+            */
+
+            float uV = uVel(y,x);
+            float vV = vVel(y,x);
+            float vel = sqrtf(uV*uV+vV*vV);
+
+            if(vel <= river_max_speed_treshold && vel>= river_min_speed_treshold && water(y,x)>river_min_height_treshold &&
+                    water(y,x) <= river_height_treshold)
+                counter_times_water_was_still(y,x)++;
+            else
+            {
+                if(counter_times_water_was_still(y,x) >  treshold_time )
+                {
+                    counter_times_water_was_still(y,x)++;
+                    if(counter_times_water_was_still(y,x)>3000)
+                        counter_times_water_was_still(y,x)=0;
+                }
+                else
+                     counter_times_water_was_still(y,x)=0;
+            }
         }
     }
 
@@ -428,7 +469,7 @@ void FluidSimulation::simulateErosion(double dt)
                 sediment(y,x) += d;
             }
             // deposit onto ground
-            else if (delta < 0.0f)
+            else if (delta < 0.0f && uV< 0.01 && vV < 0.01)
             {
                 float d = Kd*delta;
                 terrain(y,x)  -= d;

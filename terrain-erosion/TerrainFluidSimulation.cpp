@@ -14,6 +14,7 @@
 #include <chrono>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include "platform_includes.h"
 
 using namespace glm;
@@ -177,6 +178,7 @@ void TerrainFluidSimulation::updatePhysics(double dt)
     _terrainHeightBuffer.SetData(_simulationState.terrain);
     _waterHeightBuffer.SetData(_simulationState.water);
     _sedimentBuffer.SetData(_simulationState.suspendedSediment);
+    _simDataBuffer.SetData(_simulationState.simData);
     _normalBuffer.SetData(_simulationState.surfaceNormals);
 
 }
@@ -252,31 +254,25 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
 {
     int counter = 0;
     int temp = 0;
+    std::string data_string;
     std::cout<<"Writing to some file"<<std::endl;
     std::cout<<"h == "<<_simulationState.vegetation.height()<<std::endl;
     std::cout<<"w == "<<_simulationState.vegetation.width()<<std::endl;
-    for (uint y=0; y<_simulationState.vegetation.height(); y++)
+    for (uint y=0; y < _simulationState.vegetation.height(); y++)
     {
-        for (uint x=0; x<_simulationState.vegetation.width(); x++)
+        for (uint x=0; x < _simulationState.vegetation.width(); x++)
         {
             temp++;
-            float data = _simulationState.vegetation(x,y);
-            (*datafile )<< " "<< data << std::endl;
-         /*   counter = ((counter + 1 ) % 30);
-            if(counter == 0)
-                (*datafile )<<  std::endl;*/
+            (*datafile )<< _simulationState.simData(x,y);
+            (*datafile )<<" "<< _simulationState.vegetation(x,y);
+            (*datafile)<< std::endl;
         }
-        //(*datafile )<<  std::endl;
     }
     std::cout<< "temp is "<< temp << std::endl;
 }
 
 void TerrainFluidSimulation:: SaveTerrain (std::fstream *objfile)
 {
-
-
-   // (*objfile )<<"new mesh" <<std::endl;
-   //_simulationState.terrain
            float z = 0;
            for (uint y=0; y<_simulationState.terrain.height(); y++)
            {
@@ -344,6 +340,8 @@ void TerrainFluidSimulation::render()
     _terrainHeightBuffer.MapData(_testShader->AttributeLocation("inTerrainHeight"));
     _waterHeightBuffer.MapData(_testShader->AttributeLocation("inWaterHeight"));
     _sedimentBuffer.MapData(_testShader->AttributeLocation("inSediment"));
+    _simDataBuffer.MapData(_testShader->AttributeLocation("inSimData"));
+
     _normalBuffer.MapData(_testShader->AttributeLocation("inNormal"));
 
     _gridIndexBuffer.Bind();
@@ -391,6 +389,7 @@ void TerrainFluidSimulation::init()
     _terrainHeightBuffer.SetData(_simulationState.terrain);
     _waterHeightBuffer.SetData(_simulationState.water);
     _sedimentBuffer.SetData(_simulationState.suspendedSediment);
+    _simDataBuffer.SetData(_simulationState.simData);
 
     // Load and configure shaders
     _testShader = _shaderManager.LoadShader(resourcePath+"lambert_v.glsl",resourcePath+"lambert_f.glsl");
@@ -398,6 +397,9 @@ void TerrainFluidSimulation::init()
     _testShader->MapAttribute("inTerrainHeight",1);
     _testShader->MapAttribute("inWaterHeight",2);
     _testShader->MapAttribute("inSediment",3);
+    //change the number
+    if(_testShader->MapAttribute("inSimData",4));
+
     _testShader->MapAttribute("inNormal",7);
 
     // position camera
@@ -413,6 +415,7 @@ void TerrainFluidSimulation::init()
     _terrainHeightBuffer.SetData(_simulationState.terrain);
     _waterHeightBuffer.SetData(_simulationState.water);
     _sedimentBuffer.SetData(_simulationState.suspendedSediment);
+    _simDataBuffer.SetData(_simulationState.simData);
     _normalBuffer.SetData(_simulationState.surfaceNormals);
     _inPause = false;
 }

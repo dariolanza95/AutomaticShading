@@ -80,6 +80,7 @@ protected:
     Graphics::VertexBuffer<glm::vec2>   _gridCoordBuffer;
     Graphics::IndexBuffer               _gridIndexBuffer;
     Graphics::VertexBuffer<float>       _sedimentBuffer;
+    Graphics::VertexBuffer<float>       _simDataBuffer;
     Graphics::VertexBuffer<glm::vec3>   _normalBuffer;
 
 
