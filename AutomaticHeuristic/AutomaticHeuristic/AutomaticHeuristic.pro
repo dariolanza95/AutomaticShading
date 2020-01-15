@@ -18,7 +18,9 @@ SOURCES += *.cpp \
     screeclassifier.cpp \
     simulationdata.cpp \
     riverclassifier.cpp \
-    riverclassifiertester.cpp
+    riverclassifiertester.cpp \
+    ribwriter.cpp \
+    ribnode.cpp
 
 
 
@@ -44,7 +46,9 @@ HEADERS += *.h\
     screeclassifier.h \
     simulationdata.h \
     riverclassifier.h \
-    riverclassifiertester.h
+    riverclassifiertester.h \
+    ribwriter.h \
+    ribnode.h
 
 unix|win32: LIBS += -lglfw
 

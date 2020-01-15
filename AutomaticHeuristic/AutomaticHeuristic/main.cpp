@@ -9,6 +9,7 @@
 #include "riverclassifiertester.h"
 #include "screeclassifier.h"
 #include "simulationdata.h"
+#include "ribwriter.h"
 
 // --------------------OpenMesh----------------------------
 #include <OpenMesh/Core/IO/MeshIO.hh>
@@ -551,86 +552,39 @@ void OpenGLInit(MyMesh mesh)
     LoadGeometryDataIntoOpenGLBuffer(mesh);
     LoadShaders(window);
 }
-/*
-vector<MyMesh::FaceHandle>  SelectFacesBasedOnSlope(MyMesh& mesh,float angle,float treshold)
+
+void UpdateSimulationData(MyMesh& mesh, map<MyMesh::FaceHandle,float> selected_faces,int shaderID)
 {
-    MyMesh::Face face;
-
-    MyMesh::Normal up_direction = Vec3f(1,0,0);
-    MyMesh::FaceIter face_iterator,face_iterator_end(mesh.faces_end());
-    vector<MyMesh::FaceHandle> selected_faces ;
-    int counter = 0;
-    for(face_iterator=mesh.faces_begin();face_iterator != face_iterator_end;++face_iterator)
-    {
-        face = mesh.face(*face_iterator);
-        MyMesh::Normal mynormal = mesh.normal(*face_iterator);
-
-        float dot_result = dot(mynormal,up_direction);
-        float resulting_angle_in_radians = acos(dot_result);
-        float resulting_angle_in_degree = resulting_angle_in_radians* (180.0/  M_PI);
-        resulting_angle_in_degree = 90 - resulting_angle_in_degree;
-        resulting_angle_in_degree = resulting_angle_in_degree > 0 ? resulting_angle_in_degree : 0;
-
-        if(resulting_angle_in_degree <= angle + treshold && resulting_angle_in_degree >= angle - treshold)
-        {
-              cout<<"dot res "<< resulting_angle_in_degree <<endl;
-              MyMesh::FaceHandle face_handle = face_iterator.handle();
-              selected_faces.push_back(face_handle);
-              counter++;
-        }
-
-    }
-    return selected_faces;
-}*/
-
-void UpdateSimulationData(MyMesh& mesh, map<MyMesh::FaceHandle,float> selected_faces)
-{
+    auto simulation_data = getOrMakeProperty<VertexHandle, float>(mesh, "simulation_data");
 
     for (auto const& x : selected_faces)
     {
-    /*    std::cout << x.first  // string (key)
-                  << ':'
-                  << x.second // string's value
-                  << std::endl ;*/
-
-    //for(uint i = 0;i<selected_faces.size();i++)
-    //{
-
         MyMesh::FaceHandle face_handle = x.first;
-
-        auto simulation_data = getOrMakeProperty<VertexHandle, float>(mesh, "simulation_data");
         MyMesh::FaceVertexIter face_vertex_circulator = mesh.fv_iter(face_handle);
-
         for(; face_vertex_circulator.is_valid(); ++face_vertex_circulator)
         {
-            //MyMesh::VertexHandle vertex_handle = face_vertex_circulator.handle();
-            //this one works but it's deprecated
-            //simulation_data[vertex_handle] = 3.14;
-            //might work, to be tested
-            simulation_data[*face_vertex_circulator] = 3.14;
+            simulation_data[*face_vertex_circulator] = shaderID;
         }
     }
 }
 
-void FindTaluses(MyMesh& mesh)
+void FindFeatures(MyMesh& mesh)
 {
+    cout<<"in FindTaluses";
     //angle of repose is usually between 33-37 degreee depending on the rock type
     float angle = 34;
     float treshold = 3;
      map<MyMesh::FaceHandle,float> selected_faces;
      AClassifier *sc = new ScreeClassifier(mesh,angle,treshold);
      selected_faces = sc->ClassifyVertices();
-     UpdateSimulationData(mesh,selected_faces);
+     UpdateSimulationData(mesh,selected_faces,1);
+     selected_faces.clear();
+     AClassifier *rc = new RiverClassifier(mesh,75,15,10);
+     selected_faces = rc->ClassifyVertices();
+     UpdateSimulationData(mesh,selected_faces,2);
 
 }
 
-void FindStronglyErodedFacesByRiver(MyMesh& mesh)
-{
-    AClassifier *rc = new RiverClassifier(mesh);
-    //selected_faces = rc->ClassifyVertices();
-    RiverClassifierTester  *rct =  new RiverClassifierTester();
-
-}
 
 void WriteSimulationDataOnOutputFile(MyMesh& mesh,ostream& outputfile)
 {
@@ -853,7 +807,7 @@ void WriteOnRibFile()
       LoadGeometryData("../../Data/input.obj",mesh);
       AttachDataFromSimulationToEachVertex("../../Data/simulationData.txt",mesh);
 
-      FindTaluses(mesh);
+      FindFeatures(mesh);
 
       if (myfile.is_open() && geometryfile.is_open() && datafile.is_open())
       {

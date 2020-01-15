@@ -2,9 +2,12 @@
 #include <unordered_set>
 #include <list>
 
-    RiverClassifier::RiverClassifier(MyMesh mesh)
+    RiverClassifier::RiverClassifier(MyMesh mesh,float slope,float treshold,float border_width)
     {
         _mesh = mesh;
+        _slope = slope;
+        _treshold = treshold;
+        _border_width = border_width;
          simulation_data_wrapper = getOrMakeProperty<VertexHandle,SimulationData*>(_mesh, "simulation_data");
 
     }
@@ -20,9 +23,7 @@
             VertexHandle vertex_handle = entry.first;
             //for each selected vertices iterate over its neighborhood, if a vertex that doesnt have the required property
             //is encountered then add the actual vertex in the frontier.
-
-        //      MyMesh::VertexVertexIter vv_it = _mesh.vv_iter(vertex_handle);
-              for (MyMesh::VertexVertexIter vertex_vertex_iterator = _mesh.vv_iter(vertex_handle); vertex_vertex_iterator.is_valid(); ++vertex_vertex_iterator)
+             for (MyMesh::VertexVertexIter vertex_vertex_iterator = _mesh.vv_iter(vertex_handle); vertex_vertex_iterator.is_valid(); ++vertex_vertex_iterator)
               {
                   auto simulation_data_wrapper = getOrMakeProperty<VertexHandle,SimulationData*>(_mesh, "simulation_data");
                   SimulationData* sd = simulation_data_wrapper[*vertex_vertex_iterator];
@@ -56,15 +57,13 @@
             if(sd->_map.at("rivers")>0.0f)
             {
                 river_vertices.insert(make_pair(*vertex_iterator,sd->_map.at("rivers")));
-                cout<<"rivers is "<< sd->_map.at("rivers")<<endl;
             }
-            else
-            {
-                cout<<"river is 0"<<endl;
-            }
+
         }
         auto frontier = selectFrontier(river_vertices);
-        selected_faces = SelectFacesBySlope(frontier);
+        frontier = BFS(_border_width,frontier);
+         selected_faces = SelectFacesBySlope(frontier);
+        cout << "River Classifier has selected "<< selected_faces.size()<<" faces"<<endl;
         return selected_faces;
     }
 
@@ -91,34 +90,28 @@
 
     map<MyMesh::VertexHandle,float> RiverClassifier::BFS(int max_depth,map<MyMesh::VertexHandle,float> frontier_map)
     {
-        cout<<"insideBFS"<<endl;
         unordered_set<BFS_cell,BFS_CellHashFunction> visitedNodes;
         map<MyMesh::VertexHandle,float>  selected_nodes;
         list<struct BFS_cell> queue;
         selected_nodes = frontier_map;
-        cout<<"corners"<<endl;
         for (auto const& entry : frontier_map )
         {
             struct BFS_cell cell = {entry.first,entry.second,0};
             visitedNodes.insert(cell);
             queue.push_back(cell);
             MyMesh::VertexHandle vh = entry.first;
-            cout<<_mesh.point( vh) <<endl;
         }
-        cout<<"END"<<endl;
         while(!queue.empty())
         {
             BFS_cell cell = queue.front();
             queue.pop_front();
             if( cell.depth < max_depth)
             {
-                cout<<"Actual vertex "<< _mesh.point(cell.vertex_handle)<<endl;
-//                MyMesh::VertexVertexIter vv_it = _mesh.vv_iter(cell.vertex_handle);
                 //circulate over the vertex
                 for (MyMesh::VertexVertexIter vertex_vertex_iterator = _mesh.vv_iter(cell.vertex_handle); vertex_vertex_iterator.is_valid(); ++vertex_vertex_iterator)
                 {
 
-                    cout<<_mesh.point( *vertex_vertex_iterator ) <<endl;
+                //    cout<<_mesh.point( *vertex_vertex_iterator ) <<endl;
 
                     SimulationData* sd  = simulation_data_wrapper[*vertex_vertex_iterator];
                     //takes only vertices that are out of the set (since it's given that we're using the frontier vertices)
@@ -172,24 +165,25 @@
 //            for (MyMesh::VertexVertexIter vertex_vertex_iterator = mesh.vv_iter(*vertex_iterator); vertex_vertex_iterator.is_valid(); ++vertex_vertex_iterator)
 //
 //            for(face_iterator=_mesh.faces_begin();face_iterator != face_iterator_end;++face_iterator)
-            {
-                face = _mesh.face(*vertex_face_circulator);
-                MyMesh::Normal mynormal = _mesh.normal(*vertex_face_circulator);
-
-                float dot_result = dot(mynormal,up_direction);
-                float resulting_angle_in_radians = acos(dot_result);
-                float resulting_angle_in_degree = resulting_angle_in_radians* (180.0/  M_PI);
-                resulting_angle_in_degree = 90 - resulting_angle_in_degree;
-                resulting_angle_in_degree = resulting_angle_in_degree > 0 ? resulting_angle_in_degree : 0;
-
-                if(resulting_angle_in_degree <= _slope + _treshold && resulting_angle_in_degree >= _slope - _treshold)
                 {
-                      selected_faces.insert(pair<MyMesh::FaceHandle,float>(*face_iterator,1));
-                      counter++;
-                }
+                    face = _mesh.face(*vertex_face_circulator);
+                    MyMesh::Normal mynormal = _mesh.normal(*vertex_face_circulator);
 
-            }
+                    float dot_result = dot(mynormal,up_direction);
+                    float resulting_angle_in_radians = acos(dot_result);
+                    float resulting_angle_in_degree = resulting_angle_in_radians* (180.0/  M_PI);
+                    resulting_angle_in_degree = 90 - resulting_angle_in_degree;
+                    resulting_angle_in_degree = resulting_angle_in_degree > 0 ? resulting_angle_in_degree : 0;
+
+                    if(resulting_angle_in_degree <= _slope + _treshold && resulting_angle_in_degree >= _slope - _treshold)
+                    {
+                          selected_faces.insert(pair<MyMesh::FaceHandle,float>(*vertex_face_circulator,1));
+                          counter++;
+                    }
+
+                }
         }
+        return selected_faces;
     }
 
   /*  // Program to print BFS traversal from a given

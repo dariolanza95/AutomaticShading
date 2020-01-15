@@ -100,7 +100,7 @@ void RiverClassifierTester::TestSelectFrontier()
     mesh = Grid(width,height);
     cout<<"Attaching Data"<<endl;
     AttachMockUpSimulationDataToAllVertices();
-    rc = new RiverClassifier(mesh);
+    rc = new RiverClassifier(mesh,65,15,5);
 
     //rc->ClassifyVertices();
 
@@ -139,7 +139,7 @@ void RiverClassifierTester::selectBox_testSelectFrontier(int width,int height,in
     // iff( the line has a width >1)
     int x(0),y = 0;
     AttachMockUpSimulationToABox(width,height,box_half_width,box_half_height,centerX,centerY);
-    rc = new RiverClassifier(mesh);
+    rc = new RiverClassifier(mesh,65,15,5);
     map<MyMesh::VertexHandle,float> river_vertices;
 
     int i = 0;
@@ -174,7 +174,7 @@ void RiverClassifierTester::selectBox_testSelectFrontier(int width,int height,in
 
 void RiverClassifierTester::frontierMadeFromBox_testBFSFunction(int box_half_width,int box_half_height, map<MyMesh::VertexHandle,float> frontier)
 {
-    rc = new RiverClassifier(mesh);
+    rc = new RiverClassifier(mesh,65,15,5);
     map<MyMesh::VertexHandle,float> river_vertices;
     int max_depth = 3;
     int result_1=0;
@@ -204,7 +204,7 @@ void RiverClassifierTester::frontierMadeFromBox_testBFSFunction(int box_half_wid
 
 void RiverClassifierTester::frontierMadeFromGridExternalCorners_testBFSFunction( map<MyMesh::VertexHandle,float> frontier)
 {
-    rc = new RiverClassifier(mesh);
+    rc = new RiverClassifier(mesh,65,15,5);
     map<MyMesh::VertexHandle,float> river_vertices;
     int expected_result = 0;
     int max_depth = 3;
@@ -245,7 +245,7 @@ void RiverClassifierTester::selectGridExternalCorners_testSelectFrontierFunction
     int i = 0;
     //Select the 4 corners,frontier should equal to 4*2=8
     attachMockUpSimulationDataToCorners(width,height);
-    rc = new RiverClassifier(mesh);
+    rc = new RiverClassifier(mesh,65,15,5);
     map<MyMesh::VertexHandle,float> river_vertices;
 
     MyMesh::VertexIter vertex_iterator;
