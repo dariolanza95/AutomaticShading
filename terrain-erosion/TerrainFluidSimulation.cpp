@@ -72,7 +72,6 @@ void TerrainFluidSimulation::runMainloop()
             updatePhysics(dt);
         }
 
-
         // check for input events
         glfwPollEvents();
         cameraMovement(dt);
@@ -220,34 +219,7 @@ void TerrainFluidSimulation::ExportSimulationData()
            TerrainFluidSimulation::SaveSimulationData(&datafile);
            objfile.close();
            datafile.close();
-/*
 
-    datafile.open(filename_2, std::fstream::in | std::fstream::out );
-
-
-     // If file does not exist, Create new file
-     if (!datafile)
-     {
-       std::cout << "Cannot open file, file does not exist. Creating new file..";
-
-       datafile.open(filename_2,  std::fstream::in | std::fstream::out | std::fstream::trunc);
-       datafile <<"\n";
-
-
-      }
-
-
-     else
-     {    // use existing file
-        std::cout<<"success "<<filename_2 <<" found. \n";
-        std::cout<<"\nAppending writing and working with existing file"<<"\n---\n";
-
-        std::cout<<"\n";
-
-     }
-    TerrainFluidSimulation::SaveSimulationData(&datafile);
-      datafile.close();
-*/
 }
 
 void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
@@ -284,10 +256,7 @@ void TerrainFluidSimulation:: SaveTerrain (std::fstream *objfile)
            }
            std::vector<uint> gridIndices;
            Grid2DHelper::MakeGridIndices(gridIndices,_simulationState.terrain.width(),_simulationState.terrain.height());
-           //(_simulationState.terrain.width()-1)*(_simulationState.terrain.height()-1)*6
-
            std::cout<<"gridIndices.size() "<< gridIndices.size()<<std::endl;
-           std::cout<<"(_simulationState.terrain.width()-1)*(_simulationState.terrain.height()-1)*6 "<< (_simulationState.terrain.width()-1)*(_simulationState.terrain.height()-1)*6<<std::endl;
            uint i = 0;
            for (i = 0;i<gridIndices.size();i += 3)
            {
@@ -349,6 +318,8 @@ void TerrainFluidSimulation::render()
     // render terrain
     _testShader->SetUniform("uColor", vec4(242.0/255.0,224.0/255.0,201.0/255.0,1));
     _testShader->SetUniform("uIsWater",false);
+    std::cout<<"gridIndexBufferCount "<< _gridIndexBuffer.IndexCount()<<std::endl;
+    std::cout<<"Type"<<_gridIndexBuffer.IndexType()<<std::endl;
     glDrawElements(GL_TRIANGLES, _gridIndexBuffer.IndexCount(), _gridIndexBuffer.IndexType(),0);
 
     // unbind shader

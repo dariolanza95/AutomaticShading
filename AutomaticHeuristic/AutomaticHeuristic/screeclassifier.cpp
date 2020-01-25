@@ -20,7 +20,7 @@ map<MyMesh::FaceHandle,float> ScreeClassifier::ClassifyVertices()
 
         MyMesh::Face face;
 
-        MyMesh::Normal up_direction = Vec3f(1,0,0);
+        MyMesh::Normal up_direction = Vec3f(0,-1,0);
         MyMesh::FaceIter face_iterator,face_iterator_end(_mesh.faces_end());
         map<MyMesh::FaceHandle,float> selected_faces ;
         int counter = 0;
@@ -33,7 +33,7 @@ map<MyMesh::FaceHandle,float> ScreeClassifier::ClassifyVertices()
             float resulting_angle_in_radians = acos(dot_result);
             float resulting_angle_in_degree = resulting_angle_in_radians* (180.0/  M_PI);
             resulting_angle_in_degree = 90 - resulting_angle_in_degree;
-            resulting_angle_in_degree = resulting_angle_in_degree > 0 ? resulting_angle_in_degree : 0;
+            //resulting_angle_in_degree = resulting_angle_in_degree > 0 ? resulting_angle_in_degree : 0;
 
             if(resulting_angle_in_degree <= _repose_angle + _treshold && resulting_angle_in_degree >= _repose_angle - _treshold)
             {

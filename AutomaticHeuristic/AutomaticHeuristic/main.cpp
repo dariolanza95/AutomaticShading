@@ -10,6 +10,7 @@
 #include "screeclassifier.h"
 #include "simulationdata.h"
 #include "ribwriter.h"
+#include "./Graphics/openglvisualizer.h"
 
 // --------------------OpenMesh----------------------------
 #include <OpenMesh/Core/IO/MeshIO.hh>
@@ -36,19 +37,7 @@ struct MyData
   bool            bval;
 
 };
-int onWindowClose()
-{
-    return GLFW_TRUE;
-    //return GL_TRUE;
-}
 
-void window_close_callback(GLFWwindow* window)
-{
-
-    glfwSetWindowShouldClose(window, onWindowClose());
- //   if (!time_to_close)
- //       glfwSetWindowShouldClose(window, GLFW_FALSE);
-}
 char* filetobuf(char *file)
 {
     FILE *fptr;
@@ -109,7 +98,7 @@ void LoadShaders(GLFWwindow* _window)
         /* Compile the vertex shader */
         glCompileShader(vertexshader);
         glGetShaderiv(vertexshader, GL_COMPILE_STATUS, &IsCompiled_VS);
-
+        glm::vec2(0,3.1);
         if(IsCompiled_VS == GL_FALSE)
         {
             cout<<"error"<<endl;
@@ -492,6 +481,21 @@ GLfloat *mat ;
     }*/
 }
 
+int onWindowClose(GLFWwindow* window)
+{
+    if(glfwGetKey(window, GLFW_KEY_ESCAPE ) == GLFW_PRESS)
+        return GLFW_TRUE;
+    else
+        return GLFW_FALSE;
+}
+
+void window_close_callback(GLFWwindow* window)
+{
+
+    glfwSetWindowShouldClose(window, onWindowClose(window));
+ //   if (!time_to_close)
+ //       glfwSetWindowShouldClose(window, GLFW_FALSE);
+}
 void OpenGLInit(MyMesh mesh)
 {
     // Open GL Stuff ///////////////////////////////////////////////////////
@@ -553,6 +557,63 @@ void OpenGLInit(MyMesh mesh)
     LoadShaders(window);
 }
 
+ GLFWwindow* OpenGLInit2()
+{
+    // init GLFW
+    if (!glfwInit())
+    {
+        std::cerr << "[GLFW] Error initialising GLFW" << std::endl;
+        exit(1);
+    }
+
+
+    glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
+    // Use OpenGL Core v3.2
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
+    GLFWwindow* window = glfwCreateWindow(800, 600, "BlankWindow", NULL, NULL);
+    // Open an OpenGL window
+   // if( !glfwCreateWindow( windowWidth,windowHeight, 8,8,8,8,8,8, GLX_WINDOW ) )
+    if (window == NULL )
+    {
+        std::cerr << "[GLFW] Error opening window" << std::endl;
+        glfwTerminate();
+        exit(1);
+    }
+
+    int major, minor, rev;
+
+    glfwGetVersion(&major, &minor, &rev);
+
+    fprintf(stdout, "OpenGL version recieved: %d.%d.%d\n", major, minor, rev);
+    // Init Glew (OpenGL Extension Loading)
+
+#if defined(__APPLE__) || defined(__MACH__)
+    // Do nothing
+#else
+    // http://stackoverflow.com/questions/8302625/segmentation-fault-at-glgenvertexarrays-1-vao
+    glewExperimental = GL_TRUE;
+
+    glfwMakeContextCurrent(window);
+    GLenum err = glewInit();
+
+    if (GLEW_OK != err)
+    {
+        std::cerr << "[GLEW] Init failed: " << glewGetErrorString(err) << std::endl;
+        glfwTerminate();
+        exit(1);
+    }
+#endif
+    // Start Simulation ////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+
+    glfwSetWindowCloseCallback(window, window_close_callback);
+    return window;
+}
+
 void UpdateSimulationData(MyMesh& mesh, map<MyMesh::FaceHandle,float> selected_faces,int shaderID)
 {
     auto simulation_data = getOrMakeProperty<VertexHandle, float>(mesh, "simulation_data");
@@ -575,11 +636,11 @@ void FindFeatures(MyMesh& mesh)
     float angle = 34;
     float treshold = 3;
      map<MyMesh::FaceHandle,float> selected_faces;
-     AClassifier *sc = new ScreeClassifier(mesh,angle,treshold);
+     AClassifier *sc = new ScreeClassifier(mesh,0,15);
      selected_faces = sc->ClassifyVertices();
      UpdateSimulationData(mesh,selected_faces,1);
      selected_faces.clear();
-     AClassifier *rc = new RiverClassifier(mesh,75,15,10);
+     AClassifier *rc = new RiverClassifier(mesh,75,15,0);
      selected_faces = rc->ClassifyVertices();
      UpdateSimulationData(mesh,selected_faces,2);
 
@@ -779,7 +840,7 @@ void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &me
 cout<<"There are "<<mesh.n_vertices()<< " counter is == "<< counter<<endl;
 }
 
-void WriteOnRibFile()
+MyMesh WriteOnRibFile()
 {
       string line;
       MyMesh mesh;
@@ -854,7 +915,7 @@ void WriteOnRibFile()
         else cout << "Unable to open file";
  //OpenGLInit(mesh);
 
-}
+return mesh;}
 
 
 
@@ -864,10 +925,18 @@ int main(int argc, char **argv)
 
   MyMesh mesh;
   //Checks();
-  WriteOnRibFile();
   //LoadMesh(mesh);
- mesh.release_vertex_normals();
+  mesh = WriteOnRibFile();
+  GLFWwindow* window = OpenGLInit2();
+  OpenGlVisualizer visualizer(window,300,300,mesh);
+  cout<<"Visualizer Created"<<endl;
+  visualizer.Initialize();
+  cout<<"Visualizer Initialized"<<endl;
+  visualizer.Visualize();
 
+
+  cout<<"ByeBye"<<endl;
+mesh.release_vertex_normals();
   // just check if it really works
   if (mesh.has_vertex_normals())
   {

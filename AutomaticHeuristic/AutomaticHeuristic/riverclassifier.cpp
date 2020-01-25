@@ -62,7 +62,21 @@
         }
         auto frontier = selectFrontier(river_vertices);
         frontier = BFS(_border_width,frontier);
-         selected_faces = SelectFacesBySlope(frontier);
+        for (auto const& entry : frontier )
+        {
+            MyMesh::VertexHandle vertex_handle =  entry.first;
+           for (MyMesh::VertexFaceIter vertex_face_iterator = _mesh.vf_iter(vertex_handle); vertex_face_iterator.is_valid(); ++vertex_face_iterator)
+           {
+               //MyMesh::Face face = _mesh.face(*vertex_face_iterator);
+               //face.handle();
+               MyMesh::FaceHandle fh = *vertex_face_iterator;
+               selected_faces.insert(make_pair(fh,entry.second));
+
+           }
+        }
+
+
+        //selected_faces = SelectFacesBySlope(frontier);
         cout << "River Classifier has selected "<< selected_faces.size()<<" faces"<<endl;
         return selected_faces;
     }

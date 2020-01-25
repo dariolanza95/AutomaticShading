@@ -42,7 +42,6 @@ public:
     {
 
         createPerlinTerrain();
-
         int l = 20;
         int mw = 20;
         int xmin = water.width() - l-mw;

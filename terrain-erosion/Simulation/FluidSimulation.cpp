@@ -365,7 +365,11 @@ void FluidSimulation::simulateFlow(double dt)
 
             if(vel <= river_max_speed_treshold && vel>= river_min_speed_treshold && water(y,x)>river_min_height_treshold &&
                     water(y,x) <= river_height_treshold)
+            {
                 counter_times_water_was_still(y,x)++;
+                counter_times_water_was_still(y,x) = counter_times_water_was_still(y,x)>treshold_time? treshold_time +1:counter_times_water_was_still(y,x)++;
+
+            }
             else
             {
                 if(counter_times_water_was_still(y,x) >  treshold_time )

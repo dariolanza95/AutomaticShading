@@ -20,24 +20,52 @@ SOURCES += *.cpp \
     riverclassifier.cpp \
     riverclassifiertester.cpp \
     ribwriter.cpp \
-    ribnode.cpp
+    ribnode.cpp \
+    Graphics/openglvisualizer.cpp \
+    Graphics/mesh.cpp \
+    Graphics/IndexBuffer.cpp \
+    Graphics/Shader.cpp \
+    Graphics/Grid2D.cpp \
+    Graphics/VertexBuffer.cpp \
+    Graphics/GLWrapper.cpp \
+    Graphics/Exception.cpp \
+    Graphics/Camera.cpp \
+    Graphics/Camera.cpp \
+    Graphics/Exception.cpp \
+    Graphics/GLWrapper.cpp \
+    Graphics/Grid2D.cpp \
+    Graphics/IndexBuffer.cpp \
+    Graphics/mesh.cpp \
+    Graphics/openglvisualizer.cpp \
+    Graphics/Shader.cpp \
+    Graphics/VertexBuffer.cpp \
+    Resources/defaultdataloader.cpp \
+    defaultdataloader.cpp \
+    main.cpp \
+    ribnode.cpp \
+    ribwriter.cpp \
+    riverclassifier.cpp \
+    riverclassifiertester.cpp \
+    screeclassifier.cpp \
+    simulationdata.cpp \
+    Graphics/PerlinNoise.cpp
 
 
 
 INCLUDEPATH +="/home/pandora/OpenMesh-8.0/src/"
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../OpenMesh-8.0/build/Build/lib/release/ -lOpenMeshCore
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../OpenMesh-8.0/build/Build/lib/debug/ -lOpenMeshCore
-else:unix: LIBS += -L$$PWD/../../../../OpenMesh-8.0/build/Build/lib/ -lOpenMeshCore
+win32:CONFIG(release, debug|release): LIBS += -L/home/pandora/OpenMesh-8.0/build/Build/lib/release/ -lOpenMeshCore
+else:win32:CONFIG(debug, debug|release): LIBS += -L/home/pandora/OpenMesh-8.0/build/Build/lib/debug/ -lOpenMeshCore
+else:unix: LIBS += -L/home/pandora/OpenMesh-8.0/build/Build/lib/ -lOpenMeshCore
 
-INCLUDEPATH += $$PWD/../../../../OpenMesh-8.0/build/Build
-DEPENDPATH += $$PWD/../../../../OpenMesh-8.0/build/Build
+INCLUDEPATH += /home/pandora/OpenMesh-8.0/build/Build
+DEPENDPATH += /home/pandora/OpenMesh-8.0/build/Build
 
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../../../OpenMesh-8.0/build/Build/lib/release/libOpenMeshCore.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../../../OpenMesh-8.0/build/Build/lib/debug/libOpenMeshCore.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../../../OpenMesh-8.0/build/Build/lib/release/OpenMeshCore.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../../../OpenMesh-8.0/build/Build/lib/debug/OpenMeshCore.lib
-else:unix: PRE_TARGETDEPS += $$PWD/../../../../OpenMesh-8.0/build/Build/lib/libOpenMeshCore.a
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += /home/pandora/OpenMesh-8.0/build/Build/lib/release/libOpenMeshCore.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += /home/pandora/OpenMesh-8.0/build/Build/lib/debug/libOpenMeshCore.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += /home/pandora/OpenMesh-8.0/build/Build/lib/release/OpenMeshCore.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += /home/pandora/OpenMesh-8.0/build/Build/lib/debug/OpenMeshCore.lib
+else:unix: PRE_TARGETDEPS += /home/pandora/OpenMesh-8.0/build/Build/lib/libOpenMeshCore.a
 
 HEADERS += *.h\
     defaultdataloader.h \
@@ -48,10 +76,41 @@ HEADERS += *.h\
     riverclassifier.h \
     riverclassifiertester.h \
     ribwriter.h \
-    ribnode.h
+    ribnode.h \
+    Graphics/openglvisualizer.h \
+    Graphics/IndexBuffer.h \
+    Graphics/Shader.h \
+    Graphics/VertexBuffer.h \
+    Graphics/Mesh.h \
+    Graphics/GLWrapper.h \
+    Graphics/Grid2D.h \
+    Graphics/Exception.h \
+    Graphics/Camera.h \
+    Graphics/Camera.h \
+    Graphics/Exception.h \
+    Graphics/GLWrapper.h \
+    Graphics/Grid2D.h \
+    Graphics/IndexBuffer.h \
+    Graphics/Mesh.h \
+    Graphics/openglvisualizer.h \
+    Graphics/Shader.h \
+    Graphics/VertexBuffer.h \
+    Resources/defaultdataloader.h \
+    aclassifier.h \
+    dataloader.h \
+    defaultdataloader.h \
+    ribnode.h \
+    ribwriter.h \
+    riverclassifier.h \
+    riverclassifiertester.h \
+    screeclassifier.h \
+    simulationdata.h \
+    Graphics/PerlinNoise.h \
+    Graphics/platform_includes.h
 
 unix|win32: LIBS += -lglfw
-
+    LIBS+=-lboost_system
+    LIBS+=-lboost_filesystem
 unix: CONFIG += link_pkgconfig
 unix: PKGCONFIG += glfw3
 
@@ -75,3 +134,7 @@ else:unix: LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/ -lGL
 
 INCLUDEPATH += $$PWD/../../../../../../usr/lib/x86_64-linux-gnu
 DEPENDPATH += $$PWD/../../../../../../usr/lib/x86_64-linux-gnu
+
+DISTFILES += \
+    Resources/lambert_f.glsl \
+    Resources/lambert_v.glsl
