@@ -9,7 +9,7 @@
 #include <iostream>
 #include <inttypes.h>
 #include <cassert>
-
+#include "ShaderParameters.h"
 #include "Graphics/Shader.h"
 #include "Graphics/VertexBuffer.h"
 #include "Graphics/IndexBuffer.h"
@@ -49,6 +49,8 @@ private :
     MyMesh _mesh;
     int _width;
     int _height;
+    int _grid_width;
+    int _grid_height;
      GLFWwindow *_window;
     void InitializeOpengGL();
     void InitializeBuffers();

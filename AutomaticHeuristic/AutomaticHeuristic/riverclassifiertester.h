@@ -9,11 +9,12 @@ class RiverClassifierTester
 {
 public:
     RiverClassifierTester();
-
+    void Test();
 protected:
 
     RiverClassifier* rc;
     MyMesh mesh;
+    void TestSelectBySlope();
     void AttachMockUpSimulationDataToAllVertices();
     void AttachMockUpSimulationToABox(int width,int height,float box_width,float box_height,float centerX,float centerY);
     void attachMockUpSimulationDataToCorners(int width,int height);
@@ -24,7 +25,8 @@ protected:
     void IterateThroughMesh();
     MyMesh Cube();
     MyMesh Grid(int width,int height);
-    void Test();
+    MyMesh Grid(int width,int height,float angle);
+
     void TestSelectFrontier();
 };
 

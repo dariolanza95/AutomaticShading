@@ -114,4 +114,5 @@ void Camera::recomputeViewMatrix()
     glm::mat4 Identity = glm::mat4(1.0f); // identity matrix
 
     _viewMatrix =  mat4_cast(_forward)*glm::translate(Identity,-_position);
-}
+
+    }

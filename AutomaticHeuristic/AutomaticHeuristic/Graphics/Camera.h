@@ -32,6 +32,8 @@ public:
     const glm::mat4x4& ProjMatrix();
     const glm::mat4x4& ViewMatrix();
 
+
+    glm::vec3 Position();
     // Transform
     void TranslateGlobal(const glm::vec3& delta);
     void TranslateLocal(const glm::vec3& delta);

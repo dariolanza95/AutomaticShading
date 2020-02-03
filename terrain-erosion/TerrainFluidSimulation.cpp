@@ -318,8 +318,6 @@ void TerrainFluidSimulation::render()
     // render terrain
     _testShader->SetUniform("uColor", vec4(242.0/255.0,224.0/255.0,201.0/255.0,1));
     _testShader->SetUniform("uIsWater",false);
-    std::cout<<"gridIndexBufferCount "<< _gridIndexBuffer.IndexCount()<<std::endl;
-    std::cout<<"Type"<<_gridIndexBuffer.IndexType()<<std::endl;
     glDrawElements(GL_TRIANGLES, _gridIndexBuffer.IndexCount(), _gridIndexBuffer.IndexType(),0);
 
     // unbind shader

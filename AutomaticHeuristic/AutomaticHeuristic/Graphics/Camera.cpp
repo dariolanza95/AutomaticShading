@@ -26,6 +26,10 @@ Camera::Camera(vec3 position)
     SetProjection();
 
 }
+  glm::vec3 Camera::Position()
+ {
+     return _position;
+ }
 
 void Camera::SetProjection(float angle, float aspect, float near, float far)
 {
@@ -49,7 +53,7 @@ const glm::mat4x4 &Camera::ProjMatrix()
 
 const glm::mat4x4 &Camera::ViewMatrix()
 {
-    glm::mat4_cast(_forward);
+    //glm::mat4_cast(_forward);
     recomputeViewMatrix();
     return _viewMatrix;
 }
@@ -64,12 +68,11 @@ void Camera::TranslateGlobal(const vec3 &delta)
 void Camera::TranslateLocal(const vec3 &delta)
 {
     vec4 d = vec4(delta,0.0f);
+
     if( (_forward.x == 0) & (_forward.y == 0) & (_forward.z == 0) & (_forward.w == 0) )
         d = mat4_cast((_forward))*d;
     else
          d = mat4_cast(inverse(_forward))*d;
-
-
 
     _position += vec3(d.x,d.y,d.z);
 }
@@ -118,7 +121,9 @@ void Camera::recomputeViewMatrix()
 {
     normalize(_forward);
 
+
     glm::mat4 Identity = glm::mat4(1.0f); // identity matrix
 
     _viewMatrix =  mat4_cast(_forward)*glm::translate(Identity,-_position);
+
 }

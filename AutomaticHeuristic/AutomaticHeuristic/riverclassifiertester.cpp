@@ -77,21 +77,35 @@ void RiverClassifierTester::attachMockUpSimulationDataToCorners(int width,int he
 
 RiverClassifierTester::RiverClassifierTester()
 {
-    Test();
+
 }
 
 void RiverClassifierTester::Test()
 {
     TestSelectFrontier();
-    //TestBFS();
+    TestSelectBySlope();
+
+
 }
-/*
-void RiverClassifierTester::TestBFS()
+void RiverClassifierTester::TestSelectBySlope()
 {
-
-    attachMockUpSimulationDataToCorners(10,10);
-
-}*/
+    int width = 10;
+    int height = 10;
+    float angle = 10;
+    float treshold = 1;
+    mesh = Grid(width,height,angle);
+    map<MyMesh::VertexHandle,float> selected_vertices;
+    MyMesh::VertexIter vertex_iterator,vertex_iterator_end(mesh.vertices_end());
+    for(vertex_iterator=mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
+    {
+        selected_vertices.insert(make_pair(*vertex_iterator,1.0f));
+    }
+       rc = new RiverClassifier(mesh,angle,treshold,5,0,0);
+       auto res = rc->SelectFacesBySlope(selected_vertices);
+       cout<<"Test select by slope, selected "<< res.size()<<" faces ------>"<< (width)*(height);
+       assert(res.size() == (width)*(height) );
+       cout<<" passed"<<endl;
+}
 
 void RiverClassifierTester::TestSelectFrontier()
 {
@@ -100,9 +114,7 @@ void RiverClassifierTester::TestSelectFrontier()
     mesh = Grid(width,height);
     cout<<"Attaching Data"<<endl;
     AttachMockUpSimulationDataToAllVertices();
-    rc = new RiverClassifier(mesh,65,15,5);
-
-    //rc->ClassifyVertices();
+    rc = new RiverClassifier(mesh,65,15,5,0,0);
 
     //Empty List the frontier should be empty as well
     map<MyMesh::VertexHandle,float> river_vertices;
@@ -139,7 +151,7 @@ void RiverClassifierTester::selectBox_testSelectFrontier(int width,int height,in
     // iff( the line has a width >1)
     int x(0),y = 0;
     AttachMockUpSimulationToABox(width,height,box_half_width,box_half_height,centerX,centerY);
-    rc = new RiverClassifier(mesh,65,15,5);
+    rc = new RiverClassifier(mesh,65,15,5,0,0);
     map<MyMesh::VertexHandle,float> river_vertices;
 
     int i = 0;
@@ -174,7 +186,7 @@ void RiverClassifierTester::selectBox_testSelectFrontier(int width,int height,in
 
 void RiverClassifierTester::frontierMadeFromBox_testBFSFunction(int box_half_width,int box_half_height, map<MyMesh::VertexHandle,float> frontier)
 {
-    rc = new RiverClassifier(mesh,65,15,5);
+    rc = new RiverClassifier(mesh,65,15,5,0,0);
     map<MyMesh::VertexHandle,float> river_vertices;
     int max_depth = 3;
     int result_1=0;
@@ -204,7 +216,7 @@ void RiverClassifierTester::frontierMadeFromBox_testBFSFunction(int box_half_wid
 
 void RiverClassifierTester::frontierMadeFromGridExternalCorners_testBFSFunction( map<MyMesh::VertexHandle,float> frontier)
 {
-    rc = new RiverClassifier(mesh,65,15,5);
+    rc = new RiverClassifier(mesh,65,15,5,0,0);
     map<MyMesh::VertexHandle,float> river_vertices;
     int expected_result = 0;
     int max_depth = 3;
@@ -245,7 +257,7 @@ void RiverClassifierTester::selectGridExternalCorners_testSelectFrontierFunction
     int i = 0;
     //Select the 4 corners,frontier should equal to 4*2=8
     attachMockUpSimulationDataToCorners(width,height);
-    rc = new RiverClassifier(mesh,65,15,5);
+    rc = new RiverClassifier(mesh,65,15,5,0,0);
     map<MyMesh::VertexHandle,float> river_vertices;
 
     MyMesh::VertexIter vertex_iterator;
@@ -322,6 +334,64 @@ MyMesh RiverClassifierTester::Cube()
 
     return mesh;
 }
+MyMesh RiverClassifierTester::Grid(int width,int height,float angle)
+{
+    MyMesh mesh;
+    int faces = 0;
+    int vertices = width*height;
+    int i = 0;
+    //add vertices
+    MyMesh::VertexHandle vhandle[vertices];
+    for (int y=0; y<height; y++)
+    {
+        for (int x=0; x<width; x++)
+        {
+            MyMesh::Point p(x,y,x * tan(M_PI*angle/180) );
+           vhandle[i++]= mesh.add_vertex( p);
+        }
+    }
+    assert(i == vertices);
+
+    //add faces
+    std::vector<MyMesh::VertexHandle>  face_vhandles;
+    for (int y=0; y<height-1; y++)
+    {
+        for (int x=0; x<width-1; x++)
+        {
+            VertexHandle p00 = vhandle[y*width +x];
+            VertexHandle p10 = vhandle[y*width +x+1];
+            VertexHandle p01 = vhandle[y*width +x+width];
+            VertexHandle p11 = vhandle[y*width +x+1+width];
+
+
+            // add the two faces
+            face_vhandles.clear();
+            face_vhandles.push_back(p00);
+            face_vhandles.push_back(p11);
+            face_vhandles.push_back(p10);
+            mesh.add_face(face_vhandles);
+            faces++;
+            face_vhandles.clear();
+            face_vhandles.push_back(p00);
+            face_vhandles.push_back(p01);
+            face_vhandles.push_back(p11);
+            mesh.add_face(face_vhandles);
+            faces++;
+        }
+    }
+    assert(faces==(width-1)*(height-1)*2);
+    assert(mesh.n_vertices()== (uint) vertices);
+
+    mesh.request_face_normals();
+
+    mesh.update_normals();
+
+    return mesh;
+
+
+}
+
+
 
 MyMesh RiverClassifierTester::Grid(int width,int height)
 {
@@ -374,7 +444,9 @@ MyMesh RiverClassifierTester::Grid(int width,int height)
 }
 void RiverClassifierTester::IterateThroughMesh()
 {
-MyMesh::VertexIter vertex_iterator;
+float max = 0;
+float min = std::numeric_limits<float>::max();
+    MyMesh::VertexIter vertex_iterator;
 MyMesh::VertexIter vertex_iterator_end(mesh.vertices_end());
 for(vertex_iterator=mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
 {
@@ -383,7 +455,15 @@ for(vertex_iterator=mesh.vertices_begin();vertex_iterator != vertex_iterator_end
     for (MyMesh::VertexVertexIter vertex_vertex_iterator = mesh.vv_iter(*vertex_iterator); vertex_vertex_iterator.is_valid(); ++vertex_vertex_iterator)
     {
         cout<<"circulating ";
-        cout<<mesh.point( *vertex_vertex_iterator) <<endl;
+        MyMesh::Point p = mesh.point( *vertex_vertex_iterator) ;
+        cout<<p<<endl;
+        if(p[2]<min)
+            min = p[2];
+        if(p[2]>max)
+            max = p[2];
     }
+
 }
+ cout<<"MAX is "<< max<<" but min is "<< min <<endl;
+
 }

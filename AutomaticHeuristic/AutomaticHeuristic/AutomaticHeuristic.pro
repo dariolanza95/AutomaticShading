@@ -48,7 +48,9 @@ SOURCES += *.cpp \
     riverclassifiertester.cpp \
     screeclassifier.cpp \
     simulationdata.cpp \
-    Graphics/PerlinNoise.cpp
+    Graphics/PerlinNoise.cpp \
+    ShaderParameters.cpp \
+    aclassifier.cpp
 
 
 
@@ -106,7 +108,8 @@ HEADERS += *.h\
     screeclassifier.h \
     simulationdata.h \
     Graphics/PerlinNoise.h \
-    Graphics/platform_includes.h
+    Graphics/platform_includes.h \
+    ShaderParameters.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system

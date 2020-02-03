@@ -7,9 +7,10 @@
 
 OpenGlVisualizer::OpenGlVisualizer(GLFWwindow* window,int width,int height,MyMesh mesh):_cam(glm::vec3(0,0,0)),_mesh(mesh)
 {
-    _width = width;
-    _height = height;
+    _grid_width = width;
+    _grid_height = height;
     _window = window;
+    glfwGetWindowSize(_window,&width,&height);
 
 }
 
@@ -17,8 +18,7 @@ OpenGlVisualizer::OpenGlVisualizer(GLFWwindow* window,int width,int height,MyMes
 
 void OpenGlVisualizer::Initialize()
 {
-
-  //  InitializeOpengGL();
+//  InitializeOpengGL();
     InitializeBuffers();
 }
 
@@ -67,7 +67,8 @@ void OpenGlVisualizer::Render()
     _testShader->SetUniform("uProjMatrix", _cam.ProjMatrix());
     _testShader->SetUniform("uViewMatrix",viewMatrix);
     _testShader->SetUniform("uViewMatrixNormal", transpose(inverse(viewMatrix)) );
-    _testShader->SetUniform("uGridSize",(int)_width);
+
+    _testShader->SetUniform("uGridSize",_grid_width);
 
     // bind data
     _gridCoordBuffer.MapData(_testShader->AttributeLocation("inGridCoord"));
@@ -79,8 +80,6 @@ void OpenGlVisualizer::Render()
     _normalBuffer.MapData(_testShader->AttributeLocation("inNormal"));
 
     _gridIndexBuffer.Bind();
-
-
 
     // render terrain
     _testShader->SetUniform("uColor", vec4(242.0/255.0,224.0/255.0,201.0/255.0,1));
@@ -123,11 +122,12 @@ void OpenGlVisualizer::CameraMovement(float dt)
     if (glfwGetKey(_window,'X')) _cam.LocalRotate(zAxis,rotSpeed);
     if (glfwGetKey(_window,'1')) ShowSimulationDataInput();
     if (glfwGetKey(_window,'2')) ShowSelectedFaces();
-
+    glm::vec3 pos = _cam.Position();
+   // std::cout<<"Position "<< pos[0]<<" "<< pos[1]<<" "<< pos[2]<< std::endl;
 }
 
-int OpenGlVisualizer::ClampX(int x){ return glm::clamp(x,0,(int) _width - 1);}
-int OpenGlVisualizer::ClampY(int y){ return glm::clamp(y,0,(int) _height - 1);}
+int OpenGlVisualizer::ClampX(int x){ return glm::clamp(x,0,(int) _grid_width - 1);}
+int OpenGlVisualizer::ClampY(int y){ return glm::clamp(y,0,(int) _grid_height - 1);}
 
 
 void OpenGlVisualizer::InitializeBuffers()
@@ -147,8 +147,8 @@ void OpenGlVisualizer::InitializeBuffers()
     Grid2D<vec2> gridCoords;
     std::vector<uint> gridIndices;
 
-    uint dimX = _width;//_simulationState.terrain.width();
-    uint dimY = _height;//_simulationState.terrain.height();
+    uint dimX = _grid_width;//_simulationState.terrain.width();
+    uint dimY = _grid_height;//_simulationState.terrain.height();
 
     Grid2DHelper::MakeGridIndices(gridIndices,dimX,dimY);
     Grid2DHelper::MakeUniformGrid(gridCoords,dimX,dimY);
@@ -157,11 +157,11 @@ void OpenGlVisualizer::InitializeBuffers()
     _gridIndexBuffer.SetData(gridIndices);
     _gridCoordBuffer.SetData(gridCoords);
 
-    _water.resize(_width,_height);
-    _suspendedSediment.resize(_width,_height);
-    _simData.resize(_width,_height);
-    _terrain.resize(_width,_height);
-    _surfaceNormals.resize(_width,_height);
+    _water.resize(_grid_width,_grid_height);
+    _suspendedSediment.resize(_grid_width,_grid_height);
+    _simData.resize(_grid_width,_grid_height);
+    _terrain.resize(_grid_width,_grid_height);
+    _surfaceNormals.resize(_grid_width,_grid_height);
     //PerlinNoise perlin;
 
     for (uint y=0; y<_water.height(); y++)
@@ -169,13 +169,6 @@ void OpenGlVisualizer::InitializeBuffers()
         for (uint x=0; x<_water.width(); x++)
         {
             _water(y,x) = 0.0f;
-
-    //        float h = 0.0f; float f = 0.05f;
-    //        h += perlin.Sample(y*f,x*f)*1; f /= 2;
-    //        h += perlin.Sample(y*f,x*f)*2; f /= 2;
-    //        h += perlin.Sample(y*f,x*f)*4; f /= 2;
-    //        h += perlin.Sample(y*f,x*f)*8; f /= 2;
-    //        terrain(y,x) = h*4*1.3;
             _suspendedSediment(y,x) = 0.0f;// 0.1*terrain(y,x);
             _simData(y,x) = 0.0f;
 
@@ -183,27 +176,8 @@ void OpenGlVisualizer::InitializeBuffers()
     }
 
 
-    int i = 0;
-
     auto simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,float>(_mesh, "simulation_data");
     ShowSimulationDataInput();
-    /*for (auto& vertex_handle : _mesh.vertices())
-        {
-            MyMesh::Point point = _mesh.point(vertex_handle);
-            _terrain(i) = point[2]*1.5;
-            float sd = simulation_data_wrapper[vertex_handle];
-            if(sd==1)
-                _water(i)=  glm::clamp( sd,0.f,1.f );
-            if(sd==2)
-                _simData(i)= glm::clamp(sd,0.f,5.f);
-           if(sd!= 1 && sd != 2)
-           {
-               _suspendedSediment(i) = 0.f;
-           }
-        i++;
-
-        }
-*/
 
 
 
@@ -228,9 +202,9 @@ void OpenGlVisualizer::InitializeBuffers()
 
 
 
-            for (int y=0; y<_height; ++y)
+            for (int y=0; y<_grid_height; ++y)
              {
-                 for (int x=0; x<_width; ++x)
+                 for (int x=0; x<_grid_width; ++x)
                  {
                      float r,l,t,b;
                      vec3 N;
@@ -252,22 +226,23 @@ void OpenGlVisualizer::ShowSelectedFaces()
 {
     std::cout<<"showing selected faces"<<std::endl;
     int i = 0;
-    auto simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,float>(_mesh, "simulation_data");
+    auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle, ShaderParameters*>(_mesh, "shader_parameters");
+
     for (auto& vertex_handle : _mesh.vertices())
         {
             MyMesh::Point point = _mesh.point(vertex_handle);
-            float sd = simulation_data_wrapper[vertex_handle];
+            ShaderParameters* sp = shader_parameters_data_wrapper[vertex_handle];
 
             //clear the previous data
             _water(i) = 0;
             _simData(i) = 0;
-
-            _terrain(i) = point[2]*1.5;
-            if(sd==1)
-                _water(i)=  glm::clamp( sd,0.f,1.f );
-            if(sd==2)
-                _simData(i)= glm::clamp(sd,0.f,5.f);
-           if(sd!= 1 && sd != 2)
+            _suspendedSediment(i) = 0;
+            _terrain(i) = point[2];
+            if(sp->getId()==1)
+                 _water(i) = 1;
+            if(sp->getId()==2)
+                _simData(i)= 5;
+           if(sp->getId()== 0)
            {
                _water(i) = 0;
                _simData (i) = 0;
@@ -292,7 +267,7 @@ void OpenGlVisualizer::ShowSimulationDataInput()
       MyMesh::Point point = _mesh.point(vertex_handle);
       SimulationData* sd = simulation_data_wrapper[vertex_handle];
 
-      _terrain(i) = point[2]*1.5;
+      _terrain(i) = point[2];
       //clear the previous data
       _water(i) = 0;
       _simData(i) = 0;

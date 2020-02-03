@@ -1,0 +1,1188 @@
+##RenderMan RIB
+# RenderMan 22.6 build 1987751
+# Export: D:/Thesis/Maya/RockExfoliationTestScene.rib
+##rifcontrol insert begin -rif abind -rifend
+version 3.04999995
+Option "ribparse" "string varsubst" [""]
+Option "ribparse" "string varsubst" ["$"]
+Option "Ri" "int Frame" [1] "float PixelVariance" [0.00999999978] "string PixelFilterName" ["gaussian"] "float[2] PixelFilterWidth" [2 2] "int[2] FormatResolution" [960 540] "float FormatPixelAspectRatio" [1] "float[2] Clipping" [0.100000001 10000] "float[4] ScreenWindow" [-1 1 -0.5625 0.5625] 
+	"float[2] Shutter" [0 0]
+Option "bucket" "string order" ["circle"]
+Option "curve" "float minwidth" [0.5]
+Option "hider" "int minsamples" [0] "int maxsamples" [128] "float darkfalloff" [0.0250000004] "int incremental" [1] "int adaptall" [0]
+Option "lighting" "int selectionlearningscheme" [1]
+Option "limits" "int threads" [8] "int[2] bucketsize" [16 16] "float[3] othreshold" [0.995999992 0.995999992 0.995999992] "float deepshadowerror" [0.0100000007] "int texturememory" [4194304] "int geocachememory" [4194304] "int opacitycachememory" [2097152]
+Option "lpe" "string diffuse2" ["Diffuse,HairDiffuse"] "string diffuse3" ["Subsurface"] "string specular2" ["Specular,HairSpecularR"] "string specular3" ["RoughSpecular,HairSpecularTRT"] "string specular4" ["Clearcoat"] "string specular5" ["Iridescence"] "string specular6" ["Fuzz,HairSpecularGLINTS"] "string specular7" ["SingleScatter,HairSpecularTT"] "string specular8" ["Glass"] "string user2" ["Albedo,DiffuseAlbedo,SubsurfaceAlbedo,HairAlbedo"] "string user3" ["Position"] "string user4" ["UserColor"] "string user5" [""] "string user6" ["DiffuseNormal,HairTangent,SubsurfaceNormal,SpecularNormal,RoughSpecularNormal,SingleScatterNormal,FuzzNormal,IridescenceNormal,GlassNormal"] "string user7" [""] "string user8" [""] "string user9" [""] "string user10" [""] "string user11" [""] "string user12" [""]
+Option "searchpath" "string rixplugin" ["C:/Users/Dario/Documents/rfm:::C:\\Program Files\\Pixar\\RenderManForMaya-22.6/lib/plugins:@"] "string shader" ["C:/Users/Dario/Documents/rfm:::C:\\Program Files\\Pixar\\RenderManProServer-22.6/lib/shaders:@"] "string texture" ["@"] "string procedural" ["C:/Users/Dario/Documents/rfm:::C:\\Program Files\\Pixar\\RenderManForMaya-22.6/lib/2019:@"] "string dirmap" ["[ \"UNC\" \"/myserver/\" \"Z:/\"]"]
+Option "statistics" "int level" [1] "string xmlfilename" ["D:/Thesis/Maya/RockExfoliationTestScene.xml"]
+Option "trace" "string worldorigin" ["worldoffset"] "float[3] worldoffset" [771.012207 -420.272583 906.743591]
+Option "user" "int osl:batched" [1] "int osl:verbose" [0] "int osl:statisticslevel" [0] "float sceneUnits" [1] "int iesIgnoreWatts" [1]
+Integrator "PxrPathTracer" "PxrPathTracer" "int maxPathLength" [10] "int maxContinuationLength" [-1] "int maxNonStochasticOpacityEvents" [0] "string sampleMode" ["bxdf"] "int numLightSamples" [1] "int numBxdfSamples" [1] "int numIndirectSamples" [1] "int numDiffuseSamples" [1] "int numSpecularSamples" [1] "int numSubsurfaceSamples" [1] "int numRefractionSamples" [1] "int allowCaustics" [0] "int accumOpacity" [0] "int rouletteDepth" [4] "float rouletteThreshold" [0.200000003] "int clampDepth" [2] "float clampLuminance" [10]
+DisplayChannel "color Ci" "string source" ["Ci"]
+DisplayChannel "float a" "string source" ["a"]
+Projection "PxrPerspective" "float fov" [54.4322243] "float fStop" [9.99999968e+37] "float focalLength" [0] "float focalDistance" [1]
+Transform [ -0.763796031 -0.164207891 -0.624220669 0  -7.4505806e-09 -0.96709764 0.254405379 -0  0.645457685 -0.194313794 -0.738665402 -0  -0 0 -0 1 ]
+Camera "|persp|perspShape" "float shutterOpenTime" [0] "float shutterCloseTime" [1] "int apertureNSides" [0] "float apertureAngle" [0] "float apertureRoundness" [0] "float apertureDensity" [0] "float dofaspect" [1] "float nearClip" [0.100000001] "float farClip" [10000]
+Display "C:/Users/Dario/Documents/maya/projects/default/images/textureText02_v001_t01/textureText02__perspShape_beauty.0001.exr" "openexr" "Ci,a" "int asrgba" [1] "string storage" ["scanline"] "string exrpixeltype" ["half"] "string compression" ["zips"] "float compressionlevel" [45] "string camera" ["|persp|perspShape"]
+WorldBegin 
+	AttributeBegin 
+		Pattern "PxrVariable" "PxrVariable3" "string variable" ["Po"] "string name" ["Pobj"] "string type" ["point"] "string coordsys" ["object"]
+		Pattern "D:/Thesis/Maya/Cutter/test05.oso" "PxrOSL9" "reference point Pobj" ["PxrVariable3:resultRGB"] "float minheight" [1.25] "float maxheight" [2.5] "float step_size" [0.100000001] "float min_offset" [0] "vector direction" [0 1 0] "int details" [3] "int medium_details" [5] "float s" [0] "float t" [0] "point Nobj" [0 0 0] 
+			"int scale" [10] "int level_of_details" [4] "color mincolor" [0.578299999 0.446999997 0.328700006] "color maxcolor" [0.470899999 0.332500011 0.27700001] "color base_color" [0.38350001 0.230599999 0.135299996] "color second_color" [0.291599989 0.213200003 0.142900005]
+		Bxdf "PxrSurface" "PxrSurface4" "reference color diffuseColor" ["PxrOSL9:resultRGB"] "float diffuseGain" [1] "float diffuseRoughness" [0] "float diffuseExponent" [1] "normal diffuseBumpNormal" [0 0 0] "int diffuseDoubleSided" [0] "int diffuseBackUseDiffuseColor" [1] "color diffuseBackColor" [0.180000007 0.180000007 0.180000007] "float diffuseTransmitGain" [0] "color diffuseTransmitColor" [0.180000007 0.180000007 0.180000007] 
+			"int specularFresnelMode" [0] "color specularFaceColor" [0 0 0] "color specularEdgeColor" [0 0 0] "float specularFresnelShape" [5] "color specularIor" [1.5 1.5 1.5] "color specularExtinctionCoeff" [0 0 0] 
+			"float specularRoughness" [0.200000003] "int specularModelType" [0] "float specularAnisotropy" [0] "vector specularAnisotropyDirection" [0 0 0] "normal specularBumpNormal" [0 0 0] "int specularDoubleSided" [0] "int roughSpecularFresnelMode" [0] "color roughSpecularFaceColor" [0 0 0] 
+			"color roughSpecularEdgeColor" [0 0 0] "float roughSpecularFresnelShape" [5] "color roughSpecularIor" [1.5 1.5 1.5] "color roughSpecularExtinctionCoeff" [0 0 0] "float roughSpecularRoughness" [0.600000024] "int roughSpecularModelType" [0] "float roughSpecularAnisotropy" [0] 
+			"vector roughSpecularAnisotropyDirection" [0 0 0] "normal roughSpecularBumpNormal" [0 0 0] "int roughSpecularDoubleSided" [0] "int clearcoatFresnelMode" [0] "color clearcoatFaceColor" [0 0 0] "color clearcoatEdgeColor" [0 0 0] 
+			"float clearcoatFresnelShape" [5] "color clearcoatIor" [1.5 1.5 1.5] "color clearcoatExtinctionCoeff" [0 0 0] "float clearcoatThickness" [0] "color clearcoatAbsorptionTint" [0 0 0] "float clearcoatRoughness" [0] 
+			"int clearcoatModelType" [0] "float clearcoatAnisotropy" [0] "vector clearcoatAnisotropyDirection" [0 0 0] "normal clearcoatBumpNormal" [0 0 0] "int clearcoatDoubleSided" [0] "float specularEnergyCompensation" [1] "float clearcoatEnergyCompensation" [1] "float iridescenceFaceGain" [0] "float iridescenceEdgeGain" [0] 
+			"float iridescenceFresnelShape" [5] "int iridescenceMode" [0] "color iridescencePrimaryColor" [1 0 0] "color iridescenceSecondaryColor" [0 0 1] "float iridescenceRoughness" [0.200000003] "float iridescenceAnisotropy" [0] "vector iridescenceAnisotropyDirection" [0 0 0] 
+			"normal iridescenceBumpNormal" [0 0 0] "float iridescenceCurve" [1] "float iridescenceScale" [1] "int iridescenceFlip" [0] "float iridescenceThickness" [800] "int iridescenceDoubleSided" [0] "float fuzzGain" [0] "color fuzzColor" [1 1 1] "float fuzzConeAngle" [8] 
+			"normal fuzzBumpNormal" [0 0 0] "int fuzzDoubleSided" [0] "int subsurfaceType" [0] "float subsurfaceGain" [0] "color subsurfaceColor" [0.829999983 0.791000009 0.753000021] "float subsurfaceDmfp" [10] "color subsurfaceDmfpColor" [0.851000011 0.556999981 0.395000011] 
+			"float shortSubsurfaceGain" [0] "color shortSubsurfaceColor" [0.899999976 0.899999976 0.899999976] "float shortSubsurfaceDmfp" [5] "float longSubsurfaceGain" [0] "color longSubsurfaceColor" [0.800000012 0 0] "float longSubsurfaceDmfp" [20] "float subsurfaceDirectionality" [0] "float subsurfaceBleed" [0] 
+			"float subsurfaceDiffuseBlend" [0] "int subsurfaceResolveSelfIntersections" [0] "float subsurfaceIor" [1.39999998] "color subsurfacePostTint" [1 1 1] "float subsurfaceDiffuseSwitch" [1] "int subsurfaceDoubleSided" [0] "float subsurfaceTransmitGain" [0] "int considerBackside" [1] "int continuationRayMode" [0] "int maxContinuationHits" [2] "float followTopology" [0] "string subsurfaceSubset" [""] "float singlescatterGain" [0] 
+			"color singlescatterColor" [0.829999983 0.791000009 0.753000021] "float singlescatterMfp" [10] "color singlescatterMfpColor" [0.851000011 0.556999981 0.395000011] "float singlescatterDirectionality" [0] "float singlescatterIor" [1.29999995] "float singlescatterBlur" [0] "float singlescatterDirectGain" [0] "color singlescatterDirectGainTint" [1 1 1] 
+			"int singlescatterDoubleSided" [0] "int singlescatterConsiderBackside" [1] "int singlescatterContinuationRayMode" [0] "int singlescatterMaxContinuationHits" [2] "int singlescatterDirectGainMode" [0] "string singlescatterSubset" [""] "color irradianceTint" [1 1 1] "float irradianceRoughness" [0] "float unitLength" [0.100000001] "float refractionGain" [0] "float reflectionGain" [0] "color refractionColor" [1 1 1] 
+			"float glassRoughness" [0.100000001] "float glassAnisotropy" [0] "vector glassAnisotropyDirection" [0 0 0] "normal glassBumpNormal" [0 0 0] "float glassIor" [1.5] "int mwWalkable" [0] "float mwIor" [-1] "int thinGlass" [0] "int ignoreFresnel" [0] "int ignoreAccumOpacity" [0] 
+			"int blocksVolumes" [0] "color ssAlbedo" [0 0 0] "color extinction" [0 0 0] "float g" [0] "int multiScatter" [0] "int enableOverlappingVolumes" [0] "float glowGain" [0] "color glowColor" [1 1 1] 
+			"normal bumpNormal" [0 0 0] "color shadowColor" [0 0 0] "int shadowMode" [0] "float presence" [1] "int presenceCached" [1] "int mwStartable" [0] "float roughnessMollificationClamp" [32] "color userColor" [0 0 0] 
+			"int[1] utilityPattern" [0] "string __materialid" ["PxrSurface4SG"]
+		Pattern "PxrVariable" "PxrVariable3" "string variable" ["Po"] "string name" ["Pobj"] "string type" ["point"] "string coordsys" ["object"]
+		Pattern "D:/Thesis/Maya/Cutter/test05.oso" "PxrOSL9" "reference point Pobj" ["PxrVariable3:resultRGB"] "float minheight" [1.25] "float maxheight" [2.5] "float step_size" [0.100000001] "float min_offset" [0] "vector direction" [0 1 0] "int details" [3] "int medium_details" [5] "float s" [0] "float t" [0] "point Nobj" [0 0 0] 
+			"int scale" [10] "int level_of_details" [4] "color mincolor" [0.578299999 0.446999997 0.328700006] "color maxcolor" [0.470899999 0.332500011 0.27700001] "color base_color" [0.38350001 0.230599999 0.135299996] "color second_color" [0.291599989 0.213200003 0.142900005]
+		Displace "PxrDisplace" "PxrDisplace3" "reference float dispScalar" ["PxrOSL9:resultF"] "int enabled" [1] "float dispAmount" [0.0500000007] "vector dispVector" [0 0 0] "vector modelDispVector" [0 0 0] "string __materialid" ["PxrSurface4SG"]
+	AttributeEnd 
+	AttributeBegin 
+		Pattern "PxrVariable" "PxrVariable2" "string variable" ["Nn"] "string name" [""] "string type" ["normal"] "string coordsys" ["object"]
+		Pattern "PxrManifold3D" "PxrManifold3D2" "float scale" [1] "int use" [1] "string pref" [""] "string coordsys" ["world"]
+		Pattern "PxrToFloat" "PxrVariable2_resultRGB_0" "int mode" [0] "reference color input" ["PxrVariable2:resultRGB"]
+		Pattern "PxrToFloat" "PxrVariable2_resultRGB_2" "int mode" [2] "reference color input" ["PxrVariable2:resultRGB"]
+		Pattern "PxrToFloat3" "PxrOSL8_Pobj" "reference float inputR" ["PxrManifold3D2:resultX"] "reference float inputG" ["PxrManifold3D2:resultY"] "reference float inputB" ["PxrManifold3D2:resultZ"]
+		Pattern "PxrToFloat" "PxrVariable2_resultRGB_1" "int mode" [1] "reference color input" ["PxrVariable2:resultRGB"]
+		Pattern "PxrToFloat3" "PxrOSL8_Nobj" "reference float inputR" ["PxrVariable2_resultRGB_0:resultF"] "reference float inputG" ["PxrVariable2_resultRGB_1:resultF"] "reference float inputB" ["PxrVariable2_resultRGB_2:resultF"]
+		Pattern "D:/Thesis/Maya/Cutter/rockExfoliationColor.oso" "PxrOSL8" "reference point Nobj" ["PxrOSL8_Nobj:resultRGB"] "reference point Pobj" ["PxrOSL8_Pobj:resultRGB"] "float scale" [2] "color basecolor" [0.117799997 0.102799997 0.0762000009] "color secondcolor" [0.077200003 0.065200001 0.0439000018]
+		Bxdf "PxrSurface" "PxrSurface3" "reference color diffuseColor" ["PxrOSL8:resultRGB"] "float diffuseGain" [1] "float diffuseRoughness" [0] "float diffuseExponent" [1] "normal diffuseBumpNormal" [0 0 0] "int diffuseDoubleSided" [0] "int diffuseBackUseDiffuseColor" [1] "color diffuseBackColor" [0.180000007 0.180000007 0.180000007] "float diffuseTransmitGain" [0] "color diffuseTransmitColor" [0.180000007 0.180000007 0.180000007] 
+			"int specularFresnelMode" [0] "color specularFaceColor" [0 0 0] "color specularEdgeColor" [0 0 0] "float specularFresnelShape" [5] "color specularIor" [1.5 1.5 1.5] "color specularExtinctionCoeff" [0 0 0] 
+			"float specularRoughness" [0.200000003] "int specularModelType" [0] "float specularAnisotropy" [0] "vector specularAnisotropyDirection" [0 0 0] "normal specularBumpNormal" [0 0 0] "int specularDoubleSided" [0] "int roughSpecularFresnelMode" [0] "color roughSpecularFaceColor" [0 0 0] 
+			"color roughSpecularEdgeColor" [0 0 0] "float roughSpecularFresnelShape" [5] "color roughSpecularIor" [1.5 1.5 1.5] "color roughSpecularExtinctionCoeff" [0 0 0] "float roughSpecularRoughness" [0.600000024] "int roughSpecularModelType" [0] "float roughSpecularAnisotropy" [0] 
+			"vector roughSpecularAnisotropyDirection" [0 0 0] "normal roughSpecularBumpNormal" [0 0 0] "int roughSpecularDoubleSided" [0] "int clearcoatFresnelMode" [0] "color clearcoatFaceColor" [0 0 0] "color clearcoatEdgeColor" [0 0 0] 
+			"float clearcoatFresnelShape" [5] "color clearcoatIor" [1.5 1.5 1.5] "color clearcoatExtinctionCoeff" [0 0 0] "float clearcoatThickness" [0] "color clearcoatAbsorptionTint" [0 0 0] "float clearcoatRoughness" [0] 
+			"int clearcoatModelType" [0] "float clearcoatAnisotropy" [0] "vector clearcoatAnisotropyDirection" [0 0 0] "normal clearcoatBumpNormal" [0 0 0] "int clearcoatDoubleSided" [0] "float specularEnergyCompensation" [1] "float clearcoatEnergyCompensation" [1] "float iridescenceFaceGain" [0] "float iridescenceEdgeGain" [0] 
+			"float iridescenceFresnelShape" [5] "int iridescenceMode" [0] "color iridescencePrimaryColor" [1 0 0] "color iridescenceSecondaryColor" [0 0 1] "float iridescenceRoughness" [0.200000003] "float iridescenceAnisotropy" [0] "vector iridescenceAnisotropyDirection" [0 0 0] 
+			"normal iridescenceBumpNormal" [0 0 0] "float iridescenceCurve" [1] "float iridescenceScale" [1] "int iridescenceFlip" [0] "float iridescenceThickness" [800] "int iridescenceDoubleSided" [0] "float fuzzGain" [0] "color fuzzColor" [1 1 1] "float fuzzConeAngle" [8] 
+			"normal fuzzBumpNormal" [0 0 0] "int fuzzDoubleSided" [0] "int subsurfaceType" [0] "float subsurfaceGain" [0] "color subsurfaceColor" [0.829999983 0.791000009 0.753000021] "float subsurfaceDmfp" [10] "color subsurfaceDmfpColor" [0.851000011 0.556999981 0.395000011] 
+			"float shortSubsurfaceGain" [0] "color shortSubsurfaceColor" [0.899999976 0.899999976 0.899999976] "float shortSubsurfaceDmfp" [5] "float longSubsurfaceGain" [0] "color longSubsurfaceColor" [0.800000012 0 0] "float longSubsurfaceDmfp" [20] "float subsurfaceDirectionality" [0] "float subsurfaceBleed" [0] 
+			"float subsurfaceDiffuseBlend" [0] "int subsurfaceResolveSelfIntersections" [0] "float subsurfaceIor" [1.39999998] "color subsurfacePostTint" [1 1 1] "float subsurfaceDiffuseSwitch" [1] "int subsurfaceDoubleSided" [0] "float subsurfaceTransmitGain" [0] "int considerBackside" [1] "int continuationRayMode" [0] "int maxContinuationHits" [2] "float followTopology" [0] "string subsurfaceSubset" [""] "float singlescatterGain" [0] 
+			"color singlescatterColor" [0.829999983 0.791000009 0.753000021] "float singlescatterMfp" [10] "color singlescatterMfpColor" [0.851000011 0.556999981 0.395000011] "float singlescatterDirectionality" [0] "float singlescatterIor" [1.29999995] "float singlescatterBlur" [0] "float singlescatterDirectGain" [0] "color singlescatterDirectGainTint" [1 1 1] 
+			"int singlescatterDoubleSided" [0] "int singlescatterConsiderBackside" [1] "int singlescatterContinuationRayMode" [0] "int singlescatterMaxContinuationHits" [2] "int singlescatterDirectGainMode" [0] "string singlescatterSubset" [""] "color irradianceTint" [1 1 1] "float irradianceRoughness" [0] "float unitLength" [0.100000001] "float refractionGain" [0] "float reflectionGain" [0] "color refractionColor" [1 1 1] 
+			"float glassRoughness" [0.100000001] "float glassAnisotropy" [0] "vector glassAnisotropyDirection" [0 0 0] "normal glassBumpNormal" [0 0 0] "float glassIor" [1.5] "int mwWalkable" [0] "float mwIor" [-1] "int thinGlass" [0] "int ignoreFresnel" [0] "int ignoreAccumOpacity" [0] 
+			"int blocksVolumes" [0] "color ssAlbedo" [0 0 0] "color extinction" [0 0 0] "float g" [0] "int multiScatter" [0] "int enableOverlappingVolumes" [0] "float glowGain" [0] "color glowColor" [1 1 1] 
+			"normal bumpNormal" [0 0 0] "color shadowColor" [0 0 0] "int shadowMode" [0] "float presence" [1] "int presenceCached" [1] "int mwStartable" [0] "float roughnessMollificationClamp" [32] "color userColor" [0 0 0] 
+			"int[1] utilityPattern" [0] "string __materialid" ["PxrSurface2SG"]
+		Pattern "PxrVariable" "PxrVariable2" "string variable" ["Nn"] "string name" [""] "string type" ["normal"] "string coordsys" ["object"]
+		Pattern "PxrManifold3D" "PxrManifold3D2" "float scale" [1] "int use" [1] "string pref" [""] "string coordsys" ["world"]
+		Pattern "PxrToFloat" "PxrVariable2_resultRGB_0" "int mode" [0] "reference color input" ["PxrVariable2:resultRGB"]
+		Pattern "PxrToFloat" "PxrVariable2_resultRGB_2" "int mode" [2] "reference color input" ["PxrVariable2:resultRGB"]
+		Pattern "PxrToFloat3" "PxrOSL8_Pobj" "reference float inputR" ["PxrManifold3D2:resultX"] "reference float inputG" ["PxrManifold3D2:resultY"] "reference float inputB" ["PxrManifold3D2:resultZ"]
+		Pattern "PxrToFloat" "PxrVariable2_resultRGB_1" "int mode" [1] "reference color input" ["PxrVariable2:resultRGB"]
+		Pattern "PxrToFloat3" "PxrOSL8_Nobj" "reference float inputR" ["PxrVariable2_resultRGB_0:resultF"] "reference float inputG" ["PxrVariable2_resultRGB_1:resultF"] "reference float inputB" ["PxrVariable2_resultRGB_2:resultF"]
+		Pattern "D:/Thesis/Maya/Cutter/rockExfoliationColor.oso" "PxrOSL8" "reference point Nobj" ["PxrOSL8_Nobj:resultRGB"] "reference point Pobj" ["PxrOSL8_Pobj:resultRGB"] "float scale" [2] "color basecolor" [0.117799997 0.102799997 0.0762000009] "color secondcolor" [0.077200003 0.065200001 0.0439000018]
+		Pattern "PxrDispTransform" "PxrDispTransform1" "reference float dispScalar" ["PxrOSL8:resultDispl"] "int dispType" [1] "vector dispVector" [0 0 0] "int vectorSpace" [3] "float dispHeight" [1] "float dispDepth" [1] "int dispRemapMode" [2] "float dispCenter" [0.5] "string dispScaleSpace" ["common"] "int useDispDirection" [0] "vector dispDirection" [42 10 4] 
+			"string dispDirectionSpace" ["world"]
+		Displace "PxrDisplace" "PxrDisplace2" "reference float dispScalar" ["PxrDispTransform1:resultF"] "int enabled" [1] "float dispAmount" [0.0500000007] "vector dispVector" [0 0 0] "vector modelDispVector" [0 0 0] "string __materialid" ["PxrSurface2SG"]
+	AttributeEnd 
+	ObjectBegin "13814000-b78f-f9d4-adeb-107b442ef99d" 
+		Attribute "Ri" "string Orientation" ["outside"]
+		Attribute "dice" "float micropolygonlength" [1] "int rasterorient" [1] "int watertight" [0] "string referencecamera" [""]
+		Attribute "displacementbound" "float sphere" [1] "string CoordinateSystem" ["object"]
+		Attribute "identifier" "string object" ["pSphereShape1"]
+		Attribute "polygon" "int smoothdisplacement" [1]
+		Attribute "trace" "int displacements" [1] "int autobias" [1] "float bias" [0.00999999978]
+		Displace "PxrDisplace" "PxrDisplace3" "string __materialid" ["PxrSurface4SG"]
+		HierarchicalSubdivisionMesh "catmull-clark" [4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3
+			3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3] [0 1 21 20 1 2 22 21 2 3 23 22 3 4 24 23 4 5 25
+			24 5 6 26 25 6 7 27 26 7 8 28 27 8 9 29 28 9 10 30 29 10 11
+			31 30 11 12 32 31 12 13 33 32 13 14 34 33 14 15 35 34 15 16 36 35 16
+			17 37 36 17 18 38 37 18 19 39 38 19 0 20 39 20 21 41 40 21 22 42 41
+			22 23 43 42 23 24 44 43 24 25 45 44 25 26 46 45 26 27 47 46 27 28 48
+			47 28 29 49 48 29 30 50 49 30 31 51 50 31 32 52 51 32 33 53 52 33 34
+			54 53 34 35 55 54 35 36 56 55 36 37 57 56 37 38 58 57 38 39 59 58 39
+			20 40 59 40 41 61 60 41 42 62 61 42 43 63 62 43 44 64 63 44 45 65 64
+			45 46 66 65 46 47 67 66 47 48 68 67 48 49 69 68 49 50 70 69 50 51 71
+			70 51 52 72 71 52 53 73 72 53 54 74 73 54 55 75 74 55 56 76 75 56 57
+			77 76 57 58 78 77 58 59 79 78 59 40 60 79 60 61 81 80 61 62 82 81 62
+			63 83 82 63 64 84 83 64 65 85 84 65 66 86 85 66 67 87 86 67 68 88 87
+			68 69 89 88 69 70 90 89 70 71 91 90 71 72 92 91 72 73 93 92 73 74 94
+			93 74 75 95 94 75 76 96 95 76 77 97 96 77 78 98 97 78 79 99 98 79 60
+			80 99 80 81 101 100 81 82 102 101 82 83 103 102 83 84 104 103 84 85 105 104 85
+			86 106 105 86 87 107 106 87 88 108 107 88 89 109 108 89 90 110 109 90 91 111 110
+			91 92 112 111 92 93 113 112 93 94 114 113 94 95 115 114 95 96 116 115 96 97 117
+			116 97 98 118 117 98 99 119 118 99 80 100 119 100 101 121 120 101 102 122 121 102 103
+			123 122 103 104 124 123 104 105 125 124 105 106 126 125 106 107 127 126 107 108 128 127 108
+			109 129 128 109 110 130 129 110 111 131 130 111 112 132 131 112 113 133 132 113 114 134 133
+			114 115 135 134 115 116 136 135 116 117 137 136 117 118 138 137 118 119 139 138 119 100 120
+			139 120 121 141 140 121 122 142 141 122 123 143 142 123 124 144 143 124 125 145 144 125 126
+			146 145 126 127 147 146 127 128 148 147 128 129 149 148 129 130 150 149 130 131 151 150 131
+			132 152 151 132 133 153 152 133 134 154 153 134 135 155 154 135 136 156 155 136 137 157 156
+			137 138 158 157 138 139 159 158 139 120 140 159 140 141 161 160 141 142 162 161 142 143 163
+			162 143 144 164 163 144 145 165 164 145 146 166 165 146 147 167 166 147 148 168 167 148 149
+			169 168 149 150 170 169 150 151 171 170 151 152 172 171 152 153 173 172 153 154 174 173 154
+			155 175 174 155 156 176 175 156 157 177 176 157 158 178 177 158 159 179 178 159 140 160 179
+			160 161 181 180 161 162 182 181 162 163 183 182 163 164 184 183 164 165 185 184 165 166 186
+			185 166 167 187 186 167 168 188 187 168 169 189 188 169 170 190 189 170 171 191 190 171 172
+			192 191 172 173 193 192 173 174 194 193 174 175 195 194 175 176 196 195 176 177 197 196 177
+			178 198 197 178 179 199 198 179 160 180 199 180 181 201 200 181 182 202 201 182 183 203 202
+			183 184 204 203 184 185 205 204 185 186 206 205 186 187 207 206 187 188 208 207 188 189 209
+			208 189 190 210 209 190 191 211 210 191 192 212 211 192 193 213 212 193 194 214 213 194 195
+			215 214 195 196 216 215 196 197 217 216 197 198 218 217 198 199 219 218 199 180 200 219 200
+			201 221 220 201 202 222 221 202 203 223 222 203 204 224 223 204 205 225 224 205 206 226 225
+			206 207 227 226 207 208 228 227 208 209 229 228 209 210 230 229 210 211 231 230 211 212 232
+			231 212 213 233 232 213 214 234 233 214 215 235 234 215 216 236 235 216 217 237 236 217 218
+			238 237 218 219 239 238 219 200 220 239 220 221 241 240 221 222 242 241 222 223 243 242 223
+			224 244 243 224 225 245 244 225 226 246 245 226 227 247 246 227 228 248 247 228 229 249 248
+			229 230 250 249 230 231 251 250 231 232 252 251 232 233 253 252 233 234 254 253 234 235 255
+			254 235 236 256 255 236 237 257 256 237 238 258 257 238 239 259 258 239 220 240 259 240 241
+			261 260 241 242 262 261 242 243 263 262 243 244 264 263 244 245 265 264 245 246 266 265 246
+			247 267 266 247 248 268 267 248 249 269 268 249 250 270 269 250 251 271 270 251 252 272 271
+			252 253 273 272 253 254 274 273 254 255 275 274 255 256 276 275 256 257 277 276 257 258 278
+			277 258 259 279 278 259 240 260 279 260 261 281 280 261 262 282 281 262 263 283 282 263 264
+			284 283 264 265 285 284 265 266 286 285 266 267 287 286 267 268 288 287 268 269 289 288 269
+			270 290 289 270 271 291 290 271 272 292 291 272 273 293 292 273 274 294 293 274 275 295 294
+			275 276 296 295 276 277 297 296 277 278 298 297 278 279 299 298 279 260 280 299 280 281 301
+			300 281 282 302 301 282 283 303 302 283 284 304 303 284 285 305 304 285 286 306 305 286 287
+			307 306 287 288 308 307 288 289 309 308 289 290 310 309 290 291 311 310 291 292 312 311 292
+			293 313 312 293 294 314 313 294 295 315 314 295 296 316 315 296 297 317 316 297 298 318 317
+			298 299 319 318 299 280 300 319 300 301 321 320 301 302 322 321 302 303 323 322 303 304 324
+			323 304 305 325 324 305 306 326 325 306 307 327 326 307 308 328 327 308 309 329 328 309 310
+			330 329 310 311 331 330 311 312 332 331 312 313 333 332 313 314 334 333 314 315 335 334 315
+			316 336 335 316 317 337 336 317 318 338 337 318 319 339 338 319 300 320 339 320 321 341 340
+			321 322 342 341 322 323 343 342 323 324 344 343 324 325 345 344 325 326 346 345 326 327 347
+			346 327 328 348 347 328 329 349 348 329 330 350 349 330 331 351 350 331 332 352 351 332 333
+			353 352 333 334 354 353 334 335 355 354 335 336 356 355 336 337 357 356 337 338 358 357 338
+			339 359 358 339 320 340 359 340 341 361 360 341 342 362 361 342 343 363 362 343 344 364 363
+			344 345 365 364 345 346 366 365 346 347 367 366 347 348 368 367 348 349 369 368 349 350 370
+			369 350 351 371 370 351 352 372 371 352 353 373 372 353 354 374 373 354 355 375 374 355 356
+			376 375 356 357 377 376 357 358 378 377 358 359 379 378 359 340 360 379 1 0 380 2 1
+			380 3 2 380 4 3 380 5 4 380 6 5 380 7 6 380 8 7 380 9 8 380 10
+			9 380 11 10 380 12 11 380 13 12 380 14 13 380 15 14 380 16 15 380 17 16 380
+			18 17 380 19 18 380 0 19 380 360 361 381 361 362 381 362 363 381 363 364 381 364 365
+			381 365 366 381 366 367 381 367 368 381 368 369 381 369 370 381 370 371 381 371 372 381 372
+			373 381 373 374 381 374 375 381 375 376 381 376 377 381 377 378 381 378 379 381 379 360 381] ["creasemethod" "facevaryingpropagatecorners" "interpolateboundary" "facevaryinginterpolateboundary"] [0 0 1 1 0 0 1 0 0 1 0 0] [1 1 3] [] ["chaikin"] "vertex point P" [0.148778126 -0.987688363 -0.0483409427 0.126558229 -0.987688363 -0.0919499323
+			0.0919499323 -0.987688363 -0.126558229 0.0483409353 -0.987688363 -0.148778111 0 -0.987688363 -0.156434551 -0.0483409353 -0.987688363 -0.148778096
+			-0.0919499174 -0.987688363 -0.1265582 -0.126558185 -0.987688363 -0.0919499025 -0.148778066 -0.987688363 -0.0483409241 -0.156434521 -0.987688363 0
+			-0.148778066 -0.987688363 0.0483409241 -0.126558185 -0.987688363 0.091949895 -0.091949895 -0.987688363 0.12655817 -0.0483409241 -0.987688363 0.148778051
+			-4.6621107e-09 -0.987688363 0.156434491 0.0483409092 -0.987688363 0.148778036 0.0919498801 -0.987688363 0.126558155 0.126558155 -0.987688363 0.0919498876
+			0.148778036 -0.987688363 0.0483409129 0.156434476 -0.987688363 0 0.293892831 -0.95105654 -0.0954915658 0.250000179 -0.95105654 -0.181635737
+			0.181635737 -0.95105654 -0.250000149 0.0954915509 -0.95105654 -0.293892801 0 -0.95105654 -0.309017152 -0.0954915509 -0.95105654 -0.293892771
+			-0.181635708 -0.95105654 -0.250000089 -0.250000089 -0.95105654 -0.181635693 -0.293892711 -0.95105654 -0.0954915285 -0.309017062 -0.95105654 0
+			-0.293892711 -0.95105654 0.0954915285 -0.25000006 -0.95105654 0.181635678 -0.181635678 -0.95105654 0.25000006 -0.0954915285 -0.95105654 0.293892682
+			-9.20942433e-09 -0.95105654 0.309017032 0.0954914987 -0.95105654 0.293892652 0.181635633 -0.95105654 0.25000003 0.25 -0.95105654 0.181635648
+			0.293892652 -0.95105654 0.0954915062 0.309017003 -0.95105654 0 0.431770921 -0.891006529 -0.140290871 0.367286295 -0.891006529 -0.266849101
+			0.266849101 -0.891006529 -0.367286265 0.140290856 -0.891006529 -0.431770861 0 -0.891006529 -0.453990728 -0.140290856 -0.891006529 -0.431770831
+			-0.266849041 -0.891006529 -0.367286175 -0.367286146 -0.891006529 -0.266849011 -0.431770772 -0.891006529 -0.140290812 -0.453990638 -0.891006529 0
+			-0.431770772 -0.891006529 0.140290812 -0.367286116 -0.891006529 0.266848981 -0.266848981 -0.891006529 0.367286116 -0.140290812 -0.891006529 0.431770712
+			-1.35299718e-08 -0.891006529 0.453990579 0.140290782 -0.891006529 0.431770682 0.266848922 -0.891006529 0.367286086 0.367286056 -0.891006529 0.266848952
+			0.431770653 -0.891006529 0.140290797 0.453990519 -0.891006529 0 0.55901736 -0.809017003 -0.181635737 0.475528568 -0.809017003 -0.345491707
+			0.345491707 -0.809017003 -0.475528538 0.181635723 -0.809017003 -0.559017301 0 -0.809017003 -0.587785542 -0.181635723 -0.809017003 -0.559017241
+			-0.345491648 -0.809017003 -0.475528419 -0.475528389 -0.809017003 -0.345491588 -0.559017122 -0.809017003 -0.181635663 -0.587785363 -0.809017003 0
+			-0.559017122 -0.809017003 0.181635663 -0.475528359 -0.809017003 0.345491558 -0.345491558 -0.809017003 0.47552833 -0.181635663 -0.809017003 0.559017062
+			-1.75173653e-08 -0.809017003 0.587785304 0.181635618 -0.809017003 0.559017062 0.345491499 -0.809017003 0.4755283 0.47552827 -0.809017003 0.345491529
+			0.559017003 -0.809017003 0.181635633 0.587785244 -0.809017003 0 0.672498941 -0.707106769 -0.218508139 0.572061777 -0.707106769 -0.415627182
+			0.415627182 -0.707106769 -0.572061718 0.218508124 -0.707106769 -0.672498882 0 -0.707106769 -0.707107127 -0.218508124 -0.707106769 -0.672498822
+			-0.415627092 -0.707106769 -0.572061598 -0.572061539 -0.707106769 -0.415627062 -0.672498703 -0.707106769 -0.21850805 -0.707106948 -0.707106769 0
+			-0.672498703 -0.707106769 0.21850805 -0.572061539 -0.707106769 0.415627003 -0.415627003 -0.707106769 0.572061479 -0.21850805 -0.707106769 0.672498584
+			-2.10734239e-08 -0.707106769 0.707106829 0.21850799 -0.707106769 0.672498584 0.415626913 -0.707106769 0.572061419 0.572061419 -0.707106769 0.415626973
+			0.672498524 -0.707106769 0.21850802 0.707106769 -0.707106769 0 0.769421399 -0.587785244 -0.250000149 0.654508948 -0.587785244 -0.475528538
+			0.475528538 -0.587785244 -0.654508889 0.250000119 -0.587785244 -0.769421279 0 -0.587785244 -0.80901736 -0.250000119 -0.587785244 -0.76942122
+			-0.475528449 -0.587785244 -0.65450877 -0.65450871 -0.587785244 -0.475528389 -0.769421101 -0.587785244 -0.25000006 -0.809017181 -0.587785244 0
+			-0.769421101 -0.587785244 0.25000006 -0.65450865 -0.587785244 0.475528359 -0.475528359 -0.587785244 0.654508591 -0.25000006 -0.587785244 0.769420981
+			-2.41105855e-08 -0.587785244 0.809017122 0.249999985 -0.587785244 0.769420981 0.47552827 -0.587785244 0.654508531 0.654508531 -0.587785244 0.4755283
+			0.769420922 -0.587785244 0.25 0.809017003 -0.587785244 0 0.847398102 -0.453990519 -0.275336325 0.720839918 -0.453990519 -0.523720801
+			0.523720801 -0.453990519 -0.720839858 0.275336295 -0.453990519 -0.847397983 0 -0.453990519 -0.891006947 -0.275336295 -0.453990519 -0.847397983
+			-0.523720682 -0.453990519 -0.720839679 -0.72083962 -0.453990519 -0.523720622 -0.847397804 -0.453990519 -0.275336206 -0.891006768 -0.453990519 0
+			-0.847397804 -0.453990519 0.275336206 -0.72083962 -0.453990519 0.523720622 -0.523720622 -0.453990519 0.72083956 -0.275336206 -0.453990519 0.847397685
+			-2.65540638e-08 -0.453990519 0.891006649 0.275336146 -0.453990519 0.847397625 0.523720503 -0.453990519 0.7208395 0.720839441 -0.453990519 0.523720562
+			0.847397566 -0.453990519 0.275336176 0.891006529 -0.453990519 0 0.904509127 -0.309016973 -0.293892801 0.769421399 -0.309016973 -0.55901736
+			0.55901736 -0.309016973 -0.769421339 0.293892771 -0.309016973 -0.904509008 0 -0.309016973 -0.951057017 -0.293892771 -0.309016973 -0.904508948
+			-0.559017241 -0.309016973 -0.76942122 -0.76942116 -0.309016973 -0.559017181 -0.90450877 -0.309016973 -0.293892711 -0.951056778 -0.309016973 0
+			-0.90450877 -0.309016973 0.293892711 -0.769421101 -0.309016973 0.559017122 -0.559017122 -0.309016973 0.769421041 -0.293892711 -0.309016973 0.90450865
+			-2.83436936e-08 -0.309016973 0.951056659 0.293892622 -0.309016973 0.904508591 0.559017003 -0.309016973 0.769420981 0.769420922 -0.309016973 0.559017062
+			0.904508531 -0.309016973 0.293892652 0.95105654 -0.309016973 0 0.939348042 -0.156434372 -0.305212677 0.799057186 -0.156434372 -0.580549002
+			0.580549002 -0.156434372 -0.799057126 0.305212647 -0.156434372 -0.939347923 0 -0.156434372 -0.987688839 -0.305212647 -0.156434372 -0.939347863
+			-0.580548882 -0.156434372 -0.799056947 -0.799056888 -0.156434372 -0.580548823 -0.939347684 -0.156434372 -0.305212557 -0.987688601 -0.156434372 0
+			-0.939347684 -0.156434372 0.305212557 -0.799056828 -0.156434372 0.580548763 -0.580548763 -0.156434372 0.799056768 -0.305212557 -0.156434372 0.939347565
+			-2.9435407e-08 -0.156434372 0.987688482 0.305212468 -0.156434372 0.939347565 0.580548644 -0.156434372 0.799056709 0.799056649 -0.156434372 0.580548704
+			0.939347506 -0.156434372 0.305212498 0.987688363 -0.156434372 0 0.951057136 0 -0.309017181 0.809017539 0 -0.587785602
+			0.587785602 0 -0.809017479 0.309017152 0 -0.951057017 0 0 -1.00000048 -0.309017152 0 -0.951056957
+			-0.587785482 0 -0.809017301 -0.809017241 0 -0.587785423 -0.951056778 0 -0.309017062 -1.00000024 0 0
+			-0.951056778 0 0.309017062 -0.809017181 0 0.587785363 -0.587785363 0 0.809017122 -0.309017062 0 0.951056659
+			-2.98023224e-08 0 1.00000012 0.309016973 0 0.9510566 0.587785244 0 0.809017062 0.809017003 0 0.587785304
+			0.95105654 0 0.309017003 1 0 0 0.939348042 0.156434372 -0.305212677 0.799057186 0.156434372 -0.580549002
+			0.580549002 0.156434372 -0.799057126 0.305212647 0.156434372 -0.939347923 0 0.156434372 -0.987688839 -0.305212647 0.156434372 -0.939347863
+			-0.580548882 0.156434372 -0.799056947 -0.799056888 0.156434372 -0.580548823 -0.939347684 0.156434372 -0.305212557 -0.987688601 0.156434372 0
+			-0.939347684 0.156434372 0.305212557 -0.799056828 0.156434372 0.580548763 -0.580548763 0.156434372 0.799056768 -0.305212557 0.156434372 0.939347565
+			-2.9435407e-08 0.156434372 0.987688482 0.305212468 0.156434372 0.939347565 0.580548644 0.156434372 0.799056709 0.799056649 0.156434372 0.580548704
+			0.939347506 0.156434372 0.305212498 0.987688363 0.156434372 0 0.904509127 0.309016973 -0.293892801 0.769421399 0.309016973 -0.55901736
+			0.55901736 0.309016973 -0.769421339 0.293892771 0.309016973 -0.904509008 0 0.309016973 -0.951057017 -0.293892771 0.309016973 -0.904508948
+			-0.559017241 0.309016973 -0.76942122 -0.76942116 0.309016973 -0.559017181 -0.90450877 0.309016973 -0.293892711 -0.951056778 0.309016973 0
+			-0.90450877 0.309016973 0.293892711 -0.769421101 0.309016973 0.559017122 -0.559017122 0.309016973 0.769421041 -0.293892711 0.309016973 0.90450865
+			-2.83436936e-08 0.309016973 0.951056659 0.293892622 0.309016973 0.904508591 0.559017003 0.309016973 0.769420981 0.769420922 0.309016973 0.559017062
+			0.904508531 0.309016973 0.293892652 0.95105654 0.309016973 0 0.847398102 0.453990519 -0.275336325 0.720839918 0.453990519 -0.523720801
+			0.523720801 0.453990519 -0.720839858 0.275336295 0.453990519 -0.847397983 0 0.453990519 -0.891006947 -0.275336295 0.453990519 -0.847397983
+			-0.523720682 0.453990519 -0.720839679 -0.72083962 0.453990519 -0.523720622 -0.847397804 0.453990519 -0.275336206 -0.891006768 0.453990519 0
+			-0.847397804 0.453990519 0.275336206 -0.72083962 0.453990519 0.523720622 -0.523720622 0.453990519 0.72083956 -0.275336206 0.453990519 0.847397685
+			-2.65540638e-08 0.453990519 0.891006649 0.275336146 0.453990519 0.847397625 0.523720503 0.453990519 0.7208395 0.720839441 0.453990519 0.523720562
+			0.847397566 0.453990519 0.275336176 0.891006529 0.453990519 0 0.769421399 0.587785244 -0.250000149 0.654508948 0.587785244 -0.475528538
+			0.475528538 0.587785244 -0.654508889 0.250000119 0.587785244 -0.769421279 0 0.587785244 -0.80901736 -0.250000119 0.587785244 -0.76942122
+			-0.475528449 0.587785244 -0.65450877 -0.65450871 0.587785244 -0.475528389 -0.769421101 0.587785244 -0.25000006 -0.809017181 0.587785244 0
+			-0.769421101 0.587785244 0.25000006 -0.65450865 0.587785244 0.475528359 -0.475528359 0.587785244 0.654508591 -0.25000006 0.587785244 0.769420981
+			-2.41105855e-08 0.587785244 0.809017122 0.249999985 0.587785244 0.769420981 0.47552827 0.587785244 0.654508531 0.654508531 0.587785244 0.4755283
+			0.769420922 0.587785244 0.25 0.809017003 0.587785244 0 0.672498941 0.707106769 -0.218508139 0.572061777 0.707106769 -0.415627182
+			0.415627182 0.707106769 -0.572061718 0.218508124 0.707106769 -0.672498882 0 0.707106769 -0.707107127 -0.218508124 0.707106769 -0.672498822
+			-0.415627092 0.707106769 -0.572061598 -0.572061539 0.707106769 -0.415627062 -0.672498703 0.707106769 -0.21850805 -0.707106948 0.707106769 0
+			-0.672498703 0.707106769 0.21850805 -0.572061539 0.707106769 0.415627003 -0.415627003 0.707106769 0.572061479 -0.21850805 0.707106769 0.672498584
+			-2.10734239e-08 0.707106769 0.707106829 0.21850799 0.707106769 0.672498584 0.415626913 0.707106769 0.572061419 0.572061419 0.707106769 0.415626973
+			0.672498524 0.707106769 0.21850802 0.707106769 0.707106769 0 0.55901736 0.809017003 -0.181635737 0.475528568 0.809017003 -0.345491707
+			0.345491707 0.809017003 -0.475528538 0.181635723 0.809017003 -0.559017301 0 0.809017003 -0.587785542 -0.181635723 0.809017003 -0.559017241
+			-0.345491648 0.809017003 -0.475528419 -0.475528389 0.809017003 -0.345491588 -0.559017122 0.809017003 -0.181635663 -0.587785363 0.809017003 0
+			-0.559017122 0.809017003 0.181635663 -0.475528359 0.809017003 0.345491558 -0.345491558 0.809017003 0.47552833 -0.181635663 0.809017003 0.559017062
+			-1.75173653e-08 0.809017003 0.587785304 0.181635618 0.809017003 0.559017062 0.345491499 0.809017003 0.4755283 0.47552827 0.809017003 0.345491529
+			0.559017003 0.809017003 0.181635633 0.587785244 0.809017003 0 0.431770921 0.891006529 -0.140290871 0.367286295 0.891006529 -0.266849101
+			0.266849101 0.891006529 -0.367286265 0.140290856 0.891006529 -0.431770861 0 0.891006529 -0.453990728 -0.140290856 0.891006529 -0.431770831
+			-0.266849041 0.891006529 -0.367286175 -0.367286146 0.891006529 -0.266849011 -0.431770772 0.891006529 -0.140290812 -0.453990638 0.891006529 0
+			-0.431770772 0.891006529 0.140290812 -0.367286116 0.891006529 0.266848981 -0.266848981 0.891006529 0.367286116 -0.140290812 0.891006529 0.431770712
+			-1.35299718e-08 0.891006529 0.453990579 0.140290782 0.891006529 0.431770682 0.266848922 0.891006529 0.367286086 0.367286056 0.891006529 0.266848952
+			0.431770653 0.891006529 0.140290797 0.453990519 0.891006529 0 0.293892831 0.95105654 -0.0954915658 0.250000179 0.95105654 -0.181635737
+			0.181635737 0.95105654 -0.250000149 0.0954915509 0.95105654 -0.293892801 0 0.95105654 -0.309017152 -0.0954915509 0.95105654 -0.293892771
+			-0.181635708 0.95105654 -0.250000089 -0.250000089 0.95105654 -0.181635693 -0.293892711 0.95105654 -0.0954915285 -0.309017062 0.95105654 0
+			-0.293892711 0.95105654 0.0954915285 -0.25000006 0.95105654 0.181635678 -0.181635678 0.95105654 0.25000006 -0.0954915285 0.95105654 0.293892682
+			-9.20942433e-09 0.95105654 0.309017032 0.0954914987 0.95105654 0.293892652 0.181635633 0.95105654 0.25000003 0.25 0.95105654 0.181635648
+			0.293892652 0.95105654 0.0954915062 0.309017003 0.95105654 0 0.148778126 0.987688363 -0.0483409427 0.126558229 0.987688363 -0.0919499323
+			0.0919499323 0.987688363 -0.126558229 0.0483409353 0.987688363 -0.148778111 0 0.987688363 -0.156434551 -0.0483409353 0.987688363 -0.148778096
+			-0.0919499174 0.987688363 -0.1265582 -0.126558185 0.987688363 -0.0919499025 -0.148778066 0.987688363 -0.0483409241 -0.156434521 0.987688363 0
+			-0.148778066 0.987688363 0.0483409241 -0.126558185 0.987688363 0.091949895 -0.091949895 0.987688363 0.12655817 -0.0483409241 0.987688363 0.148778051
+			-4.6621107e-09 0.987688363 0.156434491 0.0483409092 0.987688363 0.148778036 0.0919498801 0.987688363 0.126558155 0.126558155 0.987688363 0.0919498876
+			0.148778036 0.987688363 0.0483409129 0.156434476 0.987688363 0 0 -1 0 0 1 0] "facevarying float[2] st" [0 0.0500000007 0.0500000007 0.0500000007 0.0500000007 0.100000001 0 0.100000001 0.0500000007 0.0500000007 0.100000001 0.0500000007
+			0.100000001 0.100000001 0.0500000007 0.100000001 0.100000001 0.0500000007 0.150000006 0.0500000007 0.150000006 0.100000001 0.100000001 0.100000001
+			0.150000006 0.0500000007 0.200000003 0.0500000007 0.200000003 0.100000001 0.150000006 0.100000001 0.200000003 0.0500000007 0.25 0.0500000007
+			0.25 0.100000001 0.200000003 0.100000001 0.25 0.0500000007 0.300000012 0.0500000007 0.300000012 0.100000001 0.25 0.100000001
+			0.300000012 0.0500000007 0.350000024 0.0500000007 0.350000024 0.100000001 0.300000012 0.100000001 0.350000024 0.0500000007 0.400000036 0.0500000007
+			0.400000036 0.100000001 0.350000024 0.100000001 0.400000036 0.0500000007 0.450000048 0.0500000007 0.450000048 0.100000001 0.400000036 0.100000001
+			0.450000048 0.0500000007 0.50000006 0.0500000007 0.50000006 0.100000001 0.450000048 0.100000001 0.50000006 0.0500000007 0.550000072 0.0500000007
+			0.550000072 0.100000001 0.50000006 0.100000001 0.550000072 0.0500000007 0.600000083 0.0500000007 0.600000083 0.100000001 0.550000072 0.100000001
+			0.600000083 0.0500000007 0.650000095 0.0500000007 0.650000095 0.100000001 0.600000083 0.100000001 0.650000095 0.0500000007 0.700000107 0.0500000007
+			0.700000107 0.100000001 0.650000095 0.100000001 0.700000107 0.0500000007 0.750000119 0.0500000007 0.750000119 0.100000001 0.700000107 0.100000001
+			0.750000119 0.0500000007 0.800000131 0.0500000007 0.800000131 0.100000001 0.750000119 0.100000001 0.800000131 0.0500000007 0.850000143 0.0500000007
+			0.850000143 0.100000001 0.800000131 0.100000001 0.850000143 0.0500000007 0.900000155 0.0500000007 0.900000155 0.100000001 0.850000143 0.100000001
+			0.900000155 0.0500000007 0.950000167 0.0500000007 0.950000167 0.100000001 0.900000155 0.100000001 0.950000167 0.0500000007 1.00000012 0.0500000007
+			1.00000012 0.100000001 0.950000167 0.100000001 0 0.100000001 0.0500000007 0.100000001 0.0500000007 0.150000006 0 0.150000006
+			0.0500000007 0.100000001 0.100000001 0.100000001 0.100000001 0.150000006 0.0500000007 0.150000006 0.100000001 0.100000001 0.150000006 0.100000001
+			0.150000006 0.150000006 0.100000001 0.150000006 0.150000006 0.100000001 0.200000003 0.100000001 0.200000003 0.150000006 0.150000006 0.150000006
+			0.200000003 0.100000001 0.25 0.100000001 0.25 0.150000006 0.200000003 0.150000006 0.25 0.100000001 0.300000012 0.100000001
+			0.300000012 0.150000006 0.25 0.150000006 0.300000012 0.100000001 0.350000024 0.100000001 0.350000024 0.150000006 0.300000012 0.150000006
+			0.350000024 0.100000001 0.400000036 0.100000001 0.400000036 0.150000006 0.350000024 0.150000006 0.400000036 0.100000001 0.450000048 0.100000001
+			0.450000048 0.150000006 0.400000036 0.150000006 0.450000048 0.100000001 0.50000006 0.100000001 0.50000006 0.150000006 0.450000048 0.150000006
+			0.50000006 0.100000001 0.550000072 0.100000001 0.550000072 0.150000006 0.50000006 0.150000006 0.550000072 0.100000001 0.600000083 0.100000001
+			0.600000083 0.150000006 0.550000072 0.150000006 0.600000083 0.100000001 0.650000095 0.100000001 0.650000095 0.150000006 0.600000083 0.150000006
+			0.650000095 0.100000001 0.700000107 0.100000001 0.700000107 0.150000006 0.650000095 0.150000006 0.700000107 0.100000001 0.750000119 0.100000001
+			0.750000119 0.150000006 0.700000107 0.150000006 0.750000119 0.100000001 0.800000131 0.100000001 0.800000131 0.150000006 0.750000119 0.150000006
+			0.800000131 0.100000001 0.850000143 0.100000001 0.850000143 0.150000006 0.800000131 0.150000006 0.850000143 0.100000001 0.900000155 0.100000001
+			0.900000155 0.150000006 0.850000143 0.150000006 0.900000155 0.100000001 0.950000167 0.100000001 0.950000167 0.150000006 0.900000155 0.150000006
+			0.950000167 0.100000001 1.00000012 0.100000001 1.00000012 0.150000006 0.950000167 0.150000006 0 0.150000006 0.0500000007 0.150000006
+			0.0500000007 0.200000003 0 0.200000003 0.0500000007 0.150000006 0.100000001 0.150000006 0.100000001 0.200000003 0.0500000007 0.200000003
+			0.100000001 0.150000006 0.150000006 0.150000006 0.150000006 0.200000003 0.100000001 0.200000003 0.150000006 0.150000006 0.200000003 0.150000006
+			0.200000003 0.200000003 0.150000006 0.200000003 0.200000003 0.150000006 0.25 0.150000006 0.25 0.200000003 0.200000003 0.200000003
+			0.25 0.150000006 0.300000012 0.150000006 0.300000012 0.200000003 0.25 0.200000003 0.300000012 0.150000006 0.350000024 0.150000006
+			0.350000024 0.200000003 0.300000012 0.200000003 0.350000024 0.150000006 0.400000036 0.150000006 0.400000036 0.200000003 0.350000024 0.200000003
+			0.400000036 0.150000006 0.450000048 0.150000006 0.450000048 0.200000003 0.400000036 0.200000003 0.450000048 0.150000006 0.50000006 0.150000006
+			0.50000006 0.200000003 0.450000048 0.200000003 0.50000006 0.150000006 0.550000072 0.150000006 0.550000072 0.200000003 0.50000006 0.200000003
+			0.550000072 0.150000006 0.600000083 0.150000006 0.600000083 0.200000003 0.550000072 0.200000003 0.600000083 0.150000006 0.650000095 0.150000006
+			0.650000095 0.200000003 0.600000083 0.200000003 0.650000095 0.150000006 0.700000107 0.150000006 0.700000107 0.200000003 0.650000095 0.200000003
+			0.700000107 0.150000006 0.750000119 0.150000006 0.750000119 0.200000003 0.700000107 0.200000003 0.750000119 0.150000006 0.800000131 0.150000006
+			0.800000131 0.200000003 0.750000119 0.200000003 0.800000131 0.150000006 0.850000143 0.150000006 0.850000143 0.200000003 0.800000131 0.200000003
+			0.850000143 0.150000006 0.900000155 0.150000006 0.900000155 0.200000003 0.850000143 0.200000003 0.900000155 0.150000006 0.950000167 0.150000006
+			0.950000167 0.200000003 0.900000155 0.200000003 0.950000167 0.150000006 1.00000012 0.150000006 1.00000012 0.200000003 0.950000167 0.200000003
+			0 0.200000003 0.0500000007 0.200000003 0.0500000007 0.25 0 0.25 0.0500000007 0.200000003 0.100000001 0.200000003
+			0.100000001 0.25 0.0500000007 0.25 0.100000001 0.200000003 0.150000006 0.200000003 0.150000006 0.25 0.100000001 0.25
+			0.150000006 0.200000003 0.200000003 0.200000003 0.200000003 0.25 0.150000006 0.25 0.200000003 0.200000003 0.25 0.200000003
+			0.25 0.25 0.200000003 0.25 0.25 0.200000003 0.300000012 0.200000003 0.300000012 0.25 0.25 0.25
+			0.300000012 0.200000003 0.350000024 0.200000003 0.350000024 0.25 0.300000012 0.25 0.350000024 0.200000003 0.400000036 0.200000003
+			0.400000036 0.25 0.350000024 0.25 0.400000036 0.200000003 0.450000048 0.200000003 0.450000048 0.25 0.400000036 0.25
+			0.450000048 0.200000003 0.50000006 0.200000003 0.50000006 0.25 0.450000048 0.25 0.50000006 0.200000003 0.550000072 0.200000003
+			0.550000072 0.25 0.50000006 0.25 0.550000072 0.200000003 0.600000083 0.200000003 0.600000083 0.25 0.550000072 0.25
+			0.600000083 0.200000003 0.650000095 0.200000003 0.650000095 0.25 0.600000083 0.25 0.650000095 0.200000003 0.700000107 0.200000003
+			0.700000107 0.25 0.650000095 0.25 0.700000107 0.200000003 0.750000119 0.200000003 0.750000119 0.25 0.700000107 0.25
+			0.750000119 0.200000003 0.800000131 0.200000003 0.800000131 0.25 0.750000119 0.25 0.800000131 0.200000003 0.850000143 0.200000003
+			0.850000143 0.25 0.800000131 0.25 0.850000143 0.200000003 0.900000155 0.200000003 0.900000155 0.25 0.850000143 0.25
+			0.900000155 0.200000003 0.950000167 0.200000003 0.950000167 0.25 0.900000155 0.25 0.950000167 0.200000003 1.00000012 0.200000003
+			1.00000012 0.25 0.950000167 0.25 0 0.25 0.0500000007 0.25 0.0500000007 0.300000012 0 0.300000012
+			0.0500000007 0.25 0.100000001 0.25 0.100000001 0.300000012 0.0500000007 0.300000012 0.100000001 0.25 0.150000006 0.25
+			0.150000006 0.300000012 0.100000001 0.300000012 0.150000006 0.25 0.200000003 0.25 0.200000003 0.300000012 0.150000006 0.300000012
+			0.200000003 0.25 0.25 0.25 0.25 0.300000012 0.200000003 0.300000012 0.25 0.25 0.300000012 0.25
+			0.300000012 0.300000012 0.25 0.300000012 0.300000012 0.25 0.350000024 0.25 0.350000024 0.300000012 0.300000012 0.300000012
+			0.350000024 0.25 0.400000036 0.25 0.400000036 0.300000012 0.350000024 0.300000012 0.400000036 0.25 0.450000048 0.25
+			0.450000048 0.300000012 0.400000036 0.300000012 0.450000048 0.25 0.50000006 0.25 0.50000006 0.300000012 0.450000048 0.300000012
+			0.50000006 0.25 0.550000072 0.25 0.550000072 0.300000012 0.50000006 0.300000012 0.550000072 0.25 0.600000083 0.25
+			0.600000083 0.300000012 0.550000072 0.300000012 0.600000083 0.25 0.650000095 0.25 0.650000095 0.300000012 0.600000083 0.300000012
+			0.650000095 0.25 0.700000107 0.25 0.700000107 0.300000012 0.650000095 0.300000012 0.700000107 0.25 0.750000119 0.25
+			0.750000119 0.300000012 0.700000107 0.300000012 0.750000119 0.25 0.800000131 0.25 0.800000131 0.300000012 0.750000119 0.300000012
+			0.800000131 0.25 0.850000143 0.25 0.850000143 0.300000012 0.800000131 0.300000012 0.850000143 0.25 0.900000155 0.25
+			0.900000155 0.300000012 0.850000143 0.300000012 0.900000155 0.25 0.950000167 0.25 0.950000167 0.300000012 0.900000155 0.300000012
+			0.950000167 0.25 1.00000012 0.25 1.00000012 0.300000012 0.950000167 0.300000012 0 0.300000012 0.0500000007 0.300000012
+			0.0500000007 0.350000024 0 0.350000024 0.0500000007 0.300000012 0.100000001 0.300000012 0.100000001 0.350000024 0.0500000007 0.350000024
+			0.100000001 0.300000012 0.150000006 0.300000012 0.150000006 0.350000024 0.100000001 0.350000024 0.150000006 0.300000012 0.200000003 0.300000012
+			0.200000003 0.350000024 0.150000006 0.350000024 0.200000003 0.300000012 0.25 0.300000012 0.25 0.350000024 0.200000003 0.350000024
+			0.25 0.300000012 0.300000012 0.300000012 0.300000012 0.350000024 0.25 0.350000024 0.300000012 0.300000012 0.350000024 0.300000012
+			0.350000024 0.350000024 0.300000012 0.350000024 0.350000024 0.300000012 0.400000036 0.300000012 0.400000036 0.350000024 0.350000024 0.350000024
+			0.400000036 0.300000012 0.450000048 0.300000012 0.450000048 0.350000024 0.400000036 0.350000024 0.450000048 0.300000012 0.50000006 0.300000012
+			0.50000006 0.350000024 0.450000048 0.350000024 0.50000006 0.300000012 0.550000072 0.300000012 0.550000072 0.350000024 0.50000006 0.350000024
+			0.550000072 0.300000012 0.600000083 0.300000012 0.600000083 0.350000024 0.550000072 0.350000024 0.600000083 0.300000012 0.650000095 0.300000012
+			0.650000095 0.350000024 0.600000083 0.350000024 0.650000095 0.300000012 0.700000107 0.300000012 0.700000107 0.350000024 0.650000095 0.350000024
+			0.700000107 0.300000012 0.750000119 0.300000012 0.750000119 0.350000024 0.700000107 0.350000024 0.750000119 0.300000012 0.800000131 0.300000012
+			0.800000131 0.350000024 0.750000119 0.350000024 0.800000131 0.300000012 0.850000143 0.300000012 0.850000143 0.350000024 0.800000131 0.350000024
+			0.850000143 0.300000012 0.900000155 0.300000012 0.900000155 0.350000024 0.850000143 0.350000024 0.900000155 0.300000012 0.950000167 0.300000012
+			0.950000167 0.350000024 0.900000155 0.350000024 0.950000167 0.300000012 1.00000012 0.300000012 1.00000012 0.350000024 0.950000167 0.350000024
+			0 0.350000024 0.0500000007 0.350000024 0.0500000007 0.400000036 0 0.400000036 0.0500000007 0.350000024 0.100000001 0.350000024
+			0.100000001 0.400000036 0.0500000007 0.400000036 0.100000001 0.350000024 0.150000006 0.350000024 0.150000006 0.400000036 0.100000001 0.400000036
+			0.150000006 0.350000024 0.200000003 0.350000024 0.200000003 0.400000036 0.150000006 0.400000036 0.200000003 0.350000024 0.25 0.350000024
+			0.25 0.400000036 0.200000003 0.400000036 0.25 0.350000024 0.300000012 0.350000024 0.300000012 0.400000036 0.25 0.400000036
+			0.300000012 0.350000024 0.350000024 0.350000024 0.350000024 0.400000036 0.300000012 0.400000036 0.350000024 0.350000024 0.400000036 0.350000024
+			0.400000036 0.400000036 0.350000024 0.400000036 0.400000036 0.350000024 0.450000048 0.350000024 0.450000048 0.400000036 0.400000036 0.400000036
+			0.450000048 0.350000024 0.50000006 0.350000024 0.50000006 0.400000036 0.450000048 0.400000036 0.50000006 0.350000024 0.550000072 0.350000024
+			0.550000072 0.400000036 0.50000006 0.400000036 0.550000072 0.350000024 0.600000083 0.350000024 0.600000083 0.400000036 0.550000072 0.400000036
+			0.600000083 0.350000024 0.650000095 0.350000024 0.650000095 0.400000036 0.600000083 0.400000036 0.650000095 0.350000024 0.700000107 0.350000024
+			0.700000107 0.400000036 0.650000095 0.400000036 0.700000107 0.350000024 0.750000119 0.350000024 0.750000119 0.400000036 0.700000107 0.400000036
+			0.750000119 0.350000024 0.800000131 0.350000024 0.800000131 0.400000036 0.750000119 0.400000036 0.800000131 0.350000024 0.850000143 0.350000024
+			0.850000143 0.400000036 0.800000131 0.400000036 0.850000143 0.350000024 0.900000155 0.350000024 0.900000155 0.400000036 0.850000143 0.400000036
+			0.900000155 0.350000024 0.950000167 0.350000024 0.950000167 0.400000036 0.900000155 0.400000036 0.950000167 0.350000024 1.00000012 0.350000024
+			1.00000012 0.400000036 0.950000167 0.400000036 0 0.400000036 0.0500000007 0.400000036 0.0500000007 0.450000048 0 0.450000048
+			0.0500000007 0.400000036 0.100000001 0.400000036 0.100000001 0.450000048 0.0500000007 0.450000048 0.100000001 0.400000036 0.150000006 0.400000036
+			0.150000006 0.450000048 0.100000001 0.450000048 0.150000006 0.400000036 0.200000003 0.400000036 0.200000003 0.450000048 0.150000006 0.450000048
+			0.200000003 0.400000036 0.25 0.400000036 0.25 0.450000048 0.200000003 0.450000048 0.25 0.400000036 0.300000012 0.400000036
+			0.300000012 0.450000048 0.25 0.450000048 0.300000012 0.400000036 0.350000024 0.400000036 0.350000024 0.450000048 0.300000012 0.450000048
+			0.350000024 0.400000036 0.400000036 0.400000036 0.400000036 0.450000048 0.350000024 0.450000048 0.400000036 0.400000036 0.450000048 0.400000036
+			0.450000048 0.450000048 0.400000036 0.450000048 0.450000048 0.400000036 0.50000006 0.400000036 0.50000006 0.450000048 0.450000048 0.450000048
+			0.50000006 0.400000036 0.550000072 0.400000036 0.550000072 0.450000048 0.50000006 0.450000048 0.550000072 0.400000036 0.600000083 0.400000036
+			0.600000083 0.450000048 0.550000072 0.450000048 0.600000083 0.400000036 0.650000095 0.400000036 0.650000095 0.450000048 0.600000083 0.450000048
+			0.650000095 0.400000036 0.700000107 0.400000036 0.700000107 0.450000048 0.650000095 0.450000048 0.700000107 0.400000036 0.750000119 0.400000036
+			0.750000119 0.450000048 0.700000107 0.450000048 0.750000119 0.400000036 0.800000131 0.400000036 0.800000131 0.450000048 0.750000119 0.450000048
+			0.800000131 0.400000036 0.850000143 0.400000036 0.850000143 0.450000048 0.800000131 0.450000048 0.850000143 0.400000036 0.900000155 0.400000036
+			0.900000155 0.450000048 0.850000143 0.450000048 0.900000155 0.400000036 0.950000167 0.400000036 0.950000167 0.450000048 0.900000155 0.450000048
+			0.950000167 0.400000036 1.00000012 0.400000036 1.00000012 0.450000048 0.950000167 0.450000048 0 0.450000048 0.0500000007 0.450000048
+			0.0500000007 0.50000006 0 0.50000006 0.0500000007 0.450000048 0.100000001 0.450000048 0.100000001 0.50000006 0.0500000007 0.50000006
+			0.100000001 0.450000048 0.150000006 0.450000048 0.150000006 0.50000006 0.100000001 0.50000006 0.150000006 0.450000048 0.200000003 0.450000048
+			0.200000003 0.50000006 0.150000006 0.50000006 0.200000003 0.450000048 0.25 0.450000048 0.25 0.50000006 0.200000003 0.50000006
+			0.25 0.450000048 0.300000012 0.450000048 0.300000012 0.50000006 0.25 0.50000006 0.300000012 0.450000048 0.350000024 0.450000048
+			0.350000024 0.50000006 0.300000012 0.50000006 0.350000024 0.450000048 0.400000036 0.450000048 0.400000036 0.50000006 0.350000024 0.50000006
+			0.400000036 0.450000048 0.450000048 0.450000048 0.450000048 0.50000006 0.400000036 0.50000006 0.450000048 0.450000048 0.50000006 0.450000048
+			0.50000006 0.50000006 0.450000048 0.50000006 0.50000006 0.450000048 0.550000072 0.450000048 0.550000072 0.50000006 0.50000006 0.50000006
+			0.550000072 0.450000048 0.600000083 0.450000048 0.600000083 0.50000006 0.550000072 0.50000006 0.600000083 0.450000048 0.650000095 0.450000048
+			0.650000095 0.50000006 0.600000083 0.50000006 0.650000095 0.450000048 0.700000107 0.450000048 0.700000107 0.50000006 0.650000095 0.50000006
+			0.700000107 0.450000048 0.750000119 0.450000048 0.750000119 0.50000006 0.700000107 0.50000006 0.750000119 0.450000048 0.800000131 0.450000048
+			0.800000131 0.50000006 0.750000119 0.50000006 0.800000131 0.450000048 0.850000143 0.450000048 0.850000143 0.50000006 0.800000131 0.50000006
+			0.850000143 0.450000048 0.900000155 0.450000048 0.900000155 0.50000006 0.850000143 0.50000006 0.900000155 0.450000048 0.950000167 0.450000048
+			0.950000167 0.50000006 0.900000155 0.50000006 0.950000167 0.450000048 1.00000012 0.450000048 1.00000012 0.50000006 0.950000167 0.50000006
+			0 0.50000006 0.0500000007 0.50000006 0.0500000007 0.550000072 0 0.550000072 0.0500000007 0.50000006 0.100000001 0.50000006
+			0.100000001 0.550000072 0.0500000007 0.550000072 0.100000001 0.50000006 0.150000006 0.50000006 0.150000006 0.550000072 0.100000001 0.550000072
+			0.150000006 0.50000006 0.200000003 0.50000006 0.200000003 0.550000072 0.150000006 0.550000072 0.200000003 0.50000006 0.25 0.50000006
+			0.25 0.550000072 0.200000003 0.550000072 0.25 0.50000006 0.300000012 0.50000006 0.300000012 0.550000072 0.25 0.550000072
+			0.300000012 0.50000006 0.350000024 0.50000006 0.350000024 0.550000072 0.300000012 0.550000072 0.350000024 0.50000006 0.400000036 0.50000006
+			0.400000036 0.550000072 0.350000024 0.550000072 0.400000036 0.50000006 0.450000048 0.50000006 0.450000048 0.550000072 0.400000036 0.550000072
+			0.450000048 0.50000006 0.50000006 0.50000006 0.50000006 0.550000072 0.450000048 0.550000072 0.50000006 0.50000006 0.550000072 0.50000006
+			0.550000072 0.550000072 0.50000006 0.550000072 0.550000072 0.50000006 0.600000083 0.50000006 0.600000083 0.550000072 0.550000072 0.550000072
+			0.600000083 0.50000006 0.650000095 0.50000006 0.650000095 0.550000072 0.600000083 0.550000072 0.650000095 0.50000006 0.700000107 0.50000006
+			0.700000107 0.550000072 0.650000095 0.550000072 0.700000107 0.50000006 0.750000119 0.50000006 0.750000119 0.550000072 0.700000107 0.550000072
+			0.750000119 0.50000006 0.800000131 0.50000006 0.800000131 0.550000072 0.750000119 0.550000072 0.800000131 0.50000006 0.850000143 0.50000006
+			0.850000143 0.550000072 0.800000131 0.550000072 0.850000143 0.50000006 0.900000155 0.50000006 0.900000155 0.550000072 0.850000143 0.550000072
+			0.900000155 0.50000006 0.950000167 0.50000006 0.950000167 0.550000072 0.900000155 0.550000072 0.950000167 0.50000006 1.00000012 0.50000006
+			1.00000012 0.550000072 0.950000167 0.550000072 0 0.550000072 0.0500000007 0.550000072 0.0500000007 0.600000083 0 0.600000083
+			0.0500000007 0.550000072 0.100000001 0.550000072 0.100000001 0.600000083 0.0500000007 0.600000083 0.100000001 0.550000072 0.150000006 0.550000072
+			0.150000006 0.600000083 0.100000001 0.600000083 0.150000006 0.550000072 0.200000003 0.550000072 0.200000003 0.600000083 0.150000006 0.600000083
+			0.200000003 0.550000072 0.25 0.550000072 0.25 0.600000083 0.200000003 0.600000083 0.25 0.550000072 0.300000012 0.550000072
+			0.300000012 0.600000083 0.25 0.600000083 0.300000012 0.550000072 0.350000024 0.550000072 0.350000024 0.600000083 0.300000012 0.600000083
+			0.350000024 0.550000072 0.400000036 0.550000072 0.400000036 0.600000083 0.350000024 0.600000083 0.400000036 0.550000072 0.450000048 0.550000072
+			0.450000048 0.600000083 0.400000036 0.600000083 0.450000048 0.550000072 0.50000006 0.550000072 0.50000006 0.600000083 0.450000048 0.600000083
+			0.50000006 0.550000072 0.550000072 0.550000072 0.550000072 0.600000083 0.50000006 0.600000083 0.550000072 0.550000072 0.600000083 0.550000072
+			0.600000083 0.600000083 0.550000072 0.600000083 0.600000083 0.550000072 0.650000095 0.550000072 0.650000095 0.600000083 0.600000083 0.600000083
+			0.650000095 0.550000072 0.700000107 0.550000072 0.700000107 0.600000083 0.650000095 0.600000083 0.700000107 0.550000072 0.750000119 0.550000072
+			0.750000119 0.600000083 0.700000107 0.600000083 0.750000119 0.550000072 0.800000131 0.550000072 0.800000131 0.600000083 0.750000119 0.600000083
+			0.800000131 0.550000072 0.850000143 0.550000072 0.850000143 0.600000083 0.800000131 0.600000083 0.850000143 0.550000072 0.900000155 0.550000072
+			0.900000155 0.600000083 0.850000143 0.600000083 0.900000155 0.550000072 0.950000167 0.550000072 0.950000167 0.600000083 0.900000155 0.600000083
+			0.950000167 0.550000072 1.00000012 0.550000072 1.00000012 0.600000083 0.950000167 0.600000083 0 0.600000083 0.0500000007 0.600000083
+			0.0500000007 0.650000095 0 0.650000095 0.0500000007 0.600000083 0.100000001 0.600000083 0.100000001 0.650000095 0.0500000007 0.650000095
+			0.100000001 0.600000083 0.150000006 0.600000083 0.150000006 0.650000095 0.100000001 0.650000095 0.150000006 0.600000083 0.200000003 0.600000083
+			0.200000003 0.650000095 0.150000006 0.650000095 0.200000003 0.600000083 0.25 0.600000083 0.25 0.650000095 0.200000003 0.650000095
+			0.25 0.600000083 0.300000012 0.600000083 0.300000012 0.650000095 0.25 0.650000095 0.300000012 0.600000083 0.350000024 0.600000083
+			0.350000024 0.650000095 0.300000012 0.650000095 0.350000024 0.600000083 0.400000036 0.600000083 0.400000036 0.650000095 0.350000024 0.650000095
+			0.400000036 0.600000083 0.450000048 0.600000083 0.450000048 0.650000095 0.400000036 0.650000095 0.450000048 0.600000083 0.50000006 0.600000083
+			0.50000006 0.650000095 0.450000048 0.650000095 0.50000006 0.600000083 0.550000072 0.600000083 0.550000072 0.650000095 0.50000006 0.650000095
+			0.550000072 0.600000083 0.600000083 0.600000083 0.600000083 0.650000095 0.550000072 0.650000095 0.600000083 0.600000083 0.650000095 0.600000083
+			0.650000095 0.650000095 0.600000083 0.650000095 0.650000095 0.600000083 0.700000107 0.600000083 0.700000107 0.650000095 0.650000095 0.650000095
+			0.700000107 0.600000083 0.750000119 0.600000083 0.750000119 0.650000095 0.700000107 0.650000095 0.750000119 0.600000083 0.800000131 0.600000083
+			0.800000131 0.650000095 0.750000119 0.650000095 0.800000131 0.600000083 0.850000143 0.600000083 0.850000143 0.650000095 0.800000131 0.650000095
+			0.850000143 0.600000083 0.900000155 0.600000083 0.900000155 0.650000095 0.850000143 0.650000095 0.900000155 0.600000083 0.950000167 0.600000083
+			0.950000167 0.650000095 0.900000155 0.650000095 0.950000167 0.600000083 1.00000012 0.600000083 1.00000012 0.650000095 0.950000167 0.650000095
+			0 0.650000095 0.0500000007 0.650000095 0.0500000007 0.700000107 0 0.700000107 0.0500000007 0.650000095 0.100000001 0.650000095
+			0.100000001 0.700000107 0.0500000007 0.700000107 0.100000001 0.650000095 0.150000006 0.650000095 0.150000006 0.700000107 0.100000001 0.700000107
+			0.150000006 0.650000095 0.200000003 0.650000095 0.200000003 0.700000107 0.150000006 0.700000107 0.200000003 0.650000095 0.25 0.650000095
+			0.25 0.700000107 0.200000003 0.700000107 0.25 0.650000095 0.300000012 0.650000095 0.300000012 0.700000107 0.25 0.700000107
+			0.300000012 0.650000095 0.350000024 0.650000095 0.350000024 0.700000107 0.300000012 0.700000107 0.350000024 0.650000095 0.400000036 0.650000095
+			0.400000036 0.700000107 0.350000024 0.700000107 0.400000036 0.650000095 0.450000048 0.650000095 0.450000048 0.700000107 0.400000036 0.700000107
+			0.450000048 0.650000095 0.50000006 0.650000095 0.50000006 0.700000107 0.450000048 0.700000107 0.50000006 0.650000095 0.550000072 0.650000095
+			0.550000072 0.700000107 0.50000006 0.700000107 0.550000072 0.650000095 0.600000083 0.650000095 0.600000083 0.700000107 0.550000072 0.700000107
+			0.600000083 0.650000095 0.650000095 0.650000095 0.650000095 0.700000107 0.600000083 0.700000107 0.650000095 0.650000095 0.700000107 0.650000095
+			0.700000107 0.700000107 0.650000095 0.700000107 0.700000107 0.650000095 0.750000119 0.650000095 0.750000119 0.700000107 0.700000107 0.700000107
+			0.750000119 0.650000095 0.800000131 0.650000095 0.800000131 0.700000107 0.750000119 0.700000107 0.800000131 0.650000095 0.850000143 0.650000095
+			0.850000143 0.700000107 0.800000131 0.700000107 0.850000143 0.650000095 0.900000155 0.650000095 0.900000155 0.700000107 0.850000143 0.700000107
+			0.900000155 0.650000095 0.950000167 0.650000095 0.950000167 0.700000107 0.900000155 0.700000107 0.950000167 0.650000095 1.00000012 0.650000095
+			1.00000012 0.700000107 0.950000167 0.700000107 0 0.700000107 0.0500000007 0.700000107 0.0500000007 0.750000119 0 0.750000119
+			0.0500000007 0.700000107 0.100000001 0.700000107 0.100000001 0.750000119 0.0500000007 0.750000119 0.100000001 0.700000107 0.150000006 0.700000107
+			0.150000006 0.750000119 0.100000001 0.750000119 0.150000006 0.700000107 0.200000003 0.700000107 0.200000003 0.750000119 0.150000006 0.750000119
+			0.200000003 0.700000107 0.25 0.700000107 0.25 0.750000119 0.200000003 0.750000119 0.25 0.700000107 0.300000012 0.700000107
+			0.300000012 0.750000119 0.25 0.750000119 0.300000012 0.700000107 0.350000024 0.700000107 0.350000024 0.750000119 0.300000012 0.750000119
+			0.350000024 0.700000107 0.400000036 0.700000107 0.400000036 0.750000119 0.350000024 0.750000119 0.400000036 0.700000107 0.450000048 0.700000107
+			0.450000048 0.750000119 0.400000036 0.750000119 0.450000048 0.700000107 0.50000006 0.700000107 0.50000006 0.750000119 0.450000048 0.750000119
+			0.50000006 0.700000107 0.550000072 0.700000107 0.550000072 0.750000119 0.50000006 0.750000119 0.550000072 0.700000107 0.600000083 0.700000107
+			0.600000083 0.750000119 0.550000072 0.750000119 0.600000083 0.700000107 0.650000095 0.700000107 0.650000095 0.750000119 0.600000083 0.750000119
+			0.650000095 0.700000107 0.700000107 0.700000107 0.700000107 0.750000119 0.650000095 0.750000119 0.700000107 0.700000107 0.750000119 0.700000107
+			0.750000119 0.750000119 0.700000107 0.750000119 0.750000119 0.700000107 0.800000131 0.700000107 0.800000131 0.750000119 0.750000119 0.750000119
+			0.800000131 0.700000107 0.850000143 0.700000107 0.850000143 0.750000119 0.800000131 0.750000119 0.850000143 0.700000107 0.900000155 0.700000107
+			0.900000155 0.750000119 0.850000143 0.750000119 0.900000155 0.700000107 0.950000167 0.700000107 0.950000167 0.750000119 0.900000155 0.750000119
+			0.950000167 0.700000107 1.00000012 0.700000107 1.00000012 0.750000119 0.950000167 0.750000119 0 0.750000119 0.0500000007 0.750000119
+			0.0500000007 0.800000131 0 0.800000131 0.0500000007 0.750000119 0.100000001 0.750000119 0.100000001 0.800000131 0.0500000007 0.800000131
+			0.100000001 0.750000119 0.150000006 0.750000119 0.150000006 0.800000131 0.100000001 0.800000131 0.150000006 0.750000119 0.200000003 0.750000119
+			0.200000003 0.800000131 0.150000006 0.800000131 0.200000003 0.750000119 0.25 0.750000119 0.25 0.800000131 0.200000003 0.800000131
+			0.25 0.750000119 0.300000012 0.750000119 0.300000012 0.800000131 0.25 0.800000131 0.300000012 0.750000119 0.350000024 0.750000119
+			0.350000024 0.800000131 0.300000012 0.800000131 0.350000024 0.750000119 0.400000036 0.750000119 0.400000036 0.800000131 0.350000024 0.800000131
+			0.400000036 0.750000119 0.450000048 0.750000119 0.450000048 0.800000131 0.400000036 0.800000131 0.450000048 0.750000119 0.50000006 0.750000119
+			0.50000006 0.800000131 0.450000048 0.800000131 0.50000006 0.750000119 0.550000072 0.750000119 0.550000072 0.800000131 0.50000006 0.800000131
+			0.550000072 0.750000119 0.600000083 0.750000119 0.600000083 0.800000131 0.550000072 0.800000131 0.600000083 0.750000119 0.650000095 0.750000119
+			0.650000095 0.800000131 0.600000083 0.800000131 0.650000095 0.750000119 0.700000107 0.750000119 0.700000107 0.800000131 0.650000095 0.800000131
+			0.700000107 0.750000119 0.750000119 0.750000119 0.750000119 0.800000131 0.700000107 0.800000131 0.750000119 0.750000119 0.800000131 0.750000119
+			0.800000131 0.800000131 0.750000119 0.800000131 0.800000131 0.750000119 0.850000143 0.750000119 0.850000143 0.800000131 0.800000131 0.800000131
+			0.850000143 0.750000119 0.900000155 0.750000119 0.900000155 0.800000131 0.850000143 0.800000131 0.900000155 0.750000119 0.950000167 0.750000119
+			0.950000167 0.800000131 0.900000155 0.800000131 0.950000167 0.750000119 1.00000012 0.750000119 1.00000012 0.800000131 0.950000167 0.800000131
+			0 0.800000131 0.0500000007 0.800000131 0.0500000007 0.850000143 0 0.850000143 0.0500000007 0.800000131 0.100000001 0.800000131
+			0.100000001 0.850000143 0.0500000007 0.850000143 0.100000001 0.800000131 0.150000006 0.800000131 0.150000006 0.850000143 0.100000001 0.850000143
+			0.150000006 0.800000131 0.200000003 0.800000131 0.200000003 0.850000143 0.150000006 0.850000143 0.200000003 0.800000131 0.25 0.800000131
+			0.25 0.850000143 0.200000003 0.850000143 0.25 0.800000131 0.300000012 0.800000131 0.300000012 0.850000143 0.25 0.850000143
+			0.300000012 0.800000131 0.350000024 0.800000131 0.350000024 0.850000143 0.300000012 0.850000143 0.350000024 0.800000131 0.400000036 0.800000131
+			0.400000036 0.850000143 0.350000024 0.850000143 0.400000036 0.800000131 0.450000048 0.800000131 0.450000048 0.850000143 0.400000036 0.850000143
+			0.450000048 0.800000131 0.50000006 0.800000131 0.50000006 0.850000143 0.450000048 0.850000143 0.50000006 0.800000131 0.550000072 0.800000131
+			0.550000072 0.850000143 0.50000006 0.850000143 0.550000072 0.800000131 0.600000083 0.800000131 0.600000083 0.850000143 0.550000072 0.850000143
+			0.600000083 0.800000131 0.650000095 0.800000131 0.650000095 0.850000143 0.600000083 0.850000143 0.650000095 0.800000131 0.700000107 0.800000131
+			0.700000107 0.850000143 0.650000095 0.850000143 0.700000107 0.800000131 0.750000119 0.800000131 0.750000119 0.850000143 0.700000107 0.850000143
+			0.750000119 0.800000131 0.800000131 0.800000131 0.800000131 0.850000143 0.750000119 0.850000143 0.800000131 0.800000131 0.850000143 0.800000131
+			0.850000143 0.850000143 0.800000131 0.850000143 0.850000143 0.800000131 0.900000155 0.800000131 0.900000155 0.850000143 0.850000143 0.850000143
+			0.900000155 0.800000131 0.950000167 0.800000131 0.950000167 0.850000143 0.900000155 0.850000143 0.950000167 0.800000131 1.00000012 0.800000131
+			1.00000012 0.850000143 0.950000167 0.850000143 0 0.850000143 0.0500000007 0.850000143 0.0500000007 0.900000155 0 0.900000155
+			0.0500000007 0.850000143 0.100000001 0.850000143 0.100000001 0.900000155 0.0500000007 0.900000155 0.100000001 0.850000143 0.150000006 0.850000143
+			0.150000006 0.900000155 0.100000001 0.900000155 0.150000006 0.850000143 0.200000003 0.850000143 0.200000003 0.900000155 0.150000006 0.900000155
+			0.200000003 0.850000143 0.25 0.850000143 0.25 0.900000155 0.200000003 0.900000155 0.25 0.850000143 0.300000012 0.850000143
+			0.300000012 0.900000155 0.25 0.900000155 0.300000012 0.850000143 0.350000024 0.850000143 0.350000024 0.900000155 0.300000012 0.900000155
+			0.350000024 0.850000143 0.400000036 0.850000143 0.400000036 0.900000155 0.350000024 0.900000155 0.400000036 0.850000143 0.450000048 0.850000143
+			0.450000048 0.900000155 0.400000036 0.900000155 0.450000048 0.850000143 0.50000006 0.850000143 0.50000006 0.900000155 0.450000048 0.900000155
+			0.50000006 0.850000143 0.550000072 0.850000143 0.550000072 0.900000155 0.50000006 0.900000155 0.550000072 0.850000143 0.600000083 0.850000143
+			0.600000083 0.900000155 0.550000072 0.900000155 0.600000083 0.850000143 0.650000095 0.850000143 0.650000095 0.900000155 0.600000083 0.900000155
+			0.650000095 0.850000143 0.700000107 0.850000143 0.700000107 0.900000155 0.650000095 0.900000155 0.700000107 0.850000143 0.750000119 0.850000143
+			0.750000119 0.900000155 0.700000107 0.900000155 0.750000119 0.850000143 0.800000131 0.850000143 0.800000131 0.900000155 0.750000119 0.900000155
+			0.800000131 0.850000143 0.850000143 0.850000143 0.850000143 0.900000155 0.800000131 0.900000155 0.850000143 0.850000143 0.900000155 0.850000143
+			0.900000155 0.900000155 0.850000143 0.900000155 0.900000155 0.850000143 0.950000167 0.850000143 0.950000167 0.900000155 0.900000155 0.900000155
+			0.950000167 0.850000143 1.00000012 0.850000143 1.00000012 0.900000155 0.950000167 0.900000155 0 0.900000155 0.0500000007 0.900000155
+			0.0500000007 0.950000167 0 0.950000167 0.0500000007 0.900000155 0.100000001 0.900000155 0.100000001 0.950000167 0.0500000007 0.950000167
+			0.100000001 0.900000155 0.150000006 0.900000155 0.150000006 0.950000167 0.100000001 0.950000167 0.150000006 0.900000155 0.200000003 0.900000155
+			0.200000003 0.950000167 0.150000006 0.950000167 0.200000003 0.900000155 0.25 0.900000155 0.25 0.950000167 0.200000003 0.950000167
+			0.25 0.900000155 0.300000012 0.900000155 0.300000012 0.950000167 0.25 0.950000167 0.300000012 0.900000155 0.350000024 0.900000155
+			0.350000024 0.950000167 0.300000012 0.950000167 0.350000024 0.900000155 0.400000036 0.900000155 0.400000036 0.950000167 0.350000024 0.950000167
+			0.400000036 0.900000155 0.450000048 0.900000155 0.450000048 0.950000167 0.400000036 0.950000167 0.450000048 0.900000155 0.50000006 0.900000155
+			0.50000006 0.950000167 0.450000048 0.950000167 0.50000006 0.900000155 0.550000072 0.900000155 0.550000072 0.950000167 0.50000006 0.950000167
+			0.550000072 0.900000155 0.600000083 0.900000155 0.600000083 0.950000167 0.550000072 0.950000167 0.600000083 0.900000155 0.650000095 0.900000155
+			0.650000095 0.950000167 0.600000083 0.950000167 0.650000095 0.900000155 0.700000107 0.900000155 0.700000107 0.950000167 0.650000095 0.950000167
+			0.700000107 0.900000155 0.750000119 0.900000155 0.750000119 0.950000167 0.700000107 0.950000167 0.750000119 0.900000155 0.800000131 0.900000155
+			0.800000131 0.950000167 0.750000119 0.950000167 0.800000131 0.900000155 0.850000143 0.900000155 0.850000143 0.950000167 0.800000131 0.950000167
+			0.850000143 0.900000155 0.900000155 0.900000155 0.900000155 0.950000167 0.850000143 0.950000167 0.900000155 0.900000155 0.950000167 0.900000155
+			0.950000167 0.950000167 0.900000155 0.950000167 0.950000167 0.900000155 1.00000012 0.900000155 1.00000012 0.950000167 0.950000167 0.950000167
+			0.0500000007 0.0500000007 0 0.0500000007 0.0250000004 0 0.100000001 0.0500000007 0.0500000007 0.0500000007 0.075000003 0
+			0.150000006 0.0500000007 0.100000001 0.0500000007 0.125 0 0.200000003 0.0500000007 0.150000006 0.0500000007 0.175000012 0
+			0.25 0.0500000007 0.200000003 0.0500000007 0.225000009 0 0.300000012 0.0500000007 0.25 0.0500000007 0.275000006 0
+			0.350000024 0.0500000007 0.300000012 0.0500000007 0.325000018 0 0.400000036 0.0500000007 0.350000024 0.0500000007 0.375 0
+			0.450000048 0.0500000007 0.400000036 0.0500000007 0.425000012 0 0.50000006 0.0500000007 0.450000048 0.0500000007 0.475000024 0
+			0.550000072 0.0500000007 0.50000006 0.0500000007 0.524999976 0 0.600000083 0.0500000007 0.550000072 0.0500000007 0.574999988 0
+			0.650000095 0.0500000007 0.600000083 0.0500000007 0.625 0 0.700000107 0.0500000007 0.650000095 0.0500000007 0.675000012 0
+			0.750000119 0.0500000007 0.700000107 0.0500000007 0.724999964 0 0.800000131 0.0500000007 0.750000119 0.0500000007 0.774999976 0
+			0.850000143 0.0500000007 0.800000131 0.0500000007 0.824999988 0 0.900000155 0.0500000007 0.850000143 0.0500000007 0.875 0
+			0.950000167 0.0500000007 0.900000155 0.0500000007 0.925000012 0 1.00000012 0.0500000007 0.950000167 0.0500000007 0.974999964 0
+			0 0.950000167 0.0500000007 0.950000167 0.0250000004 1 0.0500000007 0.950000167 0.100000001 0.950000167 0.075000003 1
+			0.100000001 0.950000167 0.150000006 0.950000167 0.125 1 0.150000006 0.950000167 0.200000003 0.950000167 0.175000012 1
+			0.200000003 0.950000167 0.25 0.950000167 0.225000009 1 0.25 0.950000167 0.300000012 0.950000167 0.275000006 1
+			0.300000012 0.950000167 0.350000024 0.950000167 0.325000018 1 0.350000024 0.950000167 0.400000036 0.950000167 0.375 1
+			0.400000036 0.950000167 0.450000048 0.950000167 0.425000012 1 0.450000048 0.950000167 0.50000006 0.950000167 0.475000024 1
+			0.50000006 0.950000167 0.550000072 0.950000167 0.524999976 1 0.550000072 0.950000167 0.600000083 0.950000167 0.574999988 1
+			0.600000083 0.950000167 0.650000095 0.950000167 0.625 1 0.650000095 0.950000167 0.700000107 0.950000167 0.675000012 1
+			0.700000107 0.950000167 0.750000119 0.950000167 0.724999964 1 0.750000119 0.950000167 0.800000131 0.950000167 0.774999976 1
+			0.800000131 0.950000167 0.850000143 0.950000167 0.824999988 1 0.850000143 0.950000167 0.900000155 0.950000167 0.875 1
+			0.900000155 0.950000167 0.950000167 0.950000167 0.925000012 1 0.950000167 0.950000167 1.00000012 0.950000167 0.974999964 1]
+	ObjectEnd 
+	AttributeBegin 
+		TransformBegin 
+			Transform [ -0.763796031 0 0.645457685 0  -0.164207891 -0.9670977 -0.194313809 0  0.62422061 -0.254405349 0.738665342 0  0 0 0 1 ]
+			ScopedCoordinateSystem "perspShape"
+		TransformEnd 
+		TransformBegin 
+			Transform [ -0.763796031 0 0.645457685 0  -0.164207891 -0.9670977 -0.194313809 0  0.62422061 -0.254405349 0.738665342 0  0 0 0 1 ]
+			ScopedCoordinateSystem "persp"
+		TransformEnd 
+		Attribute "Ri" "int Sides" [2]
+		Attribute "dice" "string referencecamera" [""]
+		Attribute "grouping" "string membership" ["World"]
+		Attribute "identifier" "string name" ["|pSphere1|pSphereShape1"] "int id" [-341880461] "int id2" [0]
+		Attribute "lightfilter" "string subset" [""]
+		Attribute "lighting" "int mute" [0] "string excludesubset" [""]
+		Attribute "shade" "float relativepixelvariance" [1]
+		Attribute "trace" "int maxspeculardepth" [4] "int maxdiffusedepth" [1]
+		Attribute "user" "string __materialid" ["PxrSurface4SG"]
+		Attribute "visibility" "int camera" [1] "int indirect" [1] "int transmission" [1]
+		Bxdf "PxrSurface" "PxrSurface4" "string __materialid" ["PxrSurface4SG"]
+		Transform [ 0.647241652 0 0 0  0 0.647241652 0 0  0 0 0.647241652 0  -790.455872 419.894012 -906.65033 1 ]
+		ObjectInstance "13814000-b78f-f9d4-adeb-107b442ef99d" 
+	AttributeEnd 
+	ObjectBegin "13814000-ef38-f9d5-adeb-107b442ef99d" 
+		Transform [ -1 0 -0 0  -0 -1 -0 0  0 0 -1 0  0 0 0 1 ]
+		Light "PxrDistantLight" "PxrDistantLightShape" "float intensity" [50000] "float exposure" [0] "float angleExtent" [0.529999971] "color lightColor" [1 1 1] "int enableTemperature" [0] "float temperature" [6500] "float emissionFocus" [0] "int emissionFocusNormalize" [0] "color emissionFocusTint" [0 0 0] 
+			"float specular" [1] "float diffuse" [1] "int enableShadows" [1] "color shadowColor" [0 0 0] "float shadowDistance" [-1] "float shadowFalloff" [-1] "float shadowFalloffGamma" [1] "string shadowSubset" [""] "string shadowExcludeSubset" [""] "int areaNormalize" [0] "int traceLightPaths" [0] "int thinShadow" [1] "int visibleInRefractionPath" [1] "int cheapCaustics" [0] 
+			"string cheapCausticsExcludeGroup" [""] "int fixedSampleCount" [0] "string lightGroup" [""] "float importanceMultiplier" [1]
+	ObjectEnd 
+	AttributeBegin 
+		TransformBegin 
+			Transform [ -0.763796031 0 0.645457685 0  -0.164207891 -0.9670977 -0.194313809 0  0.62422061 -0.254405349 0.738665342 0  0 0 0 1 ]
+			ScopedCoordinateSystem "perspShape"
+		TransformEnd 
+		TransformBegin 
+			Transform [ -0.763796031 0 0.645457685 0  -0.164207891 -0.9670977 -0.194313809 0  0.62422061 -0.254405349 0.738665342 0  0 0 0 1 ]
+			ScopedCoordinateSystem "persp"
+		TransformEnd 
+		Attribute "Ri" "int Sides" [2]
+		Attribute "dice" "string referencecamera" [""]
+		Attribute "grouping" "string membership" ["PxrDistantLightShape World"]
+		Attribute "identifier" "string name" ["|PxrDistantLight|PxrDistantLightShape"] "int id" [-1815332930] "int id2" [0]
+		Attribute "lighting" "int mute" [0]
+		Attribute "shade" "float relativepixelvariance" [1]
+		Attribute "trace" "int maxspeculardepth" [4] "int maxdiffusedepth" [1]
+		Attribute "visibility" "int camera" [0] "int indirect" [0] "int transmission" [1]
+		Transform [ -0.73765558 -0.00340461591 0.675168633 0  0.251705796 0.926513374 0.279673249 0  -0.626504958 0.376246393 -0.682590783 0  -789.268982 424.168701 -925.247925 1 ]
+		ObjectInstance "13814000-ef38-f9d5-adeb-107b442ef99d" 
+	AttributeEnd 
+	ObjectBegin "13814001-ef38-f9d5-adeb-107b442ef99d" 
+		Transform [ 0 0 -1 0  -1 -0 0 0  0 1 0 0  0 0 0 1 ]
+		Light "PxrDomeLight" "PxrDomeLightShape" "float intensity" [0.300000012] "float exposure" [0] "color lightColor" [1 1 1] "string lightColorMap" [""] "vector colorMapGamma" [1 1 1] "float colorMapSaturation" [1] "int enableTemperature" [0] "float temperature" [6500] "float specular" [1] 
+			"float diffuse" [1] "int enableShadows" [1] "color shadowColor" [0 0 0] "float shadowDistance" [-1] "float shadowFalloff" [-1] "float shadowFalloffGamma" [1] "string shadowSubset" [""] "string shadowExcludeSubset" [""] "int traceLightPaths" [0] "int thinShadow" [1] "int visibleInRefractionPath" [1] "int cheapCaustics" [0] "string cheapCausticsExcludeGroup" [""] "int fixedSampleCount" [0] "string lightGroup" [""] 
+			"float importanceMultiplier" [1]
+	ObjectEnd 
+	AttributeBegin 
+		TransformBegin 
+			Transform [ -0.763796031 0 0.645457685 0  -0.164207891 -0.9670977 -0.194313809 0  0.62422061 -0.254405349 0.738665342 0  0 0 0 1 ]
+			ScopedCoordinateSystem "perspShape"
+		TransformEnd 
+		TransformBegin 
+			Transform [ -0.763796031 0 0.645457685 0  -0.164207891 -0.9670977 -0.194313809 0  0.62422061 -0.254405349 0.738665342 0  0 0 0 1 ]
+			ScopedCoordinateSystem "persp"
+		TransformEnd 
+		Attribute "Ri" "int Sides" [2]
+		Attribute "dice" "string referencecamera" [""]
+		Attribute "grouping" "string membership" ["PxrDomeLightShape World"]
+		Attribute "identifier" "string name" ["|PxrDomeLight|PxrDomeLightShape"] "int id" [296404090] "int id2" [0]
+		Attribute "lighting" "int mute" [0]
+		Attribute "shade" "float relativepixelvariance" [1]
+		Attribute "trace" "int maxspeculardepth" [4] "int maxdiffusedepth" [1]
+		Attribute "visibility" "int camera" [1] "int indirect" [0] "int transmission" [1]
+		Transform [ 4.90260696 0 -4.90260696 0  0 4.80000019 0 0  4.33692169 0 4.33692169 0  -761.131409 420.772583 -906.243591 1 ]
+		ObjectInstance "13814001-ef38-f9d5-adeb-107b442ef99d" 
+	AttributeEnd 
+	ObjectBegin "13814000-ef38-f9d5-adec-107b442ef99d" 
+		Attribute "Ri" "string Orientation" ["outside"]
+		Attribute "dice" "float micropolygonlength" [1] "int rasterorient" [1] "int watertight" [0] "string referencecamera" [""]
+		Attribute "displacementbound" "float sphere" [1] "string CoordinateSystem" ["object"]
+		Attribute "identifier" "string object" ["pPlaneShape1"]
+		Attribute "polygon" "int smoothdisplacement" [1]
+		Attribute "trace" "int displacements" [1] "int autobias" [1] "float bias" [0.00999999978]
+		Displace "PxrDisplace" "PxrDisplace3" "string __materialid" ["PxrSurface4SG"]
+		HierarchicalSubdivisionMesh "catmull-clark" [4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4
+			4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4] [0 1 22 21 1 2 23 22 2 3 24 23 3
+			4 25 24 4 5 26 25 5 6 27 26 6 7 28 27 7 8 29 28 8 9 30 29
+			9 10 31 30 10 11 32 31 11 12 33 32 12 13 34 33 13 14 35 34 14 15 36
+			35 15 16 37 36 16 17 38 37 17 18 39 38 18 19 40 39 19 20 41 40 21 22
+			43 42 22 23 44 43 23 24 45 44 24 25 46 45 25 26 47 46 26 27 48 47 27
+			28 49 48 28 29 50 49 29 30 51 50 30 31 52 51 31 32 53 52 32 33 54 53
+			33 34 55 54 34 35 56 55 35 36 57 56 36 37 58 57 37 38 59 58 38 39 60
+			59 39 40 61 60 40 41 62 61 42 43 64 63 43 44 65 64 44 45 66 65 45 46
+			67 66 46 47 68 67 47 48 69 68 48 49 70 69 49 50 71 70 50 51 72 71 51
+			52 73 72 52 53 74 73 53 54 75 74 54 55 76 75 55 56 77 76 56 57 78 77
+			57 58 79 78 58 59 80 79 59 60 81 80 60 61 82 81 61 62 83 82 63 64 85
+			84 64 65 86 85 65 66 87 86 66 67 88 87 67 68 89 88 68 69 90 89 69 70
+			91 90 70 71 92 91 71 72 93 92 72 73 94 93 73 74 95 94 74 75 96 95 75
+			76 97 96 76 77 98 97 77 78 99 98 78 79 100 99 79 80 101 100 80 81 102 101
+			81 82 103 102 82 83 104 103 84 85 106 105 85 86 107 106 86 87 108 107 87 88 109
+			108 88 89 110 109 89 90 111 110 90 91 112 111 91 92 113 112 92 93 114 113 93 94
+			115 114 94 95 116 115 95 96 117 116 96 97 118 117 97 98 119 118 98 99 120 119 99
+			100 121 120 100 101 122 121 101 102 123 122 102 103 124 123 103 104 125 124 105 106 127 126
+			106 107 128 127 107 108 129 128 108 109 130 129 109 110 131 130 110 111 132 131 111 112 133
+			132 112 113 134 133 113 114 135 134 114 115 136 135 115 116 137 136 116 117 138 137 117 118
+			139 138 118 119 140 139 119 120 141 140 120 121 142 141 121 122 143 142 122 123 144 143 123
+			124 145 144 124 125 146 145 126 127 148 147 127 128 149 148 128 129 150 149 129 130 151 150
+			130 131 152 151 131 132 153 152 132 133 154 153 133 134 155 154 134 135 156 155 135 136 157
+			156 136 137 158 157 137 138 159 158 138 139 160 159 139 140 161 160 140 141 162 161 141 142
+			163 162 142 143 164 163 143 144 165 164 144 145 166 165 145 146 167 166 147 148 169 168 148
+			149 170 169 149 150 171 170 150 151 172 171 151 152 173 172 152 153 174 173 153 154 175 174
+			154 155 176 175 155 156 177 176 156 157 178 177 157 158 179 178 158 159 180 179 159 160 181
+			180 160 161 182 181 161 162 183 182 162 163 184 183 163 164 185 184 164 165 186 185 165 166
+			187 186 166 167 188 187 168 169 190 189 169 170 191 190 170 171 192 191 171 172 193 192 172
+			173 194 193 173 174 195 194 174 175 196 195 175 176 197 196 176 177 198 197 177 178 199 198
+			178 179 200 199 179 180 201 200 180 181 202 201 181 182 203 202 182 183 204 203 183 184 205
+			204 184 185 206 205 185 186 207 206 186 187 208 207 187 188 209 208 189 190 211 210 190 191
+			212 211 191 192 213 212 192 193 214 213 193 194 215 214 194 195 216 215 195 196 217 216 196
+			197 218 217 197 198 219 218 198 199 220 219 199 200 221 220 200 201 222 221 201 202 223 222
+			202 203 224 223 203 204 225 224 204 205 226 225 205 206 227 226 206 207 228 227 207 208 229
+			228 208 209 230 229 210 211 232 231 211 212 233 232 212 213 234 233 213 214 235 234 214 215
+			236 235 215 216 237 236 216 217 238 237 217 218 239 238 218 219 240 239 219 220 241 240 220
+			221 242 241 221 222 243 242 222 223 244 243 223 224 245 244 224 225 246 245 225 226 247 246
+			226 227 248 247 227 228 249 248 228 229 250 249 229 230 251 250 231 232 253 252 232 233 254
+			253 233 234 255 254 234 235 256 255 235 236 257 256 236 237 258 257 237 238 259 258 238 239
+			260 259 239 240 261 260 240 241 262 261 241 242 263 262 242 243 264 263 243 244 265 264 244
+			245 266 265 245 246 267 266 246 247 268 267 247 248 269 268 248 249 270 269 249 250 271 270
+			250 251 272 271 252 253 274 273 253 254 275 274 254 255 276 275 255 256 277 276 256 257 278
+			277 257 258 279 278 258 259 280 279 259 260 281 280 260 261 282 281 261 262 283 282 262 263
+			284 283 263 264 285 284 264 265 286 285 265 266 287 286 266 267 288 287 267 268 289 288 268
+			269 290 289 269 270 291 290 270 271 292 291 271 272 293 292 273 274 295 294 274 275 296 295
+			275 276 297 296 276 277 298 297 277 278 299 298 278 279 300 299 279 280 301 300 280 281 302
+			301 281 282 303 302 282 283 304 303 283 284 305 304 284 285 306 305 285 286 307 306 286 287
+			308 307 287 288 309 308 288 289 310 309 289 290 311 310 290 291 312 311 291 292 313 312 292
+			293 314 313 294 295 316 315 295 296 317 316 296 297 318 317 297 298 319 318 298 299 320 319
+			299 300 321 320 300 301 322 321 301 302 323 322 302 303 324 323 303 304 325 324 304 305 326
+			325 305 306 327 326 306 307 328 327 307 308 329 328 308 309 330 329 309 310 331 330 310 311
+			332 331 311 312 333 332 312 313 334 333 313 314 335 334 315 316 337 336 316 317 338 337 317
+			318 339 338 318 319 340 339 319 320 341 340 320 321 342 341 321 322 343 342 322 323 344 343
+			323 324 345 344 324 325 346 345 325 326 347 346 326 327 348 347 327 328 349 348 328 329 350
+			349 329 330 351 350 330 331 352 351 331 332 353 352 332 333 354 353 333 334 355 354 334 335
+			356 355 336 337 358 357 337 338 359 358 338 339 360 359 339 340 361 360 340 341 362 361 341
+			342 363 362 342 343 364 363 343 344 365 364 344 345 366 365 345 346 367 366 346 347 368 367
+			347 348 369 368 348 349 370 369 349 350 371 370 350 351 372 371 351 352 373 372 352 353 374
+			373 353 354 375 374 354 355 376 375 355 356 377 376 357 358 379 378 358 359 380 379 359 360
+			381 380 360 361 382 381 361 362 383 382 362 363 384 383 363 364 385 384 364 365 386 385 365
+			366 387 386 366 367 388 387 367 368 389 388 368 369 390 389 369 370 391 390 370 371 392 391
+			371 372 393 392 372 373 394 393 373 374 395 394 374 375 396 395 375 376 397 396 376 377 398
+			397 378 379 400 399 379 380 401 400 380 381 402 401 381 382 403 402 382 383 404 403 383 384
+			405 404 384 385 406 405 385 386 407 406 386 387 408 407 387 388 409 408 388 389 410 409 389
+			390 411 410 390 391 412 411 391 392 413 412 392 393 414 413 393 394 415 414 394 395 416 415
+			395 396 417 416 396 397 418 417 397 398 419 418 399 400 421 420 400 401 422 421 401 402 423
+			422 402 403 424 423 403 404 425 424 404 405 426 425 405 406 427 426 406 407 428 427 407 408
+			429 428 408 409 430 429 409 410 431 430 410 411 432 431 411 412 433 432 412 413 434 433 413
+			414 435 434 414 415 436 435 415 416 437 436 416 417 438 437 417 418 439 438 418 419 440 439] ["creasemethod" "facevaryingpropagatecorners" "interpolateboundary" "facevaryinginterpolateboundary"] [0 0 1 1 0 0 1 0 0 1 0 0] [1 1 3] [] ["chaikin"] "vertex point P" [-0.5 0 0.5
+			-0.449999988 0 0.5 -0.400000006 0 0.5 -0.349999994 0 0.5 -0.300000012 0 0.5
+			-0.25 0 0.5 -0.199999988 0 0.5 -0.150000006 0 0.5 -0.099999994 0.00101899588 0.5
+			-0.0499999821 0.00386855379 0.5 0 0.00525892153 0.5 0.0500000119 0.00386855379 0.5 0.100000024 0.00101899588 0.5
+			0.150000036 0 0.5 0.199999988 0 0.5 0.25 0 0.5 0.300000012 0 0.5
+			0.350000024 0 0.5 0.400000036 0 0.5 0.449999988 0 0.5 0.5 0 0.5
+			-0.5 0 0.449999988 -0.449999988 0 0.449999988 -0.400000006 0 0.449999988 -0.349999994 0 0.449999988
+			-0.300000012 0 0.449999988 -0.25 0 0.449999988 -0.199999988 0.000486457458 0.449999988 -0.150000006 0.00874347612 0.449999988
+			-0.099999994 0.0219140686 0.449999988 -0.0499999821 0.0331929922 0.449999988 0 0.0375657715 0.449999988 0.0500000119 0.0331929922 0.449999988
+			0.100000024 0.0219140686 0.449999988 0.150000036 0.00874347612 0.449999988 0.199999988 0.000486457458 0.449999988 0.25 0 0.449999988
+			0.300000012 0 0.449999988 0.350000024 0 0.449999988 0.400000036 0 0.449999988 0.449999988 0 0.449999988
+			0.5 0 0.449999988 -0.5 0 0.400000006 -0.449999988 0 0.400000006 -0.400000006 0 0.400000006
+			-0.349999994 0 0.400000006 -0.300000012 0 0.400000006 -0.25 0.000486457458 0.400000006 -0.199999988 0.0132162552 0.400000006
+			-0.150000006 0.038147144 0.400000006 -0.099999994 0.0698613375 0.400000006 -0.0499999821 0.0940514803 0.400000006 0 0.100443289 0.400000006
+			0.0500000119 0.0940514803 0.400000006 0.100000024 0.0698613375 0.400000006 0.150000036 0.0381470658 0.400000006 0.199999988 0.0132162552 0.400000006
+			0.25 0.000486457458 0.400000006 0.300000012 0 0.400000006 0.350000024 0 0.400000006 0.400000036 0 0.400000006
+			0.449999988 0 0.400000006 0.5 0 0.400000006 -0.5 0 0.349999994 -0.449999988 0 0.349999994
+			-0.400000006 0 0.349999994 -0.349999994 0 0.349999994 -0.300000012 0 0.349999994 -0.25 0.00874347612 0.349999994
+			-0.199999988 0.0482541397 0.349999994 -0.150000006 0.112451687 0.349999994 -0.099999994 0.174063534 0.349999994 -0.0499999821 0.21077837 0.349999994
+			0 0.215618566 0.349999994 0.0500000119 0.21077837 0.349999994 0.100000024 0.174063534 0.349999994 0.150000036 0.11245162 0.349999994
+			0.199999988 0.0482539982 0.349999994 0.25 0.00874347612 0.349999994 0.300000012 0 0.349999994 0.350000024 0 0.349999994
+			0.400000036 0 0.349999994 0.449999988 0 0.349999994 0.5 0 0.349999994 -0.5 0 0.300000012
+			-0.449999988 0 0.300000012 -0.400000006 0 0.300000012 -0.349999994 0 0.300000012 -0.300000012 0.00101899588 0.300000012
+			-0.25 0.0386953428 0.300000012 -0.199999988 0.124033839 0.300000012 -0.150000006 0.226821065 0.300000012 -0.099999994 0.3046211 0.300000012
+			-0.0499999821 0.339616358 0.300000012 0 0.33822915 0.300000012 0.0500000119 0.339616358 0.300000012 0.100000024 0.304621041 0.300000012
+			0.150000036 0.226821065 0.300000012 0.199999988 0.124033839 0.300000012 0.25 0.0386954099 0.300000012 0.300000012 0.00101899588 0.300000012
+			0.350000024 0 0.300000012 0.400000036 0 0.300000012 0.449999988 0 0.300000012 0.5 0 0.300000012
+			-0.5 0 0.25 -0.449999988 0 0.25 -0.400000006 0 0.25 -0.349999994 0 0.25
+			-0.300000012 0.0158541538 0.25 -0.25 0.0903111696 0.25 -0.199999988 0.217413023 0.25 -0.150000006 0.345974445 0.25
+			-0.099999994 0.423651308 0.25 -0.0499999821 0.44578281 0.25 0 0.435837477 0.25 0.0500000119 0.445958078 0.25
+			0.100000024 0.423651308 0.25 0.150000036 0.346149921 0.25 0.199999988 0.217413023 0.25 0.25 0.0903112665 0.25
+			0.300000012 0.0158541538 0.25 0.350000024 0 0.25 0.400000036 0 0.25 0.449999988 0 0.25
+			0.5 0 0.25 -0.5 0 0.199999988 -0.449999988 0 0.199999988 -0.400000006 0 0.199999988
+			-0.349999994 0.0041662287 0.199999988 -0.300000012 0.0395515449 0.199999988 -0.25 0.143056303 0.199999988 -0.199999988 0.300800771 0.199999988
+			-0.150000006 0.446578205 0.199999988 -0.099999994 0.522144079 0.199999988 -0.0499999821 0.533299208 0.199999988 0 0.515152872 0.199999988
+			0.0500000119 0.533299208 0.199999988 0.100000024 0.522144079 0.199999988 0.150000036 0.446578205 0.199999988 0.199999988 0.300801098 0.199999988
+			0.25 0.143056124 0.199999988 0.300000012 0.0395515449 0.199999988 0.350000024 0.00416619843 0.199999988 0.400000036 0 0.199999988
+			0.449999988 0 0.199999988 0.5 0 0.199999988 -0.5 0 0.150000006 -0.449999988 0 0.150000006
+			-0.400000006 0 0.150000006 -0.349999994 0.0132604912 0.150000006 -0.300000012 0.0609867275 0.150000006 -0.25 0.178163558 0.150000006
+			-0.199999988 0.352515757 0.150000006 -0.150000006 0.515075564 0.150000006 -0.099999994 0.601874292 0.150000006 -0.0499999821 0.614883721 0.150000006
+			0 0.592720866 0.150000006 0.0500000119 0.615143418 0.150000006 0.100000024 0.601874292 0.150000006 0.150000036 0.515335143 0.150000006
+			0.199999988 0.352515757 0.150000006 0.25 0.178163663 0.150000006 0.300000012 0.0609867983 0.150000006 0.350000024 0.0132604912 0.150000006
+			0.400000036 0 0.150000006 0.449999988 0 0.150000006 0.5 0 0.150000006 -0.5 0 0.099999994
+			-0.449999988 0 0.099999994 -0.400000006 0 0.099999994 -0.349999994 0.0214620102 0.099999994 -0.300000012 0.0735255182 0.099999994
+			-0.25 0.185652405 0.099999994 -0.199999988 0.35785234 0.099999994 -0.150000006 0.532644987 0.099999994 -0.099999994 0.644189954 0.099999994
+			-0.0499999821 0.677269518 0.099999994 0 0.657618403 0.099999994 0.0500000119 0.677269518 0.099999994 0.100000024 0.644189894 0.099999994
+			0.150000036 0.532644987 0.099999994 0.199999988 0.357852399 0.099999994 0.25 0.185652494 0.099999994 0.300000012 0.0735256001 0.099999994
+			0.350000024 0.0214620102 0.099999994 0.400000036 0 0.099999994 0.449999988 0 0.099999994 0.5 0 0.099999994
+			-0.5 0 0.0499999821 -0.449999988 0 0.0499999821 -0.400000006 0.000581377593 0.0499999821 -0.349999994 0.0246845074 0.0499999821
+			-0.300000012 0.0780899674 0.0499999821 -0.25 0.168579787 0.0499999821 -0.199999988 0.315679044 0.0499999821 -0.150000006 0.481964082 0.0499999821
+			-0.099999994 0.610268652 0.0499999821 -0.0499999821 0.667594373 0.0499999821 0 0.656338513 0.0499999821 0.0500000119 0.667594373 0.0499999821
+			0.100000024 0.610268652 0.0499999821 0.150000036 0.481964052 0.0499999821 0.199999988 0.315678984 0.0499999821 0.25 0.168579906 0.0499999821
+			0.300000012 0.0780899674 0.0499999821 0.350000024 0.0246845074 0.0499999821 0.400000036 0.000581377593 0.0499999821 0.449999988 0 0.0499999821
+			0.5 0 0.0499999821 -0.5 0 0 -0.449999988 0 0 -0.400000006 0 0
+			-0.349999994 0.0214620102 2.6283391e-18 -0.300000012 0.0717678219 8.78902148e-18 -0.25 0.141660646 1.73484226e-17 -0.199999988 0.24624525 3.01563317e-17
+			-0.150000006 0.375992358 4.60457963e-17 -0.099999994 0.490596682 6.00807418e-17 -0.0499999821 0.553090453 6.77340749e-17 0 0.548009336 6.71118299e-17
+			0.0500000119 0.553090453 6.77340749e-17 0.100000024 0.490596682 6.00807418e-17 0.150000036 0.375992268 4.6045783e-17 0.199999988 0.24624525 3.01563317e-17
+			0.25 0.141660646 1.73484226e-17 0.300000012 0.0717678219 8.78902148e-18 0.350000024 0.0214620102 2.6283391e-18 0.400000036 0 0
+			0.449999988 0 0 0.5 0 0 -0.5 0 -0.0500000119 -0.449999988 0 -0.0500000119
+			-0.400000006 0 -0.0500000119 -0.349999994 0.0132604912 -0.0500000119 -0.300000012 0.0546454675 -0.0500000119 -0.25 0.114593923 -0.0500000119
+			-0.199999988 0.181707472 -0.0500000119 -0.150000006 0.261389107 -0.0500000119 -0.099999994 0.337304354 -0.0500000119 -0.0499999821 0.381485879 -0.0500000119
+			0 0.375992358 -0.0500000119 0.0500000119 0.381485879 -0.0500000119 0.100000024 0.337304354 -0.0500000119 0.150000036 0.261389107 -0.0500000119
+			0.199999988 0.181707621 -0.0500000119 0.25 0.11459402 -0.0500000119 0.300000012 0.0546454675 -0.0500000119 0.350000024 0.0132604912 -0.0500000119
+			0.400000036 0 -0.0500000119 0.449999988 0 -0.0500000119 0.5 0 -0.0500000119 -0.5 0 -0.100000024
+			-0.449999988 0 -0.100000024 -0.400000006 0 -0.100000024 -0.349999994 0.0041662287 -0.100000024 -0.300000012 0.0318947174 -0.100000024
+			-0.25 0.0780899674 -0.100000024 -0.199999988 0.131600603 -0.100000024 -0.150000006 0.180605143 -0.100000024 -0.099999994 0.217196733 -0.100000024
+			-0.0499999821 0.236445487 -0.100000024 0 0.227369606 -0.100000024 0.0500000119 0.236445487 -0.100000024 0.100000024 0.217196733 -0.100000024
+			0.150000036 0.180605143 -0.100000024 0.199999988 0.131600603 -0.100000024 0.25 0.0780899674 -0.100000024 0.300000012 0.0318947844 -0.100000024
+			0.350000024 0.00416619843 -0.100000024 0.400000036 0 -0.100000024 0.449999988 0 -0.100000024 0.5 0 -0.100000024
+			-0.5 0 -0.150000036 -0.449999988 0 -0.150000036 -0.400000006 0 -0.150000036 -0.349999994 0 -0.150000036
+			-0.300000012 0.0106883803 -0.150000036 -0.25 0.0401623324 -0.150000036 -0.199999988 0.0780899674 -0.150000036 -0.150000006 0.114593923 -0.150000036
+			-0.099999994 0.140646085 -0.150000036 -0.0499999821 0.150062233 -0.150000036 0 0.140646085 -0.150000036 0.0500000119 0.150062233 -0.150000036
+			0.100000024 0.140646085 -0.150000036 0.150000036 0.11459402 -0.150000036 0.199999988 0.0780899674 -0.150000036 0.25 0.0401623324 -0.150000036
+			0.300000012 0.0106883161 -0.150000036 0.350000024 0 -0.150000036 0.400000036 0 -0.150000036 0.449999988 0 -0.150000036
+			0.5 0 -0.150000036 -0.5 0 -0.199999988 -0.449999988 0 -0.199999988 -0.400000006 0 -0.199999988
+			-0.349999994 0 -0.199999988 -0.300000012 0 -0.199999988 -0.25 0.0106883803 -0.199999988 -0.199999988 0.0318947174 -0.199999988
+			-0.150000006 0.0546454675 -0.199999988 -0.099999994 0.0717678219 -0.199999988 -0.0499999821 0.0780899674 -0.199999988 0 0.0717678219 -0.199999988
+			0.0500000119 0.0780899674 -0.199999988 0.100000024 0.0717678219 -0.199999988 0.150000036 0.0546454675 -0.199999988 0.199999988 0.0318947844 -0.199999988
+			0.25 0.0106883161 -0.199999988 0.300000012 0 -0.199999988 0.350000024 0 -0.199999988 0.400000036 0 -0.199999988
+			0.449999988 0 -0.199999988 0.5 0 -0.199999988 -0.5 0 -0.25 -0.449999988 0 -0.25
+			-0.400000006 0 -0.25 -0.349999994 0 -0.25 -0.300000012 0 -0.25 -0.25 0 -0.25
+			-0.199999988 0.0041662287 -0.25 -0.150000006 0.0132604912 -0.25 -0.099999994 0.0214620102 -0.25 -0.0499999821 0.0246845074 -0.25
+			0 0.0214620102 -0.25 0.0500000119 0.0246845074 -0.25 0.100000024 0.0214620102 -0.25 0.150000036 0.0132604912 -0.25
+			0.199999988 0.00416619843 -0.25 0.25 0 -0.25 0.300000012 0 -0.25 0.350000024 0 -0.25
+			0.400000036 0 -0.25 0.449999988 0 -0.25 0.5 0 -0.25 -0.5 0 -0.300000012
+			-0.449999988 0 -0.300000012 -0.400000006 0 -0.300000012 -0.349999994 0 -0.300000012 -0.300000012 0 -0.300000012
+			-0.25 0 -0.300000012 -0.199999988 0 -0.300000012 -0.150000006 0 -0.300000012 -0.099999994 0 -0.300000012
+			-0.0499999821 0.000581377593 -0.300000012 0 0 -0.300000012 0.0500000119 0.000581377593 -0.300000012 0.100000024 0 -0.300000012
+			0.150000036 0 -0.300000012 0.199999988 0 -0.300000012 0.25 0 -0.300000012 0.300000012 0 -0.300000012
+			0.350000024 0 -0.300000012 0.400000036 0 -0.300000012 0.449999988 0 -0.300000012 0.5 0 -0.300000012
+			-0.5 0 -0.350000024 -0.449999988 0 -0.350000024 -0.400000006 0 -0.350000024 -0.349999994 0 -0.350000024
+			-0.300000012 0 -0.350000024 -0.25 0 -0.350000024 -0.199999988 0 -0.350000024 -0.150000006 0 -0.350000024
+			-0.099999994 0 -0.350000024 -0.0499999821 0 -0.350000024 0 0 -0.350000024 0.0500000119 0 -0.350000024
+			0.100000024 0 -0.350000024 0.150000036 0 -0.350000024 0.199999988 0 -0.350000024 0.25 0 -0.350000024
+			0.300000012 0 -0.350000024 0.350000024 0 -0.350000024 0.400000036 0 -0.350000024 0.449999988 0 -0.350000024
+			0.5 0 -0.350000024 -0.5 0 -0.400000036 -0.449999988 0 -0.400000036 -0.400000006 0 -0.400000036
+			-0.349999994 0 -0.400000036 -0.300000012 0 -0.400000036 -0.25 0 -0.400000036 -0.199999988 0 -0.400000036
+			-0.150000006 1.64572918 -0.400000036 -0.099999994 0 -0.400000036 -0.0499999821 0 -0.400000036 0 0 -0.400000036
+			0.0500000119 0 -0.400000036 0.100000024 0 -0.400000036 0.150000036 1.64572918 -0.400000036 0.199999988 0 -0.400000036
+			0.25 0 -0.400000036 0.300000012 0 -0.400000036 0.350000024 0 -0.400000036 0.400000036 0 -0.400000036
+			0.449999988 0 -0.400000036 0.5 0 -0.400000036 -0.5 0 -0.449999988 -0.449999988 0 -0.449999988
+			-0.400000006 0 -0.449999988 -0.349999994 0 -0.449999988 -0.300000012 0 -0.449999988 -0.25 0 -0.449999988
+			-0.199999988 0 -0.449999988 -0.150000006 0 -0.449999988 -0.099999994 0 -0.449999988 -0.0499999821 0 -0.449999988
+			0 0 -0.449999988 0.0500000119 0 -0.449999988 0.100000024 0 -0.449999988 0.150000036 0 -0.449999988
+			0.199999988 0 -0.449999988 0.25 0 -0.449999988 0.300000012 0 -0.449999988 0.350000024 0 -0.449999988
+			0.400000036 0 -0.449999988 0.449999988 0 -0.449999988 0.5 0 -0.449999988 -0.5 0 -0.5
+			-0.449999988 0 -0.5 -0.400000006 0 -0.5 -0.349999994 0 -0.5 -0.300000012 0 -0.5
+			-0.25 0 -0.5 -0.199999988 0 -0.5 -0.150000006 0 -0.5 -0.099999994 0 -0.5
+			-0.0499999821 0 -0.5 0 0 -0.5 0.0500000119 0 -0.5 0.100000024 0 -0.5
+			0.150000036 0 -0.5 0.199999988 0 -0.5 0.25 0 -0.5 0.300000012 0 -0.5
+			0.350000024 0 -0.5 0.400000036 0 -0.5 0.449999988 0 -0.5 0.5 0 -0.5] "facevarying float[2] st" [0 0 0.0500000007 0 0.0500000007 0.0500000007 0 0.0500000007
+			0.0500000007 0 0.100000001 0 0.100000001 0.0500000007 0.0500000007 0.0500000007 0.100000001 0 0.150000006 0
+			0.150000006 0.0500000007 0.100000001 0.0500000007 0.150000006 0 0.200000003 0 0.200000003 0.0500000007 0.150000006 0.0500000007
+			0.200000003 0 0.25 0 0.25 0.0500000007 0.200000003 0.0500000007 0.25 0 0.300000012 0
+			0.300000012 0.0500000007 0.25 0.0500000007 0.300000012 0 0.349999994 0 0.349999994 0.0500000007 0.300000012 0.0500000007
+			0.349999994 0 0.400000006 0 0.400000006 0.0500000007 0.349999994 0.0500000007 0.400000006 0 0.450000018 0
+			0.450000018 0.0500000007 0.400000006 0.0500000007 0.450000018 0 0.5 0 0.5 0.0500000007 0.450000018 0.0500000007
+			0.5 0 0.550000012 0 0.550000012 0.0500000007 0.5 0.0500000007 0.550000012 0 0.600000024 0
+			0.600000024 0.0500000007 0.550000012 0.0500000007 0.600000024 0 0.650000036 0 0.650000036 0.0500000007 0.600000024 0.0500000007
+			0.650000036 0 0.699999988 0 0.699999988 0.0500000007 0.650000036 0.0500000007 0.699999988 0 0.75 0
+			0.75 0.0500000007 0.699999988 0.0500000007 0.75 0 0.800000012 0 0.800000012 0.0500000007 0.75 0.0500000007
+			0.800000012 0 0.850000024 0 0.850000024 0.0500000007 0.800000012 0.0500000007 0.850000024 0 0.900000036 0
+			0.900000036 0.0500000007 0.850000024 0.0500000007 0.900000036 0 0.949999988 0 0.949999988 0.0500000007 0.900000036 0.0500000007
+			0.949999988 0 1 0 1 0.0500000007 0.949999988 0.0500000007 0 0.0500000007 0.0500000007 0.0500000007
+			0.0500000007 0.100000001 0 0.100000001 0.0500000007 0.0500000007 0.100000001 0.0500000007 0.100000001 0.100000001 0.0500000007 0.100000001
+			0.100000001 0.0500000007 0.150000006 0.0500000007 0.150000006 0.100000001 0.100000001 0.100000001 0.150000006 0.0500000007 0.200000003 0.0500000007
+			0.200000003 0.100000001 0.150000006 0.100000001 0.200000003 0.0500000007 0.25 0.0500000007 0.25 0.100000001 0.200000003 0.100000001
+			0.25 0.0500000007 0.300000012 0.0500000007 0.300000012 0.100000001 0.25 0.100000001 0.300000012 0.0500000007 0.349999994 0.0500000007
+			0.349999994 0.100000001 0.300000012 0.100000001 0.349999994 0.0500000007 0.400000006 0.0500000007 0.400000006 0.100000001 0.349999994 0.100000001
+			0.400000006 0.0500000007 0.450000018 0.0500000007 0.450000018 0.100000001 0.400000006 0.100000001 0.450000018 0.0500000007 0.5 0.0500000007
+			0.5 0.100000001 0.450000018 0.100000001 0.5 0.0500000007 0.550000012 0.0500000007 0.550000012 0.100000001 0.5 0.100000001
+			0.550000012 0.0500000007 0.600000024 0.0500000007 0.600000024 0.100000001 0.550000012 0.100000001 0.600000024 0.0500000007 0.650000036 0.0500000007
+			0.650000036 0.100000001 0.600000024 0.100000001 0.650000036 0.0500000007 0.699999988 0.0500000007 0.699999988 0.100000001 0.650000036 0.100000001
+			0.699999988 0.0500000007 0.75 0.0500000007 0.75 0.100000001 0.699999988 0.100000001 0.75 0.0500000007 0.800000012 0.0500000007
+			0.800000012 0.100000001 0.75 0.100000001 0.800000012 0.0500000007 0.850000024 0.0500000007 0.850000024 0.100000001 0.800000012 0.100000001
+			0.850000024 0.0500000007 0.900000036 0.0500000007 0.900000036 0.100000001 0.850000024 0.100000001 0.900000036 0.0500000007 0.949999988 0.0500000007
+			0.949999988 0.100000001 0.900000036 0.100000001 0.949999988 0.0500000007 1 0.0500000007 1 0.100000001 0.949999988 0.100000001
+			0 0.100000001 0.0500000007 0.100000001 0.0500000007 0.150000006 0 0.150000006 0.0500000007 0.100000001 0.100000001 0.100000001
+			0.100000001 0.150000006 0.0500000007 0.150000006 0.100000001 0.100000001 0.150000006 0.100000001 0.150000006 0.150000006 0.100000001 0.150000006
+			0.150000006 0.100000001 0.200000003 0.100000001 0.200000003 0.150000006 0.150000006 0.150000006 0.200000003 0.100000001 0.25 0.100000001
+			0.25 0.150000006 0.200000003 0.150000006 0.25 0.100000001 0.300000012 0.100000001 0.300000012 0.150000006 0.25 0.150000006
+			0.300000012 0.100000001 0.349999994 0.100000001 0.349999994 0.150000006 0.300000012 0.150000006 0.349999994 0.100000001 0.400000006 0.100000001
+			0.400000006 0.150000006 0.349999994 0.150000006 0.400000006 0.100000001 0.450000018 0.100000001 0.450000018 0.150000006 0.400000006 0.150000006
+			0.450000018 0.100000001 0.5 0.100000001 0.5 0.150000006 0.450000018 0.150000006 0.5 0.100000001 0.550000012 0.100000001
+			0.550000012 0.150000006 0.5 0.150000006 0.550000012 0.100000001 0.600000024 0.100000001 0.600000024 0.150000006 0.550000012 0.150000006
+			0.600000024 0.100000001 0.650000036 0.100000001 0.650000036 0.150000006 0.600000024 0.150000006 0.650000036 0.100000001 0.699999988 0.100000001
+			0.699999988 0.150000006 0.650000036 0.150000006 0.699999988 0.100000001 0.75 0.100000001 0.75 0.150000006 0.699999988 0.150000006
+			0.75 0.100000001 0.800000012 0.100000001 0.800000012 0.150000006 0.75 0.150000006 0.800000012 0.100000001 0.850000024 0.100000001
+			0.850000024 0.150000006 0.800000012 0.150000006 0.850000024 0.100000001 0.900000036 0.100000001 0.900000036 0.150000006 0.850000024 0.150000006
+			0.900000036 0.100000001 0.949999988 0.100000001 0.949999988 0.150000006 0.900000036 0.150000006 0.949999988 0.100000001 1 0.100000001
+			1 0.150000006 0.949999988 0.150000006 0 0.150000006 0.0500000007 0.150000006 0.0500000007 0.200000003 0 0.200000003
+			0.0500000007 0.150000006 0.100000001 0.150000006 0.100000001 0.200000003 0.0500000007 0.200000003 0.100000001 0.150000006 0.150000006 0.150000006
+			0.150000006 0.200000003 0.100000001 0.200000003 0.150000006 0.150000006 0.200000003 0.150000006 0.200000003 0.200000003 0.150000006 0.200000003
+			0.200000003 0.150000006 0.25 0.150000006 0.25 0.200000003 0.200000003 0.200000003 0.25 0.150000006 0.300000012 0.150000006
+			0.300000012 0.200000003 0.25 0.200000003 0.300000012 0.150000006 0.349999994 0.150000006 0.349999994 0.200000003 0.300000012 0.200000003
+			0.349999994 0.150000006 0.400000006 0.150000006 0.400000006 0.200000003 0.349999994 0.200000003 0.400000006 0.150000006 0.450000018 0.150000006
+			0.450000018 0.200000003 0.400000006 0.200000003 0.450000018 0.150000006 0.5 0.150000006 0.5 0.200000003 0.450000018 0.200000003
+			0.5 0.150000006 0.550000012 0.150000006 0.550000012 0.200000003 0.5 0.200000003 0.550000012 0.150000006 0.600000024 0.150000006
+			0.600000024 0.200000003 0.550000012 0.200000003 0.600000024 0.150000006 0.650000036 0.150000006 0.650000036 0.200000003 0.600000024 0.200000003
+			0.650000036 0.150000006 0.699999988 0.150000006 0.699999988 0.200000003 0.650000036 0.200000003 0.699999988 0.150000006 0.75 0.150000006
+			0.75 0.200000003 0.699999988 0.200000003 0.75 0.150000006 0.800000012 0.150000006 0.800000012 0.200000003 0.75 0.200000003
+			0.800000012 0.150000006 0.850000024 0.150000006 0.850000024 0.200000003 0.800000012 0.200000003 0.850000024 0.150000006 0.900000036 0.150000006
+			0.900000036 0.200000003 0.850000024 0.200000003 0.900000036 0.150000006 0.949999988 0.150000006 0.949999988 0.200000003 0.900000036 0.200000003
+			0.949999988 0.150000006 1 0.150000006 1 0.200000003 0.949999988 0.200000003 0 0.200000003 0.0500000007 0.200000003
+			0.0500000007 0.25 0 0.25 0.0500000007 0.200000003 0.100000001 0.200000003 0.100000001 0.25 0.0500000007 0.25
+			0.100000001 0.200000003 0.150000006 0.200000003 0.150000006 0.25 0.100000001 0.25 0.150000006 0.200000003 0.200000003 0.200000003
+			0.200000003 0.25 0.150000006 0.25 0.200000003 0.200000003 0.25 0.200000003 0.25 0.25 0.200000003 0.25
+			0.25 0.200000003 0.300000012 0.200000003 0.300000012 0.25 0.25 0.25 0.300000012 0.200000003 0.349999994 0.200000003
+			0.349999994 0.25 0.300000012 0.25 0.349999994 0.200000003 0.400000006 0.200000003 0.400000006 0.25 0.349999994 0.25
+			0.400000006 0.200000003 0.450000018 0.200000003 0.450000018 0.25 0.400000006 0.25 0.450000018 0.200000003 0.5 0.200000003
+			0.5 0.25 0.450000018 0.25 0.5 0.200000003 0.550000012 0.200000003 0.550000012 0.25 0.5 0.25
+			0.550000012 0.200000003 0.600000024 0.200000003 0.600000024 0.25 0.550000012 0.25 0.600000024 0.200000003 0.650000036 0.200000003
+			0.650000036 0.25 0.600000024 0.25 0.650000036 0.200000003 0.699999988 0.200000003 0.699999988 0.25 0.650000036 0.25
+			0.699999988 0.200000003 0.75 0.200000003 0.75 0.25 0.699999988 0.25 0.75 0.200000003 0.800000012 0.200000003
+			0.800000012 0.25 0.75 0.25 0.800000012 0.200000003 0.850000024 0.200000003 0.850000024 0.25 0.800000012 0.25
+			0.850000024 0.200000003 0.900000036 0.200000003 0.900000036 0.25 0.850000024 0.25 0.900000036 0.200000003 0.949999988 0.200000003
+			0.949999988 0.25 0.900000036 0.25 0.949999988 0.200000003 1 0.200000003 1 0.25 0.949999988 0.25
+			0 0.25 0.0500000007 0.25 0.0500000007 0.300000012 0 0.300000012 0.0500000007 0.25 0.100000001 0.25
+			0.100000001 0.300000012 0.0500000007 0.300000012 0.100000001 0.25 0.150000006 0.25 0.150000006 0.300000012 0.100000001 0.300000012
+			0.150000006 0.25 0.200000003 0.25 0.200000003 0.300000012 0.150000006 0.300000012 0.200000003 0.25 0.25 0.25
+			0.25 0.300000012 0.200000003 0.300000012 0.25 0.25 0.300000012 0.25 0.300000012 0.300000012 0.25 0.300000012
+			0.300000012 0.25 0.349999994 0.25 0.349999994 0.300000012 0.300000012 0.300000012 0.349999994 0.25 0.400000006 0.25
+			0.400000006 0.300000012 0.349999994 0.300000012 0.400000006 0.25 0.450000018 0.25 0.450000018 0.300000012 0.400000006 0.300000012
+			0.450000018 0.25 0.5 0.25 0.5 0.300000012 0.450000018 0.300000012 0.5 0.25 0.550000012 0.25
+			0.550000012 0.300000012 0.5 0.300000012 0.550000012 0.25 0.600000024 0.25 0.600000024 0.300000012 0.550000012 0.300000012
+			0.600000024 0.25 0.650000036 0.25 0.650000036 0.300000012 0.600000024 0.300000012 0.650000036 0.25 0.699999988 0.25
+			0.699999988 0.300000012 0.650000036 0.300000012 0.699999988 0.25 0.75 0.25 0.75 0.300000012 0.699999988 0.300000012
+			0.75 0.25 0.800000012 0.25 0.800000012 0.300000012 0.75 0.300000012 0.800000012 0.25 0.850000024 0.25
+			0.850000024 0.300000012 0.800000012 0.300000012 0.850000024 0.25 0.900000036 0.25 0.900000036 0.300000012 0.850000024 0.300000012
+			0.900000036 0.25 0.949999988 0.25 0.949999988 0.300000012 0.900000036 0.300000012 0.949999988 0.25 1 0.25
+			1 0.300000012 0.949999988 0.300000012 0 0.300000012 0.0500000007 0.300000012 0.0500000007 0.349999994 0 0.349999994
+			0.0500000007 0.300000012 0.100000001 0.300000012 0.100000001 0.349999994 0.0500000007 0.349999994 0.100000001 0.300000012 0.150000006 0.300000012
+			0.150000006 0.349999994 0.100000001 0.349999994 0.150000006 0.300000012 0.200000003 0.300000012 0.200000003 0.349999994 0.150000006 0.349999994
+			0.200000003 0.300000012 0.25 0.300000012 0.25 0.349999994 0.200000003 0.349999994 0.25 0.300000012 0.300000012 0.300000012
+			0.300000012 0.349999994 0.25 0.349999994 0.300000012 0.300000012 0.349999994 0.300000012 0.349999994 0.349999994 0.300000012 0.349999994
+			0.349999994 0.300000012 0.400000006 0.300000012 0.400000006 0.349999994 0.349999994 0.349999994 0.400000006 0.300000012 0.450000018 0.300000012
+			0.450000018 0.349999994 0.400000006 0.349999994 0.450000018 0.300000012 0.5 0.300000012 0.5 0.349999994 0.450000018 0.349999994
+			0.5 0.300000012 0.550000012 0.300000012 0.550000012 0.349999994 0.5 0.349999994 0.550000012 0.300000012 0.600000024 0.300000012
+			0.600000024 0.349999994 0.550000012 0.349999994 0.600000024 0.300000012 0.650000036 0.300000012 0.650000036 0.349999994 0.600000024 0.349999994
+			0.650000036 0.300000012 0.699999988 0.300000012 0.699999988 0.349999994 0.650000036 0.349999994 0.699999988 0.300000012 0.75 0.300000012
+			0.75 0.349999994 0.699999988 0.349999994 0.75 0.300000012 0.800000012 0.300000012 0.800000012 0.349999994 0.75 0.349999994
+			0.800000012 0.300000012 0.850000024 0.300000012 0.850000024 0.349999994 0.800000012 0.349999994 0.850000024 0.300000012 0.900000036 0.300000012
+			0.900000036 0.349999994 0.850000024 0.349999994 0.900000036 0.300000012 0.949999988 0.300000012 0.949999988 0.349999994 0.900000036 0.349999994
+			0.949999988 0.300000012 1 0.300000012 1 0.349999994 0.949999988 0.349999994 0 0.349999994 0.0500000007 0.349999994
+			0.0500000007 0.400000006 0 0.400000006 0.0500000007 0.349999994 0.100000001 0.349999994 0.100000001 0.400000006 0.0500000007 0.400000006
+			0.100000001 0.349999994 0.150000006 0.349999994 0.150000006 0.400000006 0.100000001 0.400000006 0.150000006 0.349999994 0.200000003 0.349999994
+			0.200000003 0.400000006 0.150000006 0.400000006 0.200000003 0.349999994 0.25 0.349999994 0.25 0.400000006 0.200000003 0.400000006
+			0.25 0.349999994 0.300000012 0.349999994 0.300000012 0.400000006 0.25 0.400000006 0.300000012 0.349999994 0.349999994 0.349999994
+			0.349999994 0.400000006 0.300000012 0.400000006 0.349999994 0.349999994 0.400000006 0.349999994 0.400000006 0.400000006 0.349999994 0.400000006
+			0.400000006 0.349999994 0.450000018 0.349999994 0.450000018 0.400000006 0.400000006 0.400000006 0.450000018 0.349999994 0.5 0.349999994
+			0.5 0.400000006 0.450000018 0.400000006 0.5 0.349999994 0.550000012 0.349999994 0.550000012 0.400000006 0.5 0.400000006
+			0.550000012 0.349999994 0.600000024 0.349999994 0.600000024 0.400000006 0.550000012 0.400000006 0.600000024 0.349999994 0.650000036 0.349999994
+			0.650000036 0.400000006 0.600000024 0.400000006 0.650000036 0.349999994 0.699999988 0.349999994 0.699999988 0.400000006 0.650000036 0.400000006
+			0.699999988 0.349999994 0.75 0.349999994 0.75 0.400000006 0.699999988 0.400000006 0.75 0.349999994 0.800000012 0.349999994
+			0.800000012 0.400000006 0.75 0.400000006 0.800000012 0.349999994 0.850000024 0.349999994 0.850000024 0.400000006 0.800000012 0.400000006
+			0.850000024 0.349999994 0.900000036 0.349999994 0.900000036 0.400000006 0.850000024 0.400000006 0.900000036 0.349999994 0.949999988 0.349999994
+			0.949999988 0.400000006 0.900000036 0.400000006 0.949999988 0.349999994 1 0.349999994 1 0.400000006 0.949999988 0.400000006
+			0 0.400000006 0.0500000007 0.400000006 0.0500000007 0.450000018 0 0.450000018 0.0500000007 0.400000006 0.100000001 0.400000006
+			0.100000001 0.450000018 0.0500000007 0.450000018 0.100000001 0.400000006 0.150000006 0.400000006 0.150000006 0.450000018 0.100000001 0.450000018
+			0.150000006 0.400000006 0.200000003 0.400000006 0.200000003 0.450000018 0.150000006 0.450000018 0.200000003 0.400000006 0.25 0.400000006
+			0.25 0.450000018 0.200000003 0.450000018 0.25 0.400000006 0.300000012 0.400000006 0.300000012 0.450000018 0.25 0.450000018
+			0.300000012 0.400000006 0.349999994 0.400000006 0.349999994 0.450000018 0.300000012 0.450000018 0.349999994 0.400000006 0.400000006 0.400000006
+			0.400000006 0.450000018 0.349999994 0.450000018 0.400000006 0.400000006 0.450000018 0.400000006 0.450000018 0.450000018 0.400000006 0.450000018
+			0.450000018 0.400000006 0.5 0.400000006 0.5 0.450000018 0.450000018 0.450000018 0.5 0.400000006 0.550000012 0.400000006
+			0.550000012 0.450000018 0.5 0.450000018 0.550000012 0.400000006 0.600000024 0.400000006 0.600000024 0.450000018 0.550000012 0.450000018
+			0.600000024 0.400000006 0.650000036 0.400000006 0.650000036 0.450000018 0.600000024 0.450000018 0.650000036 0.400000006 0.699999988 0.400000006
+			0.699999988 0.450000018 0.650000036 0.450000018 0.699999988 0.400000006 0.75 0.400000006 0.75 0.450000018 0.699999988 0.450000018
+			0.75 0.400000006 0.800000012 0.400000006 0.800000012 0.450000018 0.75 0.450000018 0.800000012 0.400000006 0.850000024 0.400000006
+			0.850000024 0.450000018 0.800000012 0.450000018 0.850000024 0.400000006 0.900000036 0.400000006 0.900000036 0.450000018 0.850000024 0.450000018
+			0.900000036 0.400000006 0.949999988 0.400000006 0.949999988 0.450000018 0.900000036 0.450000018 0.949999988 0.400000006 1 0.400000006
+			1 0.450000018 0.949999988 0.450000018 0 0.450000018 0.0500000007 0.450000018 0.0500000007 0.5 0 0.5
+			0.0500000007 0.450000018 0.100000001 0.450000018 0.100000001 0.5 0.0500000007 0.5 0.100000001 0.450000018 0.150000006 0.450000018
+			0.150000006 0.5 0.100000001 0.5 0.150000006 0.450000018 0.200000003 0.450000018 0.200000003 0.5 0.150000006 0.5
+			0.200000003 0.450000018 0.25 0.450000018 0.25 0.5 0.200000003 0.5 0.25 0.450000018 0.300000012 0.450000018
+			0.300000012 0.5 0.25 0.5 0.300000012 0.450000018 0.349999994 0.450000018 0.349999994 0.5 0.300000012 0.5
+			0.349999994 0.450000018 0.400000006 0.450000018 0.400000006 0.5 0.349999994 0.5 0.400000006 0.450000018 0.450000018 0.450000018
+			0.450000018 0.5 0.400000006 0.5 0.450000018 0.450000018 0.5 0.450000018 0.5 0.5 0.450000018 0.5
+			0.5 0.450000018 0.550000012 0.450000018 0.550000012 0.5 0.5 0.5 0.550000012 0.450000018 0.600000024 0.450000018
+			0.600000024 0.5 0.550000012 0.5 0.600000024 0.450000018 0.650000036 0.450000018 0.650000036 0.5 0.600000024 0.5
+			0.650000036 0.450000018 0.699999988 0.450000018 0.699999988 0.5 0.650000036 0.5 0.699999988 0.450000018 0.75 0.450000018
+			0.75 0.5 0.699999988 0.5 0.75 0.450000018 0.800000012 0.450000018 0.800000012 0.5 0.75 0.5
+			0.800000012 0.450000018 0.850000024 0.450000018 0.850000024 0.5 0.800000012 0.5 0.850000024 0.450000018 0.900000036 0.450000018
+			0.900000036 0.5 0.850000024 0.5 0.900000036 0.450000018 0.949999988 0.450000018 0.949999988 0.5 0.900000036 0.5
+			0.949999988 0.450000018 1 0.450000018 1 0.5 0.949999988 0.5 0 0.5 0.0500000007 0.5
+			0.0500000007 0.550000012 0 0.550000012 0.0500000007 0.5 0.100000001 0.5 0.100000001 0.550000012 0.0500000007 0.550000012
+			0.100000001 0.5 0.150000006 0.5 0.150000006 0.550000012 0.100000001 0.550000012 0.150000006 0.5 0.200000003 0.5
+			0.200000003 0.550000012 0.150000006 0.550000012 0.200000003 0.5 0.25 0.5 0.25 0.550000012 0.200000003 0.550000012
+			0.25 0.5 0.300000012 0.5 0.300000012 0.550000012 0.25 0.550000012 0.300000012 0.5 0.349999994 0.5
+			0.349999994 0.550000012 0.300000012 0.550000012 0.349999994 0.5 0.400000006 0.5 0.400000006 0.550000012 0.349999994 0.550000012
+			0.400000006 0.5 0.450000018 0.5 0.450000018 0.550000012 0.400000006 0.550000012 0.450000018 0.5 0.5 0.5
+			0.5 0.550000012 0.450000018 0.550000012 0.5 0.5 0.550000012 0.5 0.550000012 0.550000012 0.5 0.550000012
+			0.550000012 0.5 0.600000024 0.5 0.600000024 0.550000012 0.550000012 0.550000012 0.600000024 0.5 0.650000036 0.5
+			0.650000036 0.550000012 0.600000024 0.550000012 0.650000036 0.5 0.699999988 0.5 0.699999988 0.550000012 0.650000036 0.550000012
+			0.699999988 0.5 0.75 0.5 0.75 0.550000012 0.699999988 0.550000012 0.75 0.5 0.800000012 0.5
+			0.800000012 0.550000012 0.75 0.550000012 0.800000012 0.5 0.850000024 0.5 0.850000024 0.550000012 0.800000012 0.550000012
+			0.850000024 0.5 0.900000036 0.5 0.900000036 0.550000012 0.850000024 0.550000012 0.900000036 0.5 0.949999988 0.5
+			0.949999988 0.550000012 0.900000036 0.550000012 0.949999988 0.5 1 0.5 1 0.550000012 0.949999988 0.550000012
+			0 0.550000012 0.0500000007 0.550000012 0.0500000007 0.600000024 0 0.600000024 0.0500000007 0.550000012 0.100000001 0.550000012
+			0.100000001 0.600000024 0.0500000007 0.600000024 0.100000001 0.550000012 0.150000006 0.550000012 0.150000006 0.600000024 0.100000001 0.600000024
+			0.150000006 0.550000012 0.200000003 0.550000012 0.200000003 0.600000024 0.150000006 0.600000024 0.200000003 0.550000012 0.25 0.550000012
+			0.25 0.600000024 0.200000003 0.600000024 0.25 0.550000012 0.300000012 0.550000012 0.300000012 0.600000024 0.25 0.600000024
+			0.300000012 0.550000012 0.349999994 0.550000012 0.349999994 0.600000024 0.300000012 0.600000024 0.349999994 0.550000012 0.400000006 0.550000012
+			0.400000006 0.600000024 0.349999994 0.600000024 0.400000006 0.550000012 0.450000018 0.550000012 0.450000018 0.600000024 0.400000006 0.600000024
+			0.450000018 0.550000012 0.5 0.550000012 0.5 0.600000024 0.450000018 0.600000024 0.5 0.550000012 0.550000012 0.550000012
+			0.550000012 0.600000024 0.5 0.600000024 0.550000012 0.550000012 0.600000024 0.550000012 0.600000024 0.600000024 0.550000012 0.600000024
+			0.600000024 0.550000012 0.650000036 0.550000012 0.650000036 0.600000024 0.600000024 0.600000024 0.650000036 0.550000012 0.699999988 0.550000012
+			0.699999988 0.600000024 0.650000036 0.600000024 0.699999988 0.550000012 0.75 0.550000012 0.75 0.600000024 0.699999988 0.600000024
+			0.75 0.550000012 0.800000012 0.550000012 0.800000012 0.600000024 0.75 0.600000024 0.800000012 0.550000012 0.850000024 0.550000012
+			0.850000024 0.600000024 0.800000012 0.600000024 0.850000024 0.550000012 0.900000036 0.550000012 0.900000036 0.600000024 0.850000024 0.600000024
+			0.900000036 0.550000012 0.949999988 0.550000012 0.949999988 0.600000024 0.900000036 0.600000024 0.949999988 0.550000012 1 0.550000012
+			1 0.600000024 0.949999988 0.600000024 0 0.600000024 0.0500000007 0.600000024 0.0500000007 0.650000036 0 0.650000036
+			0.0500000007 0.600000024 0.100000001 0.600000024 0.100000001 0.650000036 0.0500000007 0.650000036 0.100000001 0.600000024 0.150000006 0.600000024
+			0.150000006 0.650000036 0.100000001 0.650000036 0.150000006 0.600000024 0.200000003 0.600000024 0.200000003 0.650000036 0.150000006 0.650000036
+			0.200000003 0.600000024 0.25 0.600000024 0.25 0.650000036 0.200000003 0.650000036 0.25 0.600000024 0.300000012 0.600000024
+			0.300000012 0.650000036 0.25 0.650000036 0.300000012 0.600000024 0.349999994 0.600000024 0.349999994 0.650000036 0.300000012 0.650000036
+			0.349999994 0.600000024 0.400000006 0.600000024 0.400000006 0.650000036 0.349999994 0.650000036 0.400000006 0.600000024 0.450000018 0.600000024
+			0.450000018 0.650000036 0.400000006 0.650000036 0.450000018 0.600000024 0.5 0.600000024 0.5 0.650000036 0.450000018 0.650000036
+			0.5 0.600000024 0.550000012 0.600000024 0.550000012 0.650000036 0.5 0.650000036 0.550000012 0.600000024 0.600000024 0.600000024
+			0.600000024 0.650000036 0.550000012 0.650000036 0.600000024 0.600000024 0.650000036 0.600000024 0.650000036 0.650000036 0.600000024 0.650000036
+			0.650000036 0.600000024 0.699999988 0.600000024 0.699999988 0.650000036 0.650000036 0.650000036 0.699999988 0.600000024 0.75 0.600000024
+			0.75 0.650000036 0.699999988 0.650000036 0.75 0.600000024 0.800000012 0.600000024 0.800000012 0.650000036 0.75 0.650000036
+			0.800000012 0.600000024 0.850000024 0.600000024 0.850000024 0.650000036 0.800000012 0.650000036 0.850000024 0.600000024 0.900000036 0.600000024
+			0.900000036 0.650000036 0.850000024 0.650000036 0.900000036 0.600000024 0.949999988 0.600000024 0.949999988 0.650000036 0.900000036 0.650000036
+			0.949999988 0.600000024 1 0.600000024 1 0.650000036 0.949999988 0.650000036 0 0.650000036 0.0500000007 0.650000036
+			0.0500000007 0.699999988 0 0.699999988 0.0500000007 0.650000036 0.100000001 0.650000036 0.100000001 0.699999988 0.0500000007 0.699999988
+			0.100000001 0.650000036 0.150000006 0.650000036 0.150000006 0.699999988 0.100000001 0.699999988 0.150000006 0.650000036 0.200000003 0.650000036
+			0.200000003 0.699999988 0.150000006 0.699999988 0.200000003 0.650000036 0.25 0.650000036 0.25 0.699999988 0.200000003 0.699999988
+			0.25 0.650000036 0.300000012 0.650000036 0.300000012 0.699999988 0.25 0.699999988 0.300000012 0.650000036 0.349999994 0.650000036
+			0.349999994 0.699999988 0.300000012 0.699999988 0.349999994 0.650000036 0.400000006 0.650000036 0.400000006 0.699999988 0.349999994 0.699999988
+			0.400000006 0.650000036 0.450000018 0.650000036 0.450000018 0.699999988 0.400000006 0.699999988 0.450000018 0.650000036 0.5 0.650000036
+			0.5 0.699999988 0.450000018 0.699999988 0.5 0.650000036 0.550000012 0.650000036 0.550000012 0.699999988 0.5 0.699999988
+			0.550000012 0.650000036 0.600000024 0.650000036 0.600000024 0.699999988 0.550000012 0.699999988 0.600000024 0.650000036 0.650000036 0.650000036
+			0.650000036 0.699999988 0.600000024 0.699999988 0.650000036 0.650000036 0.699999988 0.650000036 0.699999988 0.699999988 0.650000036 0.699999988
+			0.699999988 0.650000036 0.75 0.650000036 0.75 0.699999988 0.699999988 0.699999988 0.75 0.650000036 0.800000012 0.650000036
+			0.800000012 0.699999988 0.75 0.699999988 0.800000012 0.650000036 0.850000024 0.650000036 0.850000024 0.699999988 0.800000012 0.699999988
+			0.850000024 0.650000036 0.900000036 0.650000036 0.900000036 0.699999988 0.850000024 0.699999988 0.900000036 0.650000036 0.949999988 0.650000036
+			0.949999988 0.699999988 0.900000036 0.699999988 0.949999988 0.650000036 1 0.650000036 1 0.699999988 0.949999988 0.699999988
+			0 0.699999988 0.0500000007 0.699999988 0.0500000007 0.75 0 0.75 0.0500000007 0.699999988 0.100000001 0.699999988
+			0.100000001 0.75 0.0500000007 0.75 0.100000001 0.699999988 0.150000006 0.699999988 0.150000006 0.75 0.100000001 0.75
+			0.150000006 0.699999988 0.200000003 0.699999988 0.200000003 0.75 0.150000006 0.75 0.200000003 0.699999988 0.25 0.699999988
+			0.25 0.75 0.200000003 0.75 0.25 0.699999988 0.300000012 0.699999988 0.300000012 0.75 0.25 0.75
+			0.300000012 0.699999988 0.349999994 0.699999988 0.349999994 0.75 0.300000012 0.75 0.349999994 0.699999988 0.400000006 0.699999988
+			0.400000006 0.75 0.349999994 0.75 0.400000006 0.699999988 0.450000018 0.699999988 0.450000018 0.75 0.400000006 0.75
+			0.450000018 0.699999988 0.5 0.699999988 0.5 0.75 0.450000018 0.75 0.5 0.699999988 0.550000012 0.699999988
+			0.550000012 0.75 0.5 0.75 0.550000012 0.699999988 0.600000024 0.699999988 0.600000024 0.75 0.550000012 0.75
+			0.600000024 0.699999988 0.650000036 0.699999988 0.650000036 0.75 0.600000024 0.75 0.650000036 0.699999988 0.699999988 0.699999988
+			0.699999988 0.75 0.650000036 0.75 0.699999988 0.699999988 0.75 0.699999988 0.75 0.75 0.699999988 0.75
+			0.75 0.699999988 0.800000012 0.699999988 0.800000012 0.75 0.75 0.75 0.800000012 0.699999988 0.850000024 0.699999988
+			0.850000024 0.75 0.800000012 0.75 0.850000024 0.699999988 0.900000036 0.699999988 0.900000036 0.75 0.850000024 0.75
+			0.900000036 0.699999988 0.949999988 0.699999988 0.949999988 0.75 0.900000036 0.75 0.949999988 0.699999988 1 0.699999988
+			1 0.75 0.949999988 0.75 0 0.75 0.0500000007 0.75 0.0500000007 0.800000012 0 0.800000012
+			0.0500000007 0.75 0.100000001 0.75 0.100000001 0.800000012 0.0500000007 0.800000012 0.100000001 0.75 0.150000006 0.75
+			0.150000006 0.800000012 0.100000001 0.800000012 0.150000006 0.75 0.200000003 0.75 0.200000003 0.800000012 0.150000006 0.800000012
+			0.200000003 0.75 0.25 0.75 0.25 0.800000012 0.200000003 0.800000012 0.25 0.75 0.300000012 0.75
+			0.300000012 0.800000012 0.25 0.800000012 0.300000012 0.75 0.349999994 0.75 0.349999994 0.800000012 0.300000012 0.800000012
+			0.349999994 0.75 0.400000006 0.75 0.400000006 0.800000012 0.349999994 0.800000012 0.400000006 0.75 0.450000018 0.75
+			0.450000018 0.800000012 0.400000006 0.800000012 0.450000018 0.75 0.5 0.75 0.5 0.800000012 0.450000018 0.800000012
+			0.5 0.75 0.550000012 0.75 0.550000012 0.800000012 0.5 0.800000012 0.550000012 0.75 0.600000024 0.75
+			0.600000024 0.800000012 0.550000012 0.800000012 0.600000024 0.75 0.650000036 0.75 0.650000036 0.800000012 0.600000024 0.800000012
+			0.650000036 0.75 0.699999988 0.75 0.699999988 0.800000012 0.650000036 0.800000012 0.699999988 0.75 0.75 0.75
+			0.75 0.800000012 0.699999988 0.800000012 0.75 0.75 0.800000012 0.75 0.800000012 0.800000012 0.75 0.800000012
+			0.800000012 0.75 0.850000024 0.75 0.850000024 0.800000012 0.800000012 0.800000012 0.850000024 0.75 0.900000036 0.75
+			0.900000036 0.800000012 0.850000024 0.800000012 0.900000036 0.75 0.949999988 0.75 0.949999988 0.800000012 0.900000036 0.800000012
+			0.949999988 0.75 1 0.75 1 0.800000012 0.949999988 0.800000012 0 0.800000012 0.0500000007 0.800000012
+			0.0500000007 0.850000024 0 0.850000024 0.0500000007 0.800000012 0.100000001 0.800000012 0.100000001 0.850000024 0.0500000007 0.850000024
+			0.100000001 0.800000012 0.150000006 0.800000012 0.150000006 0.850000024 0.100000001 0.850000024 0.150000006 0.800000012 0.200000003 0.800000012
+			0.200000003 0.850000024 0.150000006 0.850000024 0.200000003 0.800000012 0.25 0.800000012 0.25 0.850000024 0.200000003 0.850000024
+			0.25 0.800000012 0.300000012 0.800000012 0.300000012 0.850000024 0.25 0.850000024 0.300000012 0.800000012 0.349999994 0.800000012
+			0.349999994 0.850000024 0.300000012 0.850000024 0.349999994 0.800000012 0.400000006 0.800000012 0.400000006 0.850000024 0.349999994 0.850000024
+			0.400000006 0.800000012 0.450000018 0.800000012 0.450000018 0.850000024 0.400000006 0.850000024 0.450000018 0.800000012 0.5 0.800000012
+			0.5 0.850000024 0.450000018 0.850000024 0.5 0.800000012 0.550000012 0.800000012 0.550000012 0.850000024 0.5 0.850000024
+			0.550000012 0.800000012 0.600000024 0.800000012 0.600000024 0.850000024 0.550000012 0.850000024 0.600000024 0.800000012 0.650000036 0.800000012
+			0.650000036 0.850000024 0.600000024 0.850000024 0.650000036 0.800000012 0.699999988 0.800000012 0.699999988 0.850000024 0.650000036 0.850000024
+			0.699999988 0.800000012 0.75 0.800000012 0.75 0.850000024 0.699999988 0.850000024 0.75 0.800000012 0.800000012 0.800000012
+			0.800000012 0.850000024 0.75 0.850000024 0.800000012 0.800000012 0.850000024 0.800000012 0.850000024 0.850000024 0.800000012 0.850000024
+			0.850000024 0.800000012 0.900000036 0.800000012 0.900000036 0.850000024 0.850000024 0.850000024 0.900000036 0.800000012 0.949999988 0.800000012
+			0.949999988 0.850000024 0.900000036 0.850000024 0.949999988 0.800000012 1 0.800000012 1 0.850000024 0.949999988 0.850000024
+			0 0.850000024 0.0500000007 0.850000024 0.0500000007 0.900000036 0 0.900000036 0.0500000007 0.850000024 0.100000001 0.850000024
+			0.100000001 0.900000036 0.0500000007 0.900000036 0.100000001 0.850000024 0.150000006 0.850000024 0.150000006 0.900000036 0.100000001 0.900000036
+			0.150000006 0.850000024 0.200000003 0.850000024 0.200000003 0.900000036 0.150000006 0.900000036 0.200000003 0.850000024 0.25 0.850000024
+			0.25 0.900000036 0.200000003 0.900000036 0.25 0.850000024 0.300000012 0.850000024 0.300000012 0.900000036 0.25 0.900000036
+			0.300000012 0.850000024 0.349999994 0.850000024 0.349999994 0.900000036 0.300000012 0.900000036 0.349999994 0.850000024 0.400000006 0.850000024
+			0.400000006 0.900000036 0.349999994 0.900000036 0.400000006 0.850000024 0.450000018 0.850000024 0.450000018 0.900000036 0.400000006 0.900000036
+			0.450000018 0.850000024 0.5 0.850000024 0.5 0.900000036 0.450000018 0.900000036 0.5 0.850000024 0.550000012 0.850000024
+			0.550000012 0.900000036 0.5 0.900000036 0.550000012 0.850000024 0.600000024 0.850000024 0.600000024 0.900000036 0.550000012 0.900000036
+			0.600000024 0.850000024 0.650000036 0.850000024 0.650000036 0.900000036 0.600000024 0.900000036 0.650000036 0.850000024 0.699999988 0.850000024
+			0.699999988 0.900000036 0.650000036 0.900000036 0.699999988 0.850000024 0.75 0.850000024 0.75 0.900000036 0.699999988 0.900000036
+			0.75 0.850000024 0.800000012 0.850000024 0.800000012 0.900000036 0.75 0.900000036 0.800000012 0.850000024 0.850000024 0.850000024
+			0.850000024 0.900000036 0.800000012 0.900000036 0.850000024 0.850000024 0.900000036 0.850000024 0.900000036 0.900000036 0.850000024 0.900000036
+			0.900000036 0.850000024 0.949999988 0.850000024 0.949999988 0.900000036 0.900000036 0.900000036 0.949999988 0.850000024 1 0.850000024
+			1 0.900000036 0.949999988 0.900000036 0 0.900000036 0.0500000007 0.900000036 0.0500000007 0.949999988 0 0.949999988
+			0.0500000007 0.900000036 0.100000001 0.900000036 0.100000001 0.949999988 0.0500000007 0.949999988 0.100000001 0.900000036 0.150000006 0.900000036
+			0.150000006 0.949999988 0.100000001 0.949999988 0.150000006 0.900000036 0.200000003 0.900000036 0.200000003 0.949999988 0.150000006 0.949999988
+			0.200000003 0.900000036 0.25 0.900000036 0.25 0.949999988 0.200000003 0.949999988 0.25 0.900000036 0.300000012 0.900000036
+			0.300000012 0.949999988 0.25 0.949999988 0.300000012 0.900000036 0.349999994 0.900000036 0.349999994 0.949999988 0.300000012 0.949999988
+			0.349999994 0.900000036 0.400000006 0.900000036 0.400000006 0.949999988 0.349999994 0.949999988 0.400000006 0.900000036 0.450000018 0.900000036
+			0.450000018 0.949999988 0.400000006 0.949999988 0.450000018 0.900000036 0.5 0.900000036 0.5 0.949999988 0.450000018 0.949999988
+			0.5 0.900000036 0.550000012 0.900000036 0.550000012 0.949999988 0.5 0.949999988 0.550000012 0.900000036 0.600000024 0.900000036
+			0.600000024 0.949999988 0.550000012 0.949999988 0.600000024 0.900000036 0.650000036 0.900000036 0.650000036 0.949999988 0.600000024 0.949999988
+			0.650000036 0.900000036 0.699999988 0.900000036 0.699999988 0.949999988 0.650000036 0.949999988 0.699999988 0.900000036 0.75 0.900000036
+			0.75 0.949999988 0.699999988 0.949999988 0.75 0.900000036 0.800000012 0.900000036 0.800000012 0.949999988 0.75 0.949999988
+			0.800000012 0.900000036 0.850000024 0.900000036 0.850000024 0.949999988 0.800000012 0.949999988 0.850000024 0.900000036 0.900000036 0.900000036
+			0.900000036 0.949999988 0.850000024 0.949999988 0.900000036 0.900000036 0.949999988 0.900000036 0.949999988 0.949999988 0.900000036 0.949999988
+			0.949999988 0.900000036 1 0.900000036 1 0.949999988 0.949999988 0.949999988 0 0.949999988 0.0500000007 0.949999988
+			0.0500000007 1 0 1 0.0500000007 0.949999988 0.100000001 0.949999988 0.100000001 1 0.0500000007 1
+			0.100000001 0.949999988 0.150000006 0.949999988 0.150000006 1 0.100000001 1 0.150000006 0.949999988 0.200000003 0.949999988
+			0.200000003 1 0.150000006 1 0.200000003 0.949999988 0.25 0.949999988 0.25 1 0.200000003 1
+			0.25 0.949999988 0.300000012 0.949999988 0.300000012 1 0.25 1 0.300000012 0.949999988 0.349999994 0.949999988
+			0.349999994 1 0.300000012 1 0.349999994 0.949999988 0.400000006 0.949999988 0.400000006 1 0.349999994 1
+			0.400000006 0.949999988 0.450000018 0.949999988 0.450000018 1 0.400000006 1 0.450000018 0.949999988 0.5 0.949999988
+			0.5 1 0.450000018 1 0.5 0.949999988 0.550000012 0.949999988 0.550000012 1 0.5 1
+			0.550000012 0.949999988 0.600000024 0.949999988 0.600000024 1 0.550000012 1 0.600000024 0.949999988 0.650000036 0.949999988
+			0.650000036 1 0.600000024 1 0.650000036 0.949999988 0.699999988 0.949999988 0.699999988 1 0.650000036 1
+			0.699999988 0.949999988 0.75 0.949999988 0.75 1 0.699999988 1 0.75 0.949999988 0.800000012 0.949999988
+			0.800000012 1 0.75 1 0.800000012 0.949999988 0.850000024 0.949999988 0.850000024 1 0.800000012 1
+			0.850000024 0.949999988 0.900000036 0.949999988 0.900000036 1 0.850000024 1 0.900000036 0.949999988 0.949999988 0.949999988
+			0.949999988 1 0.900000036 1 0.949999988 0.949999988 1 0.949999988 1 1 0.949999988 1]
+	ObjectEnd 
+	AttributeBegin 
+		TransformBegin 
+			Transform [ -0.763796031 0 0.645457685 0  -0.164207891 -0.9670977 -0.194313809 0  0.62422061 -0.254405349 0.738665342 0  0 0 0 1 ]
+			ScopedCoordinateSystem "perspShape"
+		TransformEnd 
+		TransformBegin 
+			Transform [ -0.763796031 0 0.645457685 0  -0.164207891 -0.9670977 -0.194313809 0  0.62422061 -0.254405349 0.738665342 0  0 0 0 1 ]
+			ScopedCoordinateSystem "persp"
+		TransformEnd 
+		Attribute "Ri" "int Sides" [2]
+		Attribute "dice" "string referencecamera" [""]
+		Attribute "grouping" "string membership" ["World"]
+		Attribute "identifier" "string name" ["|pPlane1|pPlaneShape1"] "int id" [-249450833] "int id2" [0]
+		Attribute "lightfilter" "string subset" [""]
+		Attribute "lighting" "int mute" [0] "string excludesubset" [""]
+		Attribute "shade" "float relativepixelvariance" [1]
+		Attribute "trace" "int maxspeculardepth" [4] "int maxdiffusedepth" [1]
+		Attribute "user" "string __materialid" ["PxrSurface4SG"]
+		Attribute "visibility" "int camera" [1] "int indirect" [1] "int transmission" [1]
+		Bxdf "PxrSurface" "PxrSurface4" "string __materialid" ["PxrSurface4SG"]
+		Transform [ -488.998718 0 -0 0  -0 -387.128357 -0 0  -0 0 -958.794189 0  -760.64447 419.740723 -906.678528 1 ]
+		ObjectInstance "13814000-ef38-f9d5-adec-107b442ef99d" 
+	AttributeEnd 
+	ObjectBegin "13814000-3d1f-f9d6-adec-107b442ef99d" 
+		Attribute "Ri" "string Orientation" ["outside"]
+		Attribute "dice" "float micropolygonlength" [1] "int rasterorient" [1] "int watertight" [0] "string referencecamera" [""]
+		Attribute "displacementbound" "float sphere" [0.300000012] "string CoordinateSystem" ["object"]
+		Attribute "identifier" "string object" ["pCubeShape1"]
+		Attribute "polygon" "int smoothdisplacement" [1]
+		Attribute "trace" "int displacements" [1] "int autobias" [1] "float bias" [0.00999999978]
+		Displace "PxrDisplace" "PxrDisplace3" "string __materialid" ["PxrSurface4SG"]
+		HierarchicalSubdivisionMesh "catmull-clark" [4 4 4 4 4 4] [0
+			1 3 2 2 3 5 4 4 5 7 6 6 7 1 0 1 7 5 3 6 0 2 4] ["creasemethod" "facevaryingpropagatecorners" "interpolateboundary" "facevaryinginterpolateboundary"] [0 0 1 1 0 0 1 0 0 1 0 0] [1 1 3] [] ["chaikin"] "vertex point P" [-0.5 -0.5 0.5 0.5 -0.5 0.5 -0.5 0.5 0.5 0.5 0.5 0.5
+			-0.5 0.5 -0.5 0.5 0.5 -0.5 -0.5 -0.5 -0.5 0.5 -0.5 -0.5] "facevarying float[2] st" [0.375 0 0.625 0 0.625 0.25 0.375 0.25 0.375 0.25 0.625 0.25
+			0.625 0.5 0.375 0.5 0.375 0.5 0.625 0.5 0.625 0.75 0.375 0.75
+			0.375 0.75 0.625 0.75 0.625 1 0.375 1 0.625 0 0.875 0
+			0.875 0.25 0.625 0.25 0.125 0 0.375 0 0.375 0.25 0.125 0.25]
+	ObjectEnd 
+	AttributeBegin 
+		TransformBegin 
+			Transform [ -0.763796031 0 0.645457685 0  -0.164207891 -0.9670977 -0.194313809 0  0.62422061 -0.254405349 0.738665342 0  0 0 0 1 ]
+			ScopedCoordinateSystem "perspShape"
+		TransformEnd 
+		TransformBegin 
+			Transform [ -0.763796031 0 0.645457685 0  -0.164207891 -0.9670977 -0.194313809 0  0.62422061 -0.254405349 0.738665342 0  0 0 0 1 ]
+			ScopedCoordinateSystem "persp"
+		TransformEnd 
+		Attribute "Ri" "int Sides" [2]
+		Attribute "dice" "string referencecamera" [""]
+		Attribute "grouping" "string membership" ["World"]
+		Attribute "identifier" "string name" ["|pCube1|pCubeShape1"] "int id" [1474904439] "int id2" [0]
+		Attribute "lightfilter" "string subset" [""]
+		Attribute "lighting" "int mute" [0] "string excludesubset" [""]
+		Attribute "shade" "float relativepixelvariance" [1]
+		Attribute "trace" "int maxspeculardepth" [4] "int maxdiffusedepth" [1]
+		Attribute "user" "string __materialid" ["PxrSurface4SG"]
+		Attribute "visibility" "int camera" [1] "int indirect" [1] "int transmission" [1]
+		Bxdf "PxrSurface" "PxrSurface4" "string __materialid" ["PxrSurface4SG"]
+		Transform [ 3.73017621 0 0 0  0 0.932544053 0 0  0 0 13.3254404 0  -771.012207 420.272583 -906.743591 1 ]
+		ObjectInstance "13814000-3d1f-f9d6-adec-107b442ef99d" 
+	AttributeEnd 
+	ObjectBegin "13814000-6414-f9d6-adec-107b442ef99d" 
+		Attribute "Ri" "string Orientation" ["outside"]
+		Attribute "dice" "float micropolygonlength" [1] "int rasterorient" [1] "int watertight" [0] "string referencecamera" [""]
+		Attribute "displacementbound" "float sphere" [0.300000012] "string CoordinateSystem" ["object"]
+		Attribute "identifier" "string object" ["pCubeShape2"]
+		Attribute "polygon" "int smoothdisplacement" [1]
+		Attribute "trace" "int displacements" [1] "int autobias" [1] "float bias" [0.00999999978]
+		Displace "PxrDisplace" "PxrDisplace2" "string __materialid" ["PxrSurface2SG"]
+		HierarchicalSubdivisionMesh "catmull-clark" [4 4 4 4 4 4] [0
+			1 3 2 2 3 5 4 4 5 7 6 6 7 1 0 1 7 5 3 6 0 2 4] ["creasemethod" "facevaryingpropagatecorners" "interpolateboundary" "facevaryinginterpolateboundary"] [0 0 1 1 0 0 1 0 0 1 0 0] [1 1 3] [] ["chaikin"] "vertex point P" [-0.5 -0.5 0.5 0.5 -0.5 0.5 -0.5 0.5 0.5 0.5 0.5 0.5
+			-0.5 0.5 -0.5 0.5 0.5 -0.5 -0.5 -0.5 -0.5 0.5 -0.5 -0.5] "facevarying float[2] st" [0.375 0 0.625 0 0.625 0.25 0.375 0.25 0.375 0.25 0.625 0.25
+			0.625 0.5 0.375 0.5 0.375 0.5 0.625 0.5 0.625 0.75 0.375 0.75
+			0.375 0.75 0.625 0.75 0.625 1 0.375 1 0.625 0 0.875 0
+			0.875 0.25 0.625 0.25 0.125 0 0.375 0 0.375 0.25 0.125 0.25]
+	ObjectEnd 
+	AttributeBegin 
+		TransformBegin 
+			Transform [ -0.763796031 0 0.645457685 0  -0.164207891 -0.9670977 -0.194313809 0  0.62422061 -0.254405349 0.738665342 0  0 0 0 1 ]
+			ScopedCoordinateSystem "perspShape"
+		TransformEnd 
+		TransformBegin 
+			Transform [ -0.763796031 0 0.645457685 0  -0.164207891 -0.9670977 -0.194313809 0  0.62422061 -0.254405349 0.738665342 0  0 0 0 1 ]
+			ScopedCoordinateSystem "persp"
+		TransformEnd 
+		Attribute "Ri" "int Sides" [2]
+		Attribute "dice" "string referencecamera" [""]
+		Attribute "grouping" "string membership" ["World"]
+		Attribute "identifier" "string name" ["|pCube2|pCubeShape2"] "int id" [1519326689] "int id2" [0]
+		Attribute "lightfilter" "string subset" [""]
+		Attribute "lighting" "int mute" [0] "string excludesubset" [""]
+		Attribute "shade" "float relativepixelvariance" [1]
+		Attribute "trace" "int maxspeculardepth" [4] "int maxdiffusedepth" [1]
+		Attribute "user" "string __materialid" ["PxrSurface2SG"]
+		Attribute "visibility" "int camera" [1] "int indirect" [1] "int transmission" [1]
+		Bxdf "PxrSurface" "PxrSurface3" "string __materialid" ["PxrSurface2SG"]
+		Transform [ 4 0 0 0  0 4 0 0  0 0 4 0  -762.741394 421.224976 -882.399109 1 ]
+		ObjectInstance "13814000-6414-f9d6-adec-107b442ef99d" 
+	AttributeEnd 
+WorldEnd 

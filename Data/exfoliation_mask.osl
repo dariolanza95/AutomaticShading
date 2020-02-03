@@ -1,0 +1,17 @@
+shader
+exfoliation_mask(
+    float simulation_data = 0.0 [[ int lockgeom=0 ]],
+    output float resultF = float(0)
+)
+{    
+	if(simulation_data == 2)
+	{
+
+		resultF = 1;
+	}
+	else
+	{
+		resultF=0;
+	}	
+
+}

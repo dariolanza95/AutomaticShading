@@ -1,7 +1,7 @@
 #ifndef ACLASSIFIER_H
 #define ACLASSIFIER_H
 #include <stdlib.h>
-
+#include "ShaderParameters.h"
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
 
@@ -10,8 +10,11 @@ using namespace std;
 
 class AClassifier
 {
+protected:
+    static int _id;
 public:
-    virtual map<MyMesh::FaceHandle,float> ClassifyVertices() = 0;
+    virtual map<MyMesh::VertexHandle,ShaderParameters*> ClassifyVertices() = 0;
+    AClassifier();
 };
 
 

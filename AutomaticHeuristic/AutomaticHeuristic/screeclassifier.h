@@ -15,7 +15,7 @@ class ScreeClassifier: public AClassifier
 public:
     ScreeClassifier(MyMesh mesh);
     ScreeClassifier(MyMesh mesh,float repose_angle , float treshold);
-    map<MyMesh::FaceHandle,float> ClassifyVertices();
+    map<MyMesh::VertexHandle,ShaderParameters*> ClassifyVertices();
 protected:
     float _repose_angle;
     float _treshold ;

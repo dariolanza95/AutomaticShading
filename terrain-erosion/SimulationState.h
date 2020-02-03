@@ -55,7 +55,7 @@ public:
     void createPerlinTerrain()
     {
         PerlinNoise perlin;
-
+        float max = 0;
         for (uint y=0; y<water.height(); y++)
         {
             for (uint x=0; x<water.width(); x++)
@@ -67,6 +67,7 @@ public:
                 h += perlin.Sample(y*f,x*f)*2; f /= 2;
                 h += perlin.Sample(y*f,x*f)*4; f /= 2;
                 h += perlin.Sample(y*f,x*f)*8; f /= 2;
+                max = h>max ? h:max;
                 terrain(y,x) = h*4*1.3;
                 suspendedSediment(y,x) = 0.0f;// 0.1*terrain(y,x);
                 vegetation(y,x) = 0.0f;
@@ -74,6 +75,7 @@ public:
                 rivers(y,x) = 0.0f;
             }
         }
+        std::cout<<"MAX is "<<max<<std::endl;
     }
 
     void createSteepTerrain()

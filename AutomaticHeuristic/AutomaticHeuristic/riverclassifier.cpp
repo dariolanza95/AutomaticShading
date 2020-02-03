@@ -2,16 +2,25 @@
 #include <unordered_set>
 #include <list>
 
-    RiverClassifier::RiverClassifier(MyMesh mesh,float slope,float treshold,float border_width)
+    RiverClassifier::RiverClassifier(MyMesh mesh,float slope,float treshold,float border_width,float max_height,float min_height):AClassifier()
     {
         _mesh = mesh;
         _slope = slope;
         _treshold = treshold;
         _border_width = border_width;
          simulation_data_wrapper = getOrMakeProperty<VertexHandle,SimulationData*>(_mesh, "simulation_data");
-
+        _max_height = max_height;
+        _min_height = min_height;
     }
 
+    map<MyMesh::VertexHandle,ShaderParameters*> RiverClassifier::ClassifyVertices()
+    {
+        map<MyMesh::VertexHandle,float> river_vertices = SelectRiverVertices();
+        auto frontier = selectFrontier(river_vertices);
+        frontier = BFS(_border_width,frontier);
+        auto selected_faces = SelectFacesBySlope(frontier);
+        return selected_faces;
+    }
 
     map<MyMesh::VertexHandle,float> RiverClassifier::selectFrontier(map<MyMesh::VertexHandle,float> river_vertices)
     {
@@ -39,47 +48,20 @@
         return frontier;
     }
 
-    map<MyMesh::FaceHandle,float> RiverClassifier::ClassifyVertices()
-    {
-        MyMesh::Vertex _vertex;
-        MyMesh::VertexIter vertex_iterator,vertex_iterator_end(_mesh.vertices_end());
-        map<MyMesh::FaceHandle,float> selected_faces;
-        map<MyMesh::VertexHandle,float> river_vertices;
-        int counter = 0;
-        for(vertex_iterator=_mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
-        {
-            counter++;
-            _vertex = _mesh.vertex(*vertex_iterator);
-            //MyMesh::VertexHandle vertex_handle = vertex_iterator.handle();
-            //PropertyManager<typename HandleToPropHandle<VertexHandle, SimulationData*>::type, MyMesh> simulation_data_wrapper = getOrMakeProperty<VertexHandle,SimulationData*>(_mesh, "simulation_data");
-            SimulationData* sd = simulation_data_wrapper[*vertex_iterator];
-
-            if(sd->_map.at("rivers")>0.0f)
-            {
-                river_vertices.insert(make_pair(*vertex_iterator,sd->_map.at("rivers")));
-            }
-
-        }
-        auto frontier = selectFrontier(river_vertices);
-        frontier = BFS(_border_width,frontier);
-        for (auto const& entry : frontier )
-        {
-            MyMesh::VertexHandle vertex_handle =  entry.first;
-           for (MyMesh::VertexFaceIter vertex_face_iterator = _mesh.vf_iter(vertex_handle); vertex_face_iterator.is_valid(); ++vertex_face_iterator)
-           {
-               //MyMesh::Face face = _mesh.face(*vertex_face_iterator);
-               //face.handle();
-               MyMesh::FaceHandle fh = *vertex_face_iterator;
-               selected_faces.insert(make_pair(fh,entry.second));
-
-           }
-        }
-
-
-        //selected_faces = SelectFacesBySlope(frontier);
-        cout << "River Classifier has selected "<< selected_faces.size()<<" faces"<<endl;
-        return selected_faces;
-    }
+     map<MyMesh::VertexHandle,float> RiverClassifier::SelectRiverVertices()
+     {
+         MyMesh::VertexIter vertex_iterator,vertex_iterator_end(_mesh.vertices_end());
+         map<MyMesh::VertexHandle,float> river_vertices;
+          for(vertex_iterator=_mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
+         {
+             SimulationData* sd = simulation_data_wrapper[*vertex_iterator];
+             if(sd->_map.at("rivers")>0.0f)
+             {
+                 river_vertices.insert(make_pair(*vertex_iterator,sd->_map.at("rivers")));
+             }
+         }
+     return river_vertices;
+     }
 
     struct BFS_cell
     {
@@ -113,7 +95,6 @@
             struct BFS_cell cell = {entry.first,entry.second,0};
             visitedNodes.insert(cell);
             queue.push_back(cell);
-            MyMesh::VertexHandle vh = entry.first;
         }
         while(!queue.empty())
         {
@@ -124,9 +105,6 @@
                 //circulate over the vertex
                 for (MyMesh::VertexVertexIter vertex_vertex_iterator = _mesh.vv_iter(cell.vertex_handle); vertex_vertex_iterator.is_valid(); ++vertex_vertex_iterator)
                 {
-
-                //    cout<<_mesh.point( *vertex_vertex_iterator ) <<endl;
-
                     SimulationData* sd  = simulation_data_wrapper[*vertex_vertex_iterator];
                     //takes only vertices that are out of the set (since it's given that we're using the frontier vertices)
                     if(sd->_map.at("rivers")<=0.0f)
@@ -138,18 +116,9 @@
                          selected_nodes.insert(make_pair<VertexHandle,float>(*vertex_vertex_iterator,0));
                          queue.push_back(new_cell);
                         }
-
                     }
-
-
                 }
-
                 visitedNodes.insert(cell);
-
-            }
-            else
-            {
-                continue;
             }
 
         }
@@ -158,140 +127,40 @@
     }
 
 
-    map<MyMesh::FaceHandle,float> RiverClassifier::SelectFacesBySlope(map<MyMesh::VertexHandle,float> rivers_boundaries)
+    map<MyMesh::VertexHandle,ShaderParameters*> RiverClassifier::SelectFacesBySlope(map<MyMesh::VertexHandle,float> rivers_boundaries)
     {
         //along the river boundaries (i.e. the rivers frontier with some treshold)
         //We select those faces which are still rather steep.
         //Steep faces might indicates the fact that the river eroded those faces very quickly, hence with a great strength
         //The rivers flow might still be visible
-        MyMesh::Face face;
-
-        MyMesh::Normal up_direction = Vec3f(1,0,0);
-        MyMesh::FaceIter face_iterator,face_iterator_end(_mesh.faces_end());
-        map<MyMesh::FaceHandle,float> selected_faces ;
-        int counter = 0;
+        MyMesh::Normal up_direction = Vec3f(0,0,1);
+        map<MyMesh::VertexHandle,ShaderParameters*> selected_faces ;
         MyMesh::VertexFaceIter vertex_face_circulator;
+        float bins = 10;
+
         for(auto &entry : rivers_boundaries)
         {
             MyMesh::VertexHandle vertex_handle = entry.first;
             for( vertex_face_circulator = _mesh.vf_iter(vertex_handle);vertex_face_circulator.is_valid();++vertex_face_circulator)
-
-//            for (MyMesh::VertexVertexIter vertex_vertex_iterator = mesh.vv_iter(*vertex_iterator); vertex_vertex_iterator.is_valid(); ++vertex_vertex_iterator)
-//
-//            for(face_iterator=_mesh.faces_begin();face_iterator != face_iterator_end;++face_iterator)
-                {
-                    face = _mesh.face(*vertex_face_circulator);
-                    MyMesh::Normal mynormal = _mesh.normal(*vertex_face_circulator);
+            {
+                    MyMesh::Normal mynormal = -1*_mesh.normal(*vertex_face_circulator);
 
                     float dot_result = dot(mynormal,up_direction);
                     float resulting_angle_in_radians = acos(dot_result);
                     float resulting_angle_in_degree = resulting_angle_in_radians* (180.0/  M_PI);
-                    resulting_angle_in_degree = 90 - resulting_angle_in_degree;
-                    resulting_angle_in_degree = resulting_angle_in_degree > 0 ? resulting_angle_in_degree : 0;
-
+                  //  resulting_angle_in_degree = 90 - resulting_angle_in_degree;
                     if(resulting_angle_in_degree <= _slope + _treshold && resulting_angle_in_degree >= _slope - _treshold)
                     {
-                          selected_faces.insert(pair<MyMesh::FaceHandle,float>(*vertex_face_circulator,1));
-                          counter++;
+                        MyMesh::Point point = _mesh.point(vertex_handle);
+                        ShaderParameters* shader_parameters = new ShaderParameters(_id,10);
+                        //roundf should work
+                        cout<<"point[2]"<<point[2]<<" vs " << bins*roundf(point[2]/bins)<< endl;
+                        shader_parameters->setValue(0, bins*roundf(point[2]/bins));
+                          selected_faces.insert(pair<MyMesh::VertexHandle,ShaderParameters*>(vertex_handle,shader_parameters));
                     }
 
-                }
+            }
         }
         return selected_faces;
     }
 
-  /*  // Program to print BFS traversal from a given
-    // source vertex. BFS(int s) traverses vertices
-    // reachable from s.
-    #include<iostream>
-    #include <list>
-
-
-    // This class represents a directed graph using
-    // adjacency list representation
-    class Graph
-    {
-        int V; // No. of vertices
-
-        // Pointer to an array containing adjacency
-        // lists
-        list<int> *adj;
-    public:
-        Graph(int V); // Constructor
-
-        // function to add an edge to graph
-        void addEdge(int v, int w);
-
-        // prints BFS traversal from a given source s
-        void BFS(int s);
-    };
-
-    Graph::Graph(int V)
-    {
-        this->V = V;
-        adj = new list<int>[V];
-    }
-
-    void Graph::addEdge(int v, int w)
-    {
-        adj[v].push_back(w); // Add w to v’s list.
-    }
-
-    void Graph::BFS(int s)
-    {
-        // Mark all the vertices as not visited
-        bool *visited = new bool[V];
-        for(int i = 0; i < V; i++)
-            visited[i] = false;
-
-        // Create a queue for BFS
-        list<int> queue;
-
-        // Mark the current node as visited and enqueue it
-        visited[s] = true;
-        queue.push_back(s);
-
-        // 'i' will be used to get all adjacent
-        // vertices of a vertex
-        list<int>::iterator i;
-
-        while(!queue.empty())
-        {
-            // Dequeue a vertex from queue and print it
-            s = queue.front();
-            cout << s << " ";
-            queue.pop_front();
-
-            // Get all adjacent vertices of the dequeued
-            // vertex s. If a adjacent has not been visited,
-            // then mark it visited and enqueue it
-            for (i = adj[s].begin(); i != adj[s].end(); ++i)
-            {
-                if (!visited[*i])
-                {
-                    visited[*i] = true;
-                    queue.push_back(*i);
-                }
-            }
-        }
-    }
-
-    // Driver program to test methods of graph class
-    int main()
-    {
-        // Create a graph given in the above diagram
-        Graph g(4);
-        g.addEdge(0, 1);
-        g.addEdge(0, 2);
-        g.addEdge(1, 2);
-        g.addEdge(2, 0);
-        g.addEdge(2, 3);
-        g.addEdge(3, 3);
-
-        cout << "Following is Breadth First Traversal "
-            << "(starting from vertex 2) \n";
-        g.BFS(2);
-
-        return 0;
-    }
-*/

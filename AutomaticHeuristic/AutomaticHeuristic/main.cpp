@@ -10,6 +10,7 @@
 #include "screeclassifier.h"
 #include "simulationdata.h"
 #include "ribwriter.h"
+#include "ShaderParameters.h"
 #include "./Graphics/openglvisualizer.h"
 
 // --------------------OpenMesh----------------------------
@@ -496,68 +497,9 @@ void window_close_callback(GLFWwindow* window)
  //   if (!time_to_close)
  //       glfwSetWindowShouldClose(window, GLFW_FALSE);
 }
-void OpenGLInit(MyMesh mesh)
-{
-    // Open GL Stuff ///////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////
-
-    // init GLFW
-    if (!glfwInit())
-    {
-        std::cerr << "[GLFW] Error initialising GLFW" << std::endl;
-        exit(1);
-    }
 
 
-    glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
-    // Use OpenGL Core v3.2
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
-    GLFWwindow* window = glfwCreateWindow(800, 600, "BlankWindow", NULL, NULL);
-    // Open an OpenGL window
-   // if( !glfwCreateWindow( windowWidth,windowHeight, 8,8,8,8,8,8, GLX_WINDOW ) )
-    if (window == NULL )
-    {
-        std::cerr << "[GLFW] Error opening window" << std::endl;
-        glfwTerminate();
-        exit(1);
-    }
-
-    int major, minor, rev;
-
-    glfwGetVersion(&major, &minor, &rev);
-
-    fprintf(stdout, "OpenGL version recieved: %d.%d.%d\n", major, minor, rev);
-    // Init Glew (OpenGL Extension Loading)
-
-    //    glewExperimental = GL_TRUE;
-
-    glfwMakeContextCurrent(window);
-    GLenum err = glewInit();
-
-    if (GLEW_OK != err)
-    {
-        cerr << "[GLEW] Init failed: " << glewGetErrorString(err) << endl;
-        glfwTerminate();
-        exit(1);
-    }
-
-    glfwSetWindowPos(window, 200, 100);
-
-    int    CurrentWidth = 300;
-     int   CurrentHeight = 300;
-        glViewport(0, 0, CurrentWidth, CurrentHeight);
-
-    glfwSetWindowCloseCallback(window, window_close_callback);
-
-    LoadGeometryDataIntoOpenGLBuffer(mesh);
-    LoadShaders(window);
-}
-
- GLFWwindow* OpenGLInit2()
+ GLFWwindow* OpenGLInit()
 {
     // init GLFW
     if (!glfwInit())
@@ -614,54 +556,90 @@ void OpenGLInit(MyMesh mesh)
     return window;
 }
 
-void UpdateSimulationData(MyMesh& mesh, map<MyMesh::FaceHandle,float> selected_faces,int shaderID)
+void UpdateSimulationData(MyMesh& mesh, map<MyMesh::VertexHandle,ShaderParameters*> selected_vertices,int shaderID)
 {
-    auto simulation_data = getOrMakeProperty<VertexHandle, float>(mesh, "simulation_data");
+    auto shader_parameters_property = getOrMakeProperty<VertexHandle, ShaderParameters*>(mesh, "shader_parameters");
 
-    for (auto const& x : selected_faces)
+    for (auto const& x : selected_vertices)
     {
-        MyMesh::FaceHandle face_handle = x.first;
-        MyMesh::FaceVertexIter face_vertex_circulator = mesh.fv_iter(face_handle);
-        for(; face_vertex_circulator.is_valid(); ++face_vertex_circulator)
-        {
-            simulation_data[*face_vertex_circulator] = shaderID;
-        }
+        MyMesh::VertexHandle vertex_handle = x.first;
+        ShaderParameters* shader_parameter = x.second;
+
+        shader_parameters_property[vertex_handle] = shader_parameter;
+
     }
 }
+void InitializerSimulationData(MyMesh& mesh)
+{
+auto shader_parameters_data_wrapper= getOrMakeProperty<VertexHandle, ShaderParameters*>(mesh, "shader_parameters");
 
+
+    MyMesh::VertexIter vertex_iterator;
+    MyMesh::VertexIter vertex_iterator_end(mesh.vertices_end());
+    for(vertex_iterator=mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
+    {
+            ShaderParameters* shader_parameter = new ShaderParameters(0,10);
+            shader_parameter->setValue(0,1);
+            shader_parameters_data_wrapper[vertex_iterator] = shader_parameter;
+    }
+}
 void FindFeatures(MyMesh& mesh)
 {
-    cout<<"in FindTaluses";
     //angle of repose is usually between 33-37 degreee depending on the rock type
-    float angle = 34;
+    float angle = 10;
     float treshold = 3;
-     map<MyMesh::FaceHandle,float> selected_faces;
-     AClassifier *sc = new ScreeClassifier(mesh,0,15);
+     map<MyMesh::VertexHandle,ShaderParameters*> selected_faces;
+     InitializerSimulationData(mesh);
+     AClassifier *sc = new ScreeClassifier(mesh,angle,treshold);
      selected_faces = sc->ClassifyVertices();
      UpdateSimulationData(mesh,selected_faces,1);
      selected_faces.clear();
-     AClassifier *rc = new RiverClassifier(mesh,75,15,0);
+     //75 slp
+     AClassifier *rc = new RiverClassifier(mesh,50,50,5,34,-35);
      selected_faces = rc->ClassifyVertices();
      UpdateSimulationData(mesh,selected_faces,2);
+     RiverClassifierTester rct;
+     rct.Test();
 
 }
 
 
 void WriteSimulationDataOnOutputFile(MyMesh& mesh,ostream& outputfile)
 {
-    string line;
-    auto simulation_data = getOrMakeProperty<VertexHandle, float>(mesh, "simulation_data");
+
+    auto shader_parameters_data_wrapper = getOrMakeProperty<VertexHandle, ShaderParameters*>(mesh, "shader_parameters");
+    string newstring = " \"varying float simulation_data\"[";
+    outputfile<<newstring;
     for (auto& vertex_handle : mesh.vertices())
     {
-        outputfile<<simulation_data[vertex_handle] << endl;
+        ShaderParameters* const shader_param = shader_parameters_data_wrapper[vertex_handle];
+        outputfile<< shader_param->getId()<<".0"<< endl;
     }
+    outputfile<< " ]";
+    for(int i= 0;i<1;i++)
+    {
+        string newstring = " \"varying float shader_property_";
+        outputfile<<newstring;
+        outputfile<<i;
+        outputfile << "\" [";
+
+//        newstring += i + ;
+
+        for (auto& vertex_handle : mesh.vertices())
+        {
+
+            ShaderParameters* const shader_param = shader_parameters_data_wrapper[vertex_handle];
+            outputfile<< shader_param->getValue(i)<< endl;
+        }
+        //how it was before -> outputfile<< " ] \" ";
+        outputfile<< " ]  ";
+    }
+
 }
 bool WriteSimulationData(string line,ifstream& myfile,ostream& omyfile,MyMesh& mesh)
 {
-    cout<<"writeSimData"<<endl;
-    string newline;
     int counter = 0;
-size_t found;
+    size_t found;
     while (counter <2)
     {
         found = line.find("]");
@@ -681,8 +659,7 @@ size_t found;
         string templine = line;
         line.erase(found + 1 ,line.length());
         omyfile << line<<'\n' ;
-        string newstring = " \"varying float simulation_data\"[";
-        omyfile<<newstring;
+
         WriteSimulationDataOnOutputFile(mesh,omyfile);
        /* while(getline(datafile, line))
         {
@@ -690,7 +667,7 @@ size_t found;
         }*/
         //newstring += " ] ";
         templine.erase(0,found +1);
-        omyfile<<"]"<<templine<<'\n';
+        omyfile<<templine<<'\n';
         return true;
           }
     return false;
@@ -797,12 +774,12 @@ void Checks(int argc, char **argv,MyMesh mesh)
 
 void LoadGeometryData(string mesh_file,MyMesh& mesh)
 {
+    LoadMesh(mesh,mesh_file);
     mesh.request_vertex_normals();
     if (!mesh.has_vertex_normals())
     {
       std::cerr << "ERROR: Standard vertex property 'Normals' not available!\n";
     }
-    LoadMesh(mesh,mesh_file);
     CalculateNormals(mesh);
 }
 
@@ -840,35 +817,69 @@ void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &me
 cout<<"There are "<<mesh.n_vertices()<< " counter is == "<< counter<<endl;
 }
 
-MyMesh WriteOnRibFile()
+MyMesh LoadMesh()
+{
+    string line;
+    MyMesh mesh;
+
+
+    string obj_file = "../../Data/input.obj";
+    string data_file = "../../Data/simulationData.txt";
+
+    ifstream myfile ("../../Data/mountainsceneTemplate.rib");
+    ifstream geometryfile ("../../Data/input.obj");
+    ifstream datafile ("../../Data/simulationData.txt");
+    ostringstream ss_newline;
+
+//      DefaultDataLoader<MyMesh> dl = DefaultDataLoader<MyMesh>(obj_file,data_file,mesh);
+    string newline ;
+    newline = ss_newline.str();
+    ostringstream ss_out_name_file;
+    string out_name_file;
+    ss_out_name_file << "../../Data/mountainsceneTemplate" << "Output.rib";
+    out_name_file = ss_out_name_file.str();
+    ofstream omyfile (out_name_file);
+    LoadGeometryData("../../Data/input.obj",mesh);
+    AttachDataFromSimulationToEachVertex("../../Data/simulationData.txt",mesh);
+
+
+
+return mesh;
+}
+
+void WriteOnRibFile(MyMesh mesh)
 {
       string line;
-      MyMesh mesh;
-
       char target[] = " \"vertex point P\"";
       char target2[] = "\"facevarying float[2] st\"";
+      size_t foundVertices,foundSimulationData;
 
-      string obj_file = "../../Data/input.obj";
-      string data_file = "../../Data/simulationData.txt";
-
+      //MyMesh mesh;
+      //
+      //char target[] = " \"vertex point P\"";
+      //char target2[] = "\"facevarying float[2] st\"";
+      //
+      //string obj_file = "../../Data/input.obj";
+      //string data_file = "../../Data/simulationData.txt";
+      //
       ifstream myfile ("../../Data/mountainsceneTemplate.rib");
       ifstream geometryfile ("../../Data/input.obj");
       ifstream datafile ("../../Data/simulationData.txt");
       ostringstream ss_newline;
-
-//      DefaultDataLoader<MyMesh> dl = DefaultDataLoader<MyMesh>(obj_file,data_file,mesh);
-      string newline ;
-      newline = ss_newline.str();
+      //
+//    //  DefaultDataLoader<MyMesh> dl = DefaultDataLoader<MyMesh>(obj_file,data_file,mesh);
+      //string newline ;
+      //newline = ss_newline.str();
       ostringstream ss_out_name_file;
       string out_name_file;
       ss_out_name_file << "../../Data/mountainsceneTemplate" << "Output.rib";
       out_name_file = ss_out_name_file.str();
       ofstream omyfile (out_name_file);
-      size_t foundVertices,foundSimulationData;
-      LoadGeometryData("../../Data/input.obj",mesh);
-      AttachDataFromSimulationToEachVertex("../../Data/simulationData.txt",mesh);
+      //size_t foundVertices,foundSimulationData;
+      //LoadGeometryData("../../Data/input.obj",mesh);
+      //AttachDataFromSimulationToEachVertex("../../Data/simulationData.txt",mesh);
 
-      FindFeatures(mesh);
+      //FindFeatures(mesh);
 
       if (myfile.is_open() && geometryfile.is_open() && datafile.is_open())
       {
@@ -913,9 +924,8 @@ MyMesh WriteOnRibFile()
 
       }
         else cout << "Unable to open file";
- //OpenGLInit(mesh);
 
-return mesh;}
+}
 
 
 
@@ -924,25 +934,14 @@ int main(int argc, char **argv)
 {
 
   MyMesh mesh;
-  //Checks();
-  //LoadMesh(mesh);
-  mesh = WriteOnRibFile();
-  GLFWwindow* window = OpenGLInit2();
-  OpenGlVisualizer visualizer(window,300,300,mesh);
-  cout<<"Visualizer Created"<<endl;
+  mesh = LoadMesh();
+  FindFeatures(mesh);
+  GLFWwindow* window = OpenGLInit();
+  OpenGlVisualizer visualizer(window, 300, 300,mesh);
   visualizer.Initialize();
-  cout<<"Visualizer Initialized"<<endl;
   visualizer.Visualize();
+  WriteOnRibFile(mesh);
 
-
-  cout<<"ByeBye"<<endl;
-mesh.release_vertex_normals();
-  // just check if it really works
-  if (mesh.has_vertex_normals())
-  {
-    std::cerr << "Ouch! ERROR! Shouldn't have any vertex normals anymore!\n";
-    return 1;
-  }
 
   return 0;
 }
