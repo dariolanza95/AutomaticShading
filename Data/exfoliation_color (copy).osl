@@ -1,0 +1,203 @@
+//commandPort -n ":2222";
+float createRing(vector direction,point pp,float s_min,float s_max, float freq,float ampl,float noise_stregth,float blur)
+{
+	point tpp;
+	float high_freq_multiplier = 3 ;
+	normal dir_normalized = normalize(direction);
+	tpp[0] = dir_normalized[0] * pp[0];
+	tpp[1] = dir_normalized[1] * pp[1];
+	tpp[2] = dir_normalized[2] * pp[2];
+	float k = tpp[0] + tpp[1]+tpp[2];
+	float n2= noise("perlin",pp*freq ) * ampl ;
+	float n3= noise("perlin",pp*freq*high_freq_multiplier ) * ampl/high_freq_multiplier ;
+	float n = n2 + n3;
+	k = k + n* noise_stregth;
+	float blend = smoothstep(s_min, s_min + blur, k) *
+                (1 - smoothstep(s_max - blur, s_max, k));
+return blend;
+
+}
+
+float fbm2(point pp,float freq,float ampl,float high_freq_multiplier)
+{
+		float n2= noise("perlin",pp*freq ) * ampl ;
+	float n3= noise("perlin",pp*freq*high_freq_multiplier ) * ampl/high_freq_multiplier ;
+	return  n2 + n3;
+	
+}
+
+
+
+
+
+float createCuttingPlane(vector direction,point pp,float s_min,float s_max, float freq,float ampl,float noise_stregth,float blur)
+{
+	point tpp;
+	float high_freq_multiplier = 3 ;
+	normal dir_normalized = normalize(direction);
+	tpp[0] = dir_normalized[0] * pp[0];
+	tpp[1] = dir_normalized[1] * pp[1];
+	tpp[2] = dir_normalized[2] * pp[2];
+	float k = tpp[0] + tpp[1]+tpp[2];
+	float n = fbm2(pp,freq,ampl,high_freq_multiplier);
+	k = k + n* noise_stregth;
+	float blend = ( smoothstep(s_max - blur, s_max, k));
+	//pp = pp*16;
+	//float fbm = noise("perlin",4*pp)*1/4 + noise("perlin",8*pp)*1/8 + noise("perlin",16*pp)*1/16;
+	//	blend= blend*0.6 + 0.4*fbm;
+return blend;
+
+}
+
+
+
+shader 
+exfoliation_color
+(float  minheight = 1.25,
+         float  maxheight = 2.5,
+float step_size = 0.1,
+float min_offset = 0.1,
+vector direction = vector(1,0,0),
+int details = 1,
+int medium_details = 2, 
+		 point Pobj = 0 
+         [[
+         int lockgeom = 0
+         ]],
+		 point Nobj = 0 
+         [[
+         int lockgeom = 0
+         ]],
+float shader_property_0 = 0.0 
+[[
+int lockgeom = 0 
+]],
+int scale = 1,
+		 int level_of_details = 4,
+	        
+ color  mincolor = color(1,0,0),
+ color  maxcolor = color(1,0,0),
+ color  base_color = color(1,0,0),
+ color  second_color = color(1,0,0),
+		output float resultDispl = 0,
+         output color resultRGB = 0,
+output float resultF = 0)
+{
+point pp = Pobj;
+//transform("object","world",Pobj) ;
+point tpp;
+
+normal dir_normalized = normalize(direction);
+tpp[0] = dir_normalized[0] * pp[0];
+tpp[1] = dir_normalized[1] * pp[1];
+tpp[2] = dir_normalized[2] * pp[2];
+
+float ampl = 0.8;
+//the freq should be used to set how much "jaggied or scrumbled the surf will be"
+float freq = 3.2;
+float high_freq_multiplier = 5;
+float small_details_scale = 5;
+float step_increase = step_size;
+float s_min =  shader_property_0;
+float s_max = s_min + step_increase;
+float s_min_col = s_min/5;
+float s_max_col = s_min_col+ step_increase/5;
+float k = tpp[0] + tpp[1]+tpp[2];
+step_increase = step_size;//0.12;
+float offset = 0.01;
+int i = 0;
+float blend = 0;
+float blur = 0.01;
+//put it close to zero make more straight lines
+float noise_strength = 0;//0.01;
+float minor_rings_offset= 0.01;
+float minor_rings = 0;
+float res = 0;
+float temp = 0;
+float s_min2 = 0;
+float s_max2 = 0;
+float s_min_col2 = 0;
+float s_max_col2 = 0;
+float randomness = 0;//0.01;
+float randomness2 = 0.0;//0.1;
+float color_ring = 0;
+color cols = base_color;
+float random_multiplier =  3;
+float	 temp2= 0;
+int j = 0;
+float color_ring2 = 0;
+float color_offset = 0.01;
+color col = base_color;
+
+for(j = 0; j<details; j++)
+{
+s_min += step_increase; 
+s_max += step_increase;
+s_max_col += step_increase;
+s_min_col += step_increase;
+temp = 0;
+temp2 = 0;
+for ( i = 0; i < medium_details;i++)
+{ 
+float rand0 = noise("perlin",pp + i * 1.414 + j*medium_details);
+float rand1 = noise("perlin",pp + i * 42+ j*medium_details);
+float rand2 = noise("perlin",pp + i * 3.14+ j*medium_details);
+
+vector random_direction = vector(dir_normalized[0]+rand0*randomness2,dir_normalized[1]+rand1*randomness2,dir_normalized[2]+rand2*randomness2);
+normal random_normal = normalize(random_direction);
+s_max2 = s_max +  minor_rings_offset*((i*0.8/medium_details)+0.1);
+s_max_col2 = s_max_col +  minor_rings_offset*((i*0.8/medium_details)+0.1);
+s_min_col2 = s_min_col +  minor_rings_offset*((i*0.8/medium_details)+0.1);
+minor_rings = createCuttingPlane( random_normal, point(pp[0] + rand0*randomness,pp[1] + rand1*randomness,pp[2] + rand2*randomness) ,0, s_max2,15, 0.4,noise_strength, blur);
+
+temp = max(temp , minor_rings * ((i*0.8/medium_details)+0.1) );
+
+
+temp = clamp ( temp,0, 1);
+s_min2 = s_min +  minor_rings_offset*((i*0.8/medium_details)+0.1) ;
+point cpp = point (pp[0]+random_normal[0]*color_offset,pp[1]+random_normal[1]*color_offset,pp[2]+random_normal[2]*color_offset  );
+cpp = point(pp[0] + rand0*randomness*random_multiplier,pp[1] + rand1*randomness*random_multiplier,pp[2] + rand2*randomness*random_multiplier);
+//color_ring = createRing(random_normal,  point(pp[0] + rand0*randomness,pp[1] + rand1*randomness,pp[2] + rand2*randomness) ,s_min_col2, s_max_col2,15, 0.4,noise_strength, blur);
+color_ring= createCuttingPlane( random_normal, point(pp[0] - 0.01+ rand0*randomness,pp[1]  -0.01+ rand1*randomness,pp[2] -0.01+ rand2*randomness) ,15, s_max2,3, 0.4,noise_strength, blur);
+color_ring2 = minor_rings - color_ring;
+temp2 = max(temp2,color_ring2*((i*0.8/medium_details)+0.1) );
+
+//color_ring = smoothstep(0.25,1,color_ring);
+color tempcol = mincolor;
+color_ring2 = clamp ( color_ring2,0, 1);
+//tempcol = mix(tempcol,col,smoothstep(0.1,0.3,fbm2(ppp,15,1,4)));
+col = mix(col,base_color,color_ring);
+col = mix(col,tempcol,color_ring2);//fbm2(cpp,10,1,5)
+col = mix (col,base_color,smoothstep (0.25,.7,noise("perlin",100*cpp)));
+//col = mix (col,base_color,smoothstep (0.6,0.9,noise("perlin",5*pp)));
+//to be reactivated
+//col = mix (col,base_color,smoothstep (0,0.4,fbm2(cpp,8,1,5)));
+}
+
+res += temp;
+cols += temp2;
+}
+float cellfreq = scale;
+
+point thiscell = point(    trunc(pp[0]*cellfreq) + offset,
+                           trunc(pp[1]*cellfreq) + offset,
+                           trunc(pp[2]*cellfreq) + offset);
+
+float cellnumber = noise("cell",scale*pp  );
+//color col = maxcolor;
+//col[0] = col[0]*0.5;
+//col[1] = col[1]*0.5;
+//col[2] = col[2]*0.5;
+float n4 = fbm2(pp,5*small_details_scale,1,5);
+temp = smoothstep(0.1,0.25,n4);
+
+color colRGB = mix(col,maxcolor,temp);
+temp = smoothstep(0,0.1,n4);
+colRGB = mix (mincolor,colRGB,temp);
+colRGB = col;
+resultF = 0.5*res;
+//resultRGB = 0.5*res;
+resultRGB = colRGB;
+}
+
+

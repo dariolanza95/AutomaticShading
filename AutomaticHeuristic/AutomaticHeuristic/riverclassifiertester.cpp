@@ -1,6 +1,22 @@
 #include "riverclassifiertester.h"
 
-
+class selectRiverFrontierFunctorClass
+{
+    public:
+    selectRiverFrontierFunctorClass(){}
+    selectRiverFrontierFunctorClass (MyMesh mesh): _mesh(mesh){}
+            int operator() (MyMesh::VertexHandle vertex_handle) {
+            auto simulation_data_wrapper = getOrMakeProperty<VertexHandle,SimulationData*>(_mesh, "simulation_data");
+            SimulationData* sd  = simulation_data_wrapper[vertex_handle];
+            if(sd->_map.at("rivers")<=0.0f)
+                return 1;
+            else
+                return 0;
+            }
+    private:
+            MyMesh _mesh;
+           // PropertyManager<typename HandleToPropHandle<MyMesh::VertexHandle , SimulationData*>::type, MyMesh> simulation_data_wrapper;
+};
 
 void RiverClassifierTester::AttachMockUpSimulationDataToAllVertices()
 {
@@ -206,7 +222,8 @@ void RiverClassifierTester::frontierMadeFromBox_testBFSFunction(int box_half_wid
         }
         expected_result += result_1+result_2;
     }
-    river_vertices = rc->BFS(max_depth,frontier);
+    selectRiverFrontierFunctorClass functor(mesh);
+    river_vertices = rc->BFS(max_depth,frontier,functor);
 
     cout<<"border should be equal to "<< expected_result << "------->"<<river_vertices.size();
     assert((int)river_vertices.size()==expected_result);
@@ -242,8 +259,8 @@ void RiverClassifierTester::frontierMadeFromGridExternalCorners_testBFSFunction(
     }
 
     expected_result = result_1*2+result_2*2;
-
-    river_vertices = rc->BFS(max_depth,frontier);
+      selectRiverFrontierFunctorClass functor(mesh);
+    river_vertices = rc->BFS(max_depth,frontier,functor);
     cout<<"border should be equal to "<< expected_result << "------->"<<river_vertices.size();
     assert((int)river_vertices.size()==expected_result);
     cout<<"passed"<<endl;

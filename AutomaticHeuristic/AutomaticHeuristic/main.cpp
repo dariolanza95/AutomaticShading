@@ -559,7 +559,6 @@ void window_close_callback(GLFWwindow* window)
 void UpdateSimulationData(MyMesh& mesh, map<MyMesh::VertexHandle,ShaderParameters*> selected_vertices,int shaderID)
 {
     auto shader_parameters_property = getOrMakeProperty<VertexHandle, ShaderParameters*>(mesh, "shader_parameters");
-
     for (auto const& x : selected_vertices)
     {
         MyMesh::VertexHandle vertex_handle = x.first;
@@ -579,7 +578,7 @@ auto shader_parameters_data_wrapper= getOrMakeProperty<VertexHandle, ShaderParam
     for(vertex_iterator=mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
     {
             ShaderParameters* shader_parameter = new ShaderParameters(0,10);
-            shader_parameter->setValue(0,1);
+            shader_parameter->setValue(0,-1);
             shader_parameters_data_wrapper[vertex_iterator] = shader_parameter;
     }
 }
@@ -594,8 +593,8 @@ void FindFeatures(MyMesh& mesh)
      selected_faces = sc->ClassifyVertices();
      UpdateSimulationData(mesh,selected_faces,1);
      selected_faces.clear();
-     //75 slp
-     AClassifier *rc = new RiverClassifier(mesh,50,50,5,34,-35);
+     //75 slope and 20 treshold;
+     AClassifier *rc = new RiverClassifier(mesh,75,20,5,34,-35);
      selected_faces = rc->ClassifyVertices();
      UpdateSimulationData(mesh,selected_faces,2);
      RiverClassifierTester rct;
@@ -606,8 +605,8 @@ void FindFeatures(MyMesh& mesh)
 
 void WriteSimulationDataOnOutputFile(MyMesh& mesh,ostream& outputfile)
 {
-
     auto shader_parameters_data_wrapper = getOrMakeProperty<VertexHandle, ShaderParameters*>(mesh, "shader_parameters");
+    //varying
     string newstring = " \"varying float simulation_data\"[";
     outputfile<<newstring;
     for (auto& vertex_handle : mesh.vertices())
@@ -618,7 +617,7 @@ void WriteSimulationDataOnOutputFile(MyMesh& mesh,ostream& outputfile)
     outputfile<< " ]";
     for(int i= 0;i<1;i++)
     {
-        string newstring = " \"varying float shader_property_";
+        string newstring = " \"vertex float shader_property_";
         outputfile<<newstring;
         outputfile<<i;
         outputfile << "\" [";
@@ -628,7 +627,7 @@ void WriteSimulationDataOnOutputFile(MyMesh& mesh,ostream& outputfile)
         for (auto& vertex_handle : mesh.vertices())
         {
 
-            ShaderParameters* const shader_param = shader_parameters_data_wrapper[vertex_handle];
+            ShaderParameters* shader_param = shader_parameters_data_wrapper[vertex_handle];
             outputfile<< shader_param->getValue(i)<< endl;
         }
         //how it was before -> outputfile<< " ] \" ";
@@ -636,6 +635,7 @@ void WriteSimulationDataOnOutputFile(MyMesh& mesh,ostream& outputfile)
     }
 
 }
+
 bool WriteSimulationData(string line,ifstream& myfile,ostream& omyfile,MyMesh& mesh)
 {
     int counter = 0;

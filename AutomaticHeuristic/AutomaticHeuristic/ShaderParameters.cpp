@@ -1,10 +1,9 @@
 #include "ShaderParameters.h"
 
-ShaderParameters::ShaderParameters(int shaderId,int size) : _list(size), _id(shaderId)
-{
-}
+ShaderParameters::ShaderParameters(int shaderId,int size) : _list(size), _id(shaderId){}
+ShaderParameters::ShaderParameters() : _list(0), _id(0){}
 
-int ShaderParameters::getValue(int index)
+float ShaderParameters::getValue(int index)
 {
     return _list[index];
 }
