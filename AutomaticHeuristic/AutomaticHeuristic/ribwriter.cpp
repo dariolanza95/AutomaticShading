@@ -48,7 +48,6 @@ void RIBWriter::MixNode()
         string_to_write << " \" color color1 \" [ "<< color_1 << " ]";
     }
 
-
     if(ref_color_2)
     {
      string_to_write<<" \" reference color color2 \" [ \" "<<ref_color_2_name << " \" ]";

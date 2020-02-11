@@ -27,7 +27,8 @@ TerrainFluidSimulation::TerrainFluidSimulation(GLFWwindow* window, uint dim)
       _rain(false),
       _rainPos(dim/2,dim/2),
       _flood(false),
-      _window(window)
+      _window(window),
+      _cam(glm::vec3(0,0,0))
 {}
 
 void TerrainFluidSimulation::Run()
@@ -188,7 +189,6 @@ void TerrainFluidSimulation::OpenFile(const char filename [],std::fstream *objfi
        (*objfile).open(filename, std::fstream::in | std::fstream::out );
 
 
-     // If file does not exist, Create new file
      if (!(*objfile))
      {
        std::cout << "Cannot open file, file does not exist. Creating new file..";
@@ -213,10 +213,12 @@ void TerrainFluidSimulation::ExportSimulationData()
            const char filename_2[ ] = "/home/pandora/thesis/AutomaticShading/Data/simulationData.txt";
            std::fstream objfile;
            std::fstream datafile;
-           TerrainFluidSimulation::OpenFile(filename,&objfile,false);
-           TerrainFluidSimulation::OpenFile(filename_2,&datafile,false);
-           TerrainFluidSimulation::SaveTerrain( &objfile);
-           TerrainFluidSimulation::SaveSimulationData(&datafile);
+
+           OpenFile(filename,&objfile,false);
+           OpenFile(filename_2,&datafile,false);
+           SaveTerrain( &objfile);
+           SaveSimulationData(&datafile);
+
            objfile.close();
            datafile.close();
 
@@ -228,8 +230,7 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
     int temp = 0;
     std::string data_string;
     std::cout<<"Writing to some file"<<std::endl;
-    std::cout<<"h == "<<_simulationState.vegetation.height()<<std::endl;
-    std::cout<<"w == "<<_simulationState.vegetation.width()<<std::endl;
+
     for (uint y=0; y < _simulationState.vegetation.height(); y++)
     {
         for (uint x=0; x < _simulationState.vegetation.width(); x++)
@@ -237,10 +238,11 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
             temp++;
             (*datafile )<< _simulationState.simData(x,y);
             (*datafile )<<" "<< _simulationState.vegetation(x,y);
+            vec3 flowNormal (_simulation.uVel(y,x),_simulation.vVel(y,x),_simulation.zVel(y,x));
+            (*datafile )<<" v "<< flowNormal[0] << " "<< flowNormal[1]<< " "<< flowNormal[2];
             (*datafile)<< std::endl;
         }
     }
-    std::cout<< "temp is "<< temp << std::endl;
 }
 
 void TerrainFluidSimulation:: SaveTerrain (std::fstream *objfile)

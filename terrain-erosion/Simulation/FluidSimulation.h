@@ -14,6 +14,7 @@
 
 #include "platform_includes.h"
 #include "Grid2D.h"
+#include "Math/PerlinNoise.h"
 #include "SimulationState.h"
 
 using namespace glm;
@@ -37,7 +38,7 @@ public:
     Grid2D<float> tmpSediment;
     Grid2D<float> uVel;
     Grid2D<float> vVel;
-
+    Grid2D<float> zVel;
 
     Grid2D<float> lFlux;
     Grid2D<float> rFlux;
@@ -58,6 +59,7 @@ public:
 
     void makeRain(double dt);
     void makeFlood(double dt);
+    void makeRiver(double dt);
 
     void addRainDrop(const vec2& pos, int rad, float amount);
 

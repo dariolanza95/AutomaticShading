@@ -17,7 +17,6 @@ class RiverClassifier: public AClassifier
     PropertyManager<typename HandleToPropHandle<MyMesh::VertexHandle , SimulationData*>::type, MyMesh> simulation_data_wrapper;
     template <typename T,typename FuncType>
     map<MyMesh::VertexHandle,T> BFS(int max_depth,map<MyMesh::VertexHandle,T> frontier_map,FuncType pred);
-    //map<MyMesh::VertexHandle,float> BFS(int depth,map<MyMesh::VertexHandle,float> frontier_map);
     map<MyMesh::VertexHandle,float> selectFrontier(map<MyMesh::VertexHandle,float> river_vertices);
     map<MyMesh::VertexHandle,ShaderParameters*> SelectFacesBySlope(map<MyMesh::VertexHandle,float> rivers_boundaries);
     map<MyMesh::VertexHandle,float> SelectRiverVertices();

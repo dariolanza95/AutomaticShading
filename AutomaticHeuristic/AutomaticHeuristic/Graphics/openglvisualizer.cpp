@@ -1,7 +1,8 @@
 #include "openglvisualizer.h"
+//#include "glm/ext.hpp"
 
-
-
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/string_cast.hpp>
 
 
 
@@ -123,7 +124,10 @@ void OpenGlVisualizer::CameraMovement(float dt)
     if (glfwGetKey(_window,'1')) ShowSimulationDataInput();
     if (glfwGetKey(_window,'2')) ShowSelectedFaces();
     glm::vec3 pos = _cam.Position();
-   // std::cout<<"Position "<< pos[0]<<" "<< pos[1]<<" "<< pos[2]<< std::endl;
+    std::cout<<"Position "<< pos[0]<<" "<< pos[1]<<" "<< pos[2]<<" viewMatrix ";
+    std::cout<< glm::to_string(_cam.ViewMatrix())<< " inverse " ;
+    std::cout<< glm::to_string(transpose(inverse(_cam.ViewMatrix())))<< std::endl;
+
 }
 
 int OpenGlVisualizer::ClampX(int x){ return glm::clamp(x,0,(int) _grid_width - 1);}
@@ -273,10 +277,10 @@ void OpenGlVisualizer::ShowSimulationDataInput()
       _simData(i) = 0;
       _suspendedSediment(i) = 0;
 
-      float river = sd->_map.at("rivers");
+      float river = boost::any_cast<float>(sd->_map.at("rivers"));
       _water(i)=  glm::clamp( river,0.f,1.f );
       if(river == 0)
-        _simData(i)= glm::clamp(sd->_map.at("vegetation"),0.f,1.f);
+        _simData(i)= glm::clamp(boost::any_cast<float>(sd->_map.at("vegetation")),0.f,1.f);
 
     i++;
   }

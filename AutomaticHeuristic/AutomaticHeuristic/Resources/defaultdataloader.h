@@ -1,4 +1,4 @@
-#ifndef DEFAULTDATALOADER_H
+/*#ifndef DEFAULTDATALOADER_H
 #define DEFAULTDATALOADER_H
 #include "DataLoader.h"
 #include <OpenMesh/Core/IO/MeshIO.hh>
@@ -15,7 +15,7 @@ class TriMeshT : public PolyMeshT<Kernel>
 {
 
 
-}*/
+}
 template <class TryMesh>
 class DefaultDataLoader : public DataLoader<TryMesh>
 {
@@ -24,3 +24,4 @@ public:
 };
 
 #endif // DEFAULTDATALOADER_H
+*/

@@ -584,6 +584,7 @@ auto shader_parameters_data_wrapper= getOrMakeProperty<VertexHandle, ShaderParam
 }
 void FindFeatures(MyMesh& mesh)
 {
+
     //angle of repose is usually between 33-37 degreee depending on the rock type
     float angle = 10;
     float treshold = 3;
@@ -593,7 +594,6 @@ void FindFeatures(MyMesh& mesh)
      selected_faces = sc->ClassifyVertices();
      UpdateSimulationData(mesh,selected_faces,1);
      selected_faces.clear();
-     //75 slope and 20 treshold;
      AClassifier *rc = new RiverClassifier(mesh,75,20,5,34,-35);
      selected_faces = rc->ClassifyVertices();
      UpdateSimulationData(mesh,selected_faces,2);
@@ -791,7 +791,7 @@ void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &me
     int counter=0;
 
 
-    vector<string> variablenames = {"vegetation","rivers"};
+    vector<string> variablenames = {"vegetation","rivers","normalFlow"};
     ifstream inputfile  (simulation_data_file);
     auto simulation_data = getOrMakeProperty<VertexHandle, SimulationData*>(mesh, "simulation_data");
     for (auto& vertex_handle : mesh.vertices())

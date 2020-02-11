@@ -39,6 +39,7 @@ FluidSimulation::FluidSimulation(SimulationState& state)
       tmpSediment(state.water.width(),state.water.height()),
       uVel(water.width(), water.height()),
       vVel(water.width(), water.height()),
+      zVel(water.width(), water.height()),
       lFlux(water.width(), water.height()),
       rFlux(water.width(), water.height()),
       tFlux(water.width(), water.height()),
@@ -65,6 +66,18 @@ FluidSimulation::~FluidSimulation() {
 
 RANDOM rnd;
 
+
+
+void FluidSimulation::makeRiver(double dt)
+
+{
+    std::uniform_int_distribution<ushort> rndInt(1,3);
+    std::uniform_real_distribution<float> rndFloat(0,5);
+    const vec2 pos = vec2(0.01,water.height()/2);
+    int x = rndInt(rnd);
+    int y = rndFloat(rnd);
+    addRainDrop(pos,x,dt*0.01*y);
+}
 void FluidSimulation::makeRain(double dt)
 {
     std::uniform_int_distribution<ushort> rndInt(1,water.width()-2);
@@ -361,9 +374,10 @@ void FluidSimulation::simulateFlow(double dt)
 
             float uV = uVel(y,x);
             float vV = vVel(y,x);
+            zVel(y,x) = meanWater;
             float vel = sqrtf(uV*uV+vV*vV);
 
-            if(vel <= river_max_speed_treshold && vel>= river_min_speed_treshold && water(y,x)>river_min_height_treshold &&
+           /* if(vel <= river_max_speed_treshold && vel>= river_min_speed_treshold && water(y,x)>river_min_height_treshold &&
                     water(y,x) <= river_height_treshold)
             {
                 counter_times_water_was_still(y,x)++;
@@ -380,7 +394,7 @@ void FluidSimulation::simulateFlow(double dt)
                 }
                 else
                      counter_times_water_was_still(y,x)=0;
-            }
+            }*/
         }
     }
 
@@ -433,7 +447,9 @@ float FluidSimulation::getWater(int y, int x){
 
 void FluidSimulation::simulateErosion(double dt)
 {
-    const float Kc = 25.0f; // sediment capacity constant
+    PerlinNoise perlin;
+    float frequency = 0.03;
+    float Kc = 25.0f; // sediment capacity constant
     const float Ks = 0.0001f*12*10; // dissolving constant
     const float Kd = 0.0001f*12*10; // deposition constant
 
@@ -459,7 +475,11 @@ void FluidSimulation::simulateErosion(double dt)
             sinAlpha = std::max(sinAlpha,0.1f);
 
             // local sediment capacity of the flow
-            float capacity = Kc * sqrtf(uV*uV+vV*vV)*sinAlpha*(std::min(water(y,x),0.01f)/0.01f) ;
+            //better keep this number not too high
+
+
+            float local_capacity = Kc *(0.5+0.5*perlin.Sample(frequency*x,frequency*y,frequency*getTerrain(y,x)));
+            float capacity = local_capacity * sqrtf(uV*uV+vV*vV)*sinAlpha*(std::min(water(y,x),0.01f)/0.01f) ;
             float delta = (capacity-sediment(y,x));
 
             float v = sqrtf(uV*uV+vV*vV);
@@ -579,7 +599,7 @@ void FluidSimulation::update(double dt, bool rain, bool flood)
         makeRain(dt);
 
     if (flood)
-        makeFlood(dt);
+       makeRiver(dt);// makeFlood(dt);
 
     // 2. Simulate Flow
     simulateFlow(dt);

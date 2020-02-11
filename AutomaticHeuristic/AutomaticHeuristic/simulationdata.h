@@ -7,12 +7,14 @@
 #include <vector>
 #include <map>
 #include <exception>
+#include <boost/any.hpp>
+#include <glm/vec3.hpp>
 using namespace std;
 class SimulationData
 {
     public:
-        map<string,float> _map;
-        SimulationData(map<string,float> map);
+        map<string,boost::any> _map;
+        SimulationData(map<string,boost::any> map);
 
         SimulationData(vector<string> nameVariables, const string& str);
 

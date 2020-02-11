@@ -3,6 +3,7 @@
 #include "riverclassifier.h"
 #include <assert.h>
 #include <math.h>
+#include <glm/vec3.hpp>
 using namespace std;
 
 class RiverClassifierTester

@@ -8,7 +8,9 @@ class selectRiverFrontierFunctorClass
             int operator() (MyMesh::VertexHandle vertex_handle) {
             auto simulation_data_wrapper = getOrMakeProperty<VertexHandle,SimulationData*>(_mesh, "simulation_data");
             SimulationData* sd  = simulation_data_wrapper[vertex_handle];
-            if(sd->_map.at("rivers")<=0.0f)
+
+            glm::vec3 vec = boost::any_cast<glm::vec3>(sd->_map.at("flowNormals"));
+            if(boost::any_cast<float>(sd->_map.at("rivers"))<=0.0f)
                 return 1;
             else
                 return 0;
@@ -24,7 +26,7 @@ void RiverClassifierTester::AttachMockUpSimulationDataToAllVertices()
     //Attach to all the vertices some simulation data (>0)
     for (auto& vertex_handle : mesh.vertices())
     {
-        map<string,float> _map;
+        map<string,boost::any> _map;
         _map.insert(make_pair("vegetations",0.0f));
         _map.insert(make_pair("rivers",1.0f));
         SimulationData *sd =new SimulationData(_map);
@@ -45,7 +47,7 @@ void RiverClassifierTester::AttachMockUpSimulationToABox(int width,int height,fl
     {
         x = i%width;
         y = floor(i/width);
-        map<string,float> _map;
+        map<string,boost::any> _map;
         if(x >= centerX - box_width && x <= centerX+ box_width && y>= centerY - box_height && y <= centerY+box_height)
         {
                 inserted++;
@@ -73,7 +75,7 @@ void RiverClassifierTester::attachMockUpSimulationDataToCorners(int width,int he
     int i = 0;
     for (auto& vertex_handle : mesh.vertices())
     {
-        map<string,float> _map;
+        map<string,boost::any> _map;
         _map.insert(make_pair("vegetations",0.0f));
         if(i == 0 || i == width-1 || i== (width-1)*(height) || i == (height)*(width)-1)
         {

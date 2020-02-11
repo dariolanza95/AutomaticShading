@@ -13,4 +13,7 @@ void ShaderParameters:: setValue (int index,float value)
     _list[index] = value;
 }
 
+glm::vec3 ShaderParameters::getVector() {return _vector;}
+void ShaderParameters::setVector(glm::vec3 vec) {_vector = vec; }
+
 int ShaderParameters::getId() {return _id;}

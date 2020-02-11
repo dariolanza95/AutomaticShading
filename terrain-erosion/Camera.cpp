@@ -40,6 +40,14 @@ const glm::mat4x4 &Camera::ProjMatrix()
     return _projMatrix;
 }
 
+Camera::Camera(vec3 position)
+{
+    _position = position;
+    _forward = glm::fquat(0,0,0,0);
+    SetProjection();
+
+}
+
 const glm::mat4x4 &Camera::ViewMatrix()
 {
 //    glm::mat4_cast(_forward);

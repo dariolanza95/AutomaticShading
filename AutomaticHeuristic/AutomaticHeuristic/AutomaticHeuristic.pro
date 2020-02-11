@@ -2,6 +2,7 @@ QT -= gui
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
+CONFIG += object_with_source
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -30,27 +31,14 @@ SOURCES += *.cpp \
     Graphics/GLWrapper.cpp \
     Graphics/Exception.cpp \
     Graphics/Camera.cpp \
-    Graphics/Camera.cpp \
-    Graphics/Exception.cpp \
-    Graphics/GLWrapper.cpp \
-    Graphics/Grid2D.cpp \
-    Graphics/IndexBuffer.cpp \
-    Graphics/mesh.cpp \
-    Graphics/openglvisualizer.cpp \
-    Graphics/Shader.cpp \
-    Graphics/VertexBuffer.cpp \
     Resources/defaultdataloader.cpp \
     defaultdataloader.cpp \
     main.cpp \
-    ribnode.cpp \
-    ribwriter.cpp \
-    riverclassifier.cpp \
-    riverclassifiertester.cpp \
-    screeclassifier.cpp \
     simulationdata.cpp \
     Graphics/PerlinNoise.cpp \
     ShaderParameters.cpp \
-    aclassifier.cpp
+    aclassifier.cpp \
+    flowclassifier.cpp
 
 
 
@@ -88,28 +76,14 @@ HEADERS += *.h\
     Graphics/Grid2D.h \
     Graphics/Exception.h \
     Graphics/Camera.h \
-    Graphics/Camera.h \
-    Graphics/Exception.h \
-    Graphics/GLWrapper.h \
-    Graphics/Grid2D.h \
-    Graphics/IndexBuffer.h \
-    Graphics/Mesh.h \
-    Graphics/openglvisualizer.h \
-    Graphics/Shader.h \
-    Graphics/VertexBuffer.h \
     Resources/defaultdataloader.h \
-    aclassifier.h \
     dataloader.h \
     defaultdataloader.h \
-    ribnode.h \
-    ribwriter.h \
-    riverclassifier.h \
-    riverclassifiertester.h \
-    screeclassifier.h \
     simulationdata.h \
     Graphics/PerlinNoise.h \
     Graphics/platform_includes.h \
-    ShaderParameters.h
+    ShaderParameters.h \
+    flowclassifier.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system

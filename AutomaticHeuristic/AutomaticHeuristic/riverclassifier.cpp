@@ -12,7 +12,7 @@ class selectRiverFrontierFunctorClass
             int operator() (MyMesh::VertexHandle vertex_handle) {
             auto simulation_data_wrapper = getOrMakeProperty<VertexHandle,SimulationData*>(_mesh, "simulation_data");
             SimulationData* sd  = simulation_data_wrapper[vertex_handle];
-            if(sd->_map.at("rivers")<=0.0f)
+            if(boost::any_cast<float>(sd->_map.at("rivers"))<=0.0f)
                 return 1;
             else
                 return 0;
@@ -111,7 +111,6 @@ _max_height = max;
     }
     map<MyMesh::VertexHandle,float> RiverClassifier::selectFrontier(map<MyMesh::VertexHandle,float> river_vertices)
     {
-        cout<<"Inside SelectFrontier" <<endl;
         map<MyMesh::VertexHandle,float> frontier;
         float river;
         for (auto const& entry : river_vertices)
@@ -123,11 +122,11 @@ _max_height = max;
               {
                   auto simulation_data_wrapper = getOrMakeProperty<VertexHandle,SimulationData*>(_mesh, "simulation_data");
                   SimulationData* sd = simulation_data_wrapper[*vertex_vertex_iterator];
-                  river = sd->_map.at("rivers");
+                  river = boost::any_cast<float>(sd->_map.at("rivers"));
                   if( river == 0)
                   {
                       //insert in the map the actual vertex
-                      frontier.insert(make_pair(vertex_handle,simulation_data_wrapper[*vertex_vertex_iterator]->_map.at("rivers")));
+                      frontier.insert(make_pair(vertex_handle,boost::any_cast<float>(simulation_data_wrapper[*vertex_vertex_iterator]->_map.at("rivers"))));
                       break;
                   }
               }
@@ -142,9 +141,9 @@ _max_height = max;
           for(vertex_iterator=_mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
          {
              SimulationData* sd = simulation_data_wrapper[*vertex_iterator];
-             if(sd->_map.at("rivers")>0.0f)
+             if(boost::any_cast<float>(sd->_map.at("rivers"))>0.0f)
              {
-                 river_vertices.insert(make_pair(*vertex_iterator,sd->_map.at("rivers")));
+                 river_vertices.insert(make_pair(*vertex_iterator,boost::any_cast<float>(sd->_map.at("rivers"))));
              }
          }
      return river_vertices;

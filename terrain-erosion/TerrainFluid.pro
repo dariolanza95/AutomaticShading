@@ -23,7 +23,8 @@ HEADERS += *.h \
     Graphics/Texture2D.h \
     Graphics/Mesh.h \
     Math/PerlinNoise.h \
-    external/tclap/CmdLine.h
+    external/tclap/CmdLine.h \
+    Grid3D.h
 
 OTHER_FILES += \
     Resources/lambert_v.glsl \
