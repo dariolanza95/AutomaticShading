@@ -9,13 +9,13 @@
 #include <iostream>
 #include <inttypes.h>
 #include <cassert>
-#include "ShaderParameters.h"
+#include "Resources/ShaderParameters.h"
 #include "Graphics/Shader.h"
 #include "Graphics/VertexBuffer.h"
 #include "Graphics/IndexBuffer.h"
 #include "Camera.h"
 #include <memory>
-#include "simulationdata.h"
+#include "Resources/simulationdata.h"
 #include "platform_includes.h"
 //#include <glm/glm.hpp> // brew install glm
 //#include <GL/glew.h> // brew install glew

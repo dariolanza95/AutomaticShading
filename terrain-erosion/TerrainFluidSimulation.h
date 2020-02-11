@@ -89,6 +89,8 @@ protected:
     Camera _cam;
 
     std::shared_ptr<Graphics::Shader> _testShader;
+
+
     GLFWwindow *_window;
     int _width, _height;
 

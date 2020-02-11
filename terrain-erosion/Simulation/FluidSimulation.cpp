@@ -55,6 +55,7 @@ FluidSimulation::FluidSimulation(SimulationState& state)
         for (uint j=0; j<uVel.height(); ++j) {
             uVel(i,j) = 0;
             vVel(i,j) = 0;
+            zVel(i,j) = 0;
             lFlux(i,j) = rFlux(i,j) = tFlux(i,j) = bFlux(i,j) = 0;
         }
     }

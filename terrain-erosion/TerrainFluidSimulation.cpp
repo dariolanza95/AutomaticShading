@@ -16,6 +16,7 @@
 #include <fstream>
 #include <sstream>
 #include "platform_includes.h"
+#include <glm/glm.hpp>
 
 using namespace glm;
 using namespace Graphics;
@@ -239,7 +240,9 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
             (*datafile )<< _simulationState.simData(x,y);
             (*datafile )<<" "<< _simulationState.vegetation(x,y);
             vec3 flowNormal (_simulation.uVel(y,x),_simulation.vVel(y,x),_simulation.zVel(y,x));
-            (*datafile )<<" v "<< flowNormal[0] << " "<< flowNormal[1]<< " "<< flowNormal[2];
+            if(flowNormal[0]!=0 || flowNormal[1]!=0 || flowNormal[2]!=0 )
+                flowNormal = normalize(flowNormal);
+            (*datafile )<<" v "<< flowNormal[0]  << " "<< flowNormal[1]<< " "<< flowNormal[2];
             (*datafile)<< std::endl;
         }
     }

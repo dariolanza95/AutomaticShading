@@ -16,12 +16,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += *.cpp \
     defaultdataloader.cpp \
-    screeclassifier.cpp \
-    simulationdata.cpp \
-    riverclassifier.cpp \
-    riverclassifiertester.cpp \
-    ribwriter.cpp \
-    ribnode.cpp \
     Graphics/openglvisualizer.cpp \
     Graphics/mesh.cpp \
     Graphics/IndexBuffer.cpp \
@@ -33,12 +27,18 @@ SOURCES += *.cpp \
     Graphics/Camera.cpp \
     Resources/defaultdataloader.cpp \
     defaultdataloader.cpp \
-    main.cpp \
-    simulationdata.cpp \
     Graphics/PerlinNoise.cpp \
-    ShaderParameters.cpp \
-    aclassifier.cpp \
-    flowclassifier.cpp
+    Resources/ribnode.cpp \
+    Resources/aclassifier.cpp \
+    Resources/featuresfinder.cpp \
+    Resources/flowclassifier.cpp \
+    Resources/main.cpp \
+    Resources/simulationdata.cpp \
+    Resources/ShaderParameters.cpp \
+    Resources/riverclassifiertester.cpp \
+    Resources/screeclassifier.cpp \
+    Resources/riverclassifier.cpp \
+    Resources/ribwriter.cpp
 
 
 
@@ -59,14 +59,6 @@ else:unix: PRE_TARGETDEPS += /home/pandora/OpenMesh-8.0/build/Build/lib/libOpenM
 
 HEADERS += *.h\
     defaultdataloader.h \
-    dataloader.h \
-    aclassifier.h \
-    screeclassifier.h \
-    simulationdata.h \
-    riverclassifier.h \
-    riverclassifiertester.h \
-    ribwriter.h \
-    ribnode.h \
     Graphics/openglvisualizer.h \
     Graphics/IndexBuffer.h \
     Graphics/Shader.h \
@@ -77,13 +69,20 @@ HEADERS += *.h\
     Graphics/Exception.h \
     Graphics/Camera.h \
     Resources/defaultdataloader.h \
-    dataloader.h \
     defaultdataloader.h \
-    simulationdata.h \
     Graphics/PerlinNoise.h \
     Graphics/platform_includes.h \
-    ShaderParameters.h \
-    flowclassifier.h
+    Resources/ribnode.h \
+    Resources/aclassifier.h \
+    Resources/ShaderParameters.h \
+    Resources/featuresfinder.h \
+    Resources/flowclassifier.h \
+    Resources/dataloader.h \
+    Resources/ribwriter.h \
+    Resources/riverclassifier.h \
+    Resources/riverclassifiertester.h \
+    Resources/screeclassifier.h \
+    Resources/simulationdata.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system
