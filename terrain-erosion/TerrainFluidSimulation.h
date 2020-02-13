@@ -12,14 +12,22 @@
 #ifndef TERRAINFLUIDSIMULATION_H
 #define TERRAINFLUIDSIMULATION_H
 
+
+
 #include "Simulation/FluidSimulation.h"
 
 #include "Graphics/Shader.h"
 #include "Graphics/VertexBuffer.h"
 #include "Graphics/IndexBuffer.h"
 #include "Graphics/Texture2D.h"
+# define GLM_ENABLE_EXPERIMENTAL
+
+
+#include <glm/gtc/matrix_transform.hpp>
+using namespace glm;
 
 #include "Camera.h"
+
 
 #include "SimulationState.h"
 
@@ -56,13 +64,29 @@ protected:
 
     void init();
 
+    //Save the simulated terrain and the data collected during the simulation
+    void ExportSimulation();
+
+    // Export the simulated terrain to an obj file
+    void SaveTerrain( std::fstream *objfile);
+
+    //Save data collected during the simulation to an external file
+    void SaveSimulationData(std::fstream *datafile);
+
+    //computer IndexBuffer and VertexBuffer for the arrow used to debug
+    void ArrowData( Grid2D<vec4>& arrowCoords, std::vector<uint>& arrowIndices,glm::vec3 startingPoint,glm::vec3 normal);
+
+    //render the debug tool
+    void RenderDebugTool();
+
 protected:
     bool _finished;
-
+    bool _inPause;
     bool _rain;
     bool _flood;
+    bool _debug_mode = false;
     glm::vec2 _rainPos;
-
+   // std::vector<uint> gridIndices;
     SimulationState _simulationState;
     Simulation::FluidSimulation _simulation;
 
@@ -71,8 +95,11 @@ protected:
     Graphics::VertexBuffer<float>       _terrainHeightBuffer;
     Graphics::VertexBuffer<float>       _waterHeightBuffer;
     Graphics::VertexBuffer<glm::vec2>   _gridCoordBuffer;
+    Graphics::VertexBuffer<glm::vec4>   _arrowCoordBuffer;
+    Graphics::IndexBuffer               _arrowIndexBuffer;
     Graphics::IndexBuffer               _gridIndexBuffer;
     Graphics::VertexBuffer<float>       _sedimentBuffer;
+    Graphics::VertexBuffer<float>       _simDataBuffer;
     Graphics::VertexBuffer<glm::vec3>   _normalBuffer;
 
 
@@ -81,6 +108,8 @@ protected:
     Camera _cam;
 
     std::shared_ptr<Graphics::Shader> _testShader;
+
+    std::shared_ptr<Graphics::Shader> _arrowShader;
     GLFWwindow *_window;
     int _width, _height;
 

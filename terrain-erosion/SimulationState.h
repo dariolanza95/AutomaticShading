@@ -13,6 +13,7 @@
 #define STATE_H
 
 #include "Grid2D.h"
+#include "Grid3D.h"
 #include "platform_includes.h"
 
 #include "Math/PerlinNoise.h"
@@ -25,6 +26,10 @@ public:
     Grid2D<float> water;
     Grid2D<float> terrain;
     Grid2D<float> suspendedSediment;
+    Grid2D<float> vegetation;
+    Grid2D<float> simData;
+    Grid2D<float> rivers;
+    //Grid2D<vec3>  flowNormal;
 
     Grid2D<vec3> surfaceNormals;
 public:
@@ -33,11 +38,15 @@ public:
         :   water(w,h),
             terrain(w,h),
             suspendedSediment(w,h),
-            surfaceNormals(w,h)
+            surfaceNormals(w,h),
+            vegetation(w,h),
+            rivers(w,h),
+            simData(w,h)
+            //flowNormal(w,h)
     {
 
-        createPerlinTerrain();
-
+        //createPerlinTerrain();
+        createRiverTerrain();
         int l = 20;
         int mw = 20;
         int xmin = water.width() - l-mw;
@@ -48,23 +57,67 @@ public:
 
     }
 
+
+    void createRiverTerrain()
+    {
+        PerlinNoise perlin;
+        float angle1 = 20;
+        float angle2 = 5;
+        for (uint y=0; y<water.height(); y++)
+        {
+            for (uint x=0; x<water.width(); x++)
+            {
+                water(y,x) = 0.0f;
+                suspendedSediment(y,x) = 0.0f;
+                vegetation(y,x) = 0.0f;
+                simData(y,x) = 0.0f;
+                rivers(y,x) = 0.0f;
+                if (x < (water.height()*2/3))
+                {
+                    if (y > (water.height()/2))
+                    {
+                        terrain(y,x) = (y-water.height()/2) * tan(M_PI*angle1/180);
+                                            }
+                    else
+                    {
+                        terrain(y,x) = (-y+water.height()/2) * tan(M_PI*angle1/180);
+                        //terrain(y,x) = std::max(terrain(y,x),0.2f*(-y+water.height()/2));
+                    }
+                    float temp= (-x+water.height()*2/3) * tan(M_PI*angle2/180);
+                    terrain (y,x) = std::max(terrain(y,x),temp);
+
+                }
+                else
+                {
+                    terrain(y,x) = -10;
+                }
+
+            }
+        }
+    }
+
     void createPerlinTerrain()
     {
         PerlinNoise perlin;
-
+        float max = 0;
         for (uint y=0; y<water.height(); y++)
         {
             for (uint x=0; x<water.width(); x++)
             {
                 water(y,x) = 0.0f;
 
+                //flowNormal(y,x) = 0.0f;
                 float h = 0.0f; float f = 0.05f;
                 h += perlin.Sample(y*f,x*f)*1; f /= 2;
                 h += perlin.Sample(y*f,x*f)*2; f /= 2;
                 h += perlin.Sample(y*f,x*f)*4; f /= 2;
                 h += perlin.Sample(y*f,x*f)*8; f /= 2;
+                max = h>max ? h:max;
                 terrain(y,x) = h*4*1.3;
                 suspendedSediment(y,x) = 0.0f;// 0.1*terrain(y,x);
+                vegetation(y,x) = 0.0f;
+                simData(y,x) = 0.0f;
+                rivers(y,x) = 0.0f;
 
             }
         }
@@ -87,6 +140,7 @@ public:
                 } else {
                     terrain(y,x) = std::max(terrain(y,x),0.2f*(-y+water.height()/2));
                 }
+
                 suspendedSediment(y,x) = 0.0f;
             }
         }

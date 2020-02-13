@@ -1,0 +1,815 @@
+OpenShadingLanguage 1.00
+# Compiled by oslc 1.8.2.pixar1697a56
+# options: 
+shader exfoliation_color
+param	float	minheight	1.25		%read{2147483647,-1} %write{2147483647,-1}
+param	float	maxheight	2.5		%read{2147483647,-1} %write{2147483647,-1}
+param	float	step_size	0.1		%read{18,31} %write{2147483647,-1}
+param	float	min_offset	0.1		%read{2147483647,-1} %write{2147483647,-1}
+param	vector	direction	1 0 0		%read{1,1} %write{2147483647,-1}
+param	int	details	1		%read{57,57} %write{2147483647,-1}
+param	int	medium_details	2		%read{66,260} %write{2147483647,-1}
+param	point	Pobj	0 0 0		%meta{int,lockgeom,0}  %read{0,0} %write{2147483647,-1}
+param	point	Nobj	0 0 0		%meta{int,lockgeom,0}  %read{2147483647,-1} %write{2147483647,-1}
+param	float	shader_property_0	0		%meta{int,lockgeom,0}  %read{20,21} %write{2147483647,-1}
+param	int	scale	1		%read{2147483647,-1} %write{2147483647,-1}
+param	int	level_of_details	4		%read{2147483647,-1} %write{2147483647,-1}
+param	color	mincolor	1 0 0		%read{266,296} %write{2147483647,-1}
+param	color	maxcolor	1 0 0		%read{294,294} %write{2147483647,-1}
+param	color	base_color	1 0 0		%read{48,275} %write{2147483647,-1}
+param	color	second_color	1 0 0		%read{2147483647,-1} %write{2147483647,-1}
+oparam	float	resultDispl	0		%read{2147483647,-1} %write{2147483647,-1}
+oparam	color	resultRGB	0 0 0		%read{2147483647,-1} %write{299,299}
+oparam	float	resultF	0		%read{2147483647,-1} %write{298,298}
+local	float	___325_n2	%read{57,292} %write{57,286}
+local	float	___325_n3	%read{57,292} %write{57,291}
+local	point	___326_tpp	%read{57,281} %write{57,281}
+local	float	___326_high_freq_multiplier	%read{57,281} %write{57,281}
+local	normal	___326_dir_normalized	%read{57,281} %write{57,281}
+local	float	___326_k	%read{57,281} %write{57,281}
+local	float	___326_n	%read{57,281} %write{57,281}
+local	float	___326_blend	%read{57,281} %write{57,281}
+local	point	pp	%read{3,287} %write{0,0}
+local	point	tpp	%read{26,29} %write{5,13}
+local	normal	dir_normalized	%read{2,281} %write{1,1}
+local	float	ampl	%read{2147483647,-1} %write{14,14}
+local	float	freq	%read{57,281} %write{15,15}
+local	float	high_freq_multiplier	%read{2147483647,-1} %write{16,16}
+local	float	small_details_scale	%read{282,282} %write{17,17}
+local	float	step_increase	%read{19,281} %write{18,31}
+local	float	s_min	%read{22,281} %write{20,281}
+local	float	s_max	%read{57,281} %write{22,281}
+local	float	s_min_col	%read{25,281} %write{23,281}
+local	float	s_max_col	%read{57,281} %write{25,281}
+local	float	k	%read{2147483647,-1} %write{30,30}
+local	float	offset	%read{2147483647,-1} %write{32,32}
+local	int	i	%read{57,281} %write{33,281}
+local	float	blend	%read{2147483647,-1} %write{34,34}
+local	float	blur	%read{57,281} %write{35,35}
+local	float	noise_strength	%read{57,281} %write{36,36}
+local	float	minor_rings_offset	%read{57,281} %write{37,37}
+local	float	minor_rings	%read{57,281} %write{38,281}
+local	float	res	%read{57,298} %write{39,281}
+local	float	temp	%read{57,296} %write{40,295}
+local	float	s_min2	%read{2147483647,-1} %write{41,281}
+local	float	s_max2	%read{57,281} %write{42,281}
+local	float	s_min_col2	%read{2147483647,-1} %write{43,281}
+local	float	s_max_col2	%read{2147483647,-1} %write{44,281}
+local	float	randomness	%read{57,281} %write{45,45}
+local	float	randomness2	%read{57,281} %write{46,46}
+local	float	color_ring	%read{57,281} %write{47,281}
+local	color	cols	%read{57,281} %write{48,281}
+local	float	random_multiplier	%read{57,281} %write{49,49}
+local	float	temp2	%read{57,281} %write{50,281}
+local	int	j	%read{57,281} %write{51,281}
+local	float	color_ring2	%read{57,281} %write{52,281}
+local	float	color_offset	%read{57,281} %write{53,53}
+local	color	col	%read{57,297} %write{54,281}
+local	float	___330_rand0	%read{57,281} %write{57,281}
+local	float	___330_rand1	%read{57,281} %write{57,281}
+local	float	___330_rand2	%read{57,281} %write{57,281}
+local	vector	___330_random_direction	%read{57,281} %write{57,281}
+local	normal	___330_random_normal	%read{57,281} %write{57,281}
+local	point	___330_cpp	%read{57,281} %write{57,281}
+local	color	___330_tempcol	%read{57,281} %write{57,281}
+local	float	n4	%read{293,295} %write{292,292}
+local	color	colRGB	%read{296,299} %write{294,297}
+const	int	$const1	0		%read{2,237} %write{2147483647,-1}
+temp	float	$tmp1	%read{4,4} %write{2,2}
+temp	float	$tmp2	%read{4,4} %write{3,3}
+temp	float	$tmp3	%read{5,5} %write{4,4}
+const	int	$const2	1		%read{6,281} %write{2147483647,-1}
+temp	float	$tmp4	%read{8,8} %write{6,6}
+temp	float	$tmp5	%read{8,8} %write{7,7}
+temp	float	$tmp6	%read{9,9} %write{8,8}
+const	int	$const3	2		%read{10,240} %write{2147483647,-1}
+temp	float	$tmp7	%read{12,12} %write{10,10}
+temp	float	$tmp8	%read{12,12} %write{11,11}
+temp	float	$tmp9	%read{13,13} %write{12,12}
+const	float	$const4	0.80000001		%read{14,259} %write{2147483647,-1}
+const	int	$const5	15		%read{15,15} %write{2147483647,-1}
+const	int	$const6	5		%read{16,17} %write{2147483647,-1}
+temp	float	$tmp10	%read{20,20} %write{19,19}
+const	float	$const7	2		%read{19,19} %write{2147483647,-1}
+const	float	$const8	5		%read{23,291} %write{2147483647,-1}
+temp	float	$tmp11	%read{25,25} %write{24,24}
+temp	float	$tmp12	%read{28,28} %write{26,26}
+temp	float	$tmp13	%read{28,28} %write{27,27}
+temp	float	$tmp14	%read{30,30} %write{28,28}
+temp	float	$tmp15	%read{30,30} %write{29,29}
+const	float	$const9	0.0099999998		%read{32,218} %write{2147483647,-1}
+const	float	$const10	0.001		%read{45,45} %write{2147483647,-1}
+const	int	$const11	3		%read{49,223} %write{2147483647,-1}
+temp	int	$tmp16	%read{55,281} %write{56,281}
+temp	int	$tmp17	%read{57,281} %write{57,281}
+const	string	$const12	"perlin"		%read{73,289} %write{2147483647,-1}
+const	float	$const13	1.414		%read{68,68} %write{2147483647,-1}
+temp	float	$tmp18	%read{57,281} %write{57,281}
+temp	float	$tmp19	%read{57,281} %write{57,281}
+temp	point	$tmp20	%read{57,281} %write{57,281}
+temp	int	$tmp21	%read{57,281} %write{57,281}
+temp	point	$tmp22	%read{57,281} %write{57,281}
+temp	point	$tmp23	%read{57,281} %write{57,281}
+const	int	$const14	42		%read{74,74} %write{2147483647,-1}
+temp	int	$tmp24	%read{57,281} %write{57,281}
+temp	point	$tmp25	%read{57,281} %write{57,281}
+temp	point	$tmp26	%read{57,281} %write{57,281}
+temp	int	$tmp27	%read{57,281} %write{57,281}
+temp	point	$tmp28	%read{57,281} %write{57,281}
+temp	point	$tmp29	%read{57,281} %write{57,281}
+const	float	$const15	3.1400001		%read{82,82} %write{2147483647,-1}
+temp	float	$tmp30	%read{57,281} %write{57,281}
+temp	float	$tmp31	%read{57,281} %write{57,281}
+temp	point	$tmp32	%read{57,281} %write{57,281}
+temp	int	$tmp33	%read{57,281} %write{57,281}
+temp	point	$tmp34	%read{57,281} %write{57,281}
+temp	point	$tmp35	%read{57,281} %write{57,281}
+temp	float	$tmp36	%read{57,281} %write{57,281}
+temp	float	$tmp37	%read{57,281} %write{57,281}
+temp	float	$tmp38	%read{57,281} %write{57,281}
+temp	float	$tmp39	%read{57,281} %write{57,281}
+temp	float	$tmp40	%read{57,281} %write{57,281}
+temp	float	$tmp41	%read{57,281} %write{57,281}
+temp	float	$tmp42	%read{57,281} %write{57,281}
+temp	float	$tmp43	%read{57,281} %write{57,281}
+temp	float	$tmp44	%read{57,281} %write{57,281}
+temp	float	$tmp45	%read{57,281} %write{57,281}
+temp	float	$tmp46	%read{57,281} %write{57,281}
+temp	float	$tmp47	%read{57,281} %write{57,281}
+temp	float	$tmp48	%read{57,281} %write{57,281}
+const	float	$const16	0.1		%read{103,295} %write{2147483647,-1}
+temp	float	$tmp49	%read{57,281} %write{57,281}
+temp	float	$tmp50	%read{57,281} %write{57,281}
+temp	float	$tmp51	%read{57,281} %write{57,281}
+temp	float	$tmp52	%read{57,281} %write{57,281}
+temp	float	$tmp53	%read{57,281} %write{57,281}
+temp	float	$tmp54	%read{57,281} %write{57,281}
+temp	float	$tmp55	%read{57,281} %write{57,281}
+temp	float	$tmp56	%read{57,281} %write{57,281}
+temp	float	$tmp57	%read{57,281} %write{57,281}
+temp	float	$tmp58	%read{57,281} %write{57,281}
+temp	float	$tmp59	%read{57,281} %write{57,281}
+temp	float	$tmp60	%read{57,281} %write{57,281}
+temp	float	$tmp61	%read{57,281} %write{57,281}
+temp	float	$tmp62	%read{57,281} %write{57,281}
+temp	point	$tmp63	%read{57,281} %write{57,281}
+temp	float	$tmp64	%read{57,281} %write{57,281}
+temp	float	$tmp65	%read{57,281} %write{57,281}
+temp	float	$tmp66	%read{57,281} %write{57,281}
+temp	float	$tmp67	%read{57,281} %write{57,281}
+temp	float	$tmp68	%read{57,281} %write{57,281}
+temp	float	$tmp69	%read{57,281} %write{57,281}
+temp	float	$tmp70	%read{57,281} %write{57,281}
+temp	float	$tmp71	%read{57,281} %write{57,281}
+temp	float	$tmp72	%read{57,281} %write{57,281}
+const	float	$const17	0		%read{175,295} %write{2147483647,-1}
+const	float	$const18	0.40000001		%read{153,249} %write{2147483647,-1}
+const	string	$const19	"createCuttingPlane"		%read{130,222} %write{2147483647,-1}
+temp	float	$tmp73	%read{57,281} %write{57,281}
+temp	float	$tmp74	%read{57,281} %write{57,281}
+temp	float	$tmp75	%read{57,281} %write{57,281}
+temp	float	$tmp76	%read{57,281} %write{57,281}
+temp	float	$tmp77	%read{57,281} %write{57,281}
+temp	float	$tmp78	%read{57,281} %write{57,281}
+temp	float	$tmp79	%read{57,281} %write{57,281}
+temp	float	$tmp80	%read{57,281} %write{57,281}
+temp	float	$tmp81	%read{57,281} %write{57,281}
+temp	float	$tmp82	%read{57,281} %write{57,281}
+temp	float	$tmp83	%read{57,281} %write{57,281}
+temp	float	$tmp84	%read{57,281} %write{57,281}
+temp	float	$tmp85	%read{57,281} %write{57,281}
+const	string	$const20	"fbm2"		%read{150,283} %write{2147483647,-1}
+temp	float	$tmp86	%read{57,281} %write{57,281}
+temp	point	$tmp87	%read{57,281} %write{57,281}
+temp	float	$tmp88	%read{57,281} %write{57,281}
+temp	point	$tmp89	%read{57,281} %write{57,281}
+temp	point	$tmp90	%read{57,281} %write{57,281}
+temp	float	$tmp91	%read{57,281} %write{57,281}
+temp	float	$tmp92	%read{57,281} %write{57,281}
+temp	float	$tmp93	%read{57,281} %write{57,281}
+temp	float	$tmp94	%read{57,281} %write{57,281}
+temp	float	$tmp95	%read{57,281} %write{57,281}
+temp	float	$tmp96	%read{57,281} %write{57,281}
+temp	float	$tmp97	%read{57,281} %write{57,281}
+temp	float	$tmp98	%read{57,281} %write{57,281}
+const	float	$const21	1		%read{169,290} %write{2147483647,-1}
+temp	float	$tmp99	%read{57,281} %write{57,281}
+temp	float	$tmp100	%read{57,281} %write{57,281}
+const	string	$const22	"clamp"		%read{173,267} %write{2147483647,-1}
+temp	float	$tmp101	%read{57,281} %write{57,281}
+temp	float	$tmp102	%read{57,281} %write{57,281}
+temp	float	$tmp103	%read{57,281} %write{57,281}
+temp	float	$tmp104	%read{57,281} %write{57,281}
+temp	float	$tmp105	%read{57,281} %write{57,281}
+temp	float	$tmp106	%read{57,281} %write{57,281}
+temp	float	$tmp107	%read{57,281} %write{57,281}
+temp	float	$tmp108	%read{57,281} %write{57,281}
+temp	float	$tmp109	%read{57,281} %write{57,281}
+temp	float	$tmp110	%read{57,281} %write{57,281}
+temp	float	$tmp111	%read{57,281} %write{57,281}
+temp	float	$tmp112	%read{57,281} %write{57,281}
+temp	float	$tmp113	%read{57,281} %write{57,281}
+temp	float	$tmp114	%read{57,281} %write{57,281}
+temp	float	$tmp115	%read{57,281} %write{57,281}
+temp	float	$tmp116	%read{57,281} %write{57,281}
+temp	float	$tmp117	%read{57,281} %write{57,281}
+temp	float	$tmp118	%read{57,281} %write{57,281}
+temp	float	$tmp119	%read{57,281} %write{57,281}
+temp	float	$tmp120	%read{57,281} %write{57,281}
+temp	float	$tmp121	%read{57,281} %write{57,281}
+temp	float	$tmp122	%read{57,281} %write{57,281}
+temp	float	$tmp123	%read{57,281} %write{57,281}
+temp	float	$tmp124	%read{57,281} %write{57,281}
+temp	float	$tmp125	%read{57,281} %write{57,281}
+temp	float	$tmp126	%read{57,281} %write{57,281}
+temp	float	$tmp127	%read{57,281} %write{57,281}
+temp	float	$tmp128	%read{57,281} %write{57,281}
+temp	float	$tmp129	%read{57,281} %write{57,281}
+temp	float	$tmp130	%read{57,281} %write{57,281}
+temp	float	$tmp131	%read{57,281} %write{57,281}
+temp	point	$tmp132	%read{57,281} %write{57,281}
+temp	float	$tmp133	%read{57,281} %write{57,281}
+temp	float	$tmp134	%read{57,281} %write{57,281}
+temp	float	$tmp135	%read{57,281} %write{57,281}
+temp	float	$tmp136	%read{57,281} %write{57,281}
+temp	float	$tmp137	%read{57,281} %write{57,281}
+temp	float	$tmp138	%read{57,281} %write{57,281}
+temp	float	$tmp139	%read{57,281} %write{57,281}
+temp	float	$tmp140	%read{57,281} %write{57,281}
+temp	float	$tmp141	%read{57,281} %write{57,281}
+temp	float	$tmp142	%read{57,281} %write{57,281}
+temp	float	$tmp143	%read{57,281} %write{57,281}
+temp	float	$tmp144	%read{57,281} %write{57,281}
+temp	float	$tmp145	%read{57,281} %write{57,281}
+temp	float	$tmp146	%read{57,281} %write{57,281}
+temp	float	$tmp147	%read{57,281} %write{57,281}
+temp	float	$tmp148	%read{57,281} %write{57,281}
+temp	float	$tmp149	%read{57,281} %write{57,281}
+temp	float	$tmp150	%read{57,281} %write{57,281}
+temp	float	$tmp151	%read{57,281} %write{57,281}
+temp	float	$tmp152	%read{57,281} %write{57,281}
+temp	float	$tmp153	%read{57,281} %write{57,281}
+temp	float	$tmp154	%read{57,281} %write{57,281}
+temp	float	$tmp155	%read{57,281} %write{57,281}
+temp	float	$tmp156	%read{57,281} %write{57,281}
+temp	float	$tmp157	%read{57,281} %write{57,281}
+temp	float	$tmp158	%read{57,281} %write{57,281}
+temp	point	$tmp159	%read{57,281} %write{57,281}
+temp	float	$tmp160	%read{57,281} %write{57,281}
+temp	point	$tmp161	%read{57,281} %write{57,281}
+temp	point	$tmp162	%read{57,281} %write{57,281}
+temp	float	$tmp163	%read{57,281} %write{57,281}
+temp	float	$tmp164	%read{57,281} %write{57,281}
+temp	float	$tmp165	%read{57,281} %write{57,281}
+temp	float	$tmp166	%read{57,281} %write{57,281}
+temp	float	$tmp167	%read{57,281} %write{57,281}
+temp	float	$tmp168	%read{57,281} %write{57,281}
+temp	float	$tmp169	%read{57,281} %write{57,281}
+temp	float	$tmp170	%read{57,281} %write{57,281}
+temp	float	$tmp171	%read{57,281} %write{57,281}
+temp	float	$tmp172	%read{57,281} %write{57,281}
+temp	float	$tmp173	%read{57,281} %write{57,281}
+temp	float	$tmp174	%read{57,281} %write{57,281}
+const	float	$const23	0.25		%read{274,293} %write{2147483647,-1}
+const	float	$const24	0.69999999		%read{274,274} %write{2147483647,-1}
+temp	float	$tmp175	%read{57,281} %write{57,281}
+temp	point	$tmp176	%read{57,281} %write{57,281}
+const	float	$const26	100		%read{272,272} %write{2147483647,-1}
+temp	int	$tmp177	%read{2147483647,-1} %write{57,281}
+temp	int	$tmp178	%read{2147483647,-1} %write{57,281}
+temp	float	$tmp179	%read{284,287} %write{282,282}
+temp	float	$tmp180	%read{286,286} %write{285,285}
+temp	point	$tmp181	%read{285,285} %write{284,284}
+temp	float	$tmp182	%read{290,290} %write{289,289}
+temp	point	$tmp183	%read{288,288} %write{287,287}
+temp	point	$tmp184	%read{289,289} %write{288,288}
+temp	float	$tmp185	%read{291,291} %write{290,290}
+const	float	$const27	0.5		%read{298,298} %write{2147483647,-1}
+code ___main___
+# exfoliation_color.osl:86
+# point pp = Pobj;
+	assign		pp Pobj 	%filename{"exfoliation_color.osl"} %line{86} %argrw{"wr"}
+# exfoliation_color.osl:90
+# normal dir_normalized = normalize(direction);
+	normalize	dir_normalized direction 	%line{90} %argrw{"wr"}
+# exfoliation_color.osl:91
+# tpp[0] = dir_normalized[0] * pp[0];
+	compref		$tmp1 dir_normalized $const1 	%line{91} %argrw{"wrr"}
+	compref		$tmp2 pp $const1 	%argrw{"wrr"}
+	mul		$tmp3 $tmp1 $tmp2 	%argrw{"wrr"}
+	compassign	tpp $const1 $tmp3 	%argrw{"wrr"}
+# exfoliation_color.osl:92
+# tpp[1] = dir_normalized[1] * pp[1];
+	compref		$tmp4 dir_normalized $const2 	%line{92} %argrw{"wrr"}
+	compref		$tmp5 pp $const2 	%argrw{"wrr"}
+	mul		$tmp6 $tmp4 $tmp5 	%argrw{"wrr"}
+	compassign	tpp $const2 $tmp6 	%argrw{"wrr"}
+# exfoliation_color.osl:93
+# tpp[2] = dir_normalized[2] * pp[2];
+	compref		$tmp7 dir_normalized $const3 	%line{93} %argrw{"wrr"}
+	compref		$tmp8 pp $const3 	%argrw{"wrr"}
+	mul		$tmp9 $tmp7 $tmp8 	%argrw{"wrr"}
+	compassign	tpp $const3 $tmp9 	%argrw{"wrr"}
+# exfoliation_color.osl:95
+# float ampl = 0.8;
+	assign		ampl $const4 	%line{95} %argrw{"wr"}
+# exfoliation_color.osl:97
+# float freq = 15;
+	assign		freq $const5 	%line{97} %argrw{"wr"}
+# exfoliation_color.osl:98
+# float high_freq_multiplier = 5;
+	assign		high_freq_multiplier $const6 	%line{98} %argrw{"wr"}
+# exfoliation_color.osl:99
+# float small_details_scale = 5;
+	assign		small_details_scale $const6 	%line{99} %argrw{"wr"}
+# exfoliation_color.osl:100
+# float step_increase = step_size;
+	assign		step_increase step_size 	%line{100} %argrw{"wr"}
+# exfoliation_color.osl:101
+# float s_min =  shader_property_0 - 2 * step_increase;
+	mul		$tmp10 $const7 step_increase 	%line{101} %argrw{"wrr"}
+	sub		s_min shader_property_0 $tmp10 	%argrw{"wrr"}
+# exfoliation_color.osl:102
+# s_min = shader_property_0;
+	assign		s_min shader_property_0 	%line{102} %argrw{"wr"}
+# exfoliation_color.osl:103
+# float s_max = s_min + step_increase;
+	add		s_max s_min step_increase 	%line{103} %argrw{"wrr"}
+# exfoliation_color.osl:104
+# float s_min_col = s_min/5;
+	div		s_min_col s_min $const8 	%line{104} %argrw{"wrr"}
+# exfoliation_color.osl:105
+# float s_max_col = s_min_col+ step_increase/5;
+	div		$tmp11 step_increase $const8 	%line{105} %argrw{"wrr"}
+	add		s_max_col s_min_col $tmp11 	%argrw{"wrr"}
+# exfoliation_color.osl:106
+# float k = tpp[0] + tpp[1]+tpp[2];
+	compref		$tmp12 tpp $const1 	%line{106} %argrw{"wrr"}
+	compref		$tmp13 tpp $const2 	%argrw{"wrr"}
+	add		$tmp14 $tmp12 $tmp13 	%argrw{"wrr"}
+	compref		$tmp15 tpp $const3 	%argrw{"wrr"}
+	add		k $tmp14 $tmp15 	%argrw{"wrr"}
+# exfoliation_color.osl:107
+# step_increase = step_size;//0.12;
+	assign		step_increase step_size 	%line{107} %argrw{"wr"}
+# exfoliation_color.osl:108
+# float offset = 0.01;
+	assign		offset $const9 	%line{108} %argrw{"wr"}
+# exfoliation_color.osl:109
+# int i = 0;
+	assign		i $const1 	%line{109} %argrw{"wr"}
+# exfoliation_color.osl:110
+# float blend = 0;
+	assign		blend $const1 	%line{110} %argrw{"wr"}
+# exfoliation_color.osl:111
+# float blur = 0.01;
+	assign		blur $const9 	%line{111} %argrw{"wr"}
+# exfoliation_color.osl:113
+# float noise_strength = 0.01;
+	assign		noise_strength $const9 	%line{113} %argrw{"wr"}
+# exfoliation_color.osl:114
+# float minor_rings_offset= 0.01;
+	assign		minor_rings_offset $const9 	%line{114} %argrw{"wr"}
+# exfoliation_color.osl:115
+# float minor_rings = 0;
+	assign		minor_rings $const1 	%line{115} %argrw{"wr"}
+# exfoliation_color.osl:116
+# float res = 0;
+	assign		res $const1 	%line{116} %argrw{"wr"}
+# exfoliation_color.osl:117
+# float temp = 0;
+	assign		temp $const1 	%line{117} %argrw{"wr"}
+# exfoliation_color.osl:118
+# float s_min2 = 0;
+	assign		s_min2 $const1 	%line{118} %argrw{"wr"}
+# exfoliation_color.osl:119
+# float s_max2 = 0;
+	assign		s_max2 $const1 	%line{119} %argrw{"wr"}
+# exfoliation_color.osl:120
+# float s_min_col2 = 0;
+	assign		s_min_col2 $const1 	%line{120} %argrw{"wr"}
+# exfoliation_color.osl:121
+# float s_max_col2 = 0;
+	assign		s_max_col2 $const1 	%line{121} %argrw{"wr"}
+# exfoliation_color.osl:122
+# float randomness = 0.001;
+	assign		randomness $const10 	%line{122} %argrw{"wr"}
+# exfoliation_color.osl:123
+# float randomness2 = 0.01;
+	assign		randomness2 $const9 	%line{123} %argrw{"wr"}
+# exfoliation_color.osl:124
+# float color_ring = 0;
+	assign		color_ring $const1 	%line{124} %argrw{"wr"}
+# exfoliation_color.osl:125
+# color cols = base_color;
+	assign		cols base_color 	%line{125} %argrw{"wr"}
+# exfoliation_color.osl:126
+# float random_multiplier =  3;
+	assign		random_multiplier $const11 	%line{126} %argrw{"wr"}
+# exfoliation_color.osl:127
+# float	 temp2= 0;
+	assign		temp2 $const1 	%line{127} %argrw{"wr"}
+# exfoliation_color.osl:128
+# int j = 0;
+	assign		j $const1 	%line{128} %argrw{"wr"}
+# exfoliation_color.osl:129
+# float color_ring2 = 0;
+	assign		color_ring2 $const1 	%line{129} %argrw{"wr"}
+# exfoliation_color.osl:130
+# float color_offset = 0.01;
+	assign		color_offset $const9 	%line{130} %argrw{"wr"}
+# exfoliation_color.osl:131
+# color col = base_color;
+	assign		col base_color 	%line{131} %argrw{"wr"}
+# exfoliation_color.osl:133
+# for(j = 0; j<details; j++)
+	for		$tmp16 57 58 280 282 	%line{133} %argrw{"r"}
+	assign		j $const1 	%argrw{"wr"}
+	lt		$tmp16 j details 	%argrw{"wrr"}
+# exfoliation_color.osl:135
+# s_min += step_increase; 
+	add		s_min s_min step_increase 	%line{135} %argrw{"wrr"}
+# exfoliation_color.osl:136
+# s_max += step_increase;
+	add		s_max s_max step_increase 	%line{136} %argrw{"wrr"}
+# exfoliation_color.osl:137
+# s_max_col += step_increase;
+	add		s_max_col s_max_col step_increase 	%line{137} %argrw{"wrr"}
+# exfoliation_color.osl:138
+# s_min_col += step_increase;
+	add		s_min_col s_min_col step_increase 	%line{138} %argrw{"wrr"}
+# exfoliation_color.osl:139
+# temp = 0;
+	assign		temp $const1 	%line{139} %argrw{"wr"}
+# exfoliation_color.osl:140
+# temp2 = 0;
+	assign		temp2 $const1 	%line{140} %argrw{"wr"}
+# exfoliation_color.osl:141
+# for ( i = 0; i < medium_details;i++)
+	for		$tmp17 66 67 276 278 	%line{141} %argrw{"r"}
+	assign		i $const1 	%argrw{"wr"}
+	lt		$tmp17 i medium_details 	%argrw{"wrr"}
+# exfoliation_color.osl:143
+# float rand0 = noise("perlin",pp + i * 1.414 + j*medium_details);
+	assign		$tmp19 i 	%line{143} %argrw{"wr"}
+	mul		$tmp18 $tmp19 $const13 	%argrw{"wrr"}
+	add		$tmp20 pp $tmp18 	%argrw{"wrr"}
+	mul		$tmp21 j medium_details 	%argrw{"wrr"}
+	assign		$tmp23 $tmp21 	%argrw{"wr"}
+	add		$tmp22 $tmp20 $tmp23 	%argrw{"wrr"}
+	noise		___330_rand0 $const12 $tmp22 	%argrw{"wrr"}
+# exfoliation_color.osl:144
+# float rand1 = noise("perlin",pp + i * 42+ j*medium_details);
+	mul		$tmp24 i $const14 	%line{144} %argrw{"wrr"}
+	assign		$tmp26 $tmp24 	%argrw{"wr"}
+	add		$tmp25 pp $tmp26 	%argrw{"wrr"}
+	mul		$tmp27 j medium_details 	%argrw{"wrr"}
+	assign		$tmp29 $tmp27 	%argrw{"wr"}
+	add		$tmp28 $tmp25 $tmp29 	%argrw{"wrr"}
+	noise		___330_rand1 $const12 $tmp28 	%argrw{"wrr"}
+# exfoliation_color.osl:145
+# float rand2 = noise("perlin",pp + i * 3.14+ j*medium_details);
+	assign		$tmp31 i 	%line{145} %argrw{"wr"}
+	mul		$tmp30 $tmp31 $const15 	%argrw{"wrr"}
+	add		$tmp32 pp $tmp30 	%argrw{"wrr"}
+	mul		$tmp33 j medium_details 	%argrw{"wrr"}
+	assign		$tmp35 $tmp33 	%argrw{"wr"}
+	add		$tmp34 $tmp32 $tmp35 	%argrw{"wrr"}
+	noise		___330_rand2 $const12 $tmp34 	%argrw{"wrr"}
+# exfoliation_color.osl:147
+# vector random_direction = vector(dir_normalized[0]+rand0*randomness2,dir_normalized[1]+rand1*randomness2,dir_normalized[2]+rand2*randomness2);
+	compref		$tmp36 dir_normalized $const1 	%line{147} %argrw{"wrr"}
+	mul		$tmp37 ___330_rand0 randomness2 	%argrw{"wrr"}
+	add		$tmp38 $tmp36 $tmp37 	%argrw{"wrr"}
+	compref		$tmp39 dir_normalized $const2 	%argrw{"wrr"}
+	mul		$tmp40 ___330_rand1 randomness2 	%argrw{"wrr"}
+	add		$tmp41 $tmp39 $tmp40 	%argrw{"wrr"}
+	compref		$tmp42 dir_normalized $const3 	%argrw{"wrr"}
+	mul		$tmp43 ___330_rand2 randomness2 	%argrw{"wrr"}
+	add		$tmp44 $tmp42 $tmp43 	%argrw{"wrr"}
+	vector		___330_random_direction $tmp38 $tmp41 $tmp44 	%argrw{"wrrr"}
+# exfoliation_color.osl:148
+# normal random_normal = normalize(random_direction);
+	normalize	___330_random_normal ___330_random_direction 	%line{148} %argrw{"wr"}
+# exfoliation_color.osl:149
+# s_max2 = s_max +  minor_rings_offset*((i*0.8/medium_details)+0.1);
+	assign		$tmp46 i 	%line{149} %argrw{"wr"}
+	mul		$tmp45 $tmp46 $const4 	%argrw{"wrr"}
+	assign		$tmp48 medium_details 	%argrw{"wr"}
+	div		$tmp47 $tmp45 $tmp48 	%argrw{"wrr"}
+	add		$tmp49 $tmp47 $const16 	%argrw{"wrr"}
+	mul		$tmp50 minor_rings_offset $tmp49 	%argrw{"wrr"}
+	add		s_max2 s_max $tmp50 	%argrw{"wrr"}
+# exfoliation_color.osl:150
+# s_max_col2 = s_max_col +  minor_rings_offset*((i*0.8/medium_details)+0.1);
+	assign		$tmp52 i 	%line{150} %argrw{"wr"}
+	mul		$tmp51 $tmp52 $const4 	%argrw{"wrr"}
+	assign		$tmp54 medium_details 	%argrw{"wr"}
+	div		$tmp53 $tmp51 $tmp54 	%argrw{"wrr"}
+	add		$tmp55 $tmp53 $const16 	%argrw{"wrr"}
+	mul		$tmp56 minor_rings_offset $tmp55 	%argrw{"wrr"}
+	add		s_max_col2 s_max_col $tmp56 	%argrw{"wrr"}
+# exfoliation_color.osl:151
+# s_min_col2 = s_min_col +  minor_rings_offset*((i*0.8/medium_details)+0.1);
+	assign		$tmp58 i 	%line{151} %argrw{"wr"}
+	mul		$tmp57 $tmp58 $const4 	%argrw{"wrr"}
+	assign		$tmp60 medium_details 	%argrw{"wr"}
+	div		$tmp59 $tmp57 $tmp60 	%argrw{"wrr"}
+	add		$tmp61 $tmp59 $const16 	%argrw{"wrr"}
+	mul		$tmp62 minor_rings_offset $tmp61 	%argrw{"wrr"}
+	add		s_min_col2 s_min_col $tmp62 	%argrw{"wrr"}
+# exfoliation_color.osl:152
+# minor_rings = createCuttingPlane( random_normal, point(pp[0] + rand0*randomness,pp[1] + rand1*randomness,pp[2] + rand2*randomness) ,0, s_max2,freq, 0.4,noise_strength, blur);
+	compref		$tmp64 pp $const1 	%line{152} %argrw{"wrr"}
+	mul		$tmp65 ___330_rand0 randomness 	%argrw{"wrr"}
+	add		$tmp66 $tmp64 $tmp65 	%argrw{"wrr"}
+	compref		$tmp67 pp $const2 	%argrw{"wrr"}
+	mul		$tmp68 ___330_rand1 randomness 	%argrw{"wrr"}
+	add		$tmp69 $tmp67 $tmp68 	%argrw{"wrr"}
+	compref		$tmp70 pp $const3 	%argrw{"wrr"}
+	mul		$tmp71 ___330_rand2 randomness 	%argrw{"wrr"}
+	add		$tmp72 $tmp70 $tmp71 	%argrw{"wrr"}
+	point		$tmp63 $tmp66 $tmp69 $tmp72 	%argrw{"wrrr"}
+	functioncall	$const19 165 	%argrw{"r"}
+# exfoliation_color.osl:36
+# 	float high_freq_multiplier = 3 ;
+	assign		___326_high_freq_multiplier $const11 	%line{36} %argrw{"wr"}
+# exfoliation_color.osl:37
+# 	normal dir_normalized = normalize(direction);
+	normalize	___326_dir_normalized ___330_random_normal 	%line{37} %argrw{"wr"}
+# exfoliation_color.osl:38
+# 	tpp[0] = dir_normalized[0] * pp[0];
+	compref		$tmp73 ___326_dir_normalized $const1 	%line{38} %argrw{"wrr"}
+	compref		$tmp74 $tmp63 $const1 	%argrw{"wrr"}
+	mul		$tmp75 $tmp73 $tmp74 	%argrw{"wrr"}
+	compassign	___326_tpp $const1 $tmp75 	%argrw{"wrr"}
+# exfoliation_color.osl:39
+# 	tpp[1] = dir_normalized[1] * pp[1];
+	compref		$tmp76 ___326_dir_normalized $const2 	%line{39} %argrw{"wrr"}
+	compref		$tmp77 $tmp63 $const2 	%argrw{"wrr"}
+	mul		$tmp78 $tmp76 $tmp77 	%argrw{"wrr"}
+	compassign	___326_tpp $const2 $tmp78 	%argrw{"wrr"}
+# exfoliation_color.osl:40
+# 	tpp[2] = dir_normalized[2] * pp[2];
+	compref		$tmp79 ___326_dir_normalized $const3 	%line{40} %argrw{"wrr"}
+	compref		$tmp80 $tmp63 $const3 	%argrw{"wrr"}
+	mul		$tmp81 $tmp79 $tmp80 	%argrw{"wrr"}
+	compassign	___326_tpp $const3 $tmp81 	%argrw{"wrr"}
+# exfoliation_color.osl:41
+# 	float k = tpp[0] + tpp[1]+tpp[2];
+	compref		$tmp82 ___326_tpp $const1 	%line{41} %argrw{"wrr"}
+	compref		$tmp83 ___326_tpp $const2 	%argrw{"wrr"}
+	add		$tmp84 $tmp82 $tmp83 	%argrw{"wrr"}
+	compref		$tmp85 ___326_tpp $const3 	%argrw{"wrr"}
+	add		___326_k $tmp84 $tmp85 	%argrw{"wrr"}
+# exfoliation_color.osl:42
+# 	float n = fbm2(pp,freq,ampl,high_freq_multiplier);
+	functioncall	$const20 160 	%line{42} %argrw{"r"}
+# exfoliation_color.osl:23
+# 		float n2= noise("perlin",pp*freq ) * ampl ;
+	mul		$tmp87 $tmp63 freq 	%line{23} %argrw{"wrr"}
+	noise		$tmp86 $const12 $tmp87 	%argrw{"wrr"}
+	mul		___325_n2 $tmp86 $const18 	%argrw{"wrr"}
+# exfoliation_color.osl:24
+# 	float n3= noise("perlin",pp*freq*high_freq_multiplier ) * ampl/high_freq_multiplier ;
+	mul		$tmp89 $tmp63 freq 	%line{24} %argrw{"wrr"}
+	mul		$tmp90 $tmp89 ___326_high_freq_multiplier 	%argrw{"wrr"}
+	noise		$tmp88 $const12 $tmp90 	%argrw{"wrr"}
+	mul		$tmp91 $tmp88 $const18 	%argrw{"wrr"}
+	div		___325_n3 $tmp91 ___326_high_freq_multiplier 	%argrw{"wrr"}
+# exfoliation_color.osl:25
+# 	return  n2 + n3;
+	add		___326_n ___325_n2 ___325_n3 	%line{25} %argrw{"wrr"}
+# exfoliation_color.osl:43
+# 	k = k + n* noise_stregth;
+	mul		$tmp92 ___326_n noise_strength 	%line{43} %argrw{"wrr"}
+	add		___326_k ___326_k $tmp92 	%argrw{"wrr"}
+# exfoliation_color.osl:44
+# 	float blend = ( smoothstep(s_max - blur, s_max, k));
+	sub		$tmp93 s_max2 blur 	%line{44} %argrw{"wrr"}
+	smoothstep	___326_blend $tmp93 s_max2 ___326_k 	%argrw{"wrrr"}
+# exfoliation_color.osl:48
+# return blend;
+	assign		minor_rings ___326_blend 	%line{48} %argrw{"wr"}
+# exfoliation_color.osl:154
+# temp = max(temp , minor_rings * (1-(i*0.8/medium_details)+0.1) );
+	assign		$tmp95 i 	%line{154} %argrw{"wr"}
+	mul		$tmp94 $tmp95 $const4 	%argrw{"wrr"}
+	assign		$tmp97 medium_details 	%argrw{"wr"}
+	div		$tmp96 $tmp94 $tmp97 	%argrw{"wrr"}
+	sub		$tmp98 $const21 $tmp96 	%argrw{"wrr"}
+	add		$tmp99 $tmp98 $const16 	%argrw{"wrr"}
+	mul		$tmp100 minor_rings $tmp99 	%argrw{"wrr"}
+	max		temp temp $tmp100 	%argrw{"wrr"}
+# exfoliation_color.osl:157
+# temp = clamp ( temp,0, 1);
+	functioncall	$const22 176 	%line{157} %argrw{"r"}
+# /opt/pixar/RenderManProServer-22.6/lib/osl/include/stdosl.h:145
+# float  clamp (float x, float minval, float maxval) { return max(min(x,maxval),minval); }
+	min		$tmp101 temp $const21 	%filename{"/opt/pixar/RenderManProServer-22.6/lib/osl/include/stdosl.h"} %line{145} %argrw{"wrr"}
+	max		temp $tmp101 $const17 	%argrw{"wrr"}
+# exfoliation_color.osl:158
+# 	float n = n2 + n3;
+	assign		$tmp103 i 	%filename{"exfoliation_color.osl"} %line{158} %argrw{"wr"}
+	mul		$tmp102 $tmp103 $const4 	%argrw{"wrr"}
+	assign		$tmp105 medium_details 	%argrw{"wr"}
+	div		$tmp104 $tmp102 $tmp105 	%argrw{"wrr"}
+	add		$tmp106 $tmp104 $const16 	%argrw{"wrr"}
+	mul		$tmp107 minor_rings_offset $tmp106 	%argrw{"wrr"}
+	add		s_min2 s_min $tmp107 	%argrw{"wrr"}
+# exfoliation_color.osl:159
+# 	k = k + n* noise_stregth;
+	compref		$tmp108 pp $const1 	%line{159} %argrw{"wrr"}
+	compref		$tmp109 ___330_random_normal $const1 	%argrw{"wrr"}
+	mul		$tmp110 $tmp109 color_offset 	%argrw{"wrr"}
+	add		$tmp111 $tmp108 $tmp110 	%argrw{"wrr"}
+	compref		$tmp112 pp $const2 	%argrw{"wrr"}
+	compref		$tmp113 ___330_random_normal $const2 	%argrw{"wrr"}
+	mul		$tmp114 $tmp113 color_offset 	%argrw{"wrr"}
+	add		$tmp115 $tmp112 $tmp114 	%argrw{"wrr"}
+	compref		$tmp116 pp $const3 	%argrw{"wrr"}
+	compref		$tmp117 ___330_random_normal $const3 	%argrw{"wrr"}
+	mul		$tmp118 $tmp117 color_offset 	%argrw{"wrr"}
+	add		$tmp119 $tmp116 $tmp118 	%argrw{"wrr"}
+	point		___330_cpp $tmp111 $tmp115 $tmp119 	%argrw{"wrrr"}
+# exfoliation_color.osl:160
+# 	float blend = smoothstep(s_min, s_min + blur, k) *
+	compref		$tmp120 pp $const1 	%line{160} %argrw{"wrr"}
+	mul		$tmp121 ___330_rand0 randomness 	%argrw{"wrr"}
+	mul		$tmp122 $tmp121 random_multiplier 	%argrw{"wrr"}
+	add		$tmp123 $tmp120 $tmp122 	%argrw{"wrr"}
+	compref		$tmp124 pp $const2 	%argrw{"wrr"}
+	mul		$tmp125 ___330_rand1 randomness 	%argrw{"wrr"}
+	mul		$tmp126 $tmp125 random_multiplier 	%argrw{"wrr"}
+	add		$tmp127 $tmp124 $tmp126 	%argrw{"wrr"}
+	compref		$tmp128 pp $const3 	%argrw{"wrr"}
+	mul		$tmp129 ___330_rand2 randomness 	%argrw{"wrr"}
+	mul		$tmp130 $tmp129 random_multiplier 	%argrw{"wrr"}
+	add		$tmp131 $tmp128 $tmp130 	%argrw{"wrr"}
+	point		___330_cpp $tmp123 $tmp127 $tmp131 	%argrw{"wrrr"}
+# exfoliation_color.osl:162
+# return blend;
+	compref		$tmp133 pp $const1 	%line{162} %argrw{"wrr"}
+	sub		$tmp134 $tmp133 $const9 	%argrw{"wrr"}
+	mul		$tmp135 ___330_rand0 randomness 	%argrw{"wrr"}
+	add		$tmp136 $tmp134 $tmp135 	%argrw{"wrr"}
+	compref		$tmp137 pp $const2 	%argrw{"wrr"}
+	sub		$tmp138 $tmp137 $const9 	%argrw{"wrr"}
+	mul		$tmp139 ___330_rand1 randomness 	%argrw{"wrr"}
+	add		$tmp140 $tmp138 $tmp139 	%argrw{"wrr"}
+	compref		$tmp141 pp $const3 	%argrw{"wrr"}
+	sub		$tmp142 $tmp141 $const9 	%argrw{"wrr"}
+	mul		$tmp143 ___330_rand2 randomness 	%argrw{"wrr"}
+	add		$tmp144 $tmp142 $tmp143 	%argrw{"wrr"}
+	point		$tmp132 $tmp136 $tmp140 $tmp144 	%argrw{"wrrr"}
+	functioncall	$const19 257 	%argrw{"r"}
+# exfoliation_color.osl:36
+# 	float high_freq_multiplier = 3 ;
+	assign		___326_high_freq_multiplier $const11 	%line{36} %argrw{"wr"}
+# exfoliation_color.osl:37
+# 	normal dir_normalized = normalize(direction);
+	normalize	___326_dir_normalized ___330_random_normal 	%line{37} %argrw{"wr"}
+# exfoliation_color.osl:38
+# 	tpp[0] = dir_normalized[0] * pp[0];
+	compref		$tmp145 ___326_dir_normalized $const1 	%line{38} %argrw{"wrr"}
+	compref		$tmp146 $tmp132 $const1 	%argrw{"wrr"}
+	mul		$tmp147 $tmp145 $tmp146 	%argrw{"wrr"}
+	compassign	___326_tpp $const1 $tmp147 	%argrw{"wrr"}
+# exfoliation_color.osl:39
+# 	tpp[1] = dir_normalized[1] * pp[1];
+	compref		$tmp148 ___326_dir_normalized $const2 	%line{39} %argrw{"wrr"}
+	compref		$tmp149 $tmp132 $const2 	%argrw{"wrr"}
+	mul		$tmp150 $tmp148 $tmp149 	%argrw{"wrr"}
+	compassign	___326_tpp $const2 $tmp150 	%argrw{"wrr"}
+# exfoliation_color.osl:40
+# 	tpp[2] = dir_normalized[2] * pp[2];
+	compref		$tmp151 ___326_dir_normalized $const3 	%line{40} %argrw{"wrr"}
+	compref		$tmp152 $tmp132 $const3 	%argrw{"wrr"}
+	mul		$tmp153 $tmp151 $tmp152 	%argrw{"wrr"}
+	compassign	___326_tpp $const3 $tmp153 	%argrw{"wrr"}
+# exfoliation_color.osl:41
+# 	float k = tpp[0] + tpp[1]+tpp[2];
+	compref		$tmp154 ___326_tpp $const1 	%line{41} %argrw{"wrr"}
+	compref		$tmp155 ___326_tpp $const2 	%argrw{"wrr"}
+	add		$tmp156 $tmp154 $tmp155 	%argrw{"wrr"}
+	compref		$tmp157 ___326_tpp $const3 	%argrw{"wrr"}
+	add		___326_k $tmp156 $tmp157 	%argrw{"wrr"}
+# exfoliation_color.osl:42
+# 	float n = fbm2(pp,freq,ampl,high_freq_multiplier);
+	functioncall	$const20 252 	%line{42} %argrw{"r"}
+# exfoliation_color.osl:23
+# 		float n2= noise("perlin",pp*freq ) * ampl ;
+	mul		$tmp159 $tmp132 freq 	%line{23} %argrw{"wrr"}
+	noise		$tmp158 $const12 $tmp159 	%argrw{"wrr"}
+	mul		___325_n2 $tmp158 $const18 	%argrw{"wrr"}
+# exfoliation_color.osl:24
+# 	float n3= noise("perlin",pp*freq*high_freq_multiplier ) * ampl/high_freq_multiplier ;
+	mul		$tmp161 $tmp132 freq 	%line{24} %argrw{"wrr"}
+	mul		$tmp162 $tmp161 ___326_high_freq_multiplier 	%argrw{"wrr"}
+	noise		$tmp160 $const12 $tmp162 	%argrw{"wrr"}
+	mul		$tmp163 $tmp160 $const18 	%argrw{"wrr"}
+	div		___325_n3 $tmp163 ___326_high_freq_multiplier 	%argrw{"wrr"}
+# exfoliation_color.osl:25
+# 	return  n2 + n3;
+	add		___326_n ___325_n2 ___325_n3 	%line{25} %argrw{"wrr"}
+# exfoliation_color.osl:43
+# 	k = k + n* noise_stregth;
+	mul		$tmp164 ___326_n noise_strength 	%line{43} %argrw{"wrr"}
+	add		___326_k ___326_k $tmp164 	%argrw{"wrr"}
+# exfoliation_color.osl:44
+# 	float blend = ( smoothstep(s_max - blur, s_max, k));
+	sub		$tmp165 s_max2 blur 	%line{44} %argrw{"wrr"}
+	smoothstep	___326_blend $tmp165 s_max2 ___326_k 	%argrw{"wrrr"}
+# exfoliation_color.osl:48
+# return blend;
+	assign		color_ring ___326_blend 	%line{48} %argrw{"wr"}
+# exfoliation_color.osl:163
+# color_ring2 = minor_rings - color_ring;
+	sub		color_ring2 minor_rings color_ring 	%line{163} %argrw{"wrr"}
+# exfoliation_color.osl:164
+# temp2 = max(temp2,color_ring2*(1-(i*0.8/medium_details)+0.1) );
+	assign		$tmp167 i 	%line{164} %argrw{"wr"}
+	mul		$tmp166 $tmp167 $const4 	%argrw{"wrr"}
+	assign		$tmp169 medium_details 	%argrw{"wr"}
+	div		$tmp168 $tmp166 $tmp169 	%argrw{"wrr"}
+	sub		$tmp170 $const21 $tmp168 	%argrw{"wrr"}
+	add		$tmp171 $tmp170 $const16 	%argrw{"wrr"}
+	mul		$tmp172 color_ring2 $tmp171 	%argrw{"wrr"}
+	max		temp2 temp2 $tmp172 	%argrw{"wrr"}
+# exfoliation_color.osl:167
+# color tempcol = mincolor;
+	assign		___330_tempcol mincolor 	%line{167} %argrw{"wr"}
+# exfoliation_color.osl:168
+# color_ring2 = clamp ( color_ring2,0, 1);
+	functioncall	$const22 270 	%line{168} %argrw{"r"}
+# /opt/pixar/RenderManProServer-22.6/lib/osl/include/stdosl.h:145
+# float  clamp (float x, float minval, float maxval) { return max(min(x,maxval),minval); }
+	min		$tmp173 color_ring2 $const21 	%filename{"/opt/pixar/RenderManProServer-22.6/lib/osl/include/stdosl.h"} %line{145} %argrw{"wrr"}
+	max		color_ring2 $tmp173 $const17 	%argrw{"wrr"}
+# exfoliation_color.osl:170
+# 	return  n2 + n3;
+	mix		col col base_color color_ring 	%filename{"exfoliation_color.osl"} %line{170} %argrw{"wrrr"}
+# exfoliation_color.osl:171
+# 	
+	mix		col col ___330_tempcol color_ring2 	%line{171} %argrw{"wrrr"}
+# exfoliation_color.osl:172
+# }
+	mul		$tmp176 $const26 ___330_cpp 	%line{172} %argrw{"wrr"}
+	noise		$tmp175 $const12 $tmp176 	%argrw{"wrr"}
+	smoothstep	$tmp174 $const23 $const24 $tmp175 	%argrw{"wrrr"}
+	mix		col col base_color $tmp174 	%argrw{"wrrr"}
+# exfoliation_color.osl:141
+# for ( i = 0; i < medium_details;i++)
+	assign		$tmp177 i 	%line{141} %argrw{"wr"}
+	add		i i $const2 	%argrw{"wrr"}
+# exfoliation_color.osl:178
+# res += temp;
+	add		res res temp 	%line{178} %argrw{"wrr"}
+# exfoliation_color.osl:179
+# cols += temp2;
+	add		cols cols temp2 	%line{179} %argrw{"wrr"}
+# exfoliation_color.osl:133
+# for(j = 0; j<details; j++)
+	assign		$tmp178 j 	%line{133} %argrw{"wr"}
+	add		j j $const2 	%argrw{"wrr"}
+# exfoliation_color.osl:183
+# float n4 = fbm2(pp,5*small_details_scale,1,5);
+	mul		$tmp179 $const8 small_details_scale 	%line{183} %argrw{"wrr"}
+	functioncall	$const20 293 	%argrw{"r"}
+# exfoliation_color.osl:23
+# 		float n2= noise("perlin",pp*freq ) * ampl ;
+	mul		$tmp181 pp $tmp179 	%line{23} %argrw{"wrr"}
+	noise		$tmp180 $const12 $tmp181 	%argrw{"wrr"}
+	mul		___325_n2 $tmp180 $const21 	%argrw{"wrr"}
+# exfoliation_color.osl:24
+# 	float n3= noise("perlin",pp*freq*high_freq_multiplier ) * ampl/high_freq_multiplier ;
+	mul		$tmp183 pp $tmp179 	%line{24} %argrw{"wrr"}
+	mul		$tmp184 $tmp183 $const8 	%argrw{"wrr"}
+	noise		$tmp182 $const12 $tmp184 	%argrw{"wrr"}
+	mul		$tmp185 $tmp182 $const21 	%argrw{"wrr"}
+	div		___325_n3 $tmp185 $const8 	%argrw{"wrr"}
+# exfoliation_color.osl:25
+# 	return  n2 + n3;
+	add		n4 ___325_n2 ___325_n3 	%line{25} %argrw{"wrr"}
+# exfoliation_color.osl:184
+# temp = smoothstep(0.1,0.25,n4);
+	smoothstep	temp $const16 $const23 n4 	%line{184} %argrw{"wrrr"}
+# exfoliation_color.osl:186
+# color colRGB = mix(col,maxcolor,temp);
+	mix		colRGB col maxcolor temp 	%line{186} %argrw{"wrrr"}
+# exfoliation_color.osl:187
+# temp = smoothstep(0,0.1,n4);
+	smoothstep	temp $const17 $const16 n4 	%line{187} %argrw{"wrrr"}
+# exfoliation_color.osl:188
+# colRGB = mix (mincolor,colRGB,temp);
+	mix		colRGB mincolor colRGB temp 	%line{188} %argrw{"wrrr"}
+# exfoliation_color.osl:189
+# colRGB = col;
+	assign		colRGB col 	%line{189} %argrw{"wr"}
+# exfoliation_color.osl:190
+# resultF = 0.5*res;
+	mul		resultF $const27 res 	%line{190} %argrw{"wrr"}
+# exfoliation_color.osl:192
+# resultRGB = colRGB;
+	assign		resultRGB colRGB 	%line{192} %argrw{"wr"}
+	end

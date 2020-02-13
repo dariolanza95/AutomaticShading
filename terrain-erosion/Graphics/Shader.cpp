@@ -44,8 +44,6 @@ const Shader* Shader::_currentlyBound = nullptr;
 bool Shader::Load(const std::string& vertexPath, const std::string& fragmentPath )
 {
     string infoLog;
-
-    // remember path
     _vertexSourcePath = vertexPath;
     _fragmentSourcePath = fragmentPath;
 

@@ -34,9 +34,12 @@ FluidSimulation::FluidSimulation(SimulationState& state)
       water(state.water),
       terrain(state.terrain),
       sediment(state.suspendedSediment),
+      counter_from_last_time_water_passed(state.vegetation),
+      counter_times_water_was_still(state.simData),
       tmpSediment(state.water.width(),state.water.height()),
       uVel(water.width(), water.height()),
       vVel(water.width(), water.height()),
+      zVel(water.width(), water.height()),
       lFlux(water.width(), water.height()),
       rFlux(water.width(), water.height()),
       tFlux(water.width(), water.height()),
@@ -52,6 +55,7 @@ FluidSimulation::FluidSimulation(SimulationState& state)
         for (uint j=0; j<uVel.height(); ++j) {
             uVel(i,j) = 0;
             vVel(i,j) = 0;
+            zVel(i,j) = 0;
             lFlux(i,j) = rFlux(i,j) = tFlux(i,j) = bFlux(i,j) = 0;
         }
     }
@@ -63,6 +67,18 @@ FluidSimulation::~FluidSimulation() {
 
 RANDOM rnd;
 
+
+
+void FluidSimulation::makeRiver(double dt)
+
+{
+    std::uniform_int_distribution<ushort> rndInt(1,3);
+    std::uniform_real_distribution<float> rndFloat(0,5);
+    const vec2 pos = vec2(0.01,water.height()/2);
+    int x = rndInt(rnd);
+    int y = rndFloat(rnd);
+    addRainDrop(pos,x,dt*0.01*y);
+}
 void FluidSimulation::makeRain(double dt)
 {
     std::uniform_int_distribution<ushort> rndInt(1,water.width()-2);
@@ -220,7 +236,14 @@ void FluidSimulation::simulateFlow(double dt)
     ////////////////////////////////////////////////////////////
     float l = 1;
     float A = 0.00005;
+    float treshold_time = 100;
+    float still_water_treshold = 0.05;
+    float river_min_speed_treshold = 0.01;//0.043;
+    float river_max_speed_treshold = 1;
 
+    float river_height_treshold = 1;
+    float river_min_height_treshold = 0.001;
+    const float ocean_level = 0.75;
     const float dx = lX;
     const float dy = lY;
 
@@ -316,9 +339,17 @@ void FluidSimulation::simulateFlow(double dt)
             float outFlow = getRFlux(y,x) + getLFlux(y,x) + getTFlux(y,x) + getBFlux(y,x);
             float dV = dt*(inFlow-outFlow);
             float oldWater = water(y,x);
-            water(y,x) += dV/(dx*dy);
-            water(y,x) = std::max(water(y,x),0.0f);
-            float meanWater = 0.5*(oldWater+water(y,x));
+            float actualWater = water(y,x);
+            //water(y,x) += dV/(dx*dy);
+            //water(y,x) = std::max(water(y,x),0.0f);
+            actualWater += dV/(dx*dy);
+            actualWater = std::max(actualWater,0.0f);
+            if(actualWater>0)
+                counter_from_last_time_water_passed(y,x)=0;
+            else
+                counter_from_last_time_water_passed(y,x)++;
+
+            float meanWater = 0.5*(oldWater+ actualWater);
 
             if (meanWater == 0.0f)
             {
@@ -329,6 +360,45 @@ void FluidSimulation::simulateFlow(double dt)
                 uVel(y,x) = 0.5*(getRFlux(y,x-1)-getLFlux(y,x)-getLFlux(y,x+1)+getRFlux(y,x))/(dy*meanWater);
                 vVel(y,x) = 0.5*(getTFlux(y-1,x)-getBFlux(y,x)-getBFlux(y+1,x)+getTFlux(y,x))/(dx*meanWater);
             }
+
+            //we define lakes and seas as places where the incoming and the outcoming water flux is almost zero
+           /* if( inFlow  >= 0 - still_water_treshold && inFlow  <= 0 + still_water_treshold &&
+                outFlow  >= 0 - still_water_treshold && outFlow  <= 0 + still_water_treshold && water(y,x)>ocean_level)
+            {
+                counter_times_water_was_still(y,x)++;
+            }
+            else
+            {
+                if(counter_times_water_was_still(y,x) < treshold_time )
+                {
+                    counter_times_water_was_still(y,x) = 0;
+                }
+            }
+            */
+
+            float uV = uVel(y,x);
+            float vV = vVel(y,x);
+            zVel(y,x) = (actualWater -oldWater);
+            float vel = sqrtf(uV*uV+vV*vV);
+            water(y,x) = actualWater;
+           /* if(vel <= river_max_speed_treshold && vel>= river_min_speed_treshold && water(y,x)>river_min_height_treshold &&
+                    water(y,x) <= river_height_treshold)
+            {
+                counter_times_water_was_still(y,x)++;
+                counter_times_water_was_still(y,x) = counter_times_water_was_still(y,x)>treshold_time? treshold_time +1:counter_times_water_was_still(y,x)++;
+
+            }
+            else
+            {
+                if(counter_times_water_was_still(y,x) >  treshold_time )
+                {
+                    counter_times_water_was_still(y,x)++;
+                    if(counter_times_water_was_still(y,x)>3000)
+                        counter_times_water_was_still(y,x)=0;
+                }
+                else
+                     counter_times_water_was_still(y,x)=0;
+            }*/
         }
     }
 
@@ -381,7 +451,9 @@ float FluidSimulation::getWater(int y, int x){
 
 void FluidSimulation::simulateErosion(double dt)
 {
-    const float Kc = 25.0f; // sediment capacity constant
+    PerlinNoise perlin;
+    float frequency = 0.03;
+    float Kc = 25.0f; // sediment capacity constant
     const float Ks = 0.0001f*12*10; // dissolving constant
     const float Kd = 0.0001f*12*10; // deposition constant
 
@@ -407,7 +479,11 @@ void FluidSimulation::simulateErosion(double dt)
             sinAlpha = std::max(sinAlpha,0.1f);
 
             // local sediment capacity of the flow
-            float capacity = Kc * sqrtf(uV*uV+vV*vV)*sinAlpha*(std::min(water(y,x),0.01f)/0.01f) ;
+            //better keep this number not too high
+
+
+            float local_capacity = Kc *(0.5+0.5*perlin.Sample(frequency*x,frequency*y,frequency*getTerrain(y,x)));
+            float capacity = local_capacity * sqrtf(uV*uV+vV*vV)*sinAlpha*(std::min(water(y,x),0.01f)/0.01f) ;
             float delta = (capacity-sediment(y,x));
 
             float v = sqrtf(uV*uV+vV*vV);
@@ -421,7 +497,7 @@ void FluidSimulation::simulateErosion(double dt)
                 sediment(y,x) += d;
             }
             // deposit onto ground
-            else if (delta < 0.0f)
+            else if (delta < 0.0f && uV< 0.01 && vV < 0.01)
             {
                 float d = Kd*delta;
                 terrain(y,x)  -= d;
@@ -527,7 +603,7 @@ void FluidSimulation::update(double dt, bool rain, bool flood)
         makeRain(dt);
 
     if (flood)
-        makeFlood(dt);
+       makeRiver(dt);// makeFlood(dt);
 
     // 2. Simulate Flow
     simulateFlow(dt);

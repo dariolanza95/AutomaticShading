@@ -1,0 +1,428 @@
+OpenShadingLanguage 1.00
+# Compiled by oslc 1.8.2.pixar1697a56
+# options: 
+shader scree_color
+param	point	Pobj	0 0 0		%meta{int,lockgeom,0}  %read{0,5} %write{2147483647,-1}
+param	point	Nobj	0 0 0		%meta{int,lockgeom,0}  %read{2,2} %write{2147483647,-1}
+param	float	scale	1		%read{3,8} %write{2147483647,-1}
+param	color	basecolor	0 0 0		%read{82,82} %write{2147483647,-1}
+param	color	secondcolor	0 0 0		%read{53,59} %write{2147483647,-1}
+oparam	color	resultRGB	0 0 0		%read{2147483647,-1} %write{83,83}
+oparam	float	resultDispl	0		%read{2147483647,-1} %write{133,133}
+local	float	___324_n1	%read{20,37} %write{20,37}
+local	float	___324_n2	%read{20,37} %write{20,37}
+local	float	___325_low_freq_noise	%read{63,81} %write{63,81}
+local	float	___325_high_freq_noise	%read{63,81} %write{63,81}
+local	float	___325_mask	%read{63,81} %write{63,81}
+local	float	___326_fbm	%read{2147483647,-1} %write{124,124}
+local	float	___327_n	%read{87,113} %write{86,111}
+local	point	pp	%read{9,125} %write{0,0}
+local	normal	nn	%read{40,90} %write{2,2}
+local	float	n1	%read{11,11} %write{4,4}
+local	float	n2	%read{2147483647,-1} %write{6,6}
+local	float	high_freq_scale	%read{8,8} %write{7,7}
+local	float	high_freq_noise	%read{11,11} %write{10,10}
+local	float	mask	%read{50,81} %write{11,81}
+local	point	p1	%read{2147483647,-1} %write{12,12}
+local	float	n	%read{20,55} %write{13,37}
+local	int	i	%read{20,81} %write{14,81}
+local	int	medium_sized_rocks_amount	%read{63,81} %write{15,15}
+local	int	small_sized_rocks_amount	%read{20,37} %write{16,16}
+local	float	random_offset	%read{20,81} %write{17,38}
+local	float	blend	%read{52,82} %write{39,81}
+local	vector	scalevector	%read{41,43} %write{40,40}
+local	float	scalex	%read{48,48} %write{41,41}
+local	float	scaley	%read{48,48} %write{42,42}
+local	float	scalez	%read{48,48} %write{43,43}
+local	point	temp	%read{2147483647,-1} %write{47,49}
+local	matrix	m	%read{49,49} %write{48,48}
+local	float	fbm	%read{132,132} %write{108,108}
+local	float	blend_displ	%read{63,93} %write{52,81}
+local	color	oxidation	%read{59,59} %write{53,53}
+local	float	blend2	%read{59,91} %write{55,55}
+local	color	black	%read{2147483647,-1} %write{56,56}
+local	color	white	%read{2147483647,-1} %write{57,57}
+local	normal	y	%read{90,90} %write{58,58}
+local	color	oxidatedsecondcolor	%read{82,82} %write{59,59}
+local	color	col	%read{63,81} %write{60,81}
+local	color	res	%read{83,83} %write{82,82}
+local	float	distr	%read{89,130} %write{88,130}
+local	float	dot_prod	%read{2147483647,-1} %write{90,90}
+local	float	temp2	%read{92,93} %write{91,92}
+local	float	temp3	%read{94,131} %write{93,94}
+const	string	$const1	"world"		%read{2,12} %write{2147483647,-1}
+const	string	$const2	"transform"		%read{1,1} %write{2147483647,-1}
+const	string	$const3	"common"		%read{2,2} %write{2147483647,-1}
+const	string	$const4	"perlin"		%read{4,126} %write{2147483647,-1}
+temp	point	$tmp1	%read{4,4} %write{3,3}
+temp	point	$tmp2	%read{6,6} %write{5,5}
+const	float	$const6	13		%read{5,5} %write{2147483647,-1}
+const	int	$const7	3		%read{7,7} %write{2147483647,-1}
+temp	float	$tmp3	%read{9,9} %write{8,8}
+temp	point	$tmp4	%read{10,10} %write{9,9}
+const	int	$const8	0		%read{13,62} %write{2147483647,-1}
+const	float	$const9	0		%read{12,93} %write{2147483647,-1}
+const	int	$const10	1		%read{15,81} %write{2147483647,-1}
+const	int	$const11	5		%read{16,16} %write{2147483647,-1}
+const	float	$const12	4.1999998		%read{17,17} %write{2147483647,-1}
+temp	int	$tmp5	%read{18,37} %write{19,37}
+temp	float	$tmp6	%read{20,37} %write{20,37}
+temp	float	$tmp7	%read{20,37} %write{20,37}
+temp	float	$tmp8	%read{20,37} %write{20,37}
+temp	point	$tmp9	%read{20,37} %write{20,37}
+const	int	$const13	2		%read{24,46} %write{2147483647,-1}
+temp	int	$tmp10	%read{20,37} %write{20,37}
+temp	float	$tmp11	%read{20,37} %write{20,37}
+const	string	$const14	"SmallSizedRock"		%read{26,26} %write{2147483647,-1}
+temp	point	$tmp12	%read{20,37} %write{20,37}
+temp	float	$tmp13	%read{20,37} %write{20,37}
+const	float	$const16	4		%read{29,125} %write{2147483647,-1}
+temp	point	$tmp14	%read{20,37} %write{20,37}
+const	float	$const17	0.1		%read{32,132} %write{2147483647,-1}
+const	float	$const18	0.2		%read{32,32} %write{2147483647,-1}
+const	float	$const19	0.60000002		%read{33,33} %write{2147483647,-1}
+temp	int	$tmp15	%read{2147483647,-1} %write{20,37}
+const	float	$const20	6.6266999		%read{38,38} %write{2147483647,-1}
+temp	float	$tmp16	%read{47,47} %write{44,44}
+temp	float	$tmp17	%read{47,47} %write{45,45}
+temp	float	$tmp18	%read{47,47} %write{46,46}
+const	float	$const21	1		%read{48,127} %write{2147483647,-1}
+temp	float	$tmp19	%read{51,51} %write{50,50}
+const	float	$const22	0.5		%read{51,113} %write{2147483647,-1}
+const	color	$const23	1 1 1		%read{53,57} %write{2147483647,-1}
+const	float	$const24	0.050000001		%read{53,53} %write{2147483647,-1}
+const	float	$const25	0.40000001		%read{54,54} %write{2147483647,-1}
+temp	float	$tmp21	%read{55,55} %write{54,54}
+const	color	$const26	0 0 0		%read{56,60} %write{2147483647,-1}
+const	normal	$const27	0 1 0		%read{58,58} %write{2147483647,-1}
+temp	int	$tmp22	%read{61,81} %write{62,81}
+temp	float	$tmp23	%read{63,81} %write{63,81}
+temp	float	$tmp24	%read{63,81} %write{63,81}
+temp	point	$tmp25	%read{63,81} %write{63,81}
+const	float	$const28	3		%read{70,70} %write{2147483647,-1}
+const	string	$const29	"MediumSizedRock"		%read{67,67} %write{2147483647,-1}
+temp	point	$tmp26	%read{63,81} %write{63,81}
+temp	float	$tmp27	%read{63,81} %write{63,81}
+temp	point	$tmp28	%read{63,81} %write{63,81}
+temp	float	$tmp29	%read{63,81} %write{63,81}
+temp	color	$tmp30	%read{63,81} %write{63,81}
+temp	int	$tmp31	%read{2147483647,-1} %write{63,81}
+const	string	$const30	"BigSizedRockDistribuition"		%read{84,109} %write{2147483647,-1}
+temp	point	$tmp32	%read{86,86} %write{85,85}
+const	float	$const31	0.44999999		%read{87,112} %write{2147483647,-1}
+temp	float	$tmp33	%read{88,88} %write{87,87}
+temp	float	$tmp34	%read{97,97} %write{96,96}
+temp	point	$tmp35	%read{96,96} %write{95,95}
+temp	float	$tmp36	%read{98,98} %write{97,97}
+temp	float	$tmp37	%read{103,103} %write{98,98}
+temp	float	$tmp38	%read{101,101} %write{100,100}
+temp	point	$tmp39	%read{100,100} %write{99,99}
+const	float	$const33	8		%read{99,102} %write{2147483647,-1}
+temp	float	$tmp40	%read{102,102} %write{101,101}
+temp	float	$tmp41	%read{103,103} %write{102,102}
+temp	float	$tmp42	%read{108,108} %write{103,103}
+temp	float	$tmp43	%read{106,106} %write{105,105}
+temp	point	$tmp44	%read{105,105} %write{104,104}
+const	float	$const35	16		%read{104,107} %write{2147483647,-1}
+temp	float	$tmp45	%read{107,107} %write{106,106}
+temp	float	$tmp46	%read{108,108} %write{107,107}
+temp	point	$tmp47	%read{111,111} %write{110,110}
+temp	float	$tmp48	%read{113,113} %write{112,112}
+temp	float	$tmp49	%read{130,130} %write{129,129}
+const	string	$const36	"BigSizedRockShape"		%read{115,115} %write{2147483647,-1}
+temp	float	$tmp50	%read{118,118} %write{117,117}
+temp	point	$tmp51	%read{117,117} %write{116,116}
+const	float	$const37	2		%read{116,119} %write{2147483647,-1}
+temp	float	$tmp52	%read{119,119} %write{118,118}
+temp	float	$tmp53	%read{124,124} %write{119,119}
+temp	float	$tmp54	%read{122,122} %write{121,121}
+temp	point	$tmp55	%read{121,121} %write{120,120}
+temp	float	$tmp56	%read{123,123} %write{122,122}
+temp	float	$tmp57	%read{124,124} %write{123,123}
+temp	float	$tmp58	%read{127,127} %write{126,126}
+temp	point	$tmp59	%read{126,126} %write{125,125}
+temp	float	$tmp60	%read{128,128} %write{127,127}
+temp	float	$tmp61	%read{129,129} %write{128,128}
+const	float	$const39	12		%read{128,128} %write{2147483647,-1}
+temp	float	$tmp62	%read{133,133} %write{131,131}
+temp	float	$tmp63	%read{133,133} %write{132,132}
+code ___main___
+# scree_color.osl:54
+# 	point pp = Pobj;
+	assign		pp Pobj 	%filename{"scree_color.osl"} %line{54} %argrw{"wr"}
+# scree_color.osl:58
+# 	normal nn = transform("world",Nobj);
+	functioncall	$const2 3 	%line{58} %argrw{"r"}
+# /opt/pixar/RenderManProServer-22.6/lib/osl/include/stdosl.h:258
+#     float t = dot(q - a, d)/dd;
+	transform	nn $const3 $const1 Nobj 	%filename{"/opt/pixar/RenderManProServer-22.6/lib/osl/include/stdosl.h"} %line{258} %argrw{"wrrr"}
+# scree_color.osl:59
+# 	float n1= noise("perlin",scale*Pobj);
+	mul		$tmp1 scale Pobj 	%filename{"scree_color.osl"} %line{59} %argrw{"wrr"}
+	noise		n1 $const4 $tmp1 	%argrw{"wrr"}
+# scree_color.osl:60
+# 	float n2 =  noise("perlin",13*Pobj);
+	mul		$tmp2 $const6 Pobj 	%line{60} %argrw{"wrr"}
+	noise		n2 $const4 $tmp2 	%argrw{"wrr"}
+# scree_color.osl:61
+# 	float high_freq_scale = 3;
+	assign		high_freq_scale $const7 	%line{61} %argrw{"wr"}
+# scree_color.osl:62
+# 	float high_freq_noise = noise("perlin",high_freq_scale*scale*pp);
+	mul		$tmp3 high_freq_scale scale 	%line{62} %argrw{"wrr"}
+	mul		$tmp4 $tmp3 pp 	%argrw{"wrr"}
+	noise		high_freq_noise $const4 $tmp4 	%argrw{"wrr"}
+# scree_color.osl:63
+# 	float mask = max(n1 , high_freq_noise);
+	max		mask n1 high_freq_noise 	%line{63} %argrw{"wrr"}
+# scree_color.osl:64
+# 	point p1 = point ("world",0,0,0);
+	point		p1 $const1 $const9 $const9 $const9 	%line{64} %argrw{"wrrrr"}
+# scree_color.osl:65
+# 	float n = 0;
+	assign		n $const8 	%line{65} %argrw{"wr"}
+# scree_color.osl:66
+# 	int i=0;
+	assign		i $const8 	%line{66} %argrw{"wr"}
+# scree_color.osl:67
+# 	int medium_sized_rocks_amount = 1;
+	assign		medium_sized_rocks_amount $const10 	%line{67} %argrw{"wr"}
+# scree_color.osl:68
+# 	int small_sized_rocks_amount = 5;
+	assign		small_sized_rocks_amount $const11 	%line{68} %argrw{"wr"}
+# scree_color.osl:70
+# 	float random_offset = 4.2;
+	assign		random_offset $const12 	%line{70} %argrw{"wr"}
+# scree_color.osl:71
+# 	for (i=0;i<small_sized_rocks_amount;i++)
+	for		$tmp5 20 21 36 38 	%line{71} %argrw{"r"}
+	assign		i $const8 	%argrw{"wr"}
+	lt		$tmp5 i small_sized_rocks_amount 	%argrw{"wrr"}
+# scree_color.osl:73
+# 		 n += SmallSizedRock(pp+i * random_offset,2*i);
+	assign		$tmp8 i 	%line{73} %argrw{"wr"}
+	mul		$tmp7 $tmp8 random_offset 	%argrw{"wrr"}
+	add		$tmp9 pp $tmp7 	%argrw{"wrr"}
+	mul		$tmp10 $const13 i 	%argrw{"wrr"}
+	assign		$tmp11 $tmp10 	%argrw{"wr"}
+	functioncall	$const14 35 	%argrw{"r"}
+# scree_color.osl:4
+# 	float n1= noise("perlin",scale*Pobj);		
+	mul		$tmp12 $tmp11 $tmp9 	%line{4} %argrw{"wrr"}
+	noise		___324_n1 $const4 $tmp12 	%argrw{"wrr"}
+# scree_color.osl:5
+# 	float n2= noise("perlin",scale*4*Pobj);
+	mul		$tmp13 $tmp11 $const16 	%line{5} %argrw{"wrr"}
+	mul		$tmp14 $tmp13 $tmp9 	%argrw{"wrr"}
+	noise		___324_n2 $const4 $tmp14 	%argrw{"wrr"}
+# scree_color.osl:6
+# 	n1 = smoothstep(0.1,0.2,n1);
+	smoothstep	___324_n1 $const17 $const18 ___324_n1 	%line{6} %argrw{"wrrr"}
+# scree_color.osl:7
+# 	n2 = smoothstep(0.1,0.6,n2);
+	smoothstep	___324_n2 $const17 $const19 ___324_n2 	%line{7} %argrw{"wrrr"}
+# scree_color.osl:9
+# 	return  n1*n2;
+	mul		$tmp6 ___324_n1 ___324_n2 	%line{9} %argrw{"wrr"}
+# scree_color.osl:73
+# 		 n += SmallSizedRock(pp+i * random_offset,2*i);
+	add		n n $tmp6 	%line{73} %argrw{"wrr"}
+# scree_color.osl:71
+# 	for (i=0;i<small_sized_rocks_amount;i++)
+	assign		$tmp15 i 	%line{71} %argrw{"wr"}
+	add		i i $const10 	%argrw{"wrr"}
+# scree_color.osl:77
+# 	random_offset = 6.6267;
+	assign		random_offset $const20 	%line{77} %argrw{"wr"}
+# scree_color.osl:78
+# 	float blend = 0; 
+	assign		blend $const8 	%line{78} %argrw{"wr"}
+# scree_color.osl:84
+# 	vector scalevector = nn;
+	assign		scalevector nn 	%line{84} %argrw{"wr"}
+# scree_color.osl:86
+# 	float scalex = scalevector[0];
+	compref		scalex scalevector $const8 	%line{86} %argrw{"wrr"}
+# scree_color.osl:87
+# 	float scaley = scalevector[1];
+	compref		scaley scalevector $const10 	%line{87} %argrw{"wrr"}
+# scree_color.osl:88
+# 	float scalez = scalevector[2];
+	compref		scalez scalevector $const13 	%line{88} %argrw{"wrr"}
+# scree_color.osl:89
+# 	point temp = point(pp[0],pp[1],pp[2]);
+	compref		$tmp16 pp $const8 	%line{89} %argrw{"wrr"}
+	compref		$tmp17 pp $const10 	%argrw{"wrr"}
+	compref		$tmp18 pp $const13 	%argrw{"wrr"}
+	point		temp $tmp16 $tmp17 $tmp18 	%argrw{"wrrr"}
+# scree_color.osl:93
+# 					0,0,0,1	  );
+	matrix		m scalex $const9 $const9 $const9 $const9 scaley $const9 $const9 $const9 $const9 scalez $const9 $const9 $const9 $const9 $const21 	%line{93} %argrw{"wrrrrrrrrrrrrrrrr"}
+# scree_color.osl:94
+# 	temp = transform(m,pp);				
+	transform	temp m pp 	%line{94} %argrw{"wrr"}
+# scree_color.osl:97
+# 	blend = smoothstep(mask,mask+0.1, 0.5);
+	add		$tmp19 mask $const17 	%line{97} %argrw{"wrr"}
+	smoothstep	blend mask $tmp19 $const22 	%argrw{"wrrr"}
+# scree_color.osl:98
+# 	float blend_displ=blend;
+	assign		blend_displ blend 	%line{98} %argrw{"wr"}
+# scree_color.osl:103
+# 	color oxidation = mix(secondcolor,color(1,1,1),0.05);
+	mix		oxidation secondcolor $const23 $const24 	%line{103} %argrw{"wrrr"}
+# scree_color.osl:105
+# 	float blend2 = smoothstep(n,n+0.4,0.5);
+	add		$tmp21 n $const25 	%line{105} %argrw{"wrr"}
+	smoothstep	blend2 n $tmp21 $const22 	%argrw{"wrrr"}
+# scree_color.osl:106
+# 	color black = color(0,0,0);
+	assign		black $const26 	%line{106} %argrw{"wr"}
+# scree_color.osl:107
+# 	color white= color(1,1,1);
+	assign		white $const23 	%line{107} %argrw{"wr"}
+# scree_color.osl:108
+# 	normal y = normal (0,1,0);
+	assign		y $const27 	%line{108} %argrw{"wr"}
+# scree_color.osl:109
+# 	color  oxidatedsecondcolor = mix(oxidation,secondcolor,blend2);
+	mix		oxidatedsecondcolor oxidation secondcolor blend2 	%line{109} %argrw{"wrrr"}
+# scree_color.osl:110
+# 		color col = color(0,0,0);
+	assign		col $const26 	%line{110} %argrw{"wr"}
+# scree_color.osl:111
+# 		for ( i = 0;i< medium_sized_rocks_amount;i++)
+	for		$tmp22 63 64 80 82 	%line{111} %argrw{"r"}
+	assign		i $const8 	%argrw{"wr"}
+	lt		$tmp22 i medium_sized_rocks_amount 	%argrw{"wrr"}
+# scree_color.osl:113
+# 		mask =  MediumSizedRock(pp + i* random_offset,1,3);
+	assign		$tmp24 i 	%line{113} %argrw{"wr"}
+	mul		$tmp23 $tmp24 random_offset 	%argrw{"wrr"}
+	add		$tmp25 pp $tmp23 	%argrw{"wrr"}
+	functioncall	$const29 75 	%argrw{"r"}
+# scree_color.osl:13
+# float low_freq_noise = noise("perlin",scale*pp);
+	mul		$tmp26 $const21 $tmp25 	%line{13} %argrw{"wrr"}
+	noise		___325_low_freq_noise $const4 $tmp26 	%argrw{"wrr"}
+# scree_color.osl:14
+# float high_freq_noise = noise("perlin",high_freq_multiplier*scale*pp);
+	mul		$tmp27 $const28 $const21 	%line{14} %argrw{"wrr"}
+	mul		$tmp28 $tmp27 $tmp25 	%argrw{"wrr"}
+	noise		___325_high_freq_noise $const4 $tmp28 	%argrw{"wrr"}
+# scree_color.osl:15
+# float mask =max(low_freq_noise , high_freq_noise);
+	max		___325_mask ___325_low_freq_noise ___325_high_freq_noise 	%line{15} %argrw{"wrr"}
+# scree_color.osl:16
+# return mask ;
+	assign		mask ___325_mask 	%line{16} %argrw{"wr"}
+# scree_color.osl:114
+# 		blend = smoothstep(mask,mask+0.1, 0.5);
+	add		$tmp29 mask $const17 	%line{114} %argrw{"wrr"}
+	smoothstep	blend mask $tmp29 $const22 	%argrw{"wrrr"}
+# scree_color.osl:115
+# 		col = max(col,blend);
+	assign		$tmp30 blend 	%line{115} %argrw{"wr"}
+	max		col col $tmp30 	%argrw{"wrr"}
+# scree_color.osl:116
+# 		blend_displ += blend;
+	add		blend_displ blend_displ blend 	%line{116} %argrw{"wrr"}
+# scree_color.osl:111
+# 		for ( i = 0;i< medium_sized_rocks_amount;i++)
+	assign		$tmp31 i 	%line{111} %argrw{"wr"}
+	add		i i $const10 	%argrw{"wrr"}
+# scree_color.osl:119
+# 	color res = mix (basecolor,oxidatedsecondcolor,blend);
+	mix		res basecolor oxidatedsecondcolor blend 	%line{119} %argrw{"wrrr"}
+# scree_color.osl:120
+# 	resultRGB = res;
+	assign		resultRGB res 	%line{120} %argrw{"wr"}
+# scree_color.osl:127
+# 	float distr = BigSizedRockDistribuition(pp,1);
+	functioncall	$const30 89 	%line{127} %argrw{"r"}
+# scree_color.osl:29
+# 	float n = noise("perlin",scale*pp);
+	mul		$tmp32 $const21 pp 	%line{29} %argrw{"wrr"}
+	noise		___327_n $const4 $tmp32 	%argrw{"wrr"}
+# scree_color.osl:30
+# 	return smoothstep(n,n+0.45,0.5);
+	add		$tmp33 ___327_n $const31 	%line{30} %argrw{"wrr"}
+	smoothstep	distr ___327_n $tmp33 $const22 	%argrw{"wrrr"}
+# scree_color.osl:128
+# 	distr = 1-distr;
+	sub		distr $const21 distr 	%line{128} %argrw{"wrr"}
+# scree_color.osl:132
+# 	float dot_prod = dot(nn,y);
+	dot		dot_prod nn y 	%line{132} %argrw{"wrr"}
+# scree_color.osl:135
+# 	float temp2 = mix(0,1,blend2);
+	mix		temp2 $const9 $const21 blend2 	%line{135} %argrw{"wrrr"}
+# scree_color.osl:141
+# 	temp2 = temp2*0.1;
+	mul		temp2 temp2 $const17 	%line{141} %argrw{"wrr"}
+# scree_color.osl:142
+# 	float temp3 =  mix(0,temp2,blend_displ);
+	mix		temp3 $const9 temp2 blend_displ 	%line{142} %argrw{"wrrr"}
+# scree_color.osl:143
+# 	temp3 = 1 - temp3;
+	sub		temp3 $const21 temp3 	%line{143} %argrw{"wrr"}
+# scree_color.osl:144
+# 	fbm = noise("perlin",4*pp)*1/4 + noise("perlin",8*pp)*1/8 + noise("perlin",16*pp)*1/16;
+	mul		$tmp35 $const16 pp 	%line{144} %argrw{"wrr"}
+	noise		$tmp34 $const4 $tmp35 	%argrw{"wrr"}
+	mul		$tmp36 $tmp34 $const21 	%argrw{"wrr"}
+	div		$tmp37 $tmp36 $const16 	%argrw{"wrr"}
+	mul		$tmp39 $const33 pp 	%argrw{"wrr"}
+	noise		$tmp38 $const4 $tmp39 	%argrw{"wrr"}
+	mul		$tmp40 $tmp38 $const21 	%argrw{"wrr"}
+	div		$tmp41 $tmp40 $const33 	%argrw{"wrr"}
+	add		$tmp42 $tmp37 $tmp41 	%argrw{"wrr"}
+	mul		$tmp44 $const35 pp 	%argrw{"wrr"}
+	noise		$tmp43 $const4 $tmp44 	%argrw{"wrr"}
+	mul		$tmp45 $tmp43 $const21 	%argrw{"wrr"}
+	div		$tmp46 $tmp45 $const35 	%argrw{"wrr"}
+	add		fbm $tmp42 $tmp46 	%argrw{"wrr"}
+# scree_color.osl:146
+# 	 distr = BigSizedRockDistribuition(pp,1);
+	functioncall	$const30 114 	%line{146} %argrw{"r"}
+# scree_color.osl:29
+# 	float n = noise("perlin",scale*pp);
+	mul		$tmp47 $const21 pp 	%line{29} %argrw{"wrr"}
+	noise		___327_n $const4 $tmp47 	%argrw{"wrr"}
+# scree_color.osl:30
+# 	return smoothstep(n,n+0.45,0.5);
+	add		$tmp48 ___327_n $const31 	%line{30} %argrw{"wrr"}
+	smoothstep	distr ___327_n $tmp48 $const22 	%argrw{"wrrr"}
+# scree_color.osl:147
+# 	distr = 1-distr;
+	sub		distr $const21 distr 	%line{147} %argrw{"wrr"}
+# scree_color.osl:148
+# 	distr *= BigSizedRockShape(pp,1);
+	functioncall	$const36 130 	%line{148} %argrw{"r"}
+# scree_color.osl:22
+# 	float fbm = noise("perlin",2*pp)*1/2 + noise("perlin",4*pp)*1/4 ;
+	mul		$tmp51 $const37 pp 	%line{22} %argrw{"wrr"}
+	noise		$tmp50 $const4 $tmp51 	%argrw{"wrr"}
+	mul		$tmp52 $tmp50 $const21 	%argrw{"wrr"}
+	div		$tmp53 $tmp52 $const37 	%argrw{"wrr"}
+	mul		$tmp55 $const16 pp 	%argrw{"wrr"}
+	noise		$tmp54 $const4 $tmp55 	%argrw{"wrr"}
+	mul		$tmp56 $tmp54 $const21 	%argrw{"wrr"}
+	div		$tmp57 $tmp56 $const16 	%argrw{"wrr"}
+	add		___326_fbm $tmp53 $tmp57 	%argrw{"wrr"}
+# scree_color.osl:23
+# 	return 0.1+ noise("perlin",4*pp)*1/12   ;
+	mul		$tmp59 $const16 pp 	%line{23} %argrw{"wrr"}
+	noise		$tmp58 $const4 $tmp59 	%argrw{"wrr"}
+	mul		$tmp60 $tmp58 $const21 	%argrw{"wrr"}
+	div		$tmp61 $tmp60 $const39 	%argrw{"wrr"}
+	add		$tmp49 $const17 $tmp61 	%argrw{"wrr"}
+# scree_color.osl:148
+# 	distr *= BigSizedRockShape(pp,1);
+	mul		distr distr $tmp49 	%line{148} %argrw{"wrr"}
+# scree_color.osl:149
+# 	resultDispl = temp3*0.1 + fbm*0.1 ;//+ distr ;
+	mul		$tmp62 temp3 $const17 	%line{149} %argrw{"wrr"}
+	mul		$tmp63 fbm $const17 	%argrw{"wrr"}
+	add		resultDispl $tmp62 $tmp63 	%argrw{"wrr"}
+	end
