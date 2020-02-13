@@ -1,12 +1,12 @@
 #include "openglvisualizer.h"
-//#include "glm/ext.hpp"
+
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
 
 
 
-OpenGlVisualizer::OpenGlVisualizer(GLFWwindow* window,int width,int height,MyMesh mesh):_cam(glm::vec3(0,0,0)),_mesh(mesh)
+OpenGlVisualizer::OpenGlVisualizer(GLFWwindow* window,int width,int height,MyMesh mesh,string obj_file):_cam(glm::vec3(0,0,0)),_mesh(mesh),_obj_file(obj_file)
 {
     _grid_width = width;
     _grid_height = height;
@@ -17,8 +17,9 @@ OpenGlVisualizer::OpenGlVisualizer(GLFWwindow* window,int width,int height,MyMes
 
 
 
-void OpenGlVisualizer::Initialize()
+void OpenGlVisualizer::Initialize( )
 {
+
 //  InitializeOpengGL();
     InitializeBuffers();
 }
@@ -97,6 +98,47 @@ void OpenGlVisualizer::Render()
     glFinish();
 }
 
+void OpenGlVisualizer::ParseInputFile(Grid2D<vec2>& gridCoords,std::vector<uint>& gridIndices)
+{
+    string line;
+    int width  = 300;
+    int  height = 300;
+    std::ifstream inputfile(_obj_file);
+    std::getline(inputfile,line);
+    std::istringstream iss_begin(line);
+
+    gridCoords.resize(width,height);
+    gridIndices.reserve((width-1)*(height-1)*6);
+
+    int i = 0;
+    while (std::getline(inputfile,line))
+    {
+
+        std::size_t pos = line.find('v');
+        if( pos != std::string::npos )
+        {
+            float x,y,z;
+            std::istringstream iss(line.substr(pos+1,line.length()));
+            iss >> x >> y >> z;
+            gridCoords(i++) = glm::vec2(x,y);
+        }
+        else
+        {
+            pos = line.find('f');
+            if(pos != std::string::npos )
+            {
+                int a,b,c;
+                std::istringstream iss(line.substr(pos+1,line.length()));
+                iss >> a >> b >> c;
+                gridIndices.push_back(--a);
+                gridIndices.push_back(--b);
+                gridIndices.push_back(--c);
+            }
+        }
+    }
+
+}
+
 void OpenGlVisualizer::CameraMovement(float dt)
 {
     float dtSeconds = dt/5000.0f;
@@ -154,6 +196,7 @@ void OpenGlVisualizer::InitializeBuffers()
     uint dimX = _grid_width;//_simulationState.terrain.width();
     uint dimY = _grid_height;//_simulationState.terrain.height();
 
+    ParseInputFile(gridCoords,gridIndices);
     Grid2DHelper::MakeGridIndices(gridIndices,dimX,dimY);
     Grid2DHelper::MakeUniformGrid(gridCoords,dimX,dimY);
 

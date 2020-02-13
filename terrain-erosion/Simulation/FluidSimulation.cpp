@@ -339,14 +339,17 @@ void FluidSimulation::simulateFlow(double dt)
             float outFlow = getRFlux(y,x) + getLFlux(y,x) + getTFlux(y,x) + getBFlux(y,x);
             float dV = dt*(inFlow-outFlow);
             float oldWater = water(y,x);
-            water(y,x) += dV/(dx*dy);
-            water(y,x) = std::max(water(y,x),0.0f);
-            if(water(y,x)>0)
+            float actualWater = water(y,x);
+            //water(y,x) += dV/(dx*dy);
+            //water(y,x) = std::max(water(y,x),0.0f);
+            actualWater += dV/(dx*dy);
+            actualWater = std::max(actualWater,0.0f);
+            if(actualWater>0)
                 counter_from_last_time_water_passed(y,x)=0;
             else
                 counter_from_last_time_water_passed(y,x)++;
 
-            float meanWater = 0.5*(oldWater+water(y,x));
+            float meanWater = 0.5*(oldWater+ actualWater);
 
             if (meanWater == 0.0f)
             {
@@ -375,9 +378,9 @@ void FluidSimulation::simulateFlow(double dt)
 
             float uV = uVel(y,x);
             float vV = vVel(y,x);
-            zVel(y,x) = meanWater;
+            zVel(y,x) = (actualWater -oldWater);
             float vel = sqrtf(uV*uV+vV*vV);
-
+            water(y,x) = actualWater;
            /* if(vel <= river_max_speed_treshold && vel>= river_min_speed_treshold && water(y,x)>river_min_height_treshold &&
                     water(y,x) <= river_height_treshold)
             {

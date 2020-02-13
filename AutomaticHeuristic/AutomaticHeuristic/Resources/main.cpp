@@ -60,186 +60,6 @@ char* filetobuf(char *file)
     return buf; /* Return the buffer */
 }
 
-void LoadShaders(GLFWwindow* _window)
-{
-      cout<<"hey there"<<endl;
-       GLuint vao, vbo[2]; /* Create handles for our Vertex Array Object and two Vertex Buffer Objects */
-      int IsCompiled_VS, IsCompiled_FS;
-      int IsLinked;
-      int maxLength;
-      char *vertexInfoLog;
-      char *fragmentInfoLog;
-      char *shaderProgramInfoLog;
-      GLchar *vertexsource, *fragmentsource;
-
-          /* These are handles used to reference the shaders */
-          GLuint vertexshader, fragmentshader;
-
-          /* This is a handle to the shader program */
-          GLuint shaderprogram;
-
-        vertexsource   = filetobuf("tutorial2.vert");
-        fragmentsource = filetobuf("tutorial2.frag");
-        if(vertexsource == NULL)
-        {
-            cout<<"vertexsource not found"<<endl;
-            return;
-        }
-
-        if(fragmentsource== NULL)
-        {
-            cout<<"fragmentsource not found"<<endl;
-            return;
-        }
-        /* Create an empty vertex shader handle */
-        vertexshader = glCreateShader(GL_VERTEX_SHADER);
-        /* Send the vertex shader source code to GL */
-        /* Note that the source code is NULL character terminated. */
-        /* GL will automatically detect that therefore the length info can be 0 in this case (the last parameter) */
-        glShaderSource(vertexshader, 1, (const GLchar**)&vertexsource, 0);
-        /* Compile the vertex shader */
-        glCompileShader(vertexshader);
-        glGetShaderiv(vertexshader, GL_COMPILE_STATUS, &IsCompiled_VS);
-        glm::vec2(0,3.1);
-        if(IsCompiled_VS == GL_FALSE)
-        {
-            cout<<"error"<<endl;
-           glGetShaderiv(vertexshader, GL_INFO_LOG_LENGTH, &maxLength);
-
-           /* The maxLength includes the NULL character */
-           vertexInfoLog = (char *)malloc(maxLength);
-
-           glGetShaderInfoLog(vertexshader, maxLength, &maxLength, vertexInfoLog);
-
-           /* Handle the error in an appropriate way such as displaying a message or writing to a log file. */
-           /* In this simple program, we'll just leave */
-           free(vertexInfoLog);
-           return;
-        }
-
-        /* Create an empty fragment shader handle */
-        fragmentshader = glCreateShader(GL_FRAGMENT_SHADER);
-
-        /* Send the fragment shader source code to GL */
-        /* Note that the source code is NULL character terminated. */
-        /* GL will automatically detect that therefore the length info can be 0 in this case (the last parameter) */
-        glShaderSource(fragmentshader, 1, (const GLchar**)&fragmentsource, 0);
-
-        /* Compile the fragment shader */
-        glCompileShader(fragmentshader);
-
-        glGetShaderiv(fragmentshader, GL_COMPILE_STATUS, &IsCompiled_FS);
-         cout<<"bora bora"<<endl;
-        if(IsCompiled_FS == GL_FALSE)
-        {
-            cout<<"error"<<endl;
-           glGetShaderiv(fragmentshader, GL_INFO_LOG_LENGTH, &maxLength);
-
-           /* The maxLength includes the NULL character */
-           fragmentInfoLog = (char *)malloc(maxLength);
-
-           glGetShaderInfoLog(fragmentshader, maxLength, &maxLength, fragmentInfoLog);
-
-           /* Handle the error in an appropriate way such as displaying a message or writing to a log file. */
-           /* In this simple program, we'll just leave */
-           free(fragmentInfoLog);
-           return;
-        }
-
-        /* If we reached this point it means the vertex and fragment shaders compiled and are syntax error free. */
-        /* We must link them together to make a GL shader program */
-        /* GL shader programs are monolithic. It is a single piece made of 1 vertex shader and 1 fragment shader. */
-        /* Assign our program handle a "name" */
-        shaderprogram = glCreateProgram();
-
-        /* Attach our shaders to our program */
-        glAttachShader(shaderprogram, vertexshader);
-        glAttachShader(shaderprogram, fragmentshader);
-
-        /* Bind attribute index 0 (coordinates) to in_Position and attribute index 1 (color) to in_Color */
-        /* Attribute locations must be setup before calling glLinkProgram. */
-        glBindAttribLocation(shaderprogram, 0, "in_Position");
-        glBindAttribLocation(shaderprogram, 1, "in_Color");
-
-        /* Link our program */
-        /* At this stage, the vertex and fragment programs are inspected, optimized and a binary code is generated for the shader. */
-        /* The binary code is uploaded to the GPU, if there is no error. */
-        glLinkProgram(shaderprogram);
-
-        /* Again, we must check and make sure that it linked. If it fails, it would mean either there is a mismatch between the vertex */
-        /* and fragment shaders. It might be that you have surpassed your GPU's abilities. Perhaps too many ALU operations or */
-        /* too many texel fetch instructions or too many interpolators or dynamic loops. */
-
-        glGetProgramiv(shaderprogram, GL_LINK_STATUS, (int *)&IsLinked);
-        if(IsLinked == GL_FALSE)
-        {
-            cout<<"error"<<endl;
-           /* Noticed that glGetProgramiv is used to get the length for a shader program, not glGetShaderiv. */
-           glGetProgramiv(shaderprogram, GL_INFO_LOG_LENGTH, &maxLength);
-
-           /* The maxLength includes the NULL character */
-           shaderProgramInfoLog = (char *)malloc(maxLength);
-
-           /* Notice that glGetProgramInfoLog, not glGetShaderInfoLog. */
-           glGetProgramInfoLog(shaderprogram, maxLength, &maxLength, shaderProgramInfoLog);
-
-           /* Handle the error in an appropriate way such as displaying a message or writing to a log file. */
-           /* In this simple program, we'll just leave */
-           free(shaderProgramInfoLog);
-           return;
-        }
-
-        /* Load the shader into the rendering pipeline */
-        glUseProgram(shaderprogram);
-   // for(int i= 0;i<=4;i++){
-        /* Loop our display increasing the number of shown vertexes each time.
-         * Start with 2 vertexes (a line) and increase to 3 (a triangle) and 4 (a diamond) */
-              /* Make our background black */
-        do{
-            // Clear the screen. It's not mentioned before Tutorial 02, but it can cause flickering, so it's there nonetheless.
-            glClear( GL_COLOR_BUFFER_BIT );
-
-            // Draw nothing, see you in tutorial 2 !
-
-            // Swap buffers
-            //glfwSwapBuffers(window);
-            glfwPollEvents();
-
-            glClearColor(0.0, 0.0, 0.0, 1.0);
-
-                /* Invoke glDrawArrays telling that our data is a line loop and we want to draw 2-4 vertexes */
-                glDrawArrays(GL_LINE_LOOP, 0, 4);
-
-                /* Swap our buffers to make our changes visible */
-               // SDL_GL_SwapWindow(window);
-                glfwSwapBuffers(_window);
-
-        } // Check if the ESC key was pressed or the window was closed
-        while( glfwGetKey(_window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
-               glfwWindowShouldClose(_window) == 0 );
-
-
-            /* Sleep for 2 seconds */
-
-//}
-
-        /* Cleanup all the things we bound and allocated */
-        glUseProgram(0);
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDetachShader(shaderprogram, vertexshader);
-        glDetachShader(shaderprogram, fragmentshader);
-        glDeleteProgram(shaderprogram);
-        glDeleteShader(vertexshader);
-        glDeleteShader(fragmentshader);
-        glDeleteBuffers(2, vbo);
-        glDeleteVertexArrays(1, &vao);
-        free(vertexsource);
-        free(fragmentsource);
-
-    }
-
-/*
  void LoadGeometryData2(MyMesh mesh,GLfloat *mat ,GLfloat *colors )
 {
 
@@ -265,7 +85,7 @@ void LoadShaders(GLFWwindow* _window)
     }
 
 }
-*/
+
 
 
 
@@ -648,10 +468,7 @@ void WriteSimulationDataOnOutputFile(MyMesh& mesh,ostream& outputfile)
 
     for (auto& vertex_handle : mesh.vertices())
     {
-
         ShaderParameters* shader_param = shader_parameters_data_wrapper[vertex_handle];
-        if(glm::any(glm::isnan(shader_param->getVector())))
-            cout<<"come here sir"<<endl;
         outputfile<< shader_param->getVector()<< endl;
     }
     outputfile<< " ]  ";
@@ -810,10 +627,8 @@ void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &me
 {
     string line;
     int counter=0;
-
-
     vector<string> variablenames = {"vegetation","rivers","normalFlow"};
-    ifstream inputfile  (simulation_data_file);
+    ifstream inputfile(simulation_data_file);
     auto simulation_data = getOrMakeProperty<VertexHandle, SimulationData*>(mesh, "simulation_data");
     for (auto& vertex_handle : mesh.vertices())
     {
@@ -838,13 +653,9 @@ void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &me
 cout<<"There are "<<mesh.n_vertices()<< " counter is == "<< counter<<endl;
 }
 
-MyMesh LoadMesh()
+MyMesh LoadMesh(string obj_file,string data_file)
 {
-    string line;
     MyMesh mesh;
-
-    string obj_file = "../../Data/input.obj";
-    string data_file = "../../Data/simulationData.txt";
 
     ifstream myfile ("../../Data/mountainsceneTemplate.rib");
     ifstream geometryfile ("../../Data/input.obj");
@@ -937,12 +748,17 @@ void WriteOnRibFile(MyMesh mesh)
 int main(int argc, char **argv)
 {
 
+
+  string obj_file = "../../Data/input.obj";
+  string data_file = "../../Data/simulationData.txt";
+
+
   MyMesh mesh;
-  mesh = LoadMesh();
+  mesh = LoadMesh(obj_file,data_file);
   FeaturesFinder features_finder(mesh);
   mesh = features_finder.Find();
   GLFWwindow* window = OpenGLInit();
-  OpenGlVisualizer visualizer(window, 300, 300,mesh);
+  OpenGlVisualizer visualizer(window, 300, 300,mesh,obj_file);
   visualizer.Initialize();
   visualizer.Visualize();
   WriteOnRibFile(mesh);

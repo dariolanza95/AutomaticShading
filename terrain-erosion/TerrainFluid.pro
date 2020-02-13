@@ -72,3 +72,7 @@ mac {
     QMAKE_EXTRA_TARGETS += first copydata
 
 }
+
+DISTFILES += \
+    Resources/lambert_f_arrow.glsl \
+    Resources/lambert_v_arrow.glsl

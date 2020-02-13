@@ -17,6 +17,11 @@
 #include <sstream>
 #include "platform_includes.h"
 #include <glm/glm.hpp>
+#include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/euler_angles.hpp>
+#include <glm/gtx/norm.hpp>
 
 using namespace glm;
 using namespace Graphics;
@@ -126,7 +131,7 @@ void TerrainFluidSimulation::checkInput()
      if(_inPause)
      {
         std::cout<<"Exporting"<<std::endl;
-        TerrainFluidSimulation::ExportSimulationData();
+        TerrainFluidSimulation::ExportSimulation();
      }
      else
          std::cout<<"Can't save the simulation while it's running "<<std::endl;
@@ -168,6 +173,8 @@ void TerrainFluidSimulation::cameraMovement(double dt)
     if (glfwGetKey(_window,'G')) _cam.LocalRotate(xAxis,rotSpeed);
     if (glfwGetKey(_window,'Z')) _cam.LocalRotate(zAxis,-rotSpeed);
     if (glfwGetKey(_window,'X')) _cam.LocalRotate(zAxis,rotSpeed);
+    if (glfwGetKey(_window,'1')) _debug_mode = true;
+    if (glfwGetKey(_window,'2')) _debug_mode = false;
 }
 
 void TerrainFluidSimulation::updatePhysics(double dt)
@@ -184,39 +191,18 @@ void TerrainFluidSimulation::updatePhysics(double dt)
 
 }
 
-void TerrainFluidSimulation::OpenFile(const char filename [],std::fstream *objfile,bool append)
+
+void TerrainFluidSimulation::ExportSimulation()
 {
 
-       (*objfile).open(filename, std::fstream::in | std::fstream::out );
-
-
-     if (!(*objfile))
-     {
-       std::cout << "Cannot open file, file does not exist. Creating new file..";
-
-       (*objfile).open(filename,  std::fstream::in | std::fstream::out | std::fstream::trunc);
-       (*objfile) <<"\n";
-      }
-     else
-     {    // use existing file
-        std::cout<<"success "<<filename <<" found. \n";
-        std::cout<<"\nAppending writing and working with existing file"<<"\n---\n";
-
-        std::cout<<"\n";
-
-     }
-}
-
-void TerrainFluidSimulation::ExportSimulationData()
-{
-
-           const char filename[ ] = "/home/pandora/thesis/AutomaticShading/Data/input.obj";
-           const char filename_2[ ] = "/home/pandora/thesis/AutomaticShading/Data/simulationData.txt";
+           const char path_to_obj_file[ ] = "/home/pandora/thesis/AutomaticShading/Data/input.obj";
+           const char path_to_simulation_data_file[ ] = "/home/pandora/thesis/AutomaticShading/Data/simulationData.txt";
            std::fstream objfile;
            std::fstream datafile;
 
-           OpenFile(filename,&objfile,false);
-           OpenFile(filename_2,&datafile,false);
+           objfile.open(path_to_obj_file, std::fstream::out );
+           datafile.open(path_to_simulation_data_file, std::fstream::out );
+
            SaveTerrain( &objfile);
            SaveSimulationData(&datafile);
 
@@ -300,6 +286,7 @@ void TerrainFluidSimulation::render()
     // clear buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
     // bind shader
     _testShader->Bind();
 
@@ -328,10 +315,159 @@ void TerrainFluidSimulation::render()
     // unbind shader
     _testShader->UnBind();
 
+
+    if(_debug_mode)
+    {
+        RenderDebugTool();
+    }
+
+
+
     // finish
     glfwSwapBuffers(_window);
     glFinish();
 }
+
+void TerrainFluidSimulation::RenderDebugTool()
+{
+    //Arrow Data
+    Grid2D<vec4> arrowCoords;
+    std::vector<uint> arrowIndices;
+    //y 150 x 10
+    int y = 153;
+    int x = 190;
+    glm::vec3 normal(_simulation.uVel(y,x),_simulation.vVel(y,x),_simulation.zVel(y,x));
+    glm::vec3 empty_vector(0,0,0);
+    if(glm::any( glm::isnan(normal)) )
+    {
+        normal = glm::vec3(0,0,1);
+    }
+    else
+    {
+
+        if(glm::all(glm::equal(normal,empty_vector)))
+        {
+            normal = glm::vec3(0,0,1);
+        }
+        else
+        {
+            glm::normalize(normal);
+        }
+    }
+
+  float y1 = (float) 2*((float)y/ 100)-3;
+  float x1 = (float) 2*((float)x/ 100)-3;
+
+    glm::vec3 point(x1,y1,(float)((_simulationState.terrain(y,x))*2)/100  );
+    ArrowData(arrowCoords,arrowIndices,point,normal);
+
+    _arrowIndexBuffer.SetData(arrowIndices);
+    _arrowCoordBuffer.SetData(arrowCoords);
+     // bind the arrow shader
+    _arrowShader->Bind();
+
+    auto viewMatrix = _cam.ViewMatrix();
+    _arrowShader->SetUniform("uProjMatrix", _cam.ProjMatrix());
+    _arrowShader->SetUniform("uViewMatrix",viewMatrix);
+    _arrowShader->SetUniform("uViewMatrixNormal", transpose(inverse(viewMatrix)) );
+
+    // bind data
+    _arrowCoordBuffer.MapData((_arrowShader->AttributeLocation("point")));
+
+    _arrowIndexBuffer.Bind();
+
+    glDrawElements(GL_TRIANGLES, _arrowIndexBuffer.IndexCount(), _arrowIndexBuffer.IndexType(),0);
+
+    // unbind shader
+    _arrowShader->UnBind();
+
+
+}
+
+
+
+void TerrainFluidSimulation::ArrowData( Grid2D<vec4>& arrowCoords, std::vector<uint>& arrowIndices,glm::vec3 startingPoint,glm::vec3 normal)
+{
+    glm::vec4 offset(startingPoint[0],startingPoint[1],startingPoint[2],1);
+    glm::vec3 up(0,0,1);
+    glm::quat rot_quat = glm::orientation(normal,up);
+
+    float arrow_length=0.7;
+    float dimX = 0.05;
+    float dimY = 0.05;
+    arrowCoords.resize(4,2);
+
+    //generate vertices
+    arrowCoords(0) = glm::vec4( -dimX,  -dimY,    arrow_length,1);
+    arrowCoords(1) = glm::vec4( dimX,  -dimY,    arrow_length,1);
+    arrowCoords(2) = glm::vec4( dimX,   dimY,    arrow_length,1);
+    arrowCoords(3) = glm::vec4( -dimX,   dimY,    arrow_length,1);
+
+    arrowCoords(4) = glm::vec4( -dimX, -dimY,   0,1);
+    arrowCoords(5) = glm::vec4(  dimX, -dimY,   0,1);
+    arrowCoords(6) = glm::vec4(  dimX,  dimY,   0,1);
+    arrowCoords(7) = glm::vec4( -dimX,   dimY,  0,1);
+
+
+    for(uint i = 0; i < arrowCoords.size();i++)
+    {
+        arrowCoords(i) =    rot_quat * arrowCoords(i) + offset;
+    }
+    arrowIndices.clear();
+arrowIndices.reserve(6*2*3);
+//front
+arrowIndices.push_back(0);
+arrowIndices.push_back(1);
+arrowIndices.push_back(2);
+arrowIndices.push_back(2);
+arrowIndices.push_back(3);
+arrowIndices.push_back(0);
+
+
+// right
+arrowIndices.push_back(1);
+arrowIndices.push_back(5);
+arrowIndices.push_back(6);
+arrowIndices.push_back(6);
+arrowIndices.push_back(2);
+arrowIndices.push_back(1);
+
+
+// back
+arrowIndices.push_back(7);
+arrowIndices.push_back(6);
+arrowIndices.push_back(5);
+arrowIndices.push_back(5);
+arrowIndices.push_back(4);
+arrowIndices.push_back(7);
+
+// left
+arrowIndices.push_back(4);
+arrowIndices.push_back(0);
+arrowIndices.push_back(3);
+arrowIndices.push_back(3);
+arrowIndices.push_back(7);
+arrowIndices.push_back(4);
+
+//bottom
+arrowIndices.push_back(4);
+arrowIndices.push_back(5);
+arrowIndices.push_back(1);
+arrowIndices.push_back(1);
+arrowIndices.push_back(0);
+arrowIndices.push_back(4);
+
+//top
+arrowIndices.push_back(3);
+arrowIndices.push_back(2);
+arrowIndices.push_back(6);
+arrowIndices.push_back(6);
+arrowIndices.push_back(7);
+arrowIndices.push_back(3);
+
+}
+
+
 
 void TerrainFluidSimulation::init()
 {
@@ -350,15 +486,18 @@ void TerrainFluidSimulation::init()
     Grid2D<vec2> gridCoords;
     std::vector<uint> gridIndices;
 
+
     uint dimX = _simulationState.terrain.width();
     uint dimY = _simulationState.terrain.height();
 
     Grid2DHelper::MakeGridIndices(gridIndices,dimX,dimY);
     Grid2DHelper::MakeUniformGrid(gridCoords,dimX,dimY);
 
+
     // Send data to the GPU
     _gridIndexBuffer.SetData(gridIndices);
     _gridCoordBuffer.SetData(gridCoords);
+
 
     _terrainHeightBuffer.SetData(_simulationState.terrain);
     _waterHeightBuffer.SetData(_simulationState.water);
@@ -371,12 +510,17 @@ void TerrainFluidSimulation::init()
     _testShader->MapAttribute("inTerrainHeight",1);
     _testShader->MapAttribute("inWaterHeight",2);
     _testShader->MapAttribute("inSediment",3);
-    //change the number
-    if(_testShader->MapAttribute("inSimData",4));
+    _testShader->MapAttribute("inSimData",4);
 
     _testShader->MapAttribute("inNormal",7);
 
-    // position camera
+
+
+    //arrow shader
+
+    _arrowShader = _shaderManager.LoadShader(resourcePath+"lambert_v_arrow.glsl",resourcePath+"lambert_f_arrow.glsl");
+    _arrowShader->MapAttribute("point",0);
+
     _cam.TranslateGlobal(vec3(0.0f,0.2,2));
 
     // OpenGL Settings

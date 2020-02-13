@@ -25,8 +25,9 @@
 //#include <GLFW/glfw3.h>
 #include "Graphics/PerlinNoise.h"
 #include <algorithm>
-
-
+#include <sstream>
+#include <iostream>
+#include <fstream>
 
 using namespace glm;
 using namespace Graphics;
@@ -60,16 +61,16 @@ private :
     void Render();
     void ShowSimulationDataInput();
     void ShowSelectedFaces();
-
+    void ParseInputFile(Grid2D<vec2>& gridCoords,std::vector<uint>& gridIndices);
     Grid2D<float> _terrain;
     Grid2D<float> _water;
     Grid2D<float> _suspendedSediment;
     Grid2D<float> _simData;
     Grid2D<vec3>  _surfaceNormals;
-
+    string _obj_file;
 
 public:
-    OpenGlVisualizer(GLFWwindow* window,int width,int height,MyMesh mesh);
+    OpenGlVisualizer(GLFWwindow* window,int width,int height,MyMesh mesh,string obj_file);
     void Initialize();
     void Visualize();
 };
