@@ -29,6 +29,7 @@ public:
     Grid2D<float> vegetation;
     Grid2D<float> simData;
     Grid2D<float> rivers;
+
     //Grid2D<vec3>  flowNormal;
 
     Grid2D<vec3> surfaceNormals;
@@ -56,6 +57,8 @@ public:
         int ymax = water.height() - l;
 
     }
+
+
 
 
     void createRiverTerrain()

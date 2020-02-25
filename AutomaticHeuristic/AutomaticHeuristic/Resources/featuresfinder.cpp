@@ -4,6 +4,7 @@ FeaturesFinder::FeaturesFinder(MyMesh mesh): _mesh(mesh){}
 
 MyMesh  FeaturesFinder::Find()
 {
+
     //angle of repose is usually between 33-37 degreee depending on the rock type
     float angle = 10;
     float treshold = 3;
@@ -24,6 +25,11 @@ MyMesh  FeaturesFinder::Find()
     return _mesh;
 }
 
+
+vector<VertexEditTag> FeaturesFinder::GetVertexEditTags()
+{
+    return _vertex_edit_tags;
+}
 
 
 void FeaturesFinder::UpdateSimulationData(map<MyMesh::VertexHandle,ShaderParameters*> selected_vertices)

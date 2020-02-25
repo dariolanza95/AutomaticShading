@@ -57,7 +57,8 @@ out float vSimData;
 void main(void)
 {
     // transform and project the vertex position
-    vec2 p = inGridCoord-vec2(0.5,0.5);
+//    vec2 p = inGridCoord-vec2(0.5,0.5);
+    vec2 p = inGridCoord;
 
     // pass on some values
     vGridCoord = inGridCoord;

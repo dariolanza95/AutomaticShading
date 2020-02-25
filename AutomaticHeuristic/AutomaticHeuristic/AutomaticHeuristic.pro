@@ -38,7 +38,8 @@ SOURCES += *.cpp \
     Resources/riverclassifiertester.cpp \
     Resources/screeclassifier.cpp \
     Resources/riverclassifier.cpp \
-    Resources/ribwriter.cpp
+    Resources/ribwriter.cpp \
+    Resources/VertexEditTag.cpp
 
 
 
@@ -82,7 +83,8 @@ HEADERS += *.h\
     Resources/riverclassifier.h \
     Resources/riverclassifiertester.h \
     Resources/screeclassifier.h \
-    Resources/simulationdata.h
+    Resources/simulationdata.h \
+    Resources/VertexEditTag.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system
@@ -114,3 +116,5 @@ DEPENDPATH += $$PWD/../../../../../../usr/lib/x86_64-linux-gnu
 DISTFILES += \
     Resources/lambert_f.glsl \
     Resources/lambert_v.glsl
+
+unix|win32: LIBS += -lField3D

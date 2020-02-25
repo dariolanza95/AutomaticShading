@@ -29,6 +29,8 @@ using namespace Simulation;
 using namespace glm;
 using namespace std;
 
+
+
 FluidSimulation::FluidSimulation(SimulationState& state)
     : state(state),
       water(state.water),
@@ -445,17 +447,21 @@ float FluidSimulation::getTerrain(int y, int x) {
     return terrain(glm::clamp(y,0,(int) terrain.height()-1),glm::clamp(x,0,(int) terrain.width()-1));
 }
 
+
+
 float FluidSimulation::getWater(int y, int x){
     return water(glm::clamp(y,0,(int) water.height()-1),glm::clamp(x,0,(int) water.width()-1));
 }
 
 void FluidSimulation::simulateErosion(double dt)
 {
-    PerlinNoise perlin;
-    float frequency = 0.03;
-    float Kc = 25.0f; // sediment capacity constant
     const float Ks = 0.0001f*12*10; // dissolving constant
     const float Kd = 0.0001f*12*10; // deposition constant
+    float max = 10;
+    float min = -10;
+    float scale = 3;
+    float range = max-min;
+    PerlinNoise perlin;
 
 #if defined(__APPLE__) || defined(__MACH__)
     dispatch_apply(sediment.height(), gcdq, ^(size_t y)
@@ -480,14 +486,43 @@ void FluidSimulation::simulateErosion(double dt)
 
             // local sediment capacity of the flow
             //better keep this number not too high
+            //std::cout<<"range"<<range<<std::endl;
+            //std::cout<<"num strat "<< terrain_data.number_of_stratifications<<std::endl;
+            //int z =Kc *             float stratification_level = 1;//=  interval * roundf(z/interval);
+            //int index = stratification_level/interval;
+            float frequency = 0.03;
+            //float Kc =  terrain_data.list_of_rock_capacity_values.at(index);
+            // sediment capacity constant
+            float z = getTerrain(y,x);
+            float Kc ;
+            if(z<20)
+            {
+                Kc = 5+3*(15-scale*roundf(z/scale));
+                Kc = Kc< 8? 8 : Kc;
+                /*if(z<10)
+                {
+                    if(z<5)
+                    {
+                        Kc = 45;
+                    }
+                    else
+                    {
+                        Kc = 30;
+                    }
+                }
+                else
+                {
+                    Kc = 20;
+                }*/
+            }
+            else
+                Kc = 35;
 
-
-            float local_capacity = Kc *(0.5+0.5*perlin.Sample(frequency*x,frequency*y,frequency*getTerrain(y,x)));
+            float local_capacity = Kc*(0.75+0.5*perlin.Sample(frequency*x,frequency*y,frequency*z));
             float capacity = local_capacity * sqrtf(uV*uV+vV*vV)*sinAlpha*(std::min(water(y,x),0.01f)/0.01f) ;
             float delta = (capacity-sediment(y,x));
-
-            float v = sqrtf(uV*uV+vV*vV);
-            float fctr = (std::min(water(y,x),0.01f)/0.01f);
+            //float v = sqrtf(uV*uV+vV*vV);
+            //float fctr = (std::min(water(y,x),0.01f)/0.01f);
 
             if (delta > 0.0f)
             {
@@ -510,6 +545,7 @@ void FluidSimulation::simulateErosion(double dt)
     );
 #endif
 }
+
 
 void FluidSimulation::simulateSedimentTransportation(double dt)
 {

@@ -12,7 +12,8 @@
 #include "Camera.h"
 
 #include <glm/gtc/matrix_transform.hpp>
-
+#define GLM_ENABLE_EXPERIMENTAL;
+#include <glm/gtx/quaternion.hpp>
 using namespace glm;
 Camera::Camera()
 {
@@ -21,8 +22,21 @@ Camera::Camera()
 
 Camera::Camera(vec3 position)
 {
+
+    //glm::vec4 xAxis = correctiveMatrix * glm::vec4(1, 0, 0, 0);
+    //glm::vec4 yAxis = correctiveMatrix * glm::vec4(0, 1, 0, 0);
+    //glm::vec4 zAxis = correctiveMatrix * glm::vec4(0, 0, 1, 0);
     _position = position;
-    _forward = glm::fquat(0,0,0,0);
+      glm::quat qPitch = glm::angleAxis(0.0f,glm::vec3(1,0,0) );
+      glm::quat qYaw = glm::angleAxis(0.0f, glm::vec3(0, 1,0));
+      glm::quat qRoll = glm::angleAxis(0.0f,glm::vec3(0,0,1));
+
+      glm::quat orientation = qPitch * qYaw*qRoll;
+      orientation = glm::normalize(orientation);
+      glm::mat4 rotate = glm::mat4_cast(orientation);
+
+    _forward = glm::fquat(glm::vec3(0,0,0));
+    _forward = orientation;
     SetProjection();
 
 }
@@ -91,9 +105,9 @@ void Camera::LocalRotate(const vec3 &axis, float angle)
     float s = cosa;
 
     fquat offset(s,ax);
-    if( (_forward.x == 0) & (_forward.y == 0) & (_forward.z == 0) & (_forward.w == 0) )
-        _forward = offset;
-    else
+    //if( (_forward.x == 0) & (_forward.y == 0) & (_forward.z == 0) & (_forward.w == 0) )
+    //    _forward = offset;
+    //else
         _forward = offset * _forward;
     //_forward = offset * _forward;
 
@@ -121,9 +135,7 @@ void Camera::recomputeViewMatrix()
 {
     normalize(_forward);
 
-
     glm::mat4 Identity = glm::mat4(1.0f); // identity matrix
-
     _viewMatrix =  mat4_cast(_forward)*glm::translate(Identity,-_position);
 
 }

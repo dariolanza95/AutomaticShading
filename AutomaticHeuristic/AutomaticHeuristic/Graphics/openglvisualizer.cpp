@@ -1,8 +1,7 @@
 #include "openglvisualizer.h"
 
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/string_cast.hpp>
+
 
 
 
@@ -15,6 +14,7 @@ OpenGlVisualizer::OpenGlVisualizer(GLFWwindow* window,int width,int height,MyMes
 
 }
 
+Camera OpenGlVisualizer::GetCamera(){return _cam;}
 
 
 void OpenGlVisualizer::Initialize( )
@@ -64,8 +64,32 @@ void OpenGlVisualizer::Render()
     // bind shader
     _testShader->Bind();
 
-    auto viewMatrix = _cam.ViewMatrix();
+    auto CameraviewMatrix = _cam.ViewMatrix();
+    float aaa[16] =
+    {
+         -1 , 0, 0, 0,
+         0 ,  0 , -1, 0,
+         0 , -1, 0, 0,
+         0 , 0, 0, 1
+    };
+    glm::quat qPitch = glm::angleAxis(0.0f,glm::vec3(1,0,0) );
+    glm::quat qYaw = glm::angleAxis(0.0f, glm::vec3(0, 1,0));
+    glm::quat qRoll = glm::angleAxis(glm::pi<float>(),glm::vec3(0,0,1));
 
+    glm::quat orientation = qPitch * qYaw*qRoll;
+    orientation = glm::normalize(orientation);
+
+    float bbb[16] =
+    {
+         -1 , 0, 0, 0,
+         0 , 1, 0, 0,
+         0 , 0, -1, 0,
+         0 , 0, 0, 1
+    };
+
+    glm::mat4x4 correctiveMatrix = glm::make_mat4x4(aaa);
+    glm::mat4x4 correctiveMatrix_s = glm::mat4_cast(orientation);
+    glm::mat4x4 viewMatrix  =  (CameraviewMatrix) * correctiveMatrix_s* correctiveMatrix  ;
     _testShader->SetUniform("uProjMatrix", _cam.ProjMatrix());
     _testShader->SetUniform("uViewMatrix",viewMatrix);
     _testShader->SetUniform("uViewMatrixNormal", transpose(inverse(viewMatrix)) );
@@ -100,6 +124,7 @@ void OpenGlVisualizer::Render()
 
 void OpenGlVisualizer::ParseInputFile(Grid2D<vec2>& gridCoords,std::vector<uint>& gridIndices)
 {
+
     string line;
     int width  = 300;
     int  height = 300;
@@ -111,7 +136,29 @@ void OpenGlVisualizer::ParseInputFile(Grid2D<vec2>& gridCoords,std::vector<uint>
     gridIndices.reserve((width-1)*(height-1)*6);
 
     int i = 0;
-    while (std::getline(inputfile,line))
+   MyMesh::VertexIter v_it, v_end(_mesh.vertices_end());
+   for (v_it = _mesh.vertices_sbegin() ; v_it!= v_end;++v_it )
+   {
+       MyMesh::Point point = _mesh.point(*v_it);
+       gridCoords(i++) = glm::vec2(point[0]/300,point[1]/300);
+       if(point[0]<0 || point[1]<0)
+           cout<<"negative here"<<endl;
+   }
+   for (auto& face_handle : _mesh.faces())
+   {
+       OpenMesh::TriMesh_ArrayKernelT<>::FaceVertexIter face_vertex_circulator;
+       for( face_vertex_circulator = _mesh.fv_iter(face_handle);face_vertex_circulator.is_valid();++face_vertex_circulator)
+       {
+
+           stringstream ss;
+           ss<<*face_vertex_circulator;
+           string tmp  = ss.str();
+           int x = stof(tmp);
+           gridIndices.push_back(x);
+       }
+   }
+
+    /*while (std::getline(inputfile,line))
     {
 
         std::size_t pos = line.find('v');
@@ -135,7 +182,7 @@ void OpenGlVisualizer::ParseInputFile(Grid2D<vec2>& gridCoords,std::vector<uint>
                 gridIndices.push_back(--c);
             }
         }
-    }
+    }*/
 
 }
 
@@ -157,8 +204,8 @@ void OpenGlVisualizer::CameraMovement(float dt)
     if (glfwGetKey(_window,'F')) _cam.TranslateLocal(vec3(0,-camSpeed,0));
     if (glfwGetKey(_window,'W')) _cam.TranslateLocal(vec3(0,0,-camSpeed));
     if (glfwGetKey(_window,'S')) _cam.TranslateLocal(vec3(0,0,camSpeed));
-    if (glfwGetKey(_window,'Q')) _cam.GlobalRotate(yAxis,-rotSpeed);
-    if (glfwGetKey(_window,'E')) _cam.GlobalRotate(yAxis,rotSpeed);
+    if (glfwGetKey(_window,'Q')) _cam.LocalRotate(yAxis,-rotSpeed);
+    if (glfwGetKey(_window,'E')) _cam.LocalRotate(yAxis,rotSpeed);
     if (glfwGetKey(_window,'T')) _cam.LocalRotate(xAxis,-rotSpeed);
     if (glfwGetKey(_window,'G')) _cam.LocalRotate(xAxis,rotSpeed);
     if (glfwGetKey(_window,'Z')) _cam.LocalRotate(zAxis,-rotSpeed);
@@ -166,9 +213,10 @@ void OpenGlVisualizer::CameraMovement(float dt)
     if (glfwGetKey(_window,'1')) ShowSimulationDataInput();
     if (glfwGetKey(_window,'2')) ShowSelectedFaces();
     glm::vec3 pos = _cam.Position();
-    std::cout<<"Position "<< pos[0]<<" "<< pos[1]<<" "<< pos[2]<<" viewMatrix ";
-    std::cout<< glm::to_string(_cam.ViewMatrix())<< " inverse " ;
-    std::cout<< glm::to_string(transpose(inverse(_cam.ViewMatrix())))<< std::endl;
+    std::cout<<"Position "<< pos[0]<<" "<< pos[1]<<" "<< pos[2]<< std::endl;
+    std::cout<<" aspect " << _cam._aspect << std::endl;
+    std::cout<< " viewMatrix "<< glm::to_string(_cam.ViewMatrix())<< std::endl ;
+    //std::cout<<" inverse " << glm::to_string(transpose(inverse(_cam.ViewMatrix())))<< std::endl;
 
 }
 
@@ -197,8 +245,8 @@ void OpenGlVisualizer::InitializeBuffers()
     uint dimY = _grid_height;//_simulationState.terrain.height();
 
     ParseInputFile(gridCoords,gridIndices);
-    Grid2DHelper::MakeGridIndices(gridIndices,dimX,dimY);
-    Grid2DHelper::MakeUniformGrid(gridCoords,dimX,dimY);
+    //Grid2DHelper::MakeGridIndices(gridIndices,dimX,dimY);
+    //Grid2DHelper::MakeUniformGrid(gridCoords,dimX,dimY);
 
     // Send data to the GPU
     _gridIndexBuffer.SetData(gridIndices);
@@ -240,7 +288,11 @@ void OpenGlVisualizer::InitializeBuffers()
     _testShader->MapAttribute("inNormal",7);
 
     // position camera
-    _cam.TranslateGlobal(vec3(0.0f,0.2,2));
+    float scale = 100;
+    float a = 0;
+    float b = 0;
+    float c = 0;
+    _cam.TranslateGlobal(vec3(a/scale,b/scale,c/scale));
 
     // OpenGL Settings
     glClearColor(0.4f,0.4f,0.4f,0.0f);
@@ -287,7 +339,7 @@ void OpenGlVisualizer::ShowSelectedFaces()
             _terrain(i) = point[2];
             if(sp->getId()==1)
                  _water(i) = 1;
-            if(sp->getId()==2)
+            if(sp->getId()==3)
                 _simData(i)= 5;
            if(sp->getId()== 0)
            {

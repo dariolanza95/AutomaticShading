@@ -317,7 +317,7 @@ vector<map<MyMesh::VertexHandle, ShaderParameters *>> RiverClassifier::FindLocal
             MyMesh::VertexHandle vertex_handle = entry.first;
             for( vertex_face_circulator = _mesh.vf_iter(vertex_handle);vertex_face_circulator.is_valid();++vertex_face_circulator)
             {
-                    MyMesh::Normal mynormal = -1*_mesh.normal(*vertex_face_circulator);
+                    MyMesh::Normal mynormal = _mesh.normal(*vertex_face_circulator);
 
                     float dot_result = dot(mynormal,up_direction);
                     float resulting_angle_in_radians = acos(dot_result);

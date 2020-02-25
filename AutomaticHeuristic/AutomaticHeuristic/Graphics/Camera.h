@@ -13,7 +13,9 @@
 #define CAMERA_H
 
 #include <glm/gtc/quaternion.hpp>
-
+#include <glm/gtc/type_ptr.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/string_cast.hpp>
 // Backwards compatibility
 #define GLM_FORCE_RADIANS
 using namespace glm;
@@ -38,6 +40,7 @@ public:
     void TranslateGlobal(const glm::vec3& delta);
     void TranslateLocal(const glm::vec3& delta);
     void LocalRotate(const glm::vec3& axis, float angle);
+    float _aspect;
 
     void GlobalRotate(const glm::vec3& axis, float angle);
 
@@ -55,7 +58,6 @@ protected:
 
     float _angle;
     float _near, _far;
-    float _aspect;
 
 };
 

@@ -225,7 +225,8 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
             temp++;
             (*datafile )<< _simulationState.simData(x,y);
             (*datafile )<<" "<< _simulationState.vegetation(x,y);
-            vec3 flowNormal (_simulation.uVel(y,x),_simulation.vVel(y,x),_simulation.zVel(y,x));
+//            (*datafile)<< " "<< _simulation.sampleTerrain(x,y);
+            vec3 flowNormal (_simulation.uVel(x,y),_simulation.vVel(x,y),_simulation.zVel(x,y));
             if(flowNormal[0]!=0 || flowNormal[1]!=0 || flowNormal[2]!=0 )
                 flowNormal = normalize(flowNormal);
             (*datafile )<<" v "<< flowNormal[0]  << " "<< flowNormal[1]<< " "<< flowNormal[2];
@@ -246,7 +247,7 @@ void TerrainFluidSimulation:: SaveTerrain (std::fstream *objfile)
                }
            }
            std::vector<uint> gridIndices;
-           Grid2DHelper::MakeGridIndices(gridIndices,_simulationState.terrain.width(),_simulationState.terrain.height());
+           Grid2DHelper::MakeGridIndicesClockWiseOrder(gridIndices,_simulationState.terrain.width(),_simulationState.terrain.height());
            std::cout<<"gridIndices.size() "<< gridIndices.size()<<std::endl;
            uint i = 0;
            for (i = 0;i<gridIndices.size();i += 3)
@@ -334,8 +335,13 @@ void TerrainFluidSimulation::RenderDebugTool()
     Grid2D<vec4> arrowCoords;
     std::vector<uint> arrowIndices;
     //y 150 x 10
-    int y = 153;
-    int x = 190;
+    //y 153 x 190
+    //int y = 153;
+    //int x = 190;
+    //int y = 150;
+    //int x = 10;
+    int y = 165;
+    int x = 160;
     glm::vec3 normal(_simulation.uVel(y,x),_simulation.vVel(y,x),_simulation.zVel(y,x));
     glm::vec3 empty_vector(0,0,0);
     if(glm::any( glm::isnan(normal)) )

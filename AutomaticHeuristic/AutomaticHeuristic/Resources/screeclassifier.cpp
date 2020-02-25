@@ -22,7 +22,7 @@ map<MyMesh::VertexHandle,ShaderParameters*> ScreeClassifier::ClassifyVertices()
 
         for(face_iterator=_mesh.faces_begin();face_iterator != face_iterator_end;++face_iterator)
         {
-            MyMesh::Normal mynormal = -1*_mesh.normal(*face_iterator);
+            MyMesh::Normal mynormal = _mesh.normal(*face_iterator);
             float dot_result = dot(mynormal,up_direction);
             if(dot_result<0)
             {

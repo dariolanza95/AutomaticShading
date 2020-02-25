@@ -19,6 +19,15 @@
 
 using namespace glm;
 
+struct StratifiedTerrain
+{
+    float max_height;
+    float min_height;
+    int number_of_stratifications;
+    std::vector<int> list_of_rock_capacity_values;
+};
+
+
 namespace Simulation {
 
 class FluidSimulation
@@ -29,7 +38,7 @@ public:
     ~FluidSimulation();
 
     SimulationState& state;
-
+    StratifiedTerrain terrain_data;
     Grid2D<float>& water;
     Grid2D<float>& terrain;
     Grid2D<float>& sediment;
@@ -56,7 +65,7 @@ public:
     void simulateErosion(double dt);
     void simulateSedimentTransportation(double dt);
     void simulateEvaporation(double dt);
-
+    float sampleTerrain(int x,int y );
     void makeRain(double dt);
     void makeFlood(double dt);
     void makeRiver(double dt);

@@ -23,11 +23,19 @@
 //#include <GL/glx.h>
 //#include "Graphics/Grid2D.h"
 //#include <GLFW/glfw3.h>
+
+#include <glm/gtc/matrix_transform.hpp>
+#define GLM_ENABLE_EXPERIMENTAL;
+#include <glm/gtx/quaternion.hpp>
+
+#include <glm/gtc/type_ptr.hpp>
 #include "Graphics/PerlinNoise.h"
 #include <algorithm>
 #include <sstream>
 #include <iostream>
 #include <fstream>
+
+#include <glm/gtx/string_cast.hpp>
 
 using namespace glm;
 using namespace Graphics;
@@ -73,6 +81,8 @@ public:
     OpenGlVisualizer(GLFWwindow* window,int width,int height,MyMesh mesh,string obj_file);
     void Initialize();
     void Visualize();
+
+    Camera GetCamera();
 };
 
 #endif // OPENGLVISUALIZER_H

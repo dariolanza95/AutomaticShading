@@ -32,13 +32,21 @@ using namespace OpenMesh;
 # define M_PI           3.14159265358979323846  /* pi */
 
 
-struct MyData
-{
-  int             ival;
-  double          dval;
-  bool            bval;
+#include <iostream>
+#include <string>
 
-};
+#include <Field3D/DenseField.h>
+#include <Field3D/InitIO.h>
+#include <Field3D/Field3DFile.h>
+
+//----------------------------------------------------------------------------//
+
+using namespace std;
+
+using namespace Field3D;
+
+
+
 
 char* filetobuf(char *file)
 {
@@ -337,7 +345,7 @@ void window_close_callback(GLFWwindow* window)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "BlankWindow", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(300, 200, "BlankWindow", NULL, NULL);
     // Open an OpenGL window
    // if( !glfwCreateWindow( windowWidth,windowHeight, 8,8,8,8,8,8, GLX_WINDOW ) )
     if (window == NULL )
@@ -424,14 +432,14 @@ void FindFeatures(MyMesh& mesh)
 }
 
 
-std::ostream &operator<< (std::ostream &out, const glm::vec3 &vec) {
-    out << vec.x << " " << vec.y << " "<< vec.z << endl;
+//std::ostream &operator<< (std::ostream &out, const glm::vec3 &vec) {
+//    out << vec.x << " " << vec.y << " "<< vec.z << endl;
+//
+//    return out;
+//}
 
-    return out;
-}
 
-
-void WriteSimulationDataOnOutputFile(MyMesh& mesh,ostream& outputfile)
+void WriteSimulationData(MyMesh& mesh,ostream& outputfile)
 {
     auto shader_parameters_data_wrapper = getOrMakeProperty<VertexHandle, ShaderParameters*>(mesh, "shader_parameters");
     //varying
@@ -469,7 +477,7 @@ void WriteSimulationDataOnOutputFile(MyMesh& mesh,ostream& outputfile)
     for (auto& vertex_handle : mesh.vertices())
     {
         ShaderParameters* shader_param = shader_parameters_data_wrapper[vertex_handle];
-        outputfile<< shader_param->getVector()<< endl;
+        //outputfile<< shader_param->getVector()<< endl;
     }
     outputfile<< " ]  ";
 }
@@ -498,7 +506,7 @@ bool WriteSimulationData(string line,ifstream& myfile,ostream& omyfile,MyMesh& m
         line.erase(found + 1 ,line.length());
         omyfile << line<<'\n' ;
 
-        WriteSimulationDataOnOutputFile(mesh,omyfile);
+        WriteSimulationData(mesh,omyfile);
        /* while(getline(datafile, line))
         {
             newstring +=" " + line;
@@ -761,9 +769,27 @@ int main(int argc, char **argv)
   OpenGlVisualizer visualizer(window, 300, 300,mesh,obj_file);
   visualizer.Initialize();
   visualizer.Visualize();
-  WriteOnRibFile(mesh);
+
+  RIBWriter writer(mesh,"../../Data/mountainsceneTemplateOutput.rib",visualizer.GetCamera(),features_finder.GetVertexEditTags());
+  writer.Write();
+  //WriteOnRibFile(mesh);
 
 
+
+  // Call initIO() to initialize standard I/O methods and load plugins
+  Field3D::initIO();
+
+  DenseField<float>::Ptr field(new DenseField<float>);
+  field->name = "hello";
+  field->attribute = "world";
+  field->setSize(V3i(50, 50, 50));
+  field->clear(1.0f);
+  field->metadata().setStrMetadata("my_attribute", "my_value");
+    std::cout<<"helooooo";
+ // Field3DOutputFile out;
+ // out.create("field3d_file.f3d");
+ // out.writeScalarLayer<float>(field);
   return 0;
 }
+
 
