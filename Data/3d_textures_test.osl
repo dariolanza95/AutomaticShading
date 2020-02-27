@@ -1,0 +1,14 @@
+
+shader
+textures_test
+(
+	 point Pobj = 0 
+         [[
+         int lockgeom = 0
+         ]], output color resultRGB = 0
+)
+{    
+	point pp = Pobj;
+	float resultF = texture3d("field3d_file.f3d",pp);
+	resultRGB = color(resultF);
+}

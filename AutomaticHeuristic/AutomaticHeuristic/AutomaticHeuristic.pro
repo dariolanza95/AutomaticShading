@@ -39,7 +39,8 @@ SOURCES += *.cpp \
     Resources/screeclassifier.cpp \
     Resources/riverclassifier.cpp \
     Resources/ribwriter.cpp \
-    Resources/VertexEditTag.cpp
+    Resources/VertexEditTag.cpp \
+    Resources/FieldThreeDWriter.cpp
 
 
 
@@ -84,7 +85,8 @@ HEADERS += *.h\
     Resources/riverclassifiertester.h \
     Resources/screeclassifier.h \
     Resources/simulationdata.h \
-    Resources/VertexEditTag.h
+    Resources/VertexEditTag.h \
+    Resources/FieldThreeDWriter.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system
@@ -118,3 +120,12 @@ DISTFILES += \
     Resources/lambert_v.glsl
 
 unix|win32: LIBS += -lField3D
+
+
+INCLUDEPATH += "/usr/lib/x86_64-linux-gnu"
+LIBS += -L"/usr/include/hdf5/serial"
+
+
+unix|win32: LIBS += -lhdf5_hl_cpp
+
+unix: PKGCONFIG += hdf5

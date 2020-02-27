@@ -13,7 +13,7 @@
 #include "ShaderParameters.h"
 #include "./Graphics/openglvisualizer.h"
 #include "featuresfinder.h"
-
+#include "FieldThreeDWriter.h"
 // --------------------OpenMesh----------------------------
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
@@ -773,22 +773,13 @@ int main(int argc, char **argv)
   RIBWriter writer(mesh,"../../Data/mountainsceneTemplateOutput.rib",visualizer.GetCamera(),features_finder.GetVertexEditTags());
   writer.Write();
   //WriteOnRibFile(mesh);
-
-
-
   // Call initIO() to initialize standard I/O methods and load plugins
-  Field3D::initIO();
 
-  DenseField<float>::Ptr field(new DenseField<float>);
-  field->name = "hello";
-  field->attribute = "world";
-  field->setSize(V3i(50, 50, 50));
-  field->clear(1.0f);
-  field->metadata().setStrMetadata("my_attribute", "my_value");
-    std::cout<<"helooooo";
- // Field3DOutputFile out;
- // out.create("field3d_file.f3d");
- // out.writeScalarLayer<float>(field);
+
+  std::string filename("../../Data/test_file.f3d");
+  FieldThreeDWriter fieldwriter(mesh,filename);
+   fieldwriter.Write();
+
   return 0;
 }
 
