@@ -20,6 +20,7 @@ uniform mat4 uViewMatrix;         // View Matrix
 // Other uniforms
 /////////////////////////////////////////////////
 
+uniform bool uHardnessMode;
 uniform vec4 uColor; // Material Color
 
 // Input from Vertex Shader
@@ -60,22 +61,23 @@ void main(void)
 //    vec4 terrainColor = vec4(0.8,0.8,0.8,1);
     vec4 terrainColor =  vec4(17.0/255.0,132.0/255.0,5.0/255.0,1);
     vec4 sedimentColor = vec4(194.0/255.0,141.0/255.0,76.0/255.0,1);
-    vec4 simDataColor =  vec4(190.0/255.0,70.0/255.0,103.0/255.0,1);
     float factor = clamp((min(vWaterHeight,6.0)/6.0), 0.0, 1.0);
     factor = 1-pow((1-factor),4);
  
     fColor = (factor*waterColor+(1.0-factor)*terrainColor)*light;
+    vec4 hardnessColor =  vec4(0,0,0,1);
 
-    float temp = 0.1;
-    if(vSimData >1)
+
+    float temp = 1;
+    if(uHardnessMode)
     {
-        temp = 1;
+        temp = vSimData;
     }
     else
         temp = 0;
     fColor = mix(fColor,vec4(0,1,0,1),vSediment);
     fColor = mix(fColor,sedimentColor,vSediment);
-    fColor = mix(fColor,simDataColor,temp);
+    fColor = mix(fColor,hardnessColor,temp);
     float gamma = 2.2;
     fColor.rgb = pow(fColor.rgb,vec3(1,1,1)/gamma);
 }

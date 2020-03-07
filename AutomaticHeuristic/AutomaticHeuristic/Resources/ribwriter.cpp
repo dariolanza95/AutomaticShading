@@ -1,5 +1,5 @@
 #include "ribwriter.h"
-
+#include <pointcloud.h>
 
 
 RIBWriter::RIBWriter(MyMesh mesh,string out_name_file,Camera camera,vector<VertexEditTag> list_of_vertices_change):_mesh(mesh),_rib_file(out_name_file),_cam(camera),_vertex_edit_tag(list_of_vertices_change)

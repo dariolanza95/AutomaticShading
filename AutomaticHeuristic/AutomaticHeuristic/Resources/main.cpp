@@ -14,6 +14,7 @@
 #include "./Graphics/openglvisualizer.h"
 #include "featuresfinder.h"
 #include "FieldThreeDWriter.h"
+#include "PointCloudWriter.h"
 // --------------------OpenMesh----------------------------
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
@@ -635,7 +636,7 @@ void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &me
 {
     string line;
     int counter=0;
-    vector<string> variablenames = {"vegetation","rivers","normalFlow"};
+    vector<string> variablenames = {"vegetation","rivers","hardness","normalFlow"};
     ifstream inputfile(simulation_data_file);
     auto simulation_data = getOrMakeProperty<VertexHandle, SimulationData*>(mesh, "simulation_data");
     for (auto& vertex_handle : mesh.vertices())
@@ -777,10 +778,15 @@ int main(int argc, char **argv)
 
 
   std::string filename("../../Data/test_file.f3d");
-  FieldThreeDWriter fieldwriter(mesh,filename);
-   fieldwriter.Write();
-
-  return 0;
+  //FieldThreeDWriter fieldwriter(mesh,filename);
+  // fieldwriter.Write();
+   filename = "../../Data/test_pointcloud";
+    PointCloudWriter pcw(mesh,filename,5);
+    pcw.Init();
+    pcw.Write();
+    pcw.Read();
+    std::cout<<"Bye bye";
+    return 0;
 }
 
 

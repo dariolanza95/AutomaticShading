@@ -48,7 +48,10 @@ FluidSimulation::FluidSimulation(SimulationState& state)
       bFlux(water.width(), water.height()),
       lX(1.0),
       lY(1.0),
-      gravity(9.81)
+      gravity(9.81),
+      _stratified_layer_width(3),
+
+      noise_sediment_frequency(0.1)
 {
     assert(water.height() == terrain.height() && water.width() == terrain.width());
 
@@ -61,6 +64,14 @@ FluidSimulation::FluidSimulation(SimulationState& state)
             lFlux(i,j) = rFlux(i,j) = tFlux(i,j) = bFlux(i,j) = 0;
         }
     }
+            sediment_layers[0] = 16;
+            sediment_layers[1] = 30;
+            sediment_layers[2] = 16;
+            sediment_layers[3] = 30;
+            sediment_layers[4] = 16;
+            sediment_layers[5] = 30;
+            sediment_layers[6] = 35;
+
 }
 
 FluidSimulation::~FluidSimulation() {
@@ -475,7 +486,6 @@ void FluidSimulation::simulateErosion(double dt)
             // local velocity
             float uV = uVel(y,x);
             float vV = vVel(y,x);
-
             // local terrain normal
             vec3 normal = vec3(getTerrain(y,x+1) - getTerrain(y,x-1), getTerrain(y+1,x) - getTerrain(y-1,x), 2 );
             normal = normalize(normal);
@@ -490,37 +500,22 @@ void FluidSimulation::simulateErosion(double dt)
             //std::cout<<"num strat "<< terrain_data.number_of_stratifications<<std::endl;
             //int z =Kc *             float stratification_level = 1;//=  interval * roundf(z/interval);
             //int index = stratification_level/interval;
-            float frequency = 0.03;
             //float Kc =  terrain_data.list_of_rock_capacity_values.at(index);
             // sediment capacity constant
             float z = getTerrain(y,x);
-            float Kc ;
-            if(z<20)
-            {
-                Kc = 5+3*(15-scale*roundf(z/scale));
-                Kc = Kc< 8? 8 : Kc;
-                /*if(z<10)
-                {
-                    if(z<5)
-                    {
-                        Kc = 45;
-                    }
-                    else
-                    {
-                        Kc = 30;
-                    }
-                }
-                else
-                {
-                    Kc = 20;
-                }*/
-            }
-            else
-                Kc = 35;
+            float kc = 0;
+            int res = _stratified_layer_width*(roundf(z/_stratified_layer_width));
+             if(res %(2*_stratified_layer_width) == 0)
+                 kc = 35;
+             else
+                 kc = 23;
+            float n = (perlin.Sample(noise_sediment_frequency*x,noise_sediment_frequency*y,noise_sediment_frequency*z));
+            kc =kc + n*(kc/10);
 
-            float local_capacity = Kc*(0.75+0.5*perlin.Sample(frequency*x,frequency*y,frequency*z));
-            float capacity = local_capacity * sqrtf(uV*uV+vV*vV)*sinAlpha*(std::min(water(y,x),0.01f)/0.01f) ;
+            state.simData(y,x) = kc/40;
+            float capacity = kc* sqrtf(uV*uV+vV*vV)*sinAlpha*(std::min(water(y,x),0.01f)/0.01f) ;
             float delta = (capacity-sediment(y,x));
+
             //float v = sqrtf(uV*uV+vV*vV);
             //float fctr = (std::min(water(y,x),0.01f)/0.01f);
 
@@ -545,6 +540,61 @@ void FluidSimulation::simulateErosion(double dt)
     );
 #endif
 }
+
+float FluidSimulation::GetTerrainCapacity(float x,float y,float z ,float frequency,int* layers )
+{
+    PerlinNoise perlin;
+
+    int level = 0;
+    float kc = 0;
+    if(z<30)
+    {
+       if(z<18)
+       {
+           if(z<12)
+           {
+               if(z<6)
+               {
+                  level=1;
+               }
+               else
+               {
+                   level = 2;
+               }
+           }
+           else
+           {
+               level = 3;
+           }
+       }
+       else
+       {
+           level = 4;
+       }
+
+    }
+    else
+        level = 5;
+
+    float n = (0.5+0.5*perlin.Sample(frequency*x,frequency*y,frequency*z));
+  //  n = 0.51;
+    if(n<0.25)
+    {
+        kc = layers[level-1];
+    }
+    else
+    {
+        if(n<0.5)
+        {
+            kc = layers[level+1];
+        }else
+        {
+            kc = layers[level];
+        }
+    }
+return kc;
+}
+
 
 
 void FluidSimulation::simulateSedimentTransportation(double dt)

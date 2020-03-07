@@ -19,13 +19,7 @@
 
 using namespace glm;
 
-struct StratifiedTerrain
-{
-    float max_height;
-    float min_height;
-    int number_of_stratifications;
-    std::vector<int> list_of_rock_capacity_values;
-};
+
 
 
 namespace Simulation {
@@ -38,7 +32,6 @@ public:
     ~FluidSimulation();
 
     SimulationState& state;
-    StratifiedTerrain terrain_data;
     Grid2D<float>& water;
     Grid2D<float>& terrain;
     Grid2D<float>& sediment;
@@ -53,13 +46,16 @@ public:
     Grid2D<float> rFlux;
     Grid2D<float> tFlux;
     Grid2D<float> bFlux;
-
+    float noise_sediment_frequency;
+    int sediment_layers[7];
     glm::vec2 rainPos;
 
     // lX and lY have to decrease if we increse the gridsize
     const float lX;
     const float lY;
     const float gravity;
+    const int _stratified_layer_width = 3;
+
     void update(double dt, bool makeRain=true, bool flood=false);
     void simulateFlow(double dt);
     void simulateErosion(double dt);
@@ -76,6 +72,7 @@ public:
 
     void computeSurfaceNormals();
 
+    float GetTerrainCapacity(float x,float y,float z ,float frequency,int* layers );
     // flux access (takes care of boundaries)
     inline float getRFlux(int y, int x);
     inline float getLFlux(int y, int x);
@@ -83,8 +80,8 @@ public:
     inline float getTFlux(int y, int x);
 
     // terrain access
-    inline float getTerrain(int y, int x);
-
+    //inline float getTerrain(int y, int x);
+    float getTerrain(int y, int x);
     // water access
     inline float getWater(int y, int x);
 

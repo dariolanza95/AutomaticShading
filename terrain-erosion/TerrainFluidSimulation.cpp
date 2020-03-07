@@ -175,6 +175,8 @@ void TerrainFluidSimulation::cameraMovement(double dt)
     if (glfwGetKey(_window,'X')) _cam.LocalRotate(zAxis,rotSpeed);
     if (glfwGetKey(_window,'1')) _debug_mode = true;
     if (glfwGetKey(_window,'2')) _debug_mode = false;
+    if (glfwGetKey(_window,'3')) _hardness_mode = true;
+    if (glfwGetKey(_window,'4')) _hardness_mode = false;
 }
 
 void TerrainFluidSimulation::updatePhysics(double dt)
@@ -211,6 +213,26 @@ void TerrainFluidSimulation::ExportSimulation()
 
 }
 
+float GetTerrainCapacity(float x,float y,float z ,float frequency,int _stratified_layer_width)
+{
+
+
+    PerlinNoise perlin;
+
+    float kc = 0;
+    int res = _stratified_layer_width*(roundf(z/_stratified_layer_width));
+     if(res %(2*_stratified_layer_width) == 0)
+         kc = 35;
+     else
+         kc = 23;
+
+    float n = (perlin.Sample(frequency*x,frequency*y,frequency*z));
+    kc =kc + n*(kc/10);
+
+return kc;
+}
+
+
 void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
 {
     int counter = 0;
@@ -225,7 +247,9 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
             temp++;
             (*datafile )<< _simulationState.simData(x,y);
             (*datafile )<<" "<< _simulationState.vegetation(x,y);
-//            (*datafile)<< " "<< _simulation.sampleTerrain(x,y);
+            float z = _simulationState.terrain(x,y);
+            (*datafile)<< " "<< GetTerrainCapacity(x,y,z,_simulation.noise_sediment_frequency,_simulation._stratified_layer_width);
+
             vec3 flowNormal (_simulation.uVel(x,y),_simulation.vVel(x,y),_simulation.zVel(x,y));
             if(flowNormal[0]!=0 || flowNormal[1]!=0 || flowNormal[2]!=0 )
                 flowNormal = normalize(flowNormal);
@@ -296,7 +320,7 @@ void TerrainFluidSimulation::render()
     _testShader->SetUniform("uViewMatrix",viewMatrix);
     _testShader->SetUniform("uViewMatrixNormal", transpose(inverse(viewMatrix)) );
     _testShader->SetUniform("uGridSize",(int)_simulationState.terrain.width());
-
+    _testShader->SetUniform("uHardnessMode",(bool) _hardness_mode);
     // bind data
     _gridCoordBuffer.MapData(_testShader->AttributeLocation("inGridCoord"));
     _terrainHeightBuffer.MapData(_testShader->AttributeLocation("inTerrainHeight"));

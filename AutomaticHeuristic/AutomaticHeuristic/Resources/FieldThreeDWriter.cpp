@@ -66,7 +66,8 @@ std::cout<<"end of writing part";
 
 Field<float>::Vec loadedFields;
 
-Field3DInputFileHDF5 in;
+Field3DInputFile in;
+
 in.open(_out_name_file);
 
 for (int i = 0; i < numFields; i++) {

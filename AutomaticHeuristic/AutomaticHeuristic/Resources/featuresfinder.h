@@ -4,6 +4,7 @@
 #include "screeclassifier.h"
 #include "riverclassifier.h"
 #include "flowclassifier.h"
+#include "materialclassifier.h"
 #include "VertexEditTag.h"
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>

@@ -1,6 +1,6 @@
 #include "flowclassifier.h"
 
-FlowClassifier::FlowClassifier(MyMesh mesh) : AClassifier(),_mesh(mesh),_shader_parameter_size(3)
+FlowClassifier::FlowClassifier(MyMesh mesh) : AClassifier(mesh),_shader_parameter_size(3)
 {
     simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,SimulationData*>(_mesh, "simulation_data");
     std::vector<int> temp;

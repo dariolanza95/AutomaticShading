@@ -72,9 +72,8 @@ _max_height = max;
 }
 
 
-    RiverClassifier::RiverClassifier(MyMesh mesh,float slope,float treshold,float border_width,float max_height,float min_height):AClassifier()
+    RiverClassifier::RiverClassifier(MyMesh mesh,float slope,float treshold,float border_width,float max_height,float min_height):AClassifier(mesh)
     {
-        _mesh = mesh;
         _slope = slope;
         _treshold = treshold;
         _border_width = border_width;

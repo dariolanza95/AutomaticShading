@@ -85,6 +85,7 @@ protected:
     bool _rain;
     bool _flood;
     bool _debug_mode = false;
+    bool _hardness_mode = false;
     glm::vec2 _rainPos;
    // std::vector<uint> gridIndices;
     SimulationState _simulationState;

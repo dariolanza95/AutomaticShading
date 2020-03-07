@@ -104,7 +104,7 @@ private:
 
 PxrWorley::PxrWorley() :
     m_surfacePosition(0),
-    m_frequency(4.0f),
+    m_frequency(16.0f),
     m_distancemetric(0),
     m_jitter(0.75f),
     m_clamp(1),

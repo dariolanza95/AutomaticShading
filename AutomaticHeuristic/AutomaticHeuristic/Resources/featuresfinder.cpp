@@ -20,6 +20,10 @@ MyMesh  FeaturesFinder::Find()
      AClassifier *fc = new FlowClassifier(_mesh);
      selected_faces = fc->ClassifyVertices();
      UpdateSimulationData(selected_faces);
+     AClassifier *mt = new MaterialClassifier(_mesh);
+     selected_faces = mt->ClassifyVertices();
+     UpdateSimulationData(selected_faces);
+
      //RiverClassifierTester rct;
      //rct.Test();
     return _mesh;

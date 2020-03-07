@@ -37,18 +37,10 @@
 #include "RixPredefinedStrings.hpp"
 #include "RixPattern.h"
 #include "RixShadingUtils.h"
+#include "pointcloud.h"
+#include <math.h>
+#include <bits/stdc++.h>
 
-#include <boost/lexical_cast.hpp>
-#include <boost/timer.hpp>
-
-#include <Field3D/SparseField.h>
-#include <Field3D/SparseFile.h>
-#include <Field3D/Field3DFile.h>
-#include <Field3D/FieldInterp.h>
-#include <Field3D/InitIO.h>
-#include <Field3D/Log.h>
-
-using namespace Field3D;
 
 class PxrWorleyD : public RixPattern
 {
@@ -116,7 +108,7 @@ private:
 
 PxrWorleyD::PxrWorleyD() :
     m_surfacePosition(0.2),
-    m_frequency(16.0f),
+    m_frequency(0.20f),
     m_distancemetric(0.4),
     m_jitter(0.75f),
     m_clamp(1),
@@ -240,7 +232,10 @@ PxrWorleyD::Finalize(RixContext &ctx)
     PIXAR_ARGUSED(ctx);
 }
 
-
+float MDotProduct(float input1[3],float input2[3])
+{
+        return input1[0]*input2[0] + input1[1]*input2[1] +input1[2]*input2[2];
+}
 int
 PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
                                RtInt *noutputs, OutputSpec **outputs,
@@ -336,6 +331,8 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
     {
         // We want P by default (not st)
         RtPoint3 const *Q;
+
+
         if (*surfacePosition == k_usePo)
             sctx->GetBuiltinVar(RixShadingContext::k_Po, &Q);
         else
@@ -356,35 +353,31 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
         sP = const_cast<RtPoint3*>(mQ);
     }
 
-    initIO();
+
+    std::string input = "test_pointcloud";
+    char* _output_file_name;
+    _output_file_name = (char *) malloc((input.size()+1) * sizeof(char));
+    input.copy(_output_file_name, input.size() + 1);
+    _output_file_name[input.size()] = '\0';
+    PtcPointCloud inptc = PtcSafeOpenPointCloudFile( _output_file_name);
+        if (!inptc) {
+         std::cout<<"Error";
+         exit(1);
+        }
 
 
-    int numFields = 1;
-    Field<float>::Vec loadedFields;
-    Field3DInputFileHDF5 in;
-
-    in.open("testFile.f3d");
-    for (int i = 0; i < numFields; i++) {
-      Field<float>::Vec fields = in.readScalarLayers<float>("shader_parameters","attrib");
-      if (fields.size() != 1) {
-        Msg::print("Got the wrong # of fields. Aborting.");
-        exit(1);
-      }
-      loadedFields.push_back(fields[i]);
-    }
-
-
-
-
+        float scale = 0.5;
 
     RtPoint3 f1cell, f2cell;
     for (int n = 0; n < sctx->numPts; ++n)
     {
         float f1,f2,d;
-        RtPoint3 pp = frequency[n] * sP[n];
+        RtPoint3 pp =  sP[n];
         RtPoint3 thiscell = RtPoint3 (floorf(pp.x)+0.5f,
                                       floorf(pp.y)+0.5f,
                                       floorf(pp.z)+0.5f);
+
+
         f1 = f2 = 1000.0f;
         for (int i = -1;  i <= 1;  i += 1)
         {
@@ -483,44 +476,157 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
                 resultF[n] = RixMix(0.f, scale, randomScale[n]);
         }
 
-        resultRGB[n].r = resultRGB[n].g = resultRGB[n].b = resultF[n];
+
         float x = floorf(pp.x);
-        x = x < 0 ? 0 : x ;
-        x = x > 290 ? 290 : x;
+        //x = x < 0 ? 0 : x ;
+        //x = x > 290 ? 290 : x;
         float y = floorf(pp.y);
-        y = y < 0 ? 0 : y ;
-        y = y > 290 ? 290 : y;
-        float val = loadedFields[0]->value(x,y,0);
-        if(val>=0 && val<1)
+        //y = y < 0 ? 0 : y ;
+        //y = y > 290 ? 290 : y;
+        float z = floorf(pp.z);
+        float point[3];
+        float normal[3];
+        int datasize;
+        point[0] = pp.x;
+        point[1] = pp.y;
+        point[2] = pp.z;
+
+        float *data;
+        normal[0] = normal[1] = normal[2] = 0;
+
+        PtcGetPointCloudInfo(inptc, "datasize", &datasize);
+        data = (float *) malloc(datasize * sizeof(float));
+        float maxdist = 1;
+        int numpoints = 1;
+        float val ;
+        float Readres = -1;
+        float res = -1;
+        Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, numpoints, data);
+
+ //   float dir[3];
+    float proj = 0;
+    RtVector3 dir(0,0,0);
+    RtVector3 mpoint(pp.x,pp.y,pp.z);
+    float scale = 0.08;
+
+        dir[0] = dir[1] = dir[2] = 0;
+        if(Readres==1)
         {
-            resultRGB[n].r = pp.y;
-            resultRGB[n].g = 0;
-            resultRGB[n].b = 0;
-        }
-        else
-        {
-            if(val<0)
+        //    std::cout<<"point Read";
+            val = data[1];
+            dir.x = (data[2]);
+            dir.y = (data[3]);
+            dir.z = (data[4]);
+            Normalize(dir);
+            proj = Dot(dir,mpoint);
+            //res = proj;
+            if(sin(scale*proj)>0)
+            //if(fmod(res,(2*scale)) == 0)
             {
-                resultRGB[n].r = 1;
-                resultRGB[n].g = 0;
-                resultRGB[n].b = 0;
+                res = 0;
+
             }
             else
             {
-                resultRGB[n].r = 0;
-                resultRGB[n].g = 0;
-                resultRGB[n].b = 1;
+                res = 1;
+
             }
-
-
+            resultF[n] = 1;
+        //    std::cout<<"val "<<val<<std::endl;
         }
-    }
+        else
+        {
+      //      std::cout<< "Err"<<std::endl;
+            val = -5;
+              resultF[n] = 0;
+        }
 
-    for (unsigned i=0; i<sctx->numPts; i++)
-    {
-        resultRGB[i] = resultRGB[i] * colorScale[i] + colorOffset[i];
-        resultF[i] = resultF[i] * floatScale[i] + floatOffset[i];
-    }
+        float dist ;
+        if(val > 20 && val<26)
+        {
+            if(res == 0)
+            {
+                resultRGB[n].r = 1;//0.2;
+                resultRGB[n].g = 1;//0.1;
+                resultRGB[n].b = 0;//0.1;
+            }
+            else
+            {
+
+                        resultRGB[n].r = 0;//0.2;
+                        resultRGB[n].g = 0;//0.1;
+                        resultRGB[n].b = 1;//0.1;
+
+            }
+            //dist = 23-val;
+            //dist = dist/2.3;
+            //resultRGB[n].r = 0.7 + dist*0.1;
+            //resultRGB[n].g = 0.6 + dist*0.1;
+            //resultRGB[n].b = 0.5 + dist*0.1;
+        }
+        else
+        {
+            if(val > 31 && val<39)
+            {
+                if(res == 0)
+                {
+                    resultRGB[n].r = 1;//0.2;
+                    resultRGB[n].g = 0;//0.1;
+                    resultRGB[n].b = 0;//0.1;
+                }
+                else
+                {
+
+                            resultRGB[n].r = 0;//0.2;
+                            resultRGB[n].g = 1;//0.1;
+                            resultRGB[n].b = 0;//0.1;
+
+                }
+            //    dist = 35-val;
+            //    dist = dist/3.5;
+            //    resultRGB[n].r = 0.6 + dist*0.1;
+            //    resultRGB[n].g = 0.7 + dist*0.1;
+            //    resultRGB[n].b = 0.3 + dist*0.1;
+            }
+            else
+            {
+                resultRGB[n].r = 0;//0.2;
+                resultRGB[n].g = 0;//0.1;
+                resultRGB[n].b = 0;//0.1;
+            }
+        }
+
+        //if(res == 0)
+        //{
+        //    resultRGB[n].r = 1;//0.2;
+        //    resultRGB[n].g = 0;//0.1;
+        //    resultRGB[n].b = 0;//0.1;
+        //}
+        //else
+        //{
+        //        if(res==1)
+        //        {
+        //            resultRGB[n].r = 0;//0.2;
+        //            resultRGB[n].g = 1;//0.1;
+        //            resultRGB[n].b = 0;//0.1;
+        //        }
+        //        else
+        //        {
+        //            resultRGB[n].r = 0;//0.2;
+        //            resultRGB[n].g = 0;//0.1;
+        //            resultRGB[n].b = 1;//0.1;
+        //        }
+        //
+        //
+        //}
+
+
+}
+ //   for (unsigned i=0; i<sctx->numPts; i++)
+ //   {
+ //      // resultRGB[i] = resultRGB[i] * colorScale[i] + colorOffset[i];
+ //       resultF[i] = resultF[i] * floatScale[i] + floatOffset[i];
+ //   }
 
     return 0;
 }

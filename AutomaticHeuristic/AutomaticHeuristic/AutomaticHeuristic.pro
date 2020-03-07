@@ -40,7 +40,10 @@ SOURCES += *.cpp \
     Resources/riverclassifier.cpp \
     Resources/ribwriter.cpp \
     Resources/VertexEditTag.cpp \
-    Resources/FieldThreeDWriter.cpp
+    Resources/FieldThreeDWriter.cpp \
+    Resources/PointCloudWriter.cpp \
+    Resources/pointcloudwritertester.cpp \
+    Resources/materialclassifier.cpp
 
 
 
@@ -86,7 +89,10 @@ HEADERS += *.h\
     Resources/screeclassifier.h \
     Resources/simulationdata.h \
     Resources/VertexEditTag.h \
-    Resources/FieldThreeDWriter.h
+    Resources/FieldThreeDWriter.h \
+    Resources/PointCloudWriter.h \
+    Resources/pointcloudwritertester.h \
+    Resources/materialclassifier.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system
@@ -113,6 +119,8 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../usr/l
 else:unix: LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/ -lGL
 
 INCLUDEPATH += $$PWD/../../../../../../usr/lib/x86_64-linux-gnu
+INCLUDEPATH += /opt/pixar/RenderManProServer-23.1/include/
+INCLUDEPATH += /opt/pixar/RenderManProServer-23.1/lib/
 DEPENDPATH += $$PWD/../../../../../../usr/lib/x86_64-linux-gnu
 
 DISTFILES += \
@@ -129,3 +137,12 @@ LIBS += -L"/usr/include/hdf5/serial"
 unix|win32: LIBS += -lhdf5_hl_cpp
 
 unix: PKGCONFIG += hdf5
+
+unix|win32: LIBS += -lprman
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../opt/pixar/RenderManProServer-23.1/lib/release/ -lprman
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../opt/pixar/RenderManProServer-23.1/lib/debug/ -lprman
+else:unix: LIBS += -L$$PWD/../../../../../../opt/pixar/RenderManProServer-23.1/lib/ -lprman
+
+INCLUDEPATH += $$PWD/../../../../../../opt/pixar/RenderManProServer-23.1/include
+DEPENDPATH += $$PWD/../../../../../../opt/pixar/RenderManProServer-23.1/include

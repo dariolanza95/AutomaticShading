@@ -1,19 +1,15 @@
 #include "screeclassifier.h"
 
-ScreeClassifier::ScreeClassifier(MyMesh mesh) :AClassifier()
-{
-    _mesh = mesh;
-    _repose_angle = 42;
-    _treshold = 3;
-}
+ScreeClassifier::ScreeClassifier(MyMesh mesh) :AClassifier(mesh),
+    _repose_angle(42),
+    _treshold(3)
+{}
 
 
-ScreeClassifier::ScreeClassifier(MyMesh mesh,float repose_angle,float treshold) : AClassifier()
-{
-    _mesh = mesh;
-    _repose_angle = repose_angle;
-    _treshold = treshold;
-}
+ScreeClassifier::ScreeClassifier(MyMesh mesh,float repose_angle,float treshold) : AClassifier(mesh),
+    _repose_angle(repose_angle),
+    _treshold(treshold)
+   {}
 map<MyMesh::VertexHandle,ShaderParameters*> ScreeClassifier::ClassifyVertices()
 {
         MyMesh::Normal up_direction = Vec3f(0,0,1);

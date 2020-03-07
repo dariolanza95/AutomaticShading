@@ -65,7 +65,7 @@ public:
     {
         PerlinNoise perlin;
         float angle1 = 20;
-        float angle2 = 5;
+        float angle2 = 10;
         for (uint y=0; y<water.height(); y++)
         {
             for (uint x=0; x<water.width(); x++)

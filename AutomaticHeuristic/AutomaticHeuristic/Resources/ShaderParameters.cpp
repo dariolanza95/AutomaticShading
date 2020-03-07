@@ -17,7 +17,15 @@ float ShaderParameters::getValue(int index)
 
 void ShaderParameters:: setValue (int index,float value)
 {
-    _list[index] = value;
+    if(index<_list.size())
+    {
+        _list[index] = value;
+    }
+    else
+    {
+        _list.resize(2*_list.capacity());
+        _list[index] = value;
+    }
 }
 
 glm::vec3 ShaderParameters::getVector() {return _vector;}
