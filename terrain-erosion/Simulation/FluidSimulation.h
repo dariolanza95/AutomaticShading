@@ -41,7 +41,8 @@ public:
     Grid2D<float> uVel;
     Grid2D<float> vVel;
     Grid2D<float> zVel;
-
+    Grid2D<vec3> flowNormal;
+    Grid2D<float> count;
     Grid2D<float> lFlux;
     Grid2D<float> rFlux;
     Grid2D<float> tFlux;
@@ -54,7 +55,7 @@ public:
     const float lX;
     const float lY;
     const float gravity;
-    const int _stratified_layer_width = 3;
+    const float _stratified_layer_width = 0.001;
 
     void update(double dt, bool makeRain=true, bool flood=false);
     void simulateFlow(double dt);

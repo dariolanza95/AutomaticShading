@@ -42,6 +42,8 @@ FluidSimulation::FluidSimulation(SimulationState& state)
       uVel(water.width(), water.height()),
       vVel(water.width(), water.height()),
       zVel(water.width(), water.height()),
+      flowNormal(water.width(), water.height()),
+       count(water.width(), water.height()),
       lFlux(water.width(), water.height()),
       rFlux(water.width(), water.height()),
       tFlux(water.width(), water.height()),
@@ -49,7 +51,7 @@ FluidSimulation::FluidSimulation(SimulationState& state)
       lX(1.0),
       lY(1.0),
       gravity(9.81),
-      _stratified_layer_width(3),
+      _stratified_layer_width(0.7),
 
       noise_sediment_frequency(0.1)
 {
@@ -61,6 +63,8 @@ FluidSimulation::FluidSimulation(SimulationState& state)
             uVel(i,j) = 0;
             vVel(i,j) = 0;
             zVel(i,j) = 0;
+            count(i,j) = 0;
+            flowNormal(i,j)= vec3(0,0,0);
             lFlux(i,j) = rFlux(i,j) = tFlux(i,j) = bFlux(i,j) = 0;
         }
     }
@@ -85,12 +89,21 @@ RANDOM rnd;
 void FluidSimulation::makeRiver(double dt)
 
 {
+    int maxrand = 1000;
     std::uniform_int_distribution<ushort> rndInt(1,3);
     std::uniform_real_distribution<float> rndFloat(0,5);
+    std::uniform_int_distribution<ushort> rndInt2(0,maxrand);
+
     const vec2 pos = vec2(0.01,water.height()/2);
     int x = rndInt(rnd);
+    int z = rndInt2(rnd);
     int y = rndFloat(rnd);
     addRainDrop(pos,x,dt*0.01*y);
+
+    //simulate occasional flooding
+    if(z==maxrand)
+        addRainDrop(pos,x,dt*2*y);
+
 }
 void FluidSimulation::makeRain(double dt)
 {
@@ -392,6 +405,8 @@ void FluidSimulation::simulateFlow(double dt)
             float uV = uVel(y,x);
             float vV = vVel(y,x);
             zVel(y,x) = (actualWater -oldWater);
+            count(y,x)++;
+            flowNormal(y,x) += vec3(uV,vV,actualWater -oldWater);
             float vel = sqrtf(uV*uV+vV*vV);
             water(y,x) = actualWater;
            /* if(vel <= river_max_speed_treshold && vel>= river_min_speed_treshold && water(y,x)>river_min_height_treshold &&
@@ -504,15 +519,27 @@ void FluidSimulation::simulateErosion(double dt)
             // sediment capacity constant
             float z = getTerrain(y,x);
             float kc = 0;
-            int res = _stratified_layer_width*(roundf(z/_stratified_layer_width));
-             if(res %(2*_stratified_layer_width) == 0)
+            float n = (perlin.Sample(noise_sediment_frequency*x,noise_sediment_frequency*y,noise_sediment_frequency*z));
+
+            //int res = _stratified_layer_width*(roundf(z/_stratified_layer_width));
+            float level = sin((z+z/30*n)*_stratified_layer_width);
+             if( level> 0)
                  kc = 35;
              else
-                 kc = 23;
-            float n = (perlin.Sample(noise_sediment_frequency*x,noise_sediment_frequency*y,noise_sediment_frequency*z));
-            kc =kc + n*(kc/10);
+             {
+                 //if(level > 0)
+                 //{
+                 //   kc =28;
+                 //}
+                 //else
+                 {
+                     kc = 23;
+                 }
 
-            state.simData(y,x) = kc/40;
+             }
+             kc =kc + n*(kc/10);
+
+            state.simData(y,x) = kc/42;
             float capacity = kc* sqrtf(uV*uV+vV*vV)*sinAlpha*(std::min(water(y,x),0.01f)/0.01f) ;
             float delta = (capacity-sediment(y,x));
 

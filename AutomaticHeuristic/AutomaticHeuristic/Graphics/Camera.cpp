@@ -10,17 +10,17 @@
 *****************************************************************************/
 
 #include "Camera.h"
-
+#include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #define GLM_ENABLE_EXPERIMENTAL;
 #include <glm/gtx/quaternion.hpp>
 using namespace glm;
-Camera::Camera()
+Camera::Camera() :rotX(0),rotY(0),rotZ(0)
 {
     SetProjection();
 }
 
-Camera::Camera(vec3 position)
+Camera::Camera(vec3 position):rotX(0),rotY(0),rotZ(0)
 {
 
     //glm::vec4 xAxis = correctiveMatrix * glm::vec4(1, 0, 0, 0);
@@ -100,14 +100,30 @@ void Camera::LocalRotate(const vec3 &axis, float angle)
 
     float sina = sinf(a/2.0f);
     float cosa = cosf(a/2.0f);
-
+    if(ax[0]==1 && ax[1]==0 && ax[2]==0)
+    {
+        rotX += angle;
+        std::cout<<"Rot along X"<<-1*rotX<<std::endl;
+    }
+    else
+    {
+        if(ax[0]==0 && ax[1]==1 && ax[2]==0)
+        {
+            rotY += angle;
+            std::cout<<"Rot along Y "<<rotY<<std::endl;
+        }
+        else
+            if(ax[0]==0 && ax[1]==0 && ax[2]==1)
+            {
+                rotZ += angle;
+                std::cout<<"Rot along Z"<<rotZ<<std::endl;
+            }
+    }
     ax *= sina;
     float s = cosa;
 
     fquat offset(s,ax);
-    //if( (_forward.x == 0) & (_forward.y == 0) & (_forward.z == 0) & (_forward.w == 0) )
-    //    _forward = offset;
-    //else
+
         _forward = offset * _forward;
     //_forward = offset * _forward;
 
@@ -119,12 +135,30 @@ void Camera::GlobalRotate(const vec3 &axis, float angle)
     float a = M_PI*angle/180.0f;
 
     vec3 ax = normalize(axis);
-
     float sina = sinf(a/2.0f);
     float cosa = cosf(a/2.0f);
-
+    if(ax[0]==1 && ax[1]==0 && ax[2]==0)
+    {
+        rotX += angle;
+        std::cout<<"Rot along X"<<-1*rotX<<std::endl;
+    }
+    else
+    {
+        if(ax[0]==0 && ax[1]==1 && ax[2]==0)
+        {
+            rotY += angle;
+            std::cout<<"Rot along Y "<<rotY<<std::endl;
+        }
+        else
+            if(ax[0]==0 && ax[1]==0 && ax[2]==1)
+            {
+                rotZ += angle;
+                std::cout<<"Rot along Z"<<rotZ<<std::endl;
+            }
+    }
     ax *= sina;
     float s = cosa;
+
 
     fquat offset(s,ax);
 
@@ -136,6 +170,9 @@ void Camera::recomputeViewMatrix()
     normalize(_forward);
 
     glm::mat4 Identity = glm::mat4(1.0f); // identity matrix
-    _viewMatrix =  mat4_cast(_forward)*glm::translate(Identity,-_position);
+//    before was
+//    _viewMatrix =  mat4_cast(_forward)*glm::translate(Identity,-_position);
+
+    _viewMatrix =  glm::translate(Identity,-_position)*mat4_cast(_forward);
 
 }

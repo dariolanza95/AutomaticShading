@@ -30,13 +30,13 @@ void RIBWriter::InstanceLandscape()
     string objID = "Landscape"; //13814000-efc9-d4ad-b851-107b442ef99d
 
     string line;
-    line = "AttributeBegin \n TransformBegin \n";
-    line += "Transform [ 0.716910601 -1.38777878e-17 0.697165132 0  0.212405771 0.952457726 -0.218421653 0  -0.6640203 0.304670691 0.682827055 0  0 0 0 1 ] \n";
-    line += " ScopedCoordinateSystem \"perspShape\" \n";
-    line += " TransformEnd \n TransformBegin \n ";
-    line += " Transform [ 0.716910601 -1.38777878e-17 0.697165132 0  0.212405771 0.952457726 -0.218421653 0  -0.6640203 0.304670691 0.682827055 0  0 0 0 1 ] \n";
-    line += " ScopedCoordinateSystem \"persp\" \n";
-    line += " TransformEnd \n Attribute \"Ri\" \"int Sides\" [2] \n";
+    line = "AttributeBegin \n";
+    //line += "TransformBegin \n Transform [ 0.716910601 -1.38777878e-17 0.697165132 0  0.212405771 0.952457726 -0.218421653 0  -0.6640203 0.304670691 0.682827055 0  0 0 0 1 ] \n";
+    //line += " ScopedCoordinateSystem \"perspShape\" \n";
+    //line += " TransformEnd \n TransformBegin \n ";
+    //line += " Transform [ 0.716910601 -1.38777878e-17 0.697165132 0  0.212405771 0.952457726 -0.218421653 0  -0.6640203 0.304670691 0.682827055 0  0 0 0 1 ] \n";
+    //line += " ScopedCoordinateSystem \"persp\" \n";
+    //line += " TransformEnd \n Attribute \"Ri\" \"int Sides\" [2] \n";
     line += " Attribute \"dice\" \"string referencecamera\" [\"\"] \n";
     line += " Attribute \"grouping\" \"string membership\" [\"World\"] \n";
     line += " Attribute \"identifier\" \"string name\" [\"|input:Mesh|input:MeshShape\"] \"int id\" [-1847441932] \"int id2\" [0] \n";
@@ -151,7 +151,7 @@ void RIBWriter::RotateAlongX(glm::mat4x4 & mat,float angle)
 void RIBWriter::WriteTransformationMatrix()
 {
     stringstream ss;
-    ss<<" Transform [ ";
+   // ss<<" Transform [ ";
     glm::mat4x4 viewMatrix = _cam.ViewMatrix();
     float aaa[16] =
     {
@@ -168,13 +168,22 @@ void RIBWriter::WriteTransformationMatrix()
          0 , 0, -1, 0,
          0 , 0, 0, 1
     };
+
+
+    float ccc[16] =
+    {
+        1 , 0, 0, 0,
+         0 , 1, 0, 0,
+         0 , 0, 1, 0,
+         0 , 0, 0, 1
+    };
     glm::mat4x4 correctiveMatrix_second = glm::make_mat4x4(bbb);
     glm::vec3 pos = _cam.Position();
-    glm::mat4x4 correctiveMatrix = glm::make_mat4x4(aaa);  //glm::mat4x4( -1.0f,0.0f,0.0f,0.0f  0.0f,0.0f,1.0f,0.0f  0,1,0,0  0,0,0,1 );
+    glm::mat4x4 correctiveMatrix = glm::make_mat4x4(ccc);  //glm::mat4x4( -1.0f,0.0f,0.0f,0.0f  0.0f,0.0f,1.0f,0.0f  0,1,0,0  0,0,0,1 );
     //glm::inverse(correctiveMatrix_second)*viewMatrix* correctiveMatrix
     //viewMatrix =  glm::inverse(viewMatrix)*(correctiveMatrix);
 
-    RotateAlongX( viewMatrix,120);
+   // RotateAlongX( viewMatrix,120);
     //viewMatrix[3][0] = 0;
     //viewMatrix[3][1] = 0;
     //viewMatrix[3][2] = 0;
@@ -188,32 +197,35 @@ void RIBWriter::WriteTransformationMatrix()
     //viewMatrix[3][3] = 1;
 
    // glm::inverse(viewMatrix);
-    viewMatrix[0][3] = -100 * pos[0];
-    viewMatrix[1][3] = -100 * pos[1];
-    viewMatrix[2][3] = 300 * pos[2];
-    viewMatrix[3][3] = 1;
+  //  viewMatrix[0][3] = -100 * pos[0];
+  //  viewMatrix[1][3] = -100 * pos[1];
+  //  viewMatrix[2][3] = 300 * pos[2];
+  //  viewMatrix[3][3] = 1;
+  //
+  //  viewMatrix[0][3] = -151;
+  //  viewMatrix[1][3] = 137.203;
+  //  viewMatrix[2][3] = 287.644;
+  //  viewMatrix[3][3] = 1;
 
-    viewMatrix[0][3] = -151;
-    viewMatrix[1][3] = 137.203;
-    viewMatrix[2][3] = 287.644;
-    viewMatrix[3][3] = 1;
 
-
-    for(int i= 0;i<4;i++)
-    {
-        for(int j= 0;j<4;j++)
-        {
-            // if( j == 3 && i != 3)
-            // {
-            //     ss<<" "<< 100 * pos[i];
-            // }
-            // else
-            {
-                ss<<" "<< viewMatrix[j][i];
-            }
-        }
-    }
-    ss<<" ]"<<std::endl;
+  //  for(int i= 0;i<4;i++)
+  //  {
+  //      for(int j= 0;j<4;j++)
+  //      {
+  //          // if( j == 3 && i != 3)
+  //          // {
+  //          //     ss<<" "<< 100 * pos[i];
+  //          // }
+  //          // else
+  //          {
+  //              ss<<" "<< viewMatrix[j][i];
+  //          }
+  //      }
+  //  }
+  //  ss<<" ]"<<std::endl;
+    ss << "Rotate "<< -1*_cam.rotX<<" 1 0 0"<<std::endl;
+    ss << "Rotate "<< _cam.rotY<<" 0 1 0"<<std::endl;
+    ss << "Rotate "<< _cam.rotZ<<" 0 0 1"<<std::endl;
     std::cout<<ss.str();
     _rib_file<<ss.str();
 }

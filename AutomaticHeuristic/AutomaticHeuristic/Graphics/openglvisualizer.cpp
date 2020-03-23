@@ -213,9 +213,9 @@ void OpenGlVisualizer::CameraMovement(float dt)
     if (glfwGetKey(_window,'1')) ShowSimulationDataInput();
     if (glfwGetKey(_window,'2')) ShowSelectedFaces();
     glm::vec3 pos = _cam.Position();
-    std::cout<<"Position "<< pos[0]<<" "<< pos[1]<<" "<< pos[2]<< std::endl;
+    //std::cout<<"Position "<< pos[0]<<" "<< pos[1]<<" "<< pos[2]<< std::endl;
     std::cout<<" aspect " << _cam._aspect << std::endl;
-    std::cout<< " viewMatrix "<< glm::to_string(_cam.ViewMatrix())<< std::endl ;
+   // std::cout<< " viewMatrix "<< glm::to_string(_cam.ViewMatrix())<< std::endl ;
     //std::cout<<" inverse " << glm::to_string(transpose(inverse(_cam.ViewMatrix())))<< std::endl;
 
 }

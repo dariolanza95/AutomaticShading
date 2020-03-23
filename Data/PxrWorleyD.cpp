@@ -60,8 +60,11 @@ public:
     }
 
     virtual void Finalize(RixContext &) override;
+    float Fbm(RtPoint3 cell,int octaves,float amplitude );
+   float intersectPlane(const RtPoint3 plane_normal, const RtPoint3 p0, const RtPoint3 ray_origin, const RtPoint3 ray_direction );
+   float interpolatedResult(RtPoint3 thiscell,RtPoint3 xPlane,RtPoint3 xPlane_origin,RtPoint3 pp,RtVector3 dir4,RtPoint3 xcell,float scale,float cell_scale,RtPoint3 dir1);
 
-    virtual int ComputeOutputParams(RixShadingContext const *,
+   virtual int ComputeOutputParams(RixShadingContext const *,
                                     RtInt *noutputs,
                                     OutputSpec **outputs,
                                     RtPointer instanceData,
@@ -143,10 +146,137 @@ PxrWorleyD::Init(RixContext &ctx, RtUString const pluginpath)
     else
         return 0;
 }
+float PxrWorleyD::interpolatedResult(RtPoint3 thiscell,RtPoint3 xPlane,RtPoint3 xPlane_origin,RtPoint3 pp,RtVector3 dir4,RtPoint3 xcell,float scale,float cell_scale,RtPoint3 dir1)
+{
+    /*dir1.x = (data[2]);
+    dir1.y = (data[3]);
+    dir1.z = (data[4]);
+    Normalize(dir1);*/
+    float resx=0;
+
+    RtVector3 UpDir(1,0,0);
+    float t = 0;
+    float point[3];
+    RtVector3 temp_vector = Cross(dir4,UpDir);
+    if(temp_vector[0]==0 && temp_vector[1]==0 && temp_vector[2]==0)
+    {
+        UpDir = RtVector3(0,1,0);
+        temp_vector = Cross(dir4,UpDir);
+    }
+    RtVector3 orthogonal_vec= Cross(dir4,temp_vector);
+    Normalize(orthogonal_vec);
+/*    point[0] = xcell.x;
+    point[1] = xcell.y;
+    point[2] = xcell.z;
+    PtcGetNearestPointsData (inptc, point, normal,maxdist, numpoints, data);
+    */
+    RtPoint3 temppoint;
+    float temp_res;
+    RtPoint3 intersectionPoint;
+    RtPoint3 testpoint;
+
+        t = intersectPlane(xPlane,xPlane_origin,pp,orthogonal_vec);
+        if(t!=-1)
+        {
+            testpoint = pp+orthogonal_vec*t;
+            intersectionPoint = testpoint-thiscell;
+            if(intersectionPoint.x<=cell_scale && intersectionPoint.x>= -cell_scale)
+            {
+                intersectionPoint =  thiscell- testpoint ;
+                float proj = Dot(dir4,intersectionPoint);
+                temp_res = sin(scale*proj);
+            }
+            else
+            {
+                resx = 0;
+            }
+        }
+        else
+        {
+             resx = 0;
+        }
+
+        temp_vector = Cross(dir1,UpDir);
+        if(temp_vector[0]==0 && temp_vector[1]==0 && temp_vector[2]==0)
+        {
+            UpDir = RtVector3(0,1,0);
+            temp_vector = Cross(dir1,UpDir);
+        }
+        orthogonal_vec= Cross(dir1,temp_vector);
+        t = intersectPlane(xPlane,xPlane_origin,pp,orthogonal_vec);
+        if(t!=-1)
+        {
+            testpoint = pp+orthogonal_vec*t;
+            intersectionPoint = testpoint-thiscell;
+            if(intersectionPoint.x<=cell_scale && intersectionPoint.x>= -cell_scale)
+            {
+                intersectionPoint = xcell-testpoint;
+
+                float proj = Dot(dir1,intersectionPoint);
+                resx= sin(scale*proj);
+            }
+            else
+            {
+                resx = 0;
+            }
+        }
+        else
+        {
+             resx = 0;
+        }
+   //     resx = asin(resx);
+        //resx = resx<=M_PI ? resx : resx-M_PI;
+  //      temp_res = asin(temp_res);
+    /*float eps = M_PI/10;
+    float center = M_PI;
+        temp_res = temp_res<=M_PI ? temp_res : temp_res-M_PI;
+        if(temp_res < center + eps && temp_res>center - eps)
+            resx = M_PI/2;
+        else
+        {
+            if(resx < center + eps && resx>center-eps)
+                temp_res = M_PI/2;
+        }
+*/
+
+       // resx = 0.5+resx*0.5;
+//              resx = sin(resx);
+        RtPoint3 interp_direction = thiscell-xcell;
+        interp_direction = interp_direction/cell_scale;
+        float angle = Dot(interp_direction,dir4);
+        angle = angle < 0 ? -1*angle : angle;
+        float eps = 0.01;
+        float center = 1;
+     //   if( angle < center + eps && angle > center - eps)
+     //   {
+     //       resx = 0;
+     //   }
+   //     resx = resx*0.5+ temp_res * 0.5;
+        return resx;
+
+
+
+
+}
+float PxrWorleyD:: intersectPlane(const RtPoint3 plane_normal, const RtPoint3 p0, const RtPoint3 ray_origin, const RtPoint3 ray_direction )
+{
+    float t = -1;
+    // assuming vectors are all normalized
+    float denom = Dot(plane_normal, ray_direction);
+    denom = denom<0? -denom:denom;
+    if (denom > 1e-6) {
+        RtPoint3 p0l0 = p0 - ray_origin;
+        t = Dot(p0l0, plane_normal) / denom;
+        return t;
+    }
+    else
+        return t;
+}
 
 enum paramId
 {
     k_resultF = 0,
+    k_resultDispl,
     k_resultRGB,
     k_surfacePosition,
     k_frequency,
@@ -198,6 +328,7 @@ PxrWorleyD::GetParamTable()
     static RixSCParamInfo s_ptable[] =
     {
         RixSCParamInfo(RtUString("resultF"), k_RixSCFloat, k_RixSCOutput),
+        RixSCParamInfo(RtUString("resultDispl"), k_RixSCFloat, k_RixSCOutput),
         RixSCParamInfo(RtUString("resultRGB"), k_RixSCColor, k_RixSCOutput),
         RixSCParamInfo(RtUString("surfacePosition"), k_RixSCInteger),
         RixSCParamInfo(RtUString("frequency"), k_RixSCFloat),
@@ -232,10 +363,19 @@ PxrWorleyD::Finalize(RixContext &ctx)
     PIXAR_ARGUSED(ctx);
 }
 
-float MDotProduct(float input1[3],float input2[3])
-{
-        return input1[0]*input2[0] + input1[1]*input2[1] +input1[2]*input2[2];
+float PxrWorleyD::Fbm(RtPoint3 cell,int octaves,float amplitude ) {
+    float v = 0.0;
+    RtVector3 shift = RtVector3(100,100,100);
+    for (int i = 0; i < octaves; ++i) {
+        v += amplitude * m_sFuncs->Noise(cell);
+        cell =  cell * 2.0 + shift;
+        amplitude *= 0.5;
+    }
+    return v;
 }
+
+
+
 int
 PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
                                RtInt *noutputs, OutputSpec **outputs,
@@ -305,9 +445,12 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
 
     // Allocate and bind our outputs
     RixShadingContext::Allocator pool(sctx);
-    OutputSpec *o = pool.AllocForPattern<OutputSpec>(2);
+    OutputSpec *o = pool.AllocForPattern<OutputSpec>(3);
     *outputs = o;
-    *noutputs = 2;
+    *noutputs = 3;
+
+
+
 
     RtFloat *resultF = NULL;
     resultF = pool.AllocForPattern<RtFloat>(sctx->numPts);
@@ -321,6 +464,16 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
     o[1].detail  = k_RixSCVarying;
     o[1].value = (RtPointer) resultRGB;
 
+
+    RtFloat *resultDispl = NULL;
+    resultDispl = pool.AllocForPattern<RtFloat>(sctx->numPts);
+    o[2].paramId = k_resultDispl;
+    o[2].detail  = k_RixSCVarying;
+    o[2].value = (RtPointer) resultDispl;
+
+
+
+
     // check for manifold input
     RixSCType type;
     RixSCConnectionInfo cinfo;
@@ -333,10 +486,10 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
         RtPoint3 const *Q;
 
 
-        if (*surfacePosition == k_usePo)
+      //  if (*surfacePosition == k_usePo)
             sctx->GetBuiltinVar(RixShadingContext::k_Po, &Q);
-        else
-            sctx->GetBuiltinVar(RixShadingContext::k_P, &Q);
+        //else
+        //    sctx->GetBuiltinVar(RixShadingContext::k_P, &Q);
 
         sP = pool.AllocForPattern<RtPoint3>(sctx->numPts);
         memcpy(sP, Q, sizeof(RtPoint3)*sctx->numPts);
@@ -365,30 +518,185 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
          exit(1);
         }
 
+        float scaler = 4;
+        float scale =2 * M_PI/scaler;
+        float cell_scale = 10;
+        float maxdist = cell_scale;
+      //  scale = scale   / cell_scale;
+        float *data;
+        float point[3];
+        float normal[3];
+        int hardness_levels = 3;
+        float hardness_values[hardness_levels];
+        float max_hardness_value;
+        hardness_values[0] = 23;
+        hardness_values[1] = 28;
+        hardness_values[2] = 35;
+        max_hardness_value = 35;
 
-        float scale = 0.5;
+        RtColorRGB hardness_colors[hardness_levels];
 
-    RtPoint3 f1cell, f2cell;
+        hardness_colors[0].r = 0.17;
+        hardness_colors[0].g = 0.13;
+        hardness_colors[0].b = 0.02;
+
+
+        hardness_colors[1].r = 0.19;
+        hardness_colors[1].g = 0.12;
+        hardness_colors[1].b = 0.08;
+
+        hardness_colors[2].r = 0.16;
+        hardness_colors[2].g = 0.1;
+        hardness_colors[2].b = 0.07;
+
+        int datasize;
+        normal[0] = normal[1] = normal[2] = 0;
+
+        PtcGetPointCloudInfo(inptc, "datasize", &datasize);
+        data = (float *) malloc(datasize * sizeof(float));
+        float val1 = 0;
+        float val2 =0;
+        float Readres = -1;
+        float res = 0;
+float proj = 0;
+
+    RtPoint3 f1cell, f2cell,f3cell,f4cell,xcell,ycell,zcell;
     for (int n = 0; n < sctx->numPts; ++n)
     {
-        float f1,f2,d;
-        RtPoint3 pp =  sP[n];
-        RtPoint3 thiscell = RtPoint3 (floorf(pp.x)+0.5f,
-                                      floorf(pp.y)+0.5f,
-                                      floorf(pp.z)+0.5f);
+        float f1,f2,f3,f4,d;
+        float nois = m_sFuncs->Noise(scaler*sP[n]/scale);
+        nois = 0;
+         RtPoint3 pp =  sP[n]+ 0.005*nois*sP[n];
+
+         RtPoint3 testpoint = pp;
+         RtPoint3 temppoint;
+         RtPoint3 thiscell = RtPoint3 (cell_scale* (floorf(pp.x/cell_scale ) + 0.5f),
+                                       cell_scale* (floorf(pp.y/cell_scale ) + 0.5f),
+                                       cell_scale* (floorf(pp.z/cell_scale ) + 0.5f));
+
+         RtPoint3 inter_points[8];
+         RtPoint3 inter_results[8];
+         RtVector3 dir(0,0,0);
+float temp_res;/*
+        int z = 0;
+              inter_points[z++] = thiscell - RtPoint3(cell_scale*0.5,cell_scale*0.5,cell_scale*0.5);
+              inter_points[z++] = thiscell - RtPoint3(-cell_scale*0.5,cell_scale*0.5,cell_scale*0.5);
+              inter_points[z++] = thiscell - RtPoint3(-cell_scale*0.5,-cell_scale*0.5,cell_scale*0.5);
+              inter_points[z++] = thiscell - RtPoint3(cell_scale*0.5,-cell_scale*0.5,cell_scale*0.5);
+              inter_points[z++] = thiscell - RtPoint3(cell_scale*0.5,cell_scale*0.5,  -cell_scale*0.5);
+              inter_points[z++] = thiscell - RtPoint3(-cell_scale*0.5,cell_scale*0.5, -cell_scale*0.5);
+              inter_points[z++] = thiscell - RtPoint3(-cell_scale*0.5,-cell_scale*0.5,-cell_scale*0.5);
+              inter_points[z++] = thiscell - RtPoint3(cell_scale*0.5,-cell_scale*0.5, -cell_scale*0.5);
+        RtPoint3 temp_dir;
+              for(z = 0;z<8;z++)
+              {
+
+                  point[0] = inter_points[z].x;
+                  point[1] = inter_points[z].y;
+                  point[2] = inter_points[z].z;
+                 temp_res = 0;
+                  Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, 1, data);
+                  //val2 = data[1];
+                  if(Readres==1)
+                  {
+                      //testpoint = thiscell - sP[n];
+                      testpoint = sP[n];//inter_points[z];
+                      dir.x = (data[2]);
+                      dir.y = (data[3]);
+                      dir.z = (data[4]);
+                     // Normalize(dir);
+                     // proj = Dot(dir,testpoint);
+                      //dir.x *= proj;
+                      //dir.y *= proj;
+                      //dir.z *= proj;
+                      //float x = proj;//Dot(dir,RightDir);
+                      //Normalize(dir);
+                      //float costheta =  Dot(dir,RightDir);
+                      //float rprime = (x*(1-costheta))/costheta;
+                       temp_dir = dir;
+
+                  }
+
+                  inter_results[z] = temp_dir;
+
+              }
+*/
 
 
-        f1 = f2 = 1000.0f;
+
+             float x0 = thiscell.x - cell_scale*0.5;
+             float x1 = thiscell.x + cell_scale*0.5;
+             float y0 = thiscell.y - cell_scale*0.5;
+             float y1 = thiscell.y + cell_scale*0.5;
+             float z0 = thiscell.z - cell_scale*0.5;
+             float z1 = thiscell.z + cell_scale*0.5;
+           if(pp.x>thiscell.x)
+            {
+                x0 = thiscell.x;
+                x1 = thiscell.x+cell_scale*0.5;
+                xcell = thiscell;//+ (cell_scale,0,0);
+                xcell.x += cell_scale;
+            }
+            else
+            {
+
+                x0 = thiscell.x - cell_scale*0.5;
+                x1 = thiscell.x;
+                xcell = thiscell;//-  (2*cell_scale,0,0);
+                xcell.x -= cell_scale;
+            }
+
+            if(pp.y>thiscell.y)
+            {
+                y0 = thiscell.y;
+                y1 = thiscell.y+cell_scale*0.5;
+                ycell = thiscell;//+(0,cell_scale,0);
+                ycell.y += cell_scale;
+            }
+            else
+            {
+
+                y0 = thiscell.y - cell_scale*0.5;
+                y1 = thiscell.y;
+                ycell = thiscell;//-(0,cell_scale,0);
+                ycell.y -= cell_scale;
+            }
+
+
+            if(pp.z>thiscell.z)
+            {
+                z0 = thiscell.z;
+                z1 = thiscell.z+cell_scale*0.5;
+                zcell = thiscell;//+(0,0,cell_scale);
+                zcell.z += cell_scale;
+            }
+            else
+            {
+
+                z0 = thiscell.z - cell_scale*0.5;
+                z1 = thiscell.z;
+                zcell = thiscell;//-(0,0,cell_scale);
+                zcell.z -= cell_scale;
+            }
+
+
+
+testpoint = pp;
+        proj = 0;
+
+    float differential_step = 1;
+        f1 = f2 = f3= f4=1000.0f;/*
         for (int i = -1;  i <= 1;  i += 1)
         {
             for (int j = -1;  j <= 1;  j += 1)
             {
                 for (int k = -1;  k <= 1;  k += 1)
                 {
-                    RtPoint3 testcell = thiscell + RtVector3(i,j,k);
-                    RtPoint3 pos = testcell + jitter[n] *
-                                   (RtVector3(m_sFuncs->CellNoise(testcell)) - 0.5f);
-                    RtVector3 offset = pos - pp;
+
+
+                    RtPoint3 testcell = thiscell + RtVector3(cell_scale*i,cell_scale*j,cell_scale*k);
+                    RtPoint3 pos = testcell;// + jitter[n] *(RtVector3(m_sFuncs->CellNoise(testcell)) - 0.5f);
+                    RtVector3 offset = pos - pp;//*Fbm(pp,3,0.5);
                     float dist;
                     switch (distancemetric)
                     {
@@ -421,23 +729,47 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
                             break;
                     }
 
+
                     if (dist < f1)
                     {
+                        f4 = f3;
+                        f3 = f2;
                         f2 = f1;
                         f1 = dist;
+                        f4cell = f3cell;
+                        f3cell = f2cell;
                         f2cell = f1cell;
                         f1cell = pos;
                     }
-                    else if (dist < f2)
-                    {
-                        f2 = dist;
-                        f2cell = pos;
-                    }
+                    else
+                        if (dist < f2)
+                        {
+                            f4 = f3;
+                            f3 = f2;
+                            f2 = dist;
+                            f4cell = f3cell;
+                            f3cell = f2cell;
+                            f2cell = pos;
+                        }
+                        else
+                        if(dist<f3)
+                        {
+                            f4 = f3;
+                            f3 = dist;
+                            f4cell = f3cell;
+                            f3cell = pos;
+                        }
+                        else if(dist<f4)
+                        {
+                            f4=dist;
+                            f4cell = pos;
+                        }
                 }
             }
-        }
-
-        if (shape == k_thin)
+        }*/
+        resultF[n] = 1;
+        float offset = 0;
+        /*if (shape == k_thin)
         {
             f1 = sqrtf(f1);
             f2 = sqrtf(f2);
@@ -462,139 +794,487 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
         if (invert != 0)
         {
             resultF[n]= 1.f - resultF[n];
+        }*/
+
+
+
+
+
+
+
+            int numpoints = 1; //16
+
+
+            //point[0] = sP[n].x;
+            //point[1] = sP[n].y;
+            //point[2] = sP[n].z;
+            //
+            //Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, 16, data);
+
+            RtVector3 dir1(0,0,0);
+            RtVector3 dir2(0,0,0);
+            RtVector3 dir3(0,0,0);
+            RtVector3 dir4(0,0,0);
+            RtVector3 dirFinal1(0,0,0);
+            RtVector3 dirFinal2(0,0,0);
+            RtVector3 dirFinal3(0,0,0);
+            RtVector3 RightDir(1,0,0);
+            float resx,resy,resz,thisRes = 0;
+            resx = 0;
+                dir1[0] = dir1[1] = dir1[2] = 0;
+
+                point[0] = thiscell.x;
+                point[1] = thiscell.y;
+                point[2] = thiscell.z;
+
+                int Readres4 = PtcGetNearestPointsData (inptc, point, normal,maxdist, numpoints, data);
+                val2 = data[1];
+
+                if(Readres4==1)
+                {
+                    testpoint = thiscell - pp;
+                    dir4.x = (data[2]);
+                    dir4.y = (data[3]);
+                    dir4.z = (data[4]);
+                    Normalize( dir4);
+                    proj = Dot(dir4,testpoint);
+                    //dir.x *= proj;
+                    //dir.y *= proj;
+                    //dir.z *= proj;
+                    //float x = proj;//Dot(dir,RightDir);
+                    //Normalize(dir);
+                    //float costheta =  Dot(dir,RightDir);
+                    //float rprime = (x*(1-costheta))/costheta;
+                  thisRes = sin(scale*proj);
+                  data[0] = 0;
+                  data[1] = 0;
+                  data[2] = 0;
+
+                }
+                RtPoint3 xPlane (1,0,0);
+                RtPoint3 yPlane (0,1,0);
+                RtPoint3 zPlane (0,0,1);
+
+                xPlane.x = 1;
+                RtPoint3 xPlane_origin = thiscell;
+                RtPoint3 yPlane_origin = thiscell;
+                RtPoint3 zPlane_origin = thiscell;
+
+                if(pp.x<thiscell.x)
+                {
+                    xPlane_origin.x -= cell_scale*0.5;
+                }
+                else
+                {
+                    xPlane_origin.x += cell_scale*0.5;
+                }
+
+                if(pp.y<thiscell.y)
+                {
+                    yPlane_origin.y -= cell_scale*0.5;
+                }
+                else
+                {
+                    yPlane_origin.y += cell_scale*0.5;
+                }
+
+                if(pp.z<thiscell.z)
+                {
+                    zPlane_origin.z -= cell_scale*0.5;
+                }
+                else
+                {
+                    zPlane_origin.z += cell_scale*0.5;
+                }
+
+
+
+
+                point[0] = xcell.x;
+                point[1] = xcell.y;
+                point[2] = xcell.z;
+
+                int Readres1 = PtcGetNearestPointsData (inptc, point, normal,maxdist, numpoints, data);
+
+                if(Readres1==1)
+                {
+                    dir1.x = (data[2]);
+                    dir1.y = (data[3]);
+                    dir1.z = (data[4]);
+                    resx =interpolatedResult(thiscell,xPlane,xPlane_origin,pp,dir4,xcell,scale,cell_scale,dir1);
+
+                }
+                else
+                    resx = 0;
+                point[0] = ycell.x;
+                point[1] = ycell.y;
+                point[2] = ycell.z;
+
+                val1 = data[1];
+
+                int Readres2 = PtcGetNearestPointsData (inptc, point, normal,maxdist, numpoints, data);
+                val2 = data[1];
+
+                if(Readres2==1)
+                {
+                    dir2.x = (data[2]);
+                    dir2.y = (data[3]);
+                    dir2.z = (data[4]);
+                    resy =interpolatedResult(thiscell,yPlane,yPlane_origin,pp,dir4,ycell,scale,cell_scale,dir2);
+
+                }
+                else
+                    resy = 0;
+                /*
+                if(Readres2==1)
+                {
+                    temppoint = pp;
+                    temppoint.y = pp.y < thiscell.y ? y0 : y1;
+                    testpoint = ycell - temppoint;
+                    dir2.x = (data[2]);
+                    dir2.y = (data[3]);
+                    dir2.z = (data[4]);
+                    Normalize(dir2);
+                    proj = Dot(dir2,testpoint);
+                 resy = sin(scale*proj);
+                 dir4.x = (data[2]);
+                 dir4.y = (data[3]);
+                 dir4.z = (data[4]);
+                 Normalize( dir4);
+                 testpoint = thiscell - temppoint;
+
+                 proj = Dot(dir4,testpoint);
+                 float temp_res = sin (scale*proj);
+                 resy = resy*0.5 + temp_res*0.5;
+                // resy=0;
+
+                }
+*/
+                point[0] = zcell.x;
+                point[1] = zcell.y;
+                point[2] = zcell.z;
+
+                int Readres3 = PtcGetNearestPointsData (inptc, point, normal,maxdist, numpoints, data);
+               // val2 = data[1];
+                if(Readres3==1)
+                {
+                    dir3.x = (data[2]);
+                    dir3.y = (data[3]);
+                    dir3.z = (data[4]);
+                    resz =interpolatedResult(thiscell,zPlane,zPlane_origin,pp,dir4,zcell,scale,cell_scale,dir3);
+
+        /*            temppoint = pp;
+                    temppoint.z = pp.z < thiscell.z ? z0 : z1;
+                    testpoint = zcell - temppoint;
+                    dir3.x = (data[2]);
+                    dir3.y = (data[3]);
+                    dir3.z = (data[4]);
+                    Normalize(dir3);
+                    proj = Dot(dir3,testpoint);
+                    resz = sin(scale*proj);
+
+                    dir4.x = (data[2]);
+                    dir4.y = (data[3]);
+                    dir4.z = (data[4]);
+                    Normalize( dir4);
+                    testpoint = thiscell - temppoint;
+                    proj = Dot(dir4,testpoint);
+                    float temp_res = sin (scale*proj);
+                    resz = resz*0.5+temp_res*0.5;
+             //       resz=0;*/
+
+                }
+
+
+
+
+
+
+
+
+                float diff1 = Dot(dir1,dir2);
+                float diff2 = Dot(dir1,dir3);
+                float diff3 = Dot(dir2,dir3);
+        float treshold = 10;
+
+
+
+        //    temp_res  = (resx * (1-f1/(f1+f2)) + resy * (1-f2/(f1+f2)) );
+
+/*
+                float temp = (resx * (1-f1/(f1+f3)) + resz * (1-f3/(f1+f3)) );
+                float res_total = (temp*(1-f3/(f3+f2)) + temp_res *(1-f2/(f3+f2)));
+                res_total = resx * (1-f1/(f1+f2+f3)) + resy * (1-f2/(f1+f2+f3)) + resz *(1-f3/(f1+f2+f3));
+               //res1 = RixSmoothStep(0,1,res1);
+               //
+               //res2 = RixSmoothStep(0,1,res2);
+                if(diff1<cos(M_PI/treshold))
+                 {
+
+                        if(diff2>cos(M_PI/treshold))
+                        {
+                            res = temp;
+                        }
+                        else
+                        {
+                            res = resx*(1-(f1/sqrtf(2* (cell_scale/2)*(cell_scale/2))));
+                            //res = res1;
+                        }
+
+                 }
+                 else
+                 {
+                     //if(diff2<cos(M_PI/treshold))
+                     //{
+                     //    res = res;
+                     //}
+                     //else
+                     {
+                         res = temp_res;
+                     }
+                 }*/
+                res = 0.5 + 0.5*res;
+                float blend = RixSmoothStep(0.4, 0.8, res);
+
+                             float xd = (pp.x - x0)/(x1-x0);
+                            float yd = (pp.y - y0)/(y1-y0);
+                            float zd = (pp.z - z0)/(z1-z0);
+float temp_res1,temp_res2,temp_res3;
+
+//xd = xd*xd;
+//yd = yd*yd;
+//zd = zd*zd;
+if(pp.x>thiscell.x)
+{
+     dirFinal1 = dir4 * (1-xd) + xd*(dir1);
+     temp_res1 =  thisRes * (1-xd) + (xd)*(resx);
+
+}
+else
+{
+     dirFinal1 = dir4 * (xd) + (1-xd)*(dir1);
+    temp_res1 =  thisRes * (xd) + (1-xd)*(resx);
+
+}
+
+RtPoint3 interp_direction = thiscell-ycell;
+interp_direction = interp_direction/cell_scale;
+float angle = Dot(interp_direction,dir4);
+angle = angle < 0 ? -1*angle : angle;
+float eps = 0.1;
+float center = 1;
+angle = 0;
+if( angle < center + eps && angle > center - eps)
+//if(resy < 0 +eps && resy> 0 - eps)
+{
+    temp_res2 = temp_res1;
+}
+else
+{
+
+if(pp.y>thiscell.y)
+{
+    //temp_res2 =  temp_res1 * (1-yd) + (yd)*(resy);
+    temp_res2 =  temp_res1 * (1-yd) + (yd)*(resy);
+
+    // dirFinal2 = dir4 * (1-yd) + yd*(dir2);
+}
+else
+{
+    temp_res2 =  temp_res1 * (yd) + (1-yd)*(resy);
+
+   // dirFinal2 = dir4 * (yd) + (1-yd)*(dir2);
+
+}
+}
+
+interp_direction = thiscell-zcell;
+interp_direction = interp_direction/cell_scale;
+angle = Dot(interp_direction,dir4);
+angle = angle < 0 ? -1*angle : angle;
+
+angle = 0;
+
+if( angle < center + eps && angle > center - eps)
+{
+    temp_res3 = temp_res2;
+}
+else
+{
+    if(pp.z>thiscell.z)
+    {
+        temp_res3 =  temp_res2 * (1-zd) + (zd)*(resz);
+
+    //     dirFinal3 = dir4 * (1-zd) + zd*(dir3);
+    }
+    else
+    {
+        temp_res3 =  temp_res2 * (zd) + (1-zd)*(resz);
+
+        //dirFinal3 = dir4 * (zd) + (1-zd)*(dir3);
+
+    }
+}
+
+
+
+res = resy;
+
+//proj = Dot(dirFinal1,pp-thiscell);
+//res = sin(proj*scale);
+
+
+
+//res = temp_res1;
+ //float temp_res2 = thisRes * (1-yd) + yd*(thisRes+resy)/2;
+ //float temp_res3 = thisRes * (1-zd) + zd*(thisRes+resz)/2;
+//dirFinal1 = dirFinal1 * (xd / (xd+zd+yd))+dirFinal2* (yd / (xd+zd+yd))+dirFinal3 * (zd / (xd+zd+yd));
+
+
+                         /*   float c00 = inter_results[0]*(1-xd) + inter_results[1]*(xd);
+                            float c01 = inter_results[3]*(1-xd) + inter_results[2]*(xd);
+                            float c10 = inter_results[4]*(1-xd) + inter_results[5]*(xd);
+                            float c11 = inter_results[7]*(1-xd) + inter_results[6]*(xd);
+                            float cz0=  c00*(1-yd) + c01*(yd);
+                            float cz1=  c10*(1-yd) + c11*(yd);*/
+
+/*
+                           RtPoint3 c00 = inter_results[0]*(1-xd) + inter_results[1]*(xd);
+                           RtPoint3 c01 = inter_results[3]*(1-xd) + inter_results[2]*(xd);
+                           RtPoint3 c10 = inter_results[4]*(1-xd) + inter_results[5]*(xd);
+                           RtPoint3 c11 = inter_results[7]*(1-xd) + inter_results[6]*(xd);
+                           RtPoint3 cz0=  c00*(1-yd) + c01*(yd);
+                           RtPoint3 cz1=  c10*(1-yd) + c11*(yd);
+                            dirFinal1 = cz0*(1-zd) + cz1*(zd);
+                            testpoint = thiscell - sP[n];
+                           Normalize( dirFinal1);
+
+                           proj = Dot(dirFinal1,testpoint);
+                           res = sin(scale*proj);
+                           res = 0.5+res*0.5;
+*/
+ //     Readres = PtcGetNearestPointsData (inptc, point, normal,1.5, 2, data1);
+ //   float dir[3];
+
+
+        float dist1,dist2 ;
+        float min_dist1 = 10.0f;
+        float min_dist2 = 10.0f;
+
+        int index1 = -1;
+        int index2 = -1;
+       // res = roundf(res);
+        for(int i = 0;i<hardness_levels;i++)
+        {
+            dist1 = val1-hardness_values[i];
+            dist1 = dist1<0 ? -dist1 : dist1;
+
+            dist2 = val2-hardness_values[i];
+            dist2 = dist2<0 ? -dist2 : dist2;
+
+            if(dist1<min_dist1)
+            {
+                min_dist1 = dist1;
+                index1 = i;
+            }
+
+            if(dist2<min_dist2)
+            {
+                min_dist2 = dist2;
+                index2 = i;
+            }
+        }
+        float displ;
+        if(index1>=0)
+        {
+            resultRGB[n].r = hardness_colors[index1].r;
+            resultRGB[n].g = hardness_colors[index1].g;
+            resultRGB[n].b = hardness_colors[index1].b;
+            displ = val1;//hardness_values[index1]/max_hardness_value;
+            displ = displ <= 1 ? displ : 1;
+            resultDispl[n] = displ;
+
+        }
+        else
+        {
+            resultDispl[n] = 0;
+           // resultF[n] = 0 ;
+            resultRGB[n].r = 1;
+            resultRGB[n].g = 0;
+            resultRGB[n].b = 0;
         }
 
-        if (randomScale[n] != 0.f)
+        if (randomScale[n] != 0.f &&  index1!=index2)
         {
-            float mask = powf(f2-f1, 0.25f);
+            float mask = powf(f2-f1, 0.5);//0.25f);
             mask = RixSmoothStep(randomScaleCenter[n], 1.f, mask);
             float scale = (m_sFuncs->CellNoise(f1cell) * mask);
             scale = (scale - randomScaleCenter[n]) * (1.f/(1.f - randomScaleCenter[n]));
             if (c1[n] != 0.f || c2[n] != 0.f)
-                resultF[n] *= RixMix(1.f, scale, randomScale[n]);
+                resultDispl[n] *= RixMix(1.f, scale, randomScale[n]);
             else
-                resultF[n] = RixMix(0.f, scale, randomScale[n]);
+                resultDispl[n] = RixMix(0.f, scale, randomScale[n]);
         }
 
 
-        float x = floorf(pp.x);
-        //x = x < 0 ? 0 : x ;
-        //x = x > 290 ? 290 : x;
-        float y = floorf(pp.y);
-        //y = y < 0 ? 0 : y ;
-        //y = y > 290 ? 290 : y;
-        float z = floorf(pp.z);
-        float point[3];
-        float normal[3];
-        int datasize;
-        point[0] = pp.x;
-        point[1] = pp.y;
-        point[2] = pp.z;
+        //if(val > 20.7 && val<25.3)
+        //{
 
-        float *data;
-        normal[0] = normal[1] = normal[2] = 0;
-
-        PtcGetPointCloudInfo(inptc, "datasize", &datasize);
-        data = (float *) malloc(datasize * sizeof(float));
-        float maxdist = 1;
-        int numpoints = 1;
-        float val ;
-        float Readres = -1;
-        float res = -1;
-        Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, numpoints, data);
-
- //   float dir[3];
-    float proj = 0;
-    RtVector3 dir(0,0,0);
-    RtVector3 mpoint(pp.x,pp.y,pp.z);
-    float scale = 0.08;
-
-        dir[0] = dir[1] = dir[2] = 0;
-        if(Readres==1)
-        {
-        //    std::cout<<"point Read";
-            val = data[1];
-            dir.x = (data[2]);
-            dir.y = (data[3]);
-            dir.z = (data[4]);
-            Normalize(dir);
-            proj = Dot(dir,mpoint);
-            //res = proj;
-            if(sin(scale*proj)>0)
-            //if(fmod(res,(2*scale)) == 0)
-            {
-                res = 0;
-
-            }
-            else
-            {
-                res = 1;
-
-            }
-            resultF[n] = 1;
-        //    std::cout<<"val "<<val<<std::endl;
-        }
-        else
-        {
-      //      std::cout<< "Err"<<std::endl;
-            val = -5;
-              resultF[n] = 0;
-        }
-
-        float dist ;
-        if(val > 20 && val<26)
-        {
-            if(res == 0)
-            {
-                resultRGB[n].r = 1;//0.2;
-                resultRGB[n].g = 1;//0.1;
-                resultRGB[n].b = 0;//0.1;
-            }
-            else
-            {
-
-                        resultRGB[n].r = 0;//0.2;
-                        resultRGB[n].g = 0;//0.1;
-                        resultRGB[n].b = 1;//0.1;
-
-            }
-            //dist = 23-val;
-            //dist = dist/2.3;
-            //resultRGB[n].r = 0.7 + dist*0.1;
-            //resultRGB[n].g = 0.6 + dist*0.1;
-            //resultRGB[n].b = 0.5 + dist*0.1;
-        }
-        else
-        {
-            if(val > 31 && val<39)
-            {
-                if(res == 0)
-                {
-                    resultRGB[n].r = 1;//0.2;
-                    resultRGB[n].g = 0;//0.1;
-                    resultRGB[n].b = 0;//0.1;
-                }
-                else
-                {
-
-                            resultRGB[n].r = 0;//0.2;
-                            resultRGB[n].g = 1;//0.1;
-                            resultRGB[n].b = 0;//0.1;
-
-                }
-            //    dist = 35-val;
-            //    dist = dist/3.5;
-            //    resultRGB[n].r = 0.6 + dist*0.1;
-            //    resultRGB[n].g = 0.7 + dist*0.1;
-            //    resultRGB[n].b = 0.3 + dist*0.1;
-            }
-            else
-            {
-                resultRGB[n].r = 0;//0.2;
-                resultRGB[n].g = 0;//0.1;
-                resultRGB[n].b = 0;//0.1;
-            }
-        }
+            RtColorRGB red(1,0,0);
+            RtColorRGB white(1,1,1);
+            resultRGB[n] = RixLerpRGB(white,red,blend);
+            resultRGB[n].r = resultRGB[n].b = resultRGB[n].g =res;
+            //if(res == 0)
+            //{
+            //    resultRGB[n].r = 1;//0.2;
+            //    resultRGB[n].g = 1;//0.1;
+            //    resultRGB[n].b = 0;//0.1;
+            //}
+            //else
+            //{
+            //
+            //            resultRGB[n].r = 0;//0.2;
+            //            resultRGB[n].g = 0;//0.1;
+            //            resultRGB[n].b = 1;//0.1;
+            //
+            //}
+        //    dist = 23-val;
+        //    dist = dist/2.3;
+        //    resultRGB[n].r = 0.7 + dist*0.1;
+        //    resultRGB[n].g = 0.6 + dist*0.1;
+        //    resultRGB[n].b = 0.5 + dist*0.1;
+        //}
+        //else
+        //{
+        //    if(val > 31.5 && val<38.5)
+        //    {
+        //       // if(res == 0)
+        //       // {
+        //       //     resultRGB[n].r = 1;//0.2;
+        //       //     resultRGB[n].g = 0;//0.1;
+        //       //     resultRGB[n].b = 0;//0.1;
+        //       // }
+        //       // else
+        //       // {
+        //       //
+        //       //             resultRGB[n].r = 0;//0.2;
+        //       //             resultRGB[n].g = 1;//0.1;
+        //       //             resultRGB[n].b = 0;//0.1;
+        //       //
+        //       // }
+        //        dist = 35-val;
+        //        dist = dist/3.5;
+        //        resultRGB[n].r = 0.6 + dist*0.1;
+        //        resultRGB[n].g = 0.7 + dist*0.1;
+        //        resultRGB[n].b = 0.3 + dist*0.1;
+        //    }
+        //    else
+        //    {
+        //        resultRGB[n].r = 0;//0.2;
+        //        resultRGB[n].g = 0;//0.1;
+        //        resultRGB[n].b = 0;//0.1;
+        //    }
+        //}
 
         //if(res == 0)
         //{
@@ -621,13 +1301,13 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
         //}
 
 
-}
+
  //   for (unsigned i=0; i<sctx->numPts; i++)
  //   {
  //      // resultRGB[i] = resultRGB[i] * colorScale[i] + colorOffset[i];
  //       resultF[i] = resultF[i] * floatScale[i] + floatOffset[i];
  //   }
-
+}
     return 0;
 }
 

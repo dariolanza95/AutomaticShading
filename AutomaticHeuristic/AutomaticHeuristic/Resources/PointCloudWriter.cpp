@@ -102,15 +102,15 @@ void PointCloudWriter::Read()
         std::cout<<"nvars "<<nvars<< "var types "<<vartypes << std::endl << "var names "<<varnames;
         PtcGetPointCloudInfo(inptc, "datasize", &datasize);
            data = (float *) malloc(datasize * sizeof(float));
-        for (int p = 0; p < npoints; p++) {
-                  PtcReadDataPoint(inptc, point, normal, &radius, data);
-                  std::cout<< "x "<< point[0]<< " y "<<point[1]<< " z " << point[2];
-                  for(int i= 0;i<datasize;i++)
-                  {
-                    std::cout<<"sp_"<<i<< " "<<data[i];
-                  }
-                  std::cout<<std::endl;
-              }
+//        for (int p = 0; p < npoints; p++) {
+//                  PtcReadDataPoint(inptc, point, normal, &radius, data);
+//                  std::cout<< "x "<< point[0]<< " y "<<point[1]<< " z " << point[2];
+//                  for(int i= 0;i<datasize;i++)
+//                  {
+//                    std::cout<<"sp_"<<i<< " "<<data[i];
+//                  }
+//                  std::cout<<std::endl;
+//              }
         point[0] = 299;
         point[1] = 299;
         point[2] = -9.9;

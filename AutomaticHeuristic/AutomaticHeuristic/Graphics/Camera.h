@@ -44,6 +44,9 @@ public:
 
     void GlobalRotate(const glm::vec3& axis, float angle);
 
+    float rotX;
+    float rotY;
+    float rotZ;
 protected:
 
     void recomputeViewMatrix();

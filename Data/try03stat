@@ -164,3 +164,1869 @@
 	<version>2</version>
 	<rmanHtmlDir>/opt/pixar/RenderManProServer-23.1/etc/statsview/</rmanHtmlDir>
     </statsview>
+    <stats name="frame1" description="Rendering statistics" kind="frame">
+	<stats name="time" description="Timing summary" kind="section">
+	    <string name="timersNote" description="Note:">Sum of component times may exceed total in multi-threaded renders.</string>
+	    <stats name="timers" kind="timers">
+		<timer name="totaltime" description="Total time">
+		    <elapsed>46.242823</elapsed>
+		    <user>288.696732</user>
+		    <system>47.024376</system>
+		</timer>
+		<timer name="allProceduralTimers" description="All procedurals">
+		    <elapsed>0.000000</elapsed>
+		    <user>0.000000</user>
+		    <system>0.000000</system>
+		</timer>
+		<timer name="temporalVolumeBufferTimer" description="Time to create motion data for temporal volume">
+		    <elapsed>0.000000</elapsed>
+		</timer>
+		<timer name="implicitPluginTimers" description="All Implicit and Volume plugins">
+		    <elapsed>0.000000</elapsed>
+		</timer>
+		<timer name="rayTraceTime" description="Tracing rays">
+		    <elapsed>31.198886</elapsed>
+		</timer>
+		<timer name="textureTime" description="Texture">
+		    <elapsed>0.000000</elapsed>
+		</timer>
+		<timer name="displayTime" description="Display driver time">
+		    <elapsed>0</elapsed>
+		</timer>
+		<timer name="pluginTimers" description="Plugin timers">
+		    <elapsed>222.237732</elapsed>
+		</timer>
+		<stats name="plugins" description="Plugin statistics" kind="timers">
+		    <timer name="PxrSurface[PxrSurface1]::BeginBxdf" description="PxrSurface[PxrSurface1]::BeginBxdf">
+			<elapsed>222.237732</elapsed>
+		    </timer>
+		</stats>
+		<timer name="ribInitTimer" description="Initial rib parsing and setup">
+		    <elapsed>0.281202</elapsed>
+		    <user>0.100496</user>
+		    <system>0.117023</system>
+		</timer>
+	    </stats>
+	</stats>
+	<stats name="memory" description="Memory usage summary" kind="section">
+	    <stats name="systemMem" description="System memory">
+		<memory name="heapMemory" description="Total heap memory">
+		    <peak>1271361536</peak>
+		    <current>1271361536</current>
+		</memory>
+		<memory name="peakResidentSize" description="Peak resident size">
+		    <peak>625156096</peak>
+		    <current>625156096</current>
+		</memory>
+		<int name="pageFaults">0</int>
+		<int name="pageReclaims">148076</int>
+	    </stats>
+	    <stats name="subsystems" kind="memstats">
+		<memory name="geometryMem" description="Geometry Memory">
+		    <peak>128542588</peak>
+		    <current>91491228</current>
+		</memory>
+		<memory name="implicitPluginMemory" description="Implicit and Volume plugin Memory">
+		    <peak>0</peak>
+		    <current>0</current>
+		</memory>
+		<memory name="gridMemByType" description="Grid memory">
+		    <peak>1606960</peak>
+		    <current>0</current>
+		</memory>
+		<memory name="rayAccelMem" description="Ray Accelerator Subsystem">
+		    <peak>4589356</peak>
+		    <current>229924</current>
+		</memory>
+		<memory name="gutCacheMem" description="Tessellation (GUT) cache">
+		    <peak>33751048</peak>
+		    <current>0</current>
+		</memory>
+		<memory name="radioCacheMem" description="Opacity cache">
+		    <peak>201818120</peak>
+		    <current>201818120</current>
+		</memory>
+		<memory name="vaMem" description="Volume aggregate memory">
+		    <peak>0</peak>
+		    <current>0</current>
+		</memory>
+		<memory name="pooledmemory" description="Pooled Memory">
+		    <peak>37748952</peak>
+		    <current>37748952</current>
+		</memory>
+		<memory name="lightdbmemory" description="Light Database Memory">
+		    <peak>0</peak>
+		    <current>0</current>
+		</memory>
+		<memory name="textureMemory" description="Texture cache">
+		    <peak>109070832</peak>
+		    <current>109070832</current>
+		</memory>
+		<memory name="ptexMemory" description="PTexture cache">
+		    <peak>1352</peak>
+		    <current>1352</current>
+		</memory>
+		<memory name="brickMemSum" description="Brickmap memory">
+		    <peak>12890240</peak>
+		    <current>524288</current>
+		</memory>
+		<memory name="pointMemSum" description="Pointcloud memory">
+		    <peak>3880176</peak>
+		    <current>3880176</current>
+		</memory>
+		<memory name="SymbolMem" description="Ri Symbol Table memory">
+		    <peak>44304</peak>
+		    <current>44304</current>
+		</memory>
+		<memory name="displayMem" description="Display driver memory">
+		    <peak>1917952</peak>
+		    <current>91136</current>
+		</memory>
+		<memory name="pluginMemory" description="Plugin storage">
+		    <peak>11209864</peak>
+		    <current>0</current>
+		</memory>
+		<stats name="plugins" description="Plugin statistics" kind="memstats">
+		    <memory name="pathtracerBufferMemory" description="Pathtracer Buffers">
+			<peak>11209864</peak>
+			<current>0</current>
+		    </memory>
+		    <memory name="pathtracerAOVMemory" description="Pathtracer AOVs">
+			<peak>0</peak>
+			<current>0</current>
+		    </memory>
+		</stats>
+		<memory name="InlineArchiveMem" description="Inline archive memory">
+		    <peak>0</peak>
+		    <current>0</current>
+		</memory>
+		<memory name="usrAttrMem" description="User attribute memory">
+		    <peak>624</peak>
+		    <current>592</current>
+		</memory>
+		<memory name="coordSysMem" description="Named coordinate system memory">
+		    <peak>696</peak>
+		    <current>295</current>
+		</memory>
+	    </stats>
+	    <memory name="subsystemMem" description="Subsystem memory total">
+		<peak>697501717</peak>
+		<current>598932604</current>
+	    </memory>
+	</stats>
+	<stats name="geometry" description="Geometry stats" kind="section">
+	    <int name="proceduralsMade" description="Procedurals created">0</int>
+	    <int name="proceduralsExpanded" description="Procedurals expanded">0</int>
+	    <int name="polyRibVertexCount" description="poly rib vertex count">0</int>
+	    <int name="polyRibPolyCount" description="poly rib polygon count">0</int>
+	    <int name="subdRibVertexCount" description="subd cage vertex count">536406</int>
+	    <int name="subdRibPolyCount" description="subd cage polygon count">178802</int>
+	    <int name="curveRibVertexCount" description="curve rib vertex count">0</int>
+	    <int name="curveRibStrandCount" description="curve rib strand count">0</int>
+	    <int name="polyTriCountFine" description="raytraced poly triangle count (fine)">0</int>
+	    <int name="polyTriCountMedium" description="raytraced poly triangle count (medium)">0</int>
+	    <int name="polyTriCountCoarse" description="raytraced poly triangle count (coarse)">0</int>
+	    <int name="polyTriCountOverall" description="raytraced poly triangle count (overall)">0</int>
+	    <int name="subdTriCountFine" description="raytraced subd triangle count (fine)">0</int>
+	    <int name="subdTriCountMedium" description="raytraced subd triangle count (medium)">0</int>
+	    <int name="subdTriCountCoarse" description="raytraced subd triangle count (coarse)">0</int>
+	    <int name="subdTriCountOverall" description="raytraced subd triangle count (overall)">0</int>
+	    <memory name="gsmMem" description="GSM memory">
+		<peak>16640</peak>
+		<current>12800</current>
+	    </memory>
+	    <memory name="matrixMem" description="Matrix memory">
+		<peak>4464</peak>
+		<current>2464</current>
+	    </memory>
+	    <memory name="coordsysMem" description="Coordinate system memory">
+		<peak>60</peak>
+		<current>48</current>
+	    </memory>
+	    <range name="gprimCount" description="GPrim count">
+		<current>0</current>
+		<total>626572</total>
+		<min>0</min>
+		<max>5853</max>
+		<average>1</average>
+		<count>626572</count>
+	    </range>
+	    <memory name="gprimMem" description="GPrim memory">
+		<peak>10976052</peak>
+		<current>1257556</current>
+	    </memory>
+	    <memory name="instanceMem" description="Instance memory">
+		<peak>780</peak>
+		<current>192</current>
+	    </memory>
+	    <memory name="gopStaticMem" description="Static GOP memory">
+		<peak>0</peak>
+		<current>-576</current>
+	    </memory>
+	    <memory name="gopDynamicMem" description="Dynamic GOP memory">
+		<peak>337056</peak>
+		<current>0</current>
+	    </memory>
+	    <memory name="stitchMem" description="Crack reduction memory">
+		<peak>0</peak>
+		<current>0</current>
+	    </memory>
+	    <range name="vvCount" description="Vertex vector count">
+		<current>2422</current>
+		<total>176744</total>
+		<min>0</min>
+		<max>6624</max>
+		<average>1</average>
+		<count>176744</count>
+	    </range>
+	    <memory name="vvMem" description="Vertex vector memory">
+		<peak>75906412</peak>
+		<current>72310172</current>
+	    </memory>
+	    <memory name="vvBVHMem" description="Vertex vector BVH memory">
+		<peak>17359848</peak>
+		<current>17346668</current>
+	    </memory>
+	    <memory name="vvOverheadMem" description="Vertex vector overhead memory">
+		<peak>1710852</peak>
+		<current>561904</current>
+	    </memory>
+	    <stats name="implicitSurfacePlugins" description="Stats for each Implicit and Volume plugin" kind="implicitplugins">
+	    </stats>
+	    <memory name="catmarkMem" description="Catmull-Clark subdivision memory">
+		<peak>22230424</peak>
+		<current>0</current>
+	    </memory>
+	    <memory name="loopMem" description="Loop subdivision memory">
+		<peak>0</peak>
+		<current>0</current>
+	    </memory>
+	    <memory name="trimCurveMem" description="Trim curve memory">
+		<peak>0</peak>
+		<current>0</current>
+	    </memory>
+	    <memory name="trimDataMem" description="Trim data memory">
+		<peak>0</peak>
+		<current>0</current>
+	    </memory>
+	    <memory name="temporalVolumeBufferMem" description="temporal volume buffer memory">
+		<peak>0</peak>
+		<current>0</current>
+	    </memory>
+	    <stats name="procedurals" description="Per-procedural statistics" kind="geometryprocedurals">
+	    </stats>
+	</stats>
+	<stats name="grids" description="Grid stats" kind="section">
+	    <stats name="gridsCount" description="Grid count">
+		<range name="rectangular" description="">
+		    <current>0</current>
+		    <total>536406</total>
+		    <min>0</min>
+		    <max>2917</max>
+		    <average>1</average>
+		    <count>536406</count>
+		</range>
+		<range name="multi" description="">
+		    <current>0</current>
+		    <total>2421</total>
+		    <min>0</min>
+		    <max>8</max>
+		    <average>1</average>
+		    <count>2421</count>
+		</range>
+		<range name="triangular" description="">
+		    <current>0</current>
+		    <total>105933</total>
+		    <min>0</min>
+		    <max>504</max>
+		    <average>1</average>
+		    <count>105933</count>
+		</range>
+	    </stats>
+	    <stats name="gridSizeByType" description="Grid size">
+		<range name="rectangular" description="">
+		    <current>47</current>
+		    <total>2620473</total>
+		    <min>0</min>
+		    <max>406</max>
+		    <average>4.88524</average>
+		    <count>536406</count>
+		</range>
+		<range name="multi" description="">
+		    <current>1089</current>
+		    <total>317796</total>
+		    <min>0</min>
+		    <max>1512</max>
+		    <average>131.266</average>
+		    <count>2421</count>
+		</range>
+		<range name="triangular" description="">
+		    <current>24</current>
+		    <total>317799</total>
+		    <min>0</min>
+		    <max>24</max>
+		    <average>3</average>
+		    <count>105933</count>
+		</range>
+	    </stats>
+	    <stats name="gridMemByType" description="Grid memory">
+		<memory name="rectangular" description="">
+		    <peak>1209632</peak>
+		    <current>0</current>
+		</memory>
+		<memory name="multi" description="">
+		    <peak>111400</peak>
+		    <current>0</current>
+		</memory>
+		<memory name="triangular" description="">
+		    <peak>285928</peak>
+		    <current>0</current>
+		</memory>
+	    </stats>
+	</stats>
+	<stats name="rayAccel" description="Ray accelerator stats" kind="section">
+	    <int name="initialRTPrims" description="Initial gprims">2</int>
+	    <int name="finalRTPrims" description="All gprims after splits">4142</int>
+	    <int name="raysShot" description="Total rays">13269991</int>
+	    <int name="gprimBBoxTests" description="Gprim BBox tests">0</int>
+	    <stats name="primTestsByType" description="Primitive tests by type">
+		<int name="hedronsplit" description="">81880</int>
+		<int name="polymesh" description="">15213420</int>
+	    </stats>
+	    <stats name="primHitsByType" description="Primitive hits by type">
+		<int name="hedronsplit" description="">10938</int>
+		<int name="polymesh" description="">5122803</int>
+	    </stats>
+	    <int name="transmissionRayContinuations" description="Transmission ray continuations">0</int>
+	    <stats name="raysByType" description="Rays by type">
+		<int name="camera" description="">4704020</int>
+		<int name="transmission" description="">3693200</int>
+		<int name="directlight" description="">2462269</int>
+		<int name="indirect" description="">2410502</int>
+	    </stats>
+	    <int name="transmissionBeforeCull" description="Transmission Rays before Culling">3693200</int>
+	    <timer name="cameraTime" description="Time tracing camera rays">
+		<elapsed>6.029955</elapsed>
+	    </timer>
+	    <timer name="photonTime" description="Time tracing photon rays">
+		<elapsed>0.000000</elapsed>
+	    </timer>
+	    <timer name="transmissionTime" description="Time tracing transmission rays">
+		<elapsed>16.359205</elapsed>
+	    </timer>
+	    <timer name="indirectTime" description="Time tracing indirect rays">
+		<elapsed>8.037198</elapsed>
+	    </timer>
+	    <timer name="directlightTime" description="Time tracing direct lighting rays">
+		<elapsed>0.772528</elapsed>
+	    </timer>
+	    <timer name="splitTime" description="Time splitting prims">
+		<elapsed>9.380508</elapsed>
+	    </timer>
+	    <timer name="buildTime" description="Time building hierarchy">
+		<elapsed>0.000051</elapsed>
+	    </timer>
+	    <timer name="subAccelBuildTime" description="Time building sub-acceleration data structures">
+		<elapsed>0.687647</elapsed>
+	    </timer>
+	    <timer name="subAccelDispTime" description="Time displacing sub-acceleration data structures">
+		<elapsed>14.580909</elapsed>
+	    </timer>
+	    <histogram name="rayDepthHistogram" description="Ray depth histogram">
+		<bin label="0">7114522</bin>
+		<bin label="1">6155469</bin>
+		<bin label="2">0</bin>
+		<bin label="3">0</bin>
+		<bin label="4">0</bin>
+		<bin label="5">0</bin>
+		<bin label="6">0</bin>
+		<bin label="7">0</bin>
+		<bin label="8">0</bin>
+		<bin label="9">0</bin>
+		<bin label="more">0</bin>
+	    </histogram>
+	    <memory name="acceleratorMem" description="Ray accelerator memory">
+		<peak>4589356</peak>
+		<current>229924</current>
+	    </memory>
+	    <int name="primTests" description="Primitive tests">15295300</int>
+	    <int name="primHits" description="Primitive hits">5133741</int>
+	</stats>
+	<stats name="rayGprim" description="Ray gprim stats" kind="section">
+	    <int name="triTests" description="Triangle hit tests">0</int>
+	    <int name="triHits" description="Triangle hits">0</int>
+	    <int name="flatQuadTests" description="Large BLP hit tests">0</int>
+	    <int name="flatQuadHits" description="Large BLP hits">0</int>
+	    <int name="oneSidedRejects" description="Rejected hits due to Sides 1">0</int>
+	    <int name="nurbsHitTotal" description="NURB hits">0</int>
+	    <int name="nurbsHitTrimmed" description="NURB hits that were trimmed">0</int>
+	    <int name="catmarkGridCacheHits" description="Catmark grid cache hits">0</int>
+	    <int name="catmarkGridCacheMisses" description="Catmark grid cache misses">0</int>
+	    <int name="gutDisplacementShaded" description="Displacement shaded points during tessellation">1667076</int>
+	    <timer name="gutFirstTimeToFill" description="Tessellation (GUT) cache creating entries (compulsory misses)">
+		<elapsed>0.000000</elapsed>
+	    </timer>
+	    <timer name="gutOtherTimeToFill" description="Tessellation (GUT) cache creating entries (capacity misses)">
+		<elapsed>0.000000</elapsed>
+	    </timer>
+	    <stats name="gutCacheLookups" description="Tessellation (GUT) cache lookups">
+		<int name="coarse" description="">0</int>
+		<int name="medium" description="">0</int>
+		<int name="fine" description="">0</int>
+	    </stats>
+	    <stats name="gutCacheHits" description="Tessellation (GUT) cache hits">
+		<int name="coarse" description="">0</int>
+		<int name="medium" description="">0</int>
+		<int name="fine" description="">0</int>
+	    </stats>
+	    <stats name="gutCacheMisses" description="Tessellation (GUT) cache misses">
+		<int name="coarse" description="">0</int>
+		<int name="medium" description="">0</int>
+		<int name="fine" description="">0</int>
+	    </stats>
+	    <stats name="gutCacheL1Misses" description="Tessellation (GUT) cache L1 misses">
+		<int name="coarse" description="">0</int>
+		<int name="medium" description="">0</int>
+		<int name="fine" description="">0</int>
+	    </stats>
+	    <memory name="gutCacheMem" description="Tessellation (GUT) cache">
+		<peak>33751048</peak>
+		<current>0</current>
+	    </memory>
+	    <timer name="radioTimeToFill" description="Opacity cache creating entries">
+		<elapsed>0.000000</elapsed>
+	    </timer>
+	    <stats name="radioCacheLookups" description="Opacity cache lookups">
+		<int name="coarse" description="">0</int>
+		<int name="medium" description="">0</int>
+		<int name="fine" description="">0</int>
+		<int name="constant" description="">0</int>
+	    </stats>
+	    <stats name="radioCacheHits" description="Opacity cache hits">
+		<int name="coarse" description="">0</int>
+		<int name="medium" description="">0</int>
+		<int name="fine" description="">0</int>
+		<int name="constant" description="">0</int>
+	    </stats>
+	    <stats name="radioCacheMisses" description="Opacity cache misses">
+		<int name="coarse" description="">0</int>
+		<int name="medium" description="">0</int>
+		<int name="fine" description="">0</int>
+		<int name="constant" description="">0</int>
+	    </stats>
+	    <memory name="radioCacheMem" description="Opacity cache">
+		<peak>201818120</peak>
+		<current>201818120</current>
+	    </memory>
+	    <stats name="radioCacheEvictions" description="Opacity cache evictions">
+		<int name="coarse" description="">0</int>
+		<int name="medium" description="">0</int>
+		<int name="fine" description="">0</int>
+		<int name="constant" description="">0</int>
+	    </stats>
+	    <stats name="radioReuseRates" description="Opacity reuse rates">
+		<float name="coarse" description="">0</float>
+		<float name="medium" description="">0</float>
+		<float name="fine" description="">0</float>
+		<float name="constant" description="">0</float>
+	    </stats>
+	    <memory name="vaMem" description="Volume aggregate memory">
+		<peak>0</peak>
+		<current>0</current>
+	    </memory>
+	    <int name="vaNumVolumes" description="Volumes in aggregate">0</int>
+	    <int name="vaNumRays" description="Volume aggregate rays">0</int>
+	    <int name="vaNumSegments" description="Volume aggregate segments">0</int>
+	    <int name="vaNumSteps" description="Volume aggregate steps">0</int>
+	    <int name="vaNumRegions" description="Volume aggregate regions">0</int>
+	    <int name="vaNumEntries" description="Volume aggregate entries">0</int>
+	    <int name="vaNumComputes" description="Volume aggregate computations">0</int>
+	</stats>
+	<stats name="bounds" description="Unusual displacements" kind="section">
+	    <stats name="dispbounds" description="Displacement bounds">
+		<stats name="dispBound">
+		    <string name="objectName">|input:Mesh|input:MeshShape</string>
+		    <string name="displacementShader">PxrDisplace</string>
+		    <float name="displacementBound">0.500000</float>
+		    <float name="displacement">0.000000</float>
+		    <float name="ratio">0.000000</float>
+		</stats>
+	    </stats>
+	</stats>
+	<stats name="texture" description="texture" kind="section">
+	    <stats name="textureTileCache" description="Texture cache" kind="section">
+		<memory name="size" description="Cache size">
+		    <peak>109070832</peak>
+		    <current>109070832</current>
+		</memory>
+		<int name="maxTiles" description="Max tiles">813440</int>
+		<int name="tilesUsed" description="Num tiles used">0</int>
+		<int name="tilesRead" description="Num tiles read">0</int>
+		<int name="lookups" description="Lookups">0</int>
+		<int name="hits" description="Hits">0</int>
+		<int name="misses" description="Misses">0</int>
+		<int name="bytesRead" description="Bytes read">0</int>
+		<timer name="readTime" description="Read">
+		    <elapsed>0.000000</elapsed>
+		</timer>
+		<timer name="decompressTime" description="Decompress">
+		    <elapsed>0.000000</elapsed>
+		</timer>
+	    </stats>
+	    <stats name="textureFiltering" description="Texture filtering" kind="section">
+		<timer name="filterTime" description="Filtering time">
+		    <elapsed>0.000000</elapsed>
+		</timer>
+		<int name="requests" description="Requests">0</int>
+		<int name="samples" description="Samples">0</int>
+		<histogram name="samplesHist" description="# samples per request">
+		    <bin label="2">0</bin>
+		    <bin label="4">0</bin>
+		    <bin label="8">0</bin>
+		    <bin label="16">0</bin>
+		    <bin label="32">0</bin>
+		    <bin label="64">0</bin>
+		    <bin label="128">0</bin>
+		    <bin label="256">0</bin>
+		    <bin label="512">0</bin>
+		    <bin label="1024">0</bin>
+		    <bin label="2048">0</bin>
+		    <bin label="4096">0</bin>
+		    <bin label="more">0</bin>
+		</histogram>
+		<histogram name="filterWidthHist" description="Max filter width">
+		    <bin label="1">0</bin>
+		    <bin label="2">0</bin>
+		    <bin label="3">0</bin>
+		    <bin label="4">0</bin>
+		    <bin label="5">0</bin>
+		    <bin label="6">0</bin>
+		    <bin label="7">0</bin>
+		    <bin label="8">0</bin>
+		    <bin label="9">0</bin>
+		    <bin label="10">0</bin>
+		    <bin label="11">0</bin>
+		    <bin label="12">0</bin>
+		    <bin label="more">0</bin>
+		</histogram>
+	    </stats>
+	    <stats name="environmentFiltering" description="Environment filtering" kind="section">
+		<timer name="filterTime" description="Filtering time">
+		    <elapsed>0.000000</elapsed>
+		</timer>
+		<int name="requests" description="Requests">0</int>
+		<int name="samples" description="Samples">0</int>
+		<histogram name="samplesHist" description="# samples per request">
+		    <bin label="2">0</bin>
+		    <bin label="4">0</bin>
+		    <bin label="8">0</bin>
+		    <bin label="16">0</bin>
+		    <bin label="32">0</bin>
+		    <bin label="64">0</bin>
+		    <bin label="128">0</bin>
+		    <bin label="256">0</bin>
+		    <bin label="512">0</bin>
+		    <bin label="1024">0</bin>
+		    <bin label="2048">0</bin>
+		    <bin label="4096">0</bin>
+		    <bin label="more">0</bin>
+		</histogram>
+		<histogram name="filterWidthHist" description="Max filter width">
+		    <bin label="1">0</bin>
+		    <bin label="2">0</bin>
+		    <bin label="3">0</bin>
+		    <bin label="4">0</bin>
+		    <bin label="5">0</bin>
+		    <bin label="6">0</bin>
+		    <bin label="7">0</bin>
+		    <bin label="8">0</bin>
+		    <bin label="9">0</bin>
+		    <bin label="10">0</bin>
+		    <bin label="11">0</bin>
+		    <bin label="12">0</bin>
+		    <bin label="more">0</bin>
+		</histogram>
+	    </stats>
+	    <stats name="ptextureCache" description="PTex cache" kind="section">
+		<memory name="ptxMem" description="Total Memory">
+		    <peak>1352</peak>
+		    <current>1352</current>
+		</memory>
+		<memory name="ptxFileMem" description="File Memory">
+		    <peak>0</peak>
+		    <current>0</current>
+		</memory>
+		<memory name="ptxDataMem" description="Data Memory">
+		    <peak>0</peak>
+		    <current>0</current>
+		</memory>
+		<memory name="ptxOverheadMem" description="Overhead Memory">
+		    <peak>1352</peak>
+		    <current>1352</current>
+		</memory>
+		<int name="ptxFAccessed" description="File Accessed">0</int>
+		<int name="ptxFMisses" description="File Misses">0</int>
+		<int name="ptxFilesOpen" description="Current Files Open">0</int>
+		<int name="ptxPeakFiles" description="Peak Files Open">0</int>
+		<int name="ptxBlockReads" description="Blocks Read">0</int>
+	    </stats>
+	    <stats name="PTex Filtering" description="PTex Filtering" kind="section">
+		<timer name="ptexFilter" description="Ptex Filtering Time">
+		    <elapsed>0.000000</elapsed>
+		</timer>
+		<int name="ptexRequests" description="Ptex Requests">0</int>
+		<timer name="ptexEnvFilter" description="Ptex Env Filtering Time">
+		    <elapsed>0.000000</elapsed>
+		</timer>
+		<int name="ptexEnvRequests" description="Ptex Env Requests">0</int>
+	    </stats>
+	    <stats name="textureFiles" description="Texture files" kind="section">
+	    </stats>
+	</stats>
+	<stats name="brickmaps" description="Brick map and brick cache stats" kind="section">
+	    <int name="nBrickMapLookups" description="Brick map lookups (texture3d() calls)">0</int>
+	    <int name="nReadBrickBytes" description="Brick bytes read">0</int>
+	    <memory name="brickLocationTableMem" description="Brick location table memory">
+		<peak>0</peak>
+		<current>0</current>
+	    </memory>
+	    <memory name="brickmapOctreeMem" description="Brick map octree memory">
+		<peak>0</peak>
+		<current>0</current>
+	    </memory>
+	    <memory name="brickmapGprimMem" description="Brick map gprim memory (RT only)">
+		<peak>0</peak>
+		<current>0</current>
+	    </memory>
+	    <int name="nBrickCacheLookups" description="Brick cache lookups">0</int>
+	    <int name="nBrickCacheHits" description="Brick cache hits">0</int>
+	    <int name="nBrickCacheCompMisses" description="Compulsory cache misses">0</int>
+	    <int name="nBrickCacheCapaMisses" description="Capacity cache misses">0</int>
+	    <histogram name="brickMapLevelHistogram" description="Cache lookup levels">
+		<bin label="0">0</bin>
+		<bin label="1">0</bin>
+		<bin label="2">0</bin>
+		<bin label="3">0</bin>
+		<bin label="4">0</bin>
+		<bin label="5">0</bin>
+		<bin label="6">0</bin>
+		<bin label="7">0</bin>
+		<bin label="8">0</bin>
+		<bin label="9">0</bin>
+		<bin label="more">0</bin>
+	    </histogram>
+	    <int name="nBrickCacheElems" description="Brick slots in brick caches">155254</int>
+	    <memory name="brickCacheActualMem" description="Actual memory used by brick caches">
+		<peak>12890240</peak>
+		<current>524288</current>
+	    </memory>
+	    <timer name="brickCompReadTime" description="Brick compulsory read">
+		<elapsed>0.000000</elapsed>
+	    </timer>
+	    <timer name="brickCapaReadTime" description="Brick capacity read">
+		<elapsed>0.000000</elapsed>
+	    </timer>
+	</stats>
+	<stats name="pointclouds" description="Point-based calc. and cache stats" kind="section">
+	    <int name="nReadPoints" description="Points read">0</int>
+	    <int name="nPointCacheLookups" description="Point cache lookups">0</int>
+	    <int name="nPointCacheHits" description="Point cache hits">0</int>
+	    <int name="nPointCacheMisses" description="Point cache misses">0</int>
+	    <int name="nPointCacheElems" description="Point cache num slots">3150</int>
+	    <memory name="pointCacheActualMem" description="Point cache memory">
+		<peak>329200</peak>
+		<current>329200</current>
+	    </memory>
+	    <int name="nReadNodes" description="Octree nodes read">0</int>
+	    <int name="nNodeCacheLookups" description="Octree node cache lookups">0</int>
+	    <int name="nNodeCacheHits" description="Octree node cache hits">0</int>
+	    <int name="nNodeCacheMisses" description="Octree node cache misses">0</int>
+	    <int name="nNodeCacheElems" description="Octree node cache num slots">34492</int>
+	    <memory name="nodeCacheActualMem" description="Octree node cache memory">
+		<peak>3550976</peak>
+		<current>3550976</current>
+	    </memory>
+	    <timer name="cacheReadTime" description="Point/node cache read time">
+		<elapsed>0.000000</elapsed>
+	    </timer>
+	    <timer name="traverseOctreesTime" description="Octrees traversal time">
+		<elapsed>0.000000</elapsed>
+	    </timer>
+	</stats>
+	<stats name="system" description="System stats" kind="section">
+	    <timer name="totaltime" description="Total time">
+		<elapsed>46.242823</elapsed>
+		<user>288.696732</user>
+		<system>47.024376</system>
+	    </timer>
+	    <set name="fileLog" description="Files accessed">
+		<member>.///exfoliation_mask.oso</member>
+		<member>.///flow_mask.oso</member>
+		<member>.///scree_mask.oso</member>
+		<member>.///sea_level.oso</member>
+		<member>.///textures_test.oso</member>
+		<member>./PxrWorleyD</member>
+		<member>./exfoliation_color.oso</member>
+		<member>./flow_color.oso</member>
+		<member>./mountainsceneTemplateOutput.rib</member>
+		<member>/opt/pixar/RenderManProServer-23.1/lib/plugins///d_null.so</member>
+		<member>/opt/pixar/RenderManProServer-23.1/lib/plugins///d_openexr.so</member>
+		<member>/opt/pixar/RenderManProServer-23.1/lib/plugins//PxrDiffuse</member>
+		<member>/opt/pixar/RenderManProServer-23.1/lib/plugins//PxrDisplace</member>
+		<member>/opt/pixar/RenderManProServer-23.1/lib/plugins//PxrDomeLight</member>
+		<member>/opt/pixar/RenderManProServer-23.1/lib/plugins//PxrLightBxdf</member>
+		<member>/opt/pixar/RenderManProServer-23.1/lib/plugins//PxrMix</member>
+		<member>/opt/pixar/RenderManProServer-23.1/lib/plugins//PxrPathTracer</member>
+		<member>/opt/pixar/RenderManProServer-23.1/lib/plugins//PxrPerspective</member>
+		<member>/opt/pixar/RenderManProServer-23.1/lib/plugins//PxrSurface</member>
+		<member>/opt/pixar/RenderManProServer-23.1/lib/plugins//PxrToFloat3</member>
+		<member>/opt/pixar/RenderManProServer-23.1/lib/plugins//PxrVariable</member>
+		<member>/opt/pixar/RenderManProServer-23.1/lib/plugins//PxrVoronoise</member>
+		<member>/opt/pixar/RenderManProServer-23.1/lib/plugins//abind</member>
+		<member>/opt/pixar/RenderManProServer-23.1/lib/plugins//lib_b8_AVX_oslexec.so</member>
+	    </set>
+	    <int name="filesOpened" description="Files opened">0</int>
+	    <int name="filesReopened" description="Files reopened">0</int>
+	    <int name="filesReclaimed" description="Files reclaimed">0</int>
+	    <int name="filesOpenError" description="Files not successfully opened">0</int>
+	    <string name="osName" description="OS name">Linux</string>
+	    <string name="osRelease" description="OS release">4.15.0-91-generic</string>
+	    <string name="osVersion" description="OS version">#92-Ubuntu SMP Fri Feb 28 11:09:48 UTC 2020</string>
+	    <string name="arch" description="System architecture">x86_64</string>
+	    <string name="hostname" description="Host name">pandora-GL753VD</string>
+	</stats>
+	<stats name="plugins" description="Plugin statistics" kind="section">
+	    <timer name="PxrSurface[PxrSurface1]::BeginBxdf" description="PxrSurface[PxrSurface1]::BeginBxdf">
+		<elapsed>222.237732</elapsed>
+	    </timer>
+	    <int name="PxrSurface Type::Diffuse" description="PxrSurface Type::Diffuse">1</int>
+	    <float name="diffuse" description="PxrSurface::diffuse usage">1</float>
+	    <float name="specular" description="PxrSurface::specular usage">0</float>
+	    <float name="roughSpecular" description="PxrSurface::roughSpecular usage">0</float>
+	    <float name="clearcoat" description="PxrSurface::clearcoat usage">0</float>
+	    <float name="iridescence" description="PxrSurface::iridescence usage">0</float>
+	    <float name="walter" description="PxrSurface::walter usage">0</float>
+	    <float name="fuzz" description="PxrSurface::fuzz usage">0</float>
+	    <float name="subsurface" description="PxrSurface::subsurface usage">0</float>
+	    <float name="singlescatter" description="PxrSurface::singlescatter usage">0</float>
+	    <float name="glow" description="PxrSurface::glow usage">0</float>
+	    <float name="bump" description="PxrSurface::bump usage">0</float>
+	    <float name="interior" description="PxrSurface::interior usage">0</float>
+	    <float name="presence" description="PxrSurface::presence usage">0</float>
+	    <float name="opacity" description="PxrSurface::opacity usage">0</float>
+	    <memory name="pathtracerBufferMemory" description="Pathtracer Buffers">
+		<peak>11209864</peak>
+		<current>0</current>
+	    </memory>
+	    <memory name="pathtracerAOVMemory" description="Pathtracer AOVs">
+		<peak>0</peak>
+		<current>0</current>
+	    </memory><stats name="oslparams" description="OSL Parameters">
+<string name="intro" description="OSL_INTRO_STRING"> OpenShadingLanguage 1.8.2.pixar1697a56 </string>
+<string name="copyright" description="OSL_COPYRIGHT_STRING"> (c) Copyright 2009-2017 Sony Pictures Imageworks, et al. All rights reserved. </string>
+<int name="instances" description="Total Instances"> 2 </int>
+<int name="optimize_builtins" description="Lazy Builtins"> 1 </int>
+<int name="optimize_inputs" description="Lazy Inputs"> 1 </int>
+<int name="optimize_outputs" description="Lazy Outputs"> 1 </int>
+<memory name="oslshadingsysmem" description="Shading System"><peak>119016</peak><current>106712</current></memory><memory name="shaderdefmem" description="Shader Definitions"><peak>4956</peak><current>4956</current></memory><memory name="texhandlemem" description="Texture Handles"><peak>0</peak><current>0</current></memory><int name="compute_output_params" description="Calls to ComputeOutputParams"> 439140 </int>
+<int name="compute_output_params_points" description="Total points for ComputeOutputParams"> 3320944 </int>
+<int name="lazy_inputs" description="Total Inputs"> 882498 </int>
+<int name="lazy_inputs_evaled" description="Total Inputs Evaluated"> 0 </int>
+<int name="lazy_builtins" description="Total Builtins "> 6168708 </int>
+<int name="lazy_builtins_evaled" description="Total Builtins Evaluated"> 1764052 </int>
+<float name="inputs_per_compute" description="Avg. Inputs/Call"> 2.009605 </float>
+<float name="inputs_evaled_per_compute" description="Avg. Inputs Evaluated/Call"> 0.000000 </float>
+<float name="builtins_per_compute" description="Avg. Builtins/Call"> 14.047247 </float>
+<float name="builtins_evaled_per_compute" description="Avg. Builtins Evaluated/Call"> 4.017061 </float>
+<memory name="oslparammem" description="Shader Instance Parameters"><peak>4120</peak><current>4120</current></memory></stats>
+
+	</stats>
+	<stats name="options" description="General Information" kind="section">
+	    <string name="copyright">copyright (c) 1988-2020 Pixar.</string>
+	    <string name="version">Pixar PhotoRealistic RenderMan 23.1</string>
+	    <string name="linkTime">linked Wed Jan 22 20:14:24 2020 PST @2036321</string>
+	    <string name="build">build linuxRHEL7_x86-64_gcc63icc190_external_release</string>
+	    <string name="licenseDigest">  @  @|10=jT42knY9d|29J?f9B:=b05:;V84=:VE76@e248Nf31|2C?IS1E8Ke19;MPD77JY28GLPB78JW65|86&lt;AYBD&lt;&gt;PDE;JY5BIIY96&lt;;c4E:LU85</string>
+	    <string name="timestamp">Mon Mar 23 16:27:12 CET 2020</string>
+	    <int name="threads">8</int>
+	    <int name="xRes">300</int>
+	    <int name="yRes">200</int>
+	    <int name="xSamples">8</int>
+	    <int name="ySamples">8</int>
+	    <float name="cropLeft">0</float>
+	    <float name="cropRight">1</float>
+	    <float name="cropTop">0</float>
+	    <float name="cropBottom">1</float>
+	    <stats name="displaylist" description="Display list">
+		<stats name="display_0" description="Display settings">
+		    <string name="name">__NULL__Ci</string>
+		    <string name="type">null</string>
+		    <string name="mode">Ci_variance_auto</string>
+		    <float name="relativePixelVariance">0</float>
+		    <int name="frame">1</int>
+		</stats>
+		<stats name="display_1" description="Display settings">
+		    <string name="name">__NULL__a</string>
+		    <string name="type">null</string>
+		    <string name="mode">a_variance_auto</string>
+		    <float name="relativePixelVariance">0</float>
+		    <int name="frame">1</int>
+		</stats>
+		<stats name="display_2" description="Display settings">
+		    <string name="name">./try03.exr</string>
+		    <string name="type">openexr</string>
+		    <string name="mode">Ci,a</string>
+		    <float name="relativePixelVariance">0</float>
+		    <int name="frame">1</int>
+		</stats>
+	    </stats>
+	    <int name="bucketXRes">16</int>
+	    <int name="bucketYRes">16</int>
+	    <string name="bucketOrder">circle</string>
+	    <int name="gridSize">289</int>
+	    <int name="textureMemory">4194304</int>
+	    <int name="ptextureMemory">1048576</int>
+	    <int name="ptextureMaxFiles">128</int>
+	    <int name="brickMemory">2097152</int>
+	    <int name="octreeMemory">20480</int>
+	    <int name="pointMemory">20480</int>
+	    <int name="geoCacheMemory">4194304</int>
+	    <int name="opacityCacheMemory">2097152</int>
+	    <int name="matrixCacheMemory">102400</int>
+	    <float name="memoryLimit">0</float>
+	    <float name="oThreshR">0.996</float>
+	    <float name="oThreshG">0.996</float>
+	    <float name="oThreshB">0.996</float>
+	    <string name="pixelFilterMode">weighted</string>
+	    <int name="minSamples">12</int>
+	    <int name="minExtraSamples">12</int>
+	    <int name="maxSamples">128</int>
+	    <float name="pixelVariance">0.01</float>
+	    <float name="darkFalloff">0.025</float>
+	    <int name="adaptAll">0</int>
+	    <int name="incremental">1</int>
+	    <string name="adaptiveMetric">variance</string>
+	    <int name="checkpointInterval">0</int>
+	    <int name="checkpointExitAt">0</int>
+	    <int name="checkpointKeepFiles">0</int>
+	    <int name="checkpointAsFinal">0</int>
+	</stats>
+	<stats name="RIS" description="RIS mode rendering" kind="section">
+	    <stats name="ictx" description="RixIntegratorContext" kind="section">
+		<int name="sctxCount" description="Number of ShadingCtxs">25</int>
+		<int name="msctxCount" description="Number of Mutable ShadingCtxs">0</int>
+		<memory name="integratorMem" description="Integrator memory">
+		    <peak>1657240</peak>
+		    <current>1657240</current>
+		</memory>
+		<memory name="patternMem" description="Pattern memory">
+		    <peak>124992</peak>
+		    <current>107776</current>
+		</memory>
+		<memory name="ictxWaste" description="Waste in memory pools">
+		    <peak>2624740</peak>
+		    <current>2624740</current>
+		</memory>
+	    </stats>
+	    <stats name="sctx" description="RixShadingContext" kind="section">
+		<range name="numPts" description="Shading Points (total)">
+		    <current>0</current>
+		    <total>6483976</total>
+		    <min>0</min>
+		    <max>5201</max>
+		    <average>23.7508</average>
+		    <count>273000</count>
+		</range>
+		<int name="stcxExecCount" description="Invocations">273000</int>
+		<timer name="sctxExecTime" description="Shading Time (total)">
+		    <elapsed>295.232299</elapsed>
+		</timer>
+		<memory name="shadingMem" description="Bxdf memory">
+		    <peak>2825956</peak>
+		    <current>2692444</current>
+		</memory>
+	    </stats>
+	    <stats name="osctx" description="Overlay RixShadingContext" kind="section">
+		<range name="numPts" description="Shading Points (total)">
+		    <current>0</current>
+		    <total>0</total>
+		    <min>0</min>
+		    <max>0</max>
+		    <average>0</average>
+		    <count>0</count>
+		</range>
+		<int name="stcxExecCount" description="Invocations">0</int>
+		<timer name="sctxExecTime" description="Shading Time (total)">
+		    <elapsed>0.000000</elapsed>
+		</timer>
+		<memory name="shadingMem" description="Bxdf memory">
+		    <peak>0</peak>
+		    <current>0</current>
+		</memory>
+	    </stats>
+	    <stats name="Lighting" description="RixLightingServices" kind="section">
+		<int name="nPoints" description="Num points">4816900</int>
+		<int name="nInvocations" description="Num invocations (Begin/End or BeginEmission/End)">51971</int>
+		<int name="nLightSamples" description="Num light samples">4816900</int>
+		<int name="nMaterialSamples" description="Num material samples">4816900</int>
+		<int name="nMaterialAreaHits" description="Num material sample hits on area lights">0</int>
+		<int name="nMaterialEnvHits" description="Num material sample hits on env lights">2462269</int>
+		<int name="mPhotonSamples" description="Num photon samples">0</int>
+		<int name="mPhotonHits" description="Num photon sample hits">0</int>
+		<timer name="lightingTotalTime" description="Total time in lighting services">
+		    <elapsed>30.827145</elapsed>
+		</timer>
+		<timer name="lightingShadowTime" description="Total time in shadowing">
+		    <elapsed>17.298760</elapsed>
+		</timer>
+		<timer name="lightingInternalTime" description="Total time in lighting services excluding subordinate systems">
+		    <elapsed>2.061710</elapsed>
+		</timer>
+		<timer name="lightingMaterialTime" description="Time in material sample evaluation (EvaluateSamples)">
+		    <elapsed>11.658396</elapsed>
+		</timer>
+		<timer name="lightingMaterialShadowTime" description="Time in material sample evaluation - shadowing">
+		    <elapsed>8.549792</elapsed>
+		</timer>
+		<timer name="lightingMaterialTraceTime" description="Time in material sample evaluation - trace">
+		    <elapsed>1.142346</elapsed>
+		</timer>
+		<timer name="lightingMaterialTimeExcluding" description="Time in material sample evaluation excluding subordinate systems">
+		    <elapsed>0.847466</elapsed>
+		</timer>
+		<timer name="lightingLightSampleTime" description="Time in light sample generation (GenerateSamples)">
+		    <elapsed>17.107039</elapsed>
+		</timer>
+		<timer name="lightingLightShadowTime" description="Time in light sample generation - shadowing">
+		    <elapsed>8.748968</elapsed>
+		</timer>
+		<timer name="lightingLightEvalTime" description="Time in light sample generation - Bxdf evaluation">
+		    <elapsed>2.246732</elapsed>
+		</timer>
+		<timer name="lightingLightSampleTimeExcluding" description="Time in light sample generation  exlcuding subordinate systems">
+		    <elapsed>0.767241</elapsed>
+		</timer>
+		<timer name="lightingPhotonSampleTime" description="Time in photon generation (GenerateEmission)">
+		    <elapsed>0.000000</elapsed>
+		</timer>
+		<timer name="lightingPhotonSamplepickTime" description="Time in photon generation - pick and sort">
+		    <elapsed>0.000000</elapsed>
+		</timer>
+		<timer name="lightingPhotonTraceBxdfTime" description="Time in photon generation - trace and Bxdf evaluation at hits">
+		    <elapsed>0.000000</elapsed>
+		</timer>
+		<timer name="lightingPhotonSampleTimeExcluding" description="Time in photon generation excluding subordinate systems">
+		    <elapsed>0.000000</elapsed>
+		</timer>
+		<memory name="lightingMem" description="Memory consumed by lighting services">
+		    <peak>1212968</peak>
+		    <current>965032</current>
+		</memory>
+		<memory name="selectionCdfMem" description="Memory consumed by light selection for cdf tables">
+		    <peak>134217920</peak>
+		    <current>134217920</current>
+		</memory>
+		<memory name="selectionHierarchyMem" description="Memory consumed by light selection hiearchy scheme">
+		    <peak>0</peak>
+		    <current>0</current>
+		</memory>
+		<memory name="selectionLearningMem" description="Memory consumed by selection learning scheme">
+		    <peak>445984</peak>
+		    <current>445984</current>
+		</memory>
+		<timer name="lightingLightSampleTraceLightTime" description="Time to trace light samples against lighting db">
+		    <elapsed>0.000000</elapsed>
+		</timer>
+		<timer name="lightingLightSampleSelectEvalTime" description="Time to compute a selected light&apos;s probability of being chosen">
+		    <elapsed>0.000000</elapsed>
+		</timer>
+		<timer name="lightingMaterialSelectEvalTime" description="Time to compute an intersected light&apos;s probability of being chosen">
+		    <elapsed>1.118792</elapsed>
+		</timer>
+		<timer name="lightingLightSampleSelectTime" description="Time to select a light">
+		    <elapsed>5.344098</elapsed>
+		</timer>
+		<timer name="lightingLightSelectBeginTime" description="Time to prepare for light selection">
+		    <elapsed>2.005418</elapsed>
+		</timer>
+	    </stats>
+	    <stats name="plugins" description="Plugins" kind="section">
+		<stats name="integrator" description="Integrator" kind="section">
+		    <stats name="PxrPathTracer" description="PxrPathTracer" kind="section">
+<stats name="parameters" description="parameters" >
+<int name="numLightSamples"> 1 </int>
+<int name="numBxdfSamples"> 1 </int>
+<string name="reduceDirectSamples"> depththroughputavg </string>
+<int name="numIndirectSamples"> 1 </int>
+<int name="numDiffuseSamples"> 1 </int>
+<int name="numSpecularSamples"> 1 </int>
+<int name="numSubsurfaceSamples"> 1 </int>
+<int name="numRefractionSamples"> 1 </int>
+<string name="sampleMode"> bxdf </string>
+<int name="rouletteDepth"> 4 </int>
+<float name="rouletteThreshold"> 0.200000 </float>
+<int name="clampDepth"> 2 </int>
+<float name="clampLuminance"> 10.000000 </float>
+<int name="allowCaustics"> 0 </int>
+<int name="maxIndirectBounces"> 9 </int>
+<int name="accumOpacity"> 0 </int>
+<int name="maxContinuationLength"> 256 </int>
+</stats>
+<histogram name="pathDepthTimer" description="Ray Depth Timer (sec)">
+<bin label="1">283.723877</bin>
+<bin label="2">3.110724</bin>
+<bin label="3">0.000000</bin>
+<bin label="4">0.000000</bin>
+<bin label="5">0.000000</bin>
+<bin label="6">0.000000</bin>
+<bin label="7">0.000000</bin>
+<bin label="8">0.000000</bin>
+<bin label="9">0.000000</bin>
+<bin label="10">0.000000</bin>
+</histogram>
+<histogram name="pathRayCounts" description="Ray Count at Depth">
+<bin label="1">7114522</bin>
+<bin label="2">0</bin>
+<bin label="3">0</bin>
+<bin label="4">0</bin>
+<bin label="5">0</bin>
+<bin label="6">0</bin>
+<bin label="7">0</bin>
+<bin label="8">0</bin>
+<bin label="9">0</bin>
+<bin label="10">0</bin>
+</histogram>
+
+		    </stats>
+		</stats>
+		<stats name="bxdfs" description="Bxdfs" kind="section">
+		    <stats name="PxrDiffuse" description="PxrDiffuse" kind="bxdf">
+			<int name="NumBeginBxdf" description="">0</int>
+			<timer name="BeginBxdfTime" description="">
+			    <elapsed>0.000000</elapsed>
+			</timer>
+			<int name="NumBeginOpacity" description="">0</int>
+			<int name="NumInteriorVolume" description="">0</int>
+			<int name="NumExteriorVolume" description="">0</int>
+			<int name="NumTransmissionVolume" description="">0</int>
+			<int name="NumVolumeSampling" description="">0</int>
+			<timer name="BeginOpacityTime" description="">
+			    <elapsed>0.000000</elapsed>
+			</timer>
+			<int name="NumBeginVolume" description="">0</int>
+			<timer name="BeginVolumeTime" description="">
+			    <elapsed>0.000000</elapsed>
+			</timer>
+			<int name="NumBeginSubsurface" description="">0</int>
+			<timer name="BeginSubsurfaceTime" description="">
+			    <elapsed>0.000000</elapsed>
+			</timer>
+			<timer name="VolumeSamplingTime" description="">
+			    <elapsed>0.000000</elapsed>
+			</timer>
+		    </stats>
+		    <stats name="PxrLightBxdf" description="PxrLightBxdf" kind="bxdf">
+			<int name="NumBeginBxdf" description="">0</int>
+			<timer name="BeginBxdfTime" description="">
+			    <elapsed>0.000000</elapsed>
+			</timer>
+			<int name="NumBeginOpacity" description="">0</int>
+			<int name="NumInteriorVolume" description="">0</int>
+			<int name="NumExteriorVolume" description="">0</int>
+			<int name="NumTransmissionVolume" description="">0</int>
+			<int name="NumVolumeSampling" description="">0</int>
+			<timer name="BeginOpacityTime" description="">
+			    <elapsed>0.000000</elapsed>
+			</timer>
+			<int name="NumBeginVolume" description="">0</int>
+			<timer name="BeginVolumeTime" description="">
+			    <elapsed>0.000000</elapsed>
+			</timer>
+			<int name="NumBeginSubsurface" description="">0</int>
+			<timer name="BeginSubsurfaceTime" description="">
+			    <elapsed>0.000000</elapsed>
+			</timer>
+			<timer name="VolumeSamplingTime" description="">
+			    <elapsed>0.000000</elapsed>
+			</timer>
+		    </stats>
+		    <stats name="PxrSurface" description="PxrSurface" kind="bxdf">
+			<int name="NumBeginBxdf" description="">45506</int>
+			<timer name="BeginBxdfTime" description="">
+			    <elapsed>194.337465</elapsed>
+			</timer>
+			<int name="NumBeginOpacity" description="">0</int>
+			<int name="NumInteriorVolume" description="">0</int>
+			<int name="NumExteriorVolume" description="">0</int>
+			<int name="NumTransmissionVolume" description="">0</int>
+			<int name="NumVolumeSampling" description="">0</int>
+			<timer name="BeginOpacityTime" description="">
+			    <elapsed>0.000000</elapsed>
+			</timer>
+			<int name="NumBeginVolume" description="">0</int>
+			<timer name="BeginVolumeTime" description="">
+			    <elapsed>0.000000</elapsed>
+			</timer>
+			<int name="NumBeginSubsurface" description="">0</int>
+			<timer name="BeginSubsurfaceTime" description="">
+			    <elapsed>0.000000</elapsed>
+			</timer>
+			<timer name="VolumeSamplingTime" description="">
+			    <elapsed>0.000000</elapsed>
+			</timer>
+		    </stats>
+		</stats>
+		<stats name="patterns" description="Patterns" kind="section">
+		    <stats name="PxrMix" description="PxrMix" kind="pattern">
+			<int name="NumComputes" description="Number of real evaluations">45506</int>
+			<int name="CachedComputes" description="Number of evaluations avoided due to caching">0</int>
+			<timer name="ComputeTime" description="">
+			    <elapsed>0.171866</elapsed>
+			</timer>
+		    </stats>
+		    <stats name="__SpOSLPattern" description="__SpOSLPattern" kind="pattern">
+			<int name="NumComputes" description="Number of real evaluations">384688</int>
+			<int name="CachedComputes" description="Number of evaluations avoided due to caching">0</int>
+			<timer name="ComputeTime" description="">
+			    <elapsed>5.217518</elapsed>
+			</timer>
+		    </stats>
+		    <stats name="PxrToFloat3" description="PxrToFloat3" kind="pattern">
+			<int name="NumComputes" description="Number of real evaluations">0</int>
+			<int name="CachedComputes" description="Number of evaluations avoided due to caching">0</int>
+			<timer name="ComputeTime" description="">
+			    <elapsed>0.000000</elapsed>
+			</timer>
+		    </stats>
+		    <stats name="./PxrWorleyD" description="./PxrWorleyD" kind="pattern">
+			<int name="NumComputes" description="Number of real evaluations">237850</int>
+			<int name="CachedComputes" description="Number of evaluations avoided due to caching">45506</int>
+			<timer name="ComputeTime" description="">
+			    <elapsed>250.744229</elapsed>
+			</timer>
+		    </stats>
+		    <stats name="PxrVariable" description="PxrVariable" kind="pattern">
+			<int name="NumComputes" description="Number of real evaluations">0</int>
+			<int name="CachedComputes" description="Number of evaluations avoided due to caching">0</int>
+			<timer name="ComputeTime" description="">
+			    <elapsed>0.000000</elapsed>
+			</timer>
+		    </stats>
+		    <stats name="PxrVoronoise" description="PxrVoronoise" kind="pattern">
+			<int name="NumComputes" description="Number of real evaluations">0</int>
+			<int name="CachedComputes" description="Number of evaluations avoided due to caching">0</int>
+			<timer name="ComputeTime" description="">
+			    <elapsed>0.000000</elapsed>
+			</timer>
+		    </stats>
+		</stats>
+	    </stats>
+	    <stats name="lpesystem" description="LPE System" kind="section">
+		<stats name="LPE Automata" description="Automata build stats" kind="LPEAutomata">
+		    <int name="NumAutomataBuilds" description="Number of times automata was built">1</int>
+		    <stats name="SingleLobe" description="Automata with support for only single-lobe" kind="LPEAutomata">
+			<timer name="Build" description="Total time spent building automata">
+			    <elapsed>0.000096</elapsed>
+			</timer>
+			<memory name="Memory" description="Memory used for automata">
+			    <peak>692</peak>
+			    <current>692</current>
+			</memory>
+			<int name="LPERules" description="Number of unique Light Path Exressions being tracked">1</int>
+			<int name="DFAs" description="Number of DFA&apos;s used to represent all rules">1</int>
+			<int name="NFA States" description="Number of input NFA states built directly from LPEs">37</int>
+			<int name="DFA States" description="Number of output DFA states built from the NFA">8</int>
+		    </stats>
+		</stats>
+	    </stats>
+	    <stats name="RISNodes" description="characteristics of your scene&apos;s use of RIS nodes">
+		<stats name="Bxdf" description="Time and memory associated with Bxdf">
+		    <memory name="memory" description="memory">
+			<peak>6016</peak>
+			<current>6016</current>
+			<total>6016</total>
+			<count>4</count>
+		    </memory>
+		    <timer name="creationTime" description="creationTime">
+			<elapsed>0.001328</elapsed>
+		    </timer>
+		</stats>
+		<stats name="Pattern" description="Time and memory used by Pattern">
+		    <memory name="memory" description="memory">
+			<peak>1656</peak>
+			<current>1656</current>
+			<total>1656</total>
+			<count>8</count>
+		    </memory>
+		    <timer name="creationTime" description="creationTime">
+			<elapsed>0.004051</elapsed>
+		    </timer>
+		</stats>
+		<stats name="Other" description="Time and memory used by other RixShadingPlugin">
+		    <memory name="memory" description="memory">
+			<peak>1360</peak>
+			<current>1360</current>
+			<total>1360</total>
+			<count>2</count>
+		    </memory>
+		    <timer name="creationTime" description="creationTime">
+			<elapsed>0.000222</elapsed>
+		    </timer>
+		</stats>
+	    </stats>
+	    <stats name="rayHider" description="Raytrace Hider" kind="section">
+		<memory name="framebufferMem" description="Framebuffer and display memory">
+		    <peak>7362465</peak>
+		    <current>154017</current>
+		</memory>
+		<float name="adaptSkipped" description="Adaptive sampling fraction skipped">0.397578</float>
+		<histogram name="adaptActive" description="Average active pixels by increment">
+		    <bin label="1">61004</bin>
+		    <bin label="2">61004</bin>
+		    <bin label="3">61004</bin>
+		    <bin label="4">61004</bin>
+		    <bin label="5">61004</bin>
+		    <bin label="6">61004</bin>
+		    <bin label="7">61004</bin>
+		    <bin label="8">61004</bin>
+		    <bin label="9">61004</bin>
+		    <bin label="10">61004</bin>
+		    <bin label="11">61004</bin>
+		    <bin label="12">61004</bin>
+		    <bin label="13">59335</bin>
+		    <bin label="14">42028</bin>
+		    <bin label="15">42111</bin>
+		    <bin label="16">42108</bin>
+		    <bin label="17">42040</bin>
+		    <bin label="18">41965</bin>
+		    <bin label="19">41899</bin>
+		    <bin label="20">41831</bin>
+		    <bin label="21">41749</bin>
+		    <bin label="22">41673</bin>
+		    <bin label="23">41636</bin>
+		    <bin label="24">41593</bin>
+		    <bin label="25">41550</bin>
+		    <bin label="26">41526</bin>
+		    <bin label="27">41494</bin>
+		    <bin label="28">41445</bin>
+		    <bin label="29">41405</bin>
+		    <bin label="30">41333</bin>
+		    <bin label="31">41282</bin>
+		    <bin label="32">41235</bin>
+		    <bin label="33">41192</bin>
+		    <bin label="34">41143</bin>
+		    <bin label="35">41091</bin>
+		    <bin label="36">41027</bin>
+		    <bin label="37">40964</bin>
+		    <bin label="38">40902</bin>
+		    <bin label="39">40841</bin>
+		    <bin label="40">40784</bin>
+		    <bin label="41">40733</bin>
+		    <bin label="42">40694</bin>
+		    <bin label="43">40654</bin>
+		    <bin label="44">40607</bin>
+		    <bin label="45">40544</bin>
+		    <bin label="46">40481</bin>
+		    <bin label="47">40427</bin>
+		    <bin label="48">40355</bin>
+		    <bin label="49">40294</bin>
+		    <bin label="50">40216</bin>
+		    <bin label="51">40108</bin>
+		    <bin label="52">39991</bin>
+		    <bin label="53">39879</bin>
+		    <bin label="54">39755</bin>
+		    <bin label="55">39631</bin>
+		    <bin label="56">39481</bin>
+		    <bin label="57">39330</bin>
+		    <bin label="58">39142</bin>
+		    <bin label="59">38972</bin>
+		    <bin label="60">38804</bin>
+		    <bin label="61">38636</bin>
+		    <bin label="62">38433</bin>
+		    <bin label="63">38208</bin>
+		    <bin label="64">37964</bin>
+		    <bin label="65">37771</bin>
+		    <bin label="66">37495</bin>
+		    <bin label="67">37220</bin>
+		    <bin label="68">36940</bin>
+		    <bin label="69">36663</bin>
+		    <bin label="70">36402</bin>
+		    <bin label="71">36153</bin>
+		    <bin label="72">35871</bin>
+		    <bin label="73">35556</bin>
+		    <bin label="74">35204</bin>
+		    <bin label="75">34954</bin>
+		    <bin label="76">34648</bin>
+		    <bin label="77">34329</bin>
+		    <bin label="78">33889</bin>
+		    <bin label="79">33558</bin>
+		    <bin label="80">33244</bin>
+		    <bin label="81">32881</bin>
+		    <bin label="82">32530</bin>
+		    <bin label="83">32278</bin>
+		    <bin label="84">32012</bin>
+		    <bin label="85">31714</bin>
+		    <bin label="86">31430</bin>
+		    <bin label="87">31145</bin>
+		    <bin label="88">30855</bin>
+		    <bin label="89">30572</bin>
+		    <bin label="90">30263</bin>
+		    <bin label="91">29983</bin>
+		    <bin label="92">29678</bin>
+		    <bin label="93">29361</bin>
+		    <bin label="94">29030</bin>
+		    <bin label="95">28728</bin>
+		    <bin label="96">28427</bin>
+		    <bin label="97">28119</bin>
+		    <bin label="98">27801</bin>
+		    <bin label="99">27549</bin>
+		    <bin label="100">27238</bin>
+		    <bin label="101">27030</bin>
+		    <bin label="102">26769</bin>
+		    <bin label="103">26506</bin>
+		    <bin label="104">26279</bin>
+		    <bin label="105">26024</bin>
+		    <bin label="106">25756</bin>
+		    <bin label="107">25481</bin>
+		    <bin label="108">25245</bin>
+		    <bin label="109">25000</bin>
+		    <bin label="110">24763</bin>
+		    <bin label="111">24517</bin>
+		    <bin label="112">24324</bin>
+		    <bin label="113">24113</bin>
+		    <bin label="114">23846</bin>
+		    <bin label="115">23643</bin>
+		    <bin label="116">23450</bin>
+		    <bin label="117">23239</bin>
+		    <bin label="118">23034</bin>
+		    <bin label="119">22821</bin>
+		    <bin label="120">22612</bin>
+		    <bin label="121">22401</bin>
+		    <bin label="122">22161</bin>
+		    <bin label="123">21974</bin>
+		    <bin label="124">21796</bin>
+		    <bin label="125">21589</bin>
+		    <bin label="126">21401</bin>
+		    <bin label="127">21169</bin>
+		    <bin label="128">21017</bin>
+		</histogram>
+		<FloatMap2D name="adaptMap" description="adaptMap">
+		    <int name="width" description="width">19</int>
+		    <int name="height" description="height">13</int>
+		    <float name="min" description="min">12.862500</float>
+		    <float name="max" description="max">115.316406</float>
+		    <float name="avg" description="avg">75.335811</float>
+		    <FloatArray name="values" description="values">
+			<el>0.726020</el>
+			<el>0.448151</el>
+			<el>0.749316</el>
+			<el>0.771544</el>
+			<el>1.000000</el>
+			<el>0.874868</el>
+			<el>0.767312</el>
+			<el>0.797356</el>
+			<el>0.867090</el>
+			<el>0.971634</el>
+			<el>0.975256</el>
+			<el>0.832051</el>
+			<el>0.874334</el>
+			<el>0.825646</el>
+			<el>0.892139</el>
+			<el>0.824654</el>
+			<el>0.812759</el>
+			<el>0.919552</el>
+			<el>0.839655</el>
+			<el>0.682060</el>
+			<el>0.393210</el>
+			<el>0.606187</el>
+			<el>0.765634</el>
+			<el>0.883560</el>
+			<el>0.814589</el>
+			<el>0.747028</el>
+			<el>0.853936</el>
+			<el>0.751718</el>
+			<el>0.847416</el>
+			<el>0.814513</el>
+			<el>0.815771</el>
+			<el>0.912346</el>
+			<el>0.851534</el>
+			<el>0.885696</el>
+			<el>0.869835</el>
+			<el>0.864001</el>
+			<el>0.889661</el>
+			<el>0.895080</el>
+			<el>0.540228</el>
+			<el>0.810814</el>
+			<el>0.827247</el>
+			<el>0.874257</el>
+			<el>0.784240</el>
+			<el>0.825760</el>
+			<el>0.690638</el>
+			<el>0.912956</el>
+			<el>0.799376</el>
+			<el>0.798118</el>
+			<el>0.760372</el>
+			<el>0.872694</el>
+			<el>0.887221</el>
+			<el>0.787290</el>
+			<el>0.847607</el>
+			<el>0.741728</el>
+			<el>0.849132</el>
+			<el>0.652855</el>
+			<el>0.891464</el>
+			<el>0.137493</el>
+			<el>0.326565</el>
+			<el>0.752099</el>
+			<el>0.712790</el>
+			<el>0.286608</el>
+			<el>0.646754</el>
+			<el>0.739365</el>
+			<el>0.834415</el>
+			<el>0.787138</el>
+			<el>0.800024</el>
+			<el>0.782867</el>
+			<el>0.881616</el>
+			<el>0.760372</el>
+			<el>0.799910</el>
+			<el>0.851839</el>
+			<el>0.811196</el>
+			<el>0.736124</el>
+			<el>0.810624</el>
+			<el>0.941835</el>
+			<el>0.527112</el>
+			<el>0.588458</el>
+			<el>0.422454</el>
+			<el>0.625403</el>
+			<el>0.631656</el>
+			<el>0.827247</el>
+			<el>0.807002</el>
+			<el>0.880701</el>
+			<el>0.912461</el>
+			<el>0.891376</el>
+			<el>0.870979</el>
+			<el>0.815733</el>
+			<el>0.802121</el>
+			<el>0.842803</el>
+			<el>0.917951</el>
+			<el>0.720263</el>
+			<el>0.758962</el>
+			<el>0.746990</el>
+			<el>0.803401</el>
+			<el>0.057312</el>
+			<el>0.099023</el>
+			<el>0.302621</el>
+			<el>0.361908</el>
+			<el>0.664521</el>
+			<el>0.758809</el>
+			<el>0.710731</el>
+			<el>0.742720</el>
+			<el>0.782905</el>
+			<el>0.911507</el>
+			<el>0.818478</el>
+			<el>0.817601</el>
+			<el>0.778101</el>
+			<el>0.729413</el>
+			<el>0.735514</el>
+			<el>0.802045</el>
+			<el>0.879405</el>
+			<el>0.823511</el>
+			<el>0.811637</el>
+			<el>0.402399</el>
+			<el>0.741805</el>
+			<el>0.715192</el>
+			<el>0.391266</el>
+			<el>0.211421</el>
+			<el>0.646106</el>
+			<el>0.676264</el>
+			<el>0.604243</el>
+			<el>0.694604</el>
+			<el>0.831250</el>
+			<el>0.784125</el>
+			<el>0.857939</el>
+			<el>0.831250</el>
+			<el>0.827590</el>
+			<el>0.786527</el>
+			<el>0.824464</el>
+			<el>0.709511</el>
+			<el>0.845129</el>
+			<el>0.817345</el>
+			<el>0.594444</el>
+			<el>0.607369</el>
+			<el>0.610114</el>
+			<el>0.292555</el>
+			<el>0.218551</el>
+			<el>0.471180</el>
+			<el>0.565620</el>
+			<el>0.365035</el>
+			<el>0.147368</el>
+			<el>0.726363</el>
+			<el>0.778216</el>
+			<el>0.806468</el>
+			<el>0.699255</el>
+			<el>0.823396</el>
+			<el>0.815923</el>
+			<el>0.843870</el>
+			<el>0.591470</el>
+			<el>0.793467</el>
+			<el>0.692899</el>
+			<el>0.374681</el>
+			<el>0.410749</el>
+			<el>0.402132</el>
+			<el>0.562418</el>
+			<el>0.500156</el>
+			<el>0.735666</el>
+			<el>0.568098</el>
+			<el>0.666847</el>
+			<el>0.591127</el>
+			<el>0.677294</el>
+			<el>0.660175</el>
+			<el>0.821985</el>
+			<el>0.882760</el>
+			<el>0.834148</el>
+			<el>0.840477</el>
+			<el>0.812111</el>
+			<el>0.738983</el>
+			<el>0.842498</el>
+			<el>0.734860</el>
+			<el>0.000389</el>
+			<el>0.000961</el>
+			<el>0.000465</el>
+			<el>0.000427</el>
+			<el>0.000427</el>
+			<el>0.293623</el>
+			<el>0.204101</el>
+			<el>0.272272</el>
+			<el>0.269870</el>
+			<el>0.456196</el>
+			<el>0.656362</el>
+			<el>0.793657</el>
+			<el>0.706804</el>
+			<el>0.710159</el>
+			<el>0.714696</el>
+			<el>0.700551</el>
+			<el>0.729718</el>
+			<el>0.867204</el>
+			<el>0.751069</el>
+			<el>0.324086</el>
+			<el>0.429965</el>
+			<el>0.372660</el>
+			<el>0.394812</el>
+			<el>0.525854</el>
+			<el>0.357333</el>
+			<el>0.485668</el>
+			<el>0.509421</el>
+			<el>0.443881</el>
+			<el>0.590250</el>
+			<el>0.610000</el>
+			<el>0.880434</el>
+			<el>0.779131</el>
+			<el>0.769828</el>
+			<el>0.734484</el>
+			<el>0.706919</el>
+			<el>0.710426</el>
+			<el>0.770019</el>
+			<el>0.753335</el>
+			<el>0.464546</el>
+			<el>0.490015</el>
+			<el>0.362442</el>
+			<el>0.000389</el>
+			<el>0.089720</el>
+			<el>0.480445</el>
+			<el>0.149656</el>
+			<el>0.031234</el>
+			<el>0.000541</el>
+			<el>0.504198</el>
+			<el>0.558414</el>
+			<el>0.650033</el>
+			<el>0.634935</el>
+			<el>0.559329</el>
+			<el>0.554182</el>
+			<el>0.595283</el>
+			<el>0.449524</el>
+			<el>0.514149</el>
+			<el>0.495205</el>
+			<el>0.000793</el>
+			<el>0.000366</el>
+			<el>0.000427</el>
+			<el>0.000183</el>
+			<el>0.000122</el>
+			<el>0.000061</el>
+			<el>0.000183</el>
+			<el>0.000122</el>
+			<el>0.000122</el>
+			<el>0.000610</el>
+			<el>0.000061</el>
+			<el>0.000000</el>
+			<el>0.000244</el>
+			<el>0.000000</el>
+			<el>0.000000</el>
+			<el>0.000183</el>
+			<el>0.000061</el>
+			<el>0.000976</el>
+			<el>0.000227</el>
+		    </FloatArray>
+		</FloatMap2D>
+		<FloatMap2D name="cpuTimeMap" description="cpuTimeMap">
+		    <int name="width" description="width">19</int>
+		    <int name="height" description="height">13</int>
+		    <float name="min" description="min">0.000537</float>
+		    <float name="max" description="max">0.007347</float>
+		    <float name="avg" description="avg">0.004552</float>
+		    <FloatArray name="values" description="values">
+			<el>0.624578</el>
+			<el>0.417396</el>
+			<el>0.603527</el>
+			<el>0.666974</el>
+			<el>0.949404</el>
+			<el>0.945160</el>
+			<el>0.778586</el>
+			<el>0.772838</el>
+			<el>0.866495</el>
+			<el>0.925039</el>
+			<el>1.000000</el>
+			<el>0.747626</el>
+			<el>0.970615</el>
+			<el>0.949039</el>
+			<el>0.970379</el>
+			<el>0.800995</el>
+			<el>0.698083</el>
+			<el>0.870009</el>
+			<el>0.811862</el>
+			<el>0.668885</el>
+			<el>0.324488</el>
+			<el>0.484438</el>
+			<el>0.728420</el>
+			<el>0.931316</el>
+			<el>0.825663</el>
+			<el>0.745260</el>
+			<el>0.936603</el>
+			<el>0.824138</el>
+			<el>0.971132</el>
+			<el>0.736139</el>
+			<el>0.854941</el>
+			<el>0.932714</el>
+			<el>0.765472</el>
+			<el>0.871077</el>
+			<el>0.916068</el>
+			<el>0.785998</el>
+			<el>0.928349</el>
+			<el>0.875691</el>
+			<el>0.490817</el>
+			<el>0.736413</el>
+			<el>0.730403</el>
+			<el>0.956871</el>
+			<el>0.895524</el>
+			<el>0.947295</el>
+			<el>0.794756</el>
+			<el>0.972554</el>
+			<el>0.859083</el>
+			<el>0.928296</el>
+			<el>0.760471</el>
+			<el>0.845013</el>
+			<el>0.848738</el>
+			<el>0.755418</el>
+			<el>0.750702</el>
+			<el>0.688026</el>
+			<el>0.833579</el>
+			<el>0.687350</el>
+			<el>0.857065</el>
+			<el>0.110846</el>
+			<el>0.305231</el>
+			<el>0.664143</el>
+			<el>0.880177</el>
+			<el>0.369362</el>
+			<el>0.695187</el>
+			<el>0.805542</el>
+			<el>0.819460</el>
+			<el>0.857302</el>
+			<el>0.800737</el>
+			<el>0.713111</el>
+			<el>0.876823</el>
+			<el>0.669136</el>
+			<el>0.829569</el>
+			<el>0.708994</el>
+			<el>0.750829</el>
+			<el>0.661988</el>
+			<el>0.856139</el>
+			<el>0.880821</el>
+			<el>0.392303</el>
+			<el>0.566842</el>
+			<el>0.384961</el>
+			<el>0.752232</el>
+			<el>0.749867</el>
+			<el>0.897334</el>
+			<el>0.820171</el>
+			<el>0.782460</el>
+			<el>0.886603</el>
+			<el>0.892055</el>
+			<el>0.973861</el>
+			<el>0.846790</el>
+			<el>0.773713</el>
+			<el>0.823499</el>
+			<el>0.863250</el>
+			<el>0.614983</el>
+			<el>0.663537</el>
+			<el>0.680590</el>
+			<el>0.810762</el>
+			<el>0.074502</el>
+			<el>0.094341</el>
+			<el>0.266920</el>
+			<el>0.332922</el>
+			<el>0.549575</el>
+			<el>0.850258</el>
+			<el>0.762735</el>
+			<el>0.714230</el>
+			<el>0.812207</el>
+			<el>0.929618</el>
+			<el>0.840585</el>
+			<el>0.891676</el>
+			<el>0.787548</el>
+			<el>0.738826</el>
+			<el>0.726717</el>
+			<el>0.721741</el>
+			<el>0.712584</el>
+			<el>0.764014</el>
+			<el>0.781431</el>
+			<el>0.368738</el>
+			<el>0.590080</el>
+			<el>0.587936</el>
+			<el>0.345409</el>
+			<el>0.255302</el>
+			<el>0.669047</el>
+			<el>0.776212</el>
+			<el>0.711192</el>
+			<el>0.625200</el>
+			<el>0.858821</el>
+			<el>0.841703</el>
+			<el>0.917170</el>
+			<el>0.889807</el>
+			<el>0.809844</el>
+			<el>0.756937</el>
+			<el>0.881575</el>
+			<el>0.660744</el>
+			<el>0.690487</el>
+			<el>0.741816</el>
+			<el>0.517960</el>
+			<el>0.497034</el>
+			<el>0.436282</el>
+			<el>0.235900</el>
+			<el>0.237952</el>
+			<el>0.436812</el>
+			<el>0.827355</el>
+			<el>0.380905</el>
+			<el>0.119851</el>
+			<el>0.659380</el>
+			<el>0.767922</el>
+			<el>0.818567</el>
+			<el>0.759927</el>
+			<el>0.866518</el>
+			<el>0.704034</el>
+			<el>0.819788</el>
+			<el>0.537574</el>
+			<el>0.733405</el>
+			<el>0.535598</el>
+			<el>0.317201</el>
+			<el>0.282111</el>
+			<el>0.234616</el>
+			<el>0.410125</el>
+			<el>0.440658</el>
+			<el>0.563055</el>
+			<el>0.535370</el>
+			<el>0.589282</el>
+			<el>0.535631</el>
+			<el>0.602290</el>
+			<el>0.675929</el>
+			<el>0.828625</el>
+			<el>0.917684</el>
+			<el>0.867255</el>
+			<el>0.778196</el>
+			<el>0.733385</el>
+			<el>0.672512</el>
+			<el>0.764231</el>
+			<el>0.674026</el>
+			<el>0.002780</el>
+			<el>0.007129</el>
+			<el>0.001729</el>
+			<el>0.002348</el>
+			<el>0.001954</el>
+			<el>0.245748</el>
+			<el>0.165146</el>
+			<el>0.247413</el>
+			<el>0.249074</el>
+			<el>0.405120</el>
+			<el>0.675359</el>
+			<el>0.767668</el>
+			<el>0.757111</el>
+			<el>0.681399</el>
+			<el>0.674957</el>
+			<el>0.677309</el>
+			<el>0.758637</el>
+			<el>0.823234</el>
+			<el>0.681947</el>
+			<el>0.271776</el>
+			<el>0.364653</el>
+			<el>0.310087</el>
+			<el>0.315860</el>
+			<el>0.416204</el>
+			<el>0.280705</el>
+			<el>0.402943</el>
+			<el>0.446267</el>
+			<el>0.387127</el>
+			<el>0.525684</el>
+			<el>0.606104</el>
+			<el>0.882832</el>
+			<el>0.791929</el>
+			<el>0.763099</el>
+			<el>0.619828</el>
+			<el>0.635011</el>
+			<el>0.655506</el>
+			<el>0.678294</el>
+			<el>0.612485</el>
+			<el>0.387043</el>
+			<el>0.396293</el>
+			<el>0.286258</el>
+			<el>0.000000</el>
+			<el>0.074895</el>
+			<el>0.370088</el>
+			<el>0.128545</el>
+			<el>0.039590</el>
+			<el>0.007341</el>
+			<el>0.441070</el>
+			<el>0.474291</el>
+			<el>0.609500</el>
+			<el>0.628565</el>
+			<el>0.540319</el>
+			<el>0.478543</el>
+			<el>0.532624</el>
+			<el>0.395947</el>
+			<el>0.420591</el>
+			<el>0.410317</el>
+			<el>0.019335</el>
+			<el>0.021865</el>
+			<el>0.020277</el>
+			<el>0.012084</el>
+			<el>0.015505</el>
+			<el>0.013634</el>
+			<el>0.017216</el>
+			<el>0.017556</el>
+			<el>0.020077</el>
+			<el>0.016754</el>
+			<el>0.013140</el>
+			<el>0.014763</el>
+			<el>0.020559</el>
+			<el>0.012607</el>
+			<el>0.026667</el>
+			<el>0.009217</el>
+			<el>0.014338</el>
+			<el>0.013867</el>
+			<el>0.009609</el>
+		    </FloatArray>
+		</FloatMap2D>
+		<timer name="checkpointTimer" description="Time writing checkpoints">
+		    <elapsed>0.000000</elapsed>
+		</timer>
+	    </stats>
+	</stats>
+    </stats>
+</rm:statsDoc>
+</doc>

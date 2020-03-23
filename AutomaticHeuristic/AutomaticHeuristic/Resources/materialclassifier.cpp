@@ -6,22 +6,38 @@ class SelectMaterialVerticesFunctorClass
     public:
     ShaderParameters* getValue(SimulationData* sd) {
         ShaderParameters* shader_parameter = new ShaderParameters(_id,4);
-         float val = boost::any_cast<float>(sd->_map.at("hardness"));
+        float val = boost::any_cast<float>(sd->_map.at("hardness"));
         shader_parameter->setValue(0,val);
+            glm::vec3 flow_normal = boost::any_cast<glm::vec3>(sd->_map.at("normalFlow"));
+            if(!isnan(flow_normal[0]))
+                shader_parameter->setValue(1,flow_normal[0]);
+            else
+                shader_parameter->setValue(2,0);
+            if(!isnan(flow_normal[1]))
+                shader_parameter->setValue(2,flow_normal[1]);
+            else
+                shader_parameter->setValue(1,0);
+            if(!isnan(flow_normal[2]))
+                shader_parameter->setValue(3,flow_normal[2]);
+            else
+                shader_parameter->setValue(3,0);
+            //shader_parameter->setValue(2,flow_normal[1]);
+            //shader_parameter->setValue(3,flow_normal[2]);
 
 
-        if(val > 20 && val<26)
-        {
-            shader_parameter->setValue(1,1);
-            shader_parameter->setValue(2,0.4);
-            shader_parameter->setValue(3,0);
-        }
-        else
-        {
-            shader_parameter->setValue(1,1);
-            shader_parameter->setValue(2,0.1);
-            shader_parameter->setValue(3,0);
-        }
+
+        //if(val > 20 && val<26)
+        //{
+        //    shader_parameter->setValue(1,1);
+        //    shader_parameter->setValue(2,0.1);
+        //    shader_parameter->setValue(3,0);
+        //}
+        //else
+        //{
+        //    shader_parameter->setValue(1,1);
+        //    shader_parameter->setValue(2,0.4);
+        //    shader_parameter->setValue(3,0);
+        //}
 
         return shader_parameter;
     }

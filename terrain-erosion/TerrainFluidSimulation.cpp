@@ -213,21 +213,32 @@ void TerrainFluidSimulation::ExportSimulation()
 
 }
 
-float GetTerrainCapacity(float x,float y,float z ,float frequency,int _stratified_layer_width)
+float GetTerrainCapacity(float x,float y,float z ,float frequency,float _stratified_layer_width)
 {
 
-
     PerlinNoise perlin;
-
     float kc = 0;
-    int res = _stratified_layer_width*(roundf(z/_stratified_layer_width));
-     if(res %(2*_stratified_layer_width) == 0)
-         kc = 35;
-     else
-         kc = 23;
-
     float n = (perlin.Sample(frequency*x,frequency*y,frequency*z));
-    kc =kc + n*(kc/10);
+
+    //int res = _stratified_layer_width*(roundf(z/_stratified_layer_width));
+    float level = sin((z+z/30*n)*_stratified_layer_width);
+     if( level> 0)
+     {
+         kc = 35;
+     }
+     else
+     {
+         //if(level > 0)
+         //{
+         //   kc =28;
+         //}
+         //else
+         {
+             kc = 23;
+         }
+
+     }
+     kc =kc + n*(kc/10);
 
 return kc;
 }
@@ -250,9 +261,14 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
             float z = _simulationState.terrain(x,y);
             (*datafile)<< " "<< GetTerrainCapacity(x,y,z,_simulation.noise_sediment_frequency,_simulation._stratified_layer_width);
 
-            vec3 flowNormal (_simulation.uVel(x,y),_simulation.vVel(x,y),_simulation.zVel(x,y));
-            if(flowNormal[0]!=0 || flowNormal[1]!=0 || flowNormal[2]!=0 )
+            //vec3 flowNormal (_simulation.uVel(x,y),_simulation.vVel(x,y),_simulation.zVel(x,y));
+            vec3 flowNormal(0,0,0);
+            if(_simulation.count(x,y)>0)
+            {
+                flowNormal = vec3(_simulation.flowNormal(x,y)/_simulation.count(x,y));
                 flowNormal = normalize(flowNormal);
+            }
+
             (*datafile )<<" v "<< flowNormal[0]  << " "<< flowNormal[1]<< " "<< flowNormal[2];
             (*datafile)<< std::endl;
         }
