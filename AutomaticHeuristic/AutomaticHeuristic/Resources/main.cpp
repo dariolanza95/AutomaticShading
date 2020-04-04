@@ -15,6 +15,8 @@
 #include "featuresfinder.h"
 #include "FieldThreeDWriter.h"
 #include "PointCloudWriter.h"
+
+#include "LICMap.h"
 // --------------------OpenMesh----------------------------
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
@@ -781,7 +783,8 @@ int main(int argc, char **argv)
   //FieldThreeDWriter fieldwriter(mesh,filename);
   // fieldwriter.Write();
    filename = "../../Data/test_pointcloud";
-    PointCloudWriter pcw(mesh,filename,5);
+   LICMap licmap(mesh);
+    PointCloudWriter pcw(mesh,filename,5,licmap);
     pcw.Init();
     pcw.Write();
     pcw.Read();

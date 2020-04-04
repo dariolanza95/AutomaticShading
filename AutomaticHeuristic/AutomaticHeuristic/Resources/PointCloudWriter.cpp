@@ -12,6 +12,7 @@ char* fromStringToChar(std::string input)
 }
 void PointCloudWriter::Init()
 {
+
     char* _file_name;
     _file_name = fromStringToChar(_output_file_name);
     char *var_types[_num_shader_parameters];
@@ -59,14 +60,19 @@ void PointCloudWriter::Write()
         ShaderParameters* const shader_param = shader_parameters_data_wrapper[vertex_handle];
 
         data[0] = shader_param->getId();
+        //THIS PART MUST BE CHANGED
+        /*
         for(int i = 0;i<_num_shader_parameters-1;i++)
         {
             data[i+1] = shader_param->getValue(i);
-        }
+        }*/
+
+
         mesh_point =  _mesh.point(*vertex_handle);
         point[0] = mesh_point[0];
         point[1] = mesh_point[1];
         point[2] = mesh_point[2];
+        //_licmap
         normal[0] = normal[1] = normal[2] = 0;
         PtcWriteDataPoint(_output_file, point, normal, radius, data);
 
@@ -131,8 +137,9 @@ void PointCloudWriter::Read()
 }
 
 
-PointCloudWriter::PointCloudWriter(MyMesh mesh,std::string input_file_name,int num_shader_parameters):
+PointCloudWriter::PointCloudWriter(MyMesh mesh,std::string input_file_name,int num_shader_parameters,LICMap licmap):
     _mesh(mesh),
     _output_file_name(input_file_name),
-    _num_shader_parameters(num_shader_parameters)
+    _num_shader_parameters(num_shader_parameters),
+    _licmap (licmap)
 {}

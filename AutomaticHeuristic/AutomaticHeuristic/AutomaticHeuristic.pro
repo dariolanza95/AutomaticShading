@@ -43,7 +43,8 @@ SOURCES += *.cpp \
     Resources/FieldThreeDWriter.cpp \
     Resources/PointCloudWriter.cpp \
     Resources/pointcloudwritertester.cpp \
-    Resources/materialclassifier.cpp
+    Resources/materialclassifier.cpp \
+    Resources/LICMap.cpp
 
 
 
@@ -92,7 +93,8 @@ HEADERS += *.h\
     Resources/FieldThreeDWriter.h \
     Resources/PointCloudWriter.h \
     Resources/pointcloudwritertester.h \
-    Resources/materialclassifier.h
+    Resources/materialclassifier.h \
+    Resources/LICMap.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system
@@ -146,3 +148,10 @@ else:unix: LIBS += -L$$PWD/../../../../../../opt/pixar/RenderManProServer-23.1/l
 
 INCLUDEPATH += $$PWD/../../../../../../opt/pixar/RenderManProServer-23.1/include
 DEPENDPATH += $$PWD/../../../../../../opt/pixar/RenderManProServer-23.1/include
+
+
+
+
+unix: CONFIG += link_pkgconfig
+unix: PKGCONFIG += pcl_kdtree-1.8
+
