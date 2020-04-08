@@ -44,7 +44,8 @@ SOURCES += *.cpp \
     Resources/PointCloudWriter.cpp \
     Resources/pointcloudwritertester.cpp \
     Resources/materialclassifier.cpp \
-    Resources/LICMap.cpp
+    Resources/LICMap.cpp \
+    ../Noise/FastNoise/FastNoise.cpp
 
 
 
@@ -94,7 +95,8 @@ HEADERS += *.h\
     Resources/PointCloudWriter.h \
     Resources/pointcloudwritertester.h \
     Resources/materialclassifier.h \
-    Resources/LICMap.h
+    Resources/LICMap.h \
+    ../Noise/FastNoise/FastNoise.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system
@@ -149,6 +151,10 @@ else:unix: LIBS += -L$$PWD/../../../../../../opt/pixar/RenderManProServer-23.1/l
 INCLUDEPATH += $$PWD/../../../../../../opt/pixar/RenderManProServer-23.1/include
 DEPENDPATH += $$PWD/../../../../../../opt/pixar/RenderManProServer-23.1/include
 
+QMAKE_CFLAGS_RELEASE += -fopenmp
+QMAKE_CFLAGS_DEBUG += -fopenmp
+    QMAKE_CXXFLAGS += -fopenmp
+    QMAKE_LFLAGS += -fopenmp
 
 
 

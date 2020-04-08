@@ -53,32 +53,55 @@ void PointCloudWriter::Write()
     MyMesh::Point mesh_point;
     float* data = (float *) malloc(_num_shader_parameters * sizeof(float));
 
+
+
+    OpenMesh::Subdivider::Uniform::CatmullClarkT<MyMesh> catmull;
+    // Execute 1 subdivision steps
+    std::cout<<_mesh.n_vertices()<<std::endl;
+
+    //iterate for number of desired subdivisions
+    catmull.attach(_mesh);
+    catmull( 1 );
+int k = 0;
+    std::cout<<"n vertices "<<_mesh.n_vertices()<<std::endl;
     MyMesh::VertexIter vertex_handle;
     MyMesh::VertexIter vertex_iterator_end(_mesh.vertices_end());
-    for(vertex_handle=_mesh.vertices_begin();vertex_handle!= vertex_iterator_end;++vertex_handle)
+    vertex_handle=_mesh.vertices_begin();
+
+    for(_mesh.vertices_begin();vertex_handle!= vertex_iterator_end;++vertex_handle)
     {
         ShaderParameters* const shader_param = shader_parameters_data_wrapper[vertex_handle];
-
-        data[0] = shader_param->getId();
-        //THIS PART MUST BE CHANGED
-        /*
-        for(int i = 0;i<_num_shader_parameters-1;i++)
+        if(shader_param!=nullptr)
         {
-            data[i+1] = shader_param->getValue(i);
-        }*/
+            data[0] = shader_param->getId();
+            for(int i = 0;i<_num_shader_parameters-1;i++)
+            {
+                data[i+1] = shader_param->getValue(i);
+            }
 
+        }
 
         mesh_point =  _mesh.point(*vertex_handle);
         point[0] = mesh_point[0];
         point[1] = mesh_point[1];
         point[2] = mesh_point[2];
-        //_licmap
+        float flow_res;
+        flow_res = _licmap.GetPoint(point);
+       // std::cout<<"FlowRes "<< flow_res<<std::endl;
+        //THIS PART MUST BE CHANGED
+
+        //for(int i= 0;i<3;i++)
+        //{
+        //    data[i+1] = flow_dir[i];
+        //}
+        data[2] = flow_res;
         normal[0] = normal[1] = normal[2] = 0;
         PtcWriteDataPoint(_output_file, point, normal, radius, data);
-
+    k++;
     }
+    std::cout<<"k == "<<k<<std::endl;
     PtcClosePointCloudFile(_output_file);
-
+    catmull.detach();
 }
 
 //Useful debug function too check inside of a PointCloud file

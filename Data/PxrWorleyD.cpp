@@ -891,19 +891,22 @@ testpoint = pp;
                 point[1] = pp.y;//thiscell.y;
                 point[2] = pp.z;//thiscell.z;
 
-                int Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, 9, data);
-
+                int Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, 27, data);
+                float val = 1;
 
                 if(Readres==1)
                 {
+
+                    val = data[2];
+                   // val = 0.5 + 0.5*val;
                   //  testpoint = thiscell - pp;
-                    dir.x = (data[2]);
-                    dir.y = (data[3]);
-                    dir.z = (data[4]);
-                    Normalize( dir);
+                    //dir.x = (data[2]);
+                    //dir.y = (data[3]);
+                    //dir.z = (data[4]);
+                    //Normalize( dir);
 
                 }
-
+/*
 
                 point[0] = f1cell.x;
                 point[1] = f1cell.y;
@@ -932,6 +935,10 @@ testpoint = pp;
                   val2 = data[1];
 
                 }
+*/
+
+
+
 
                      //   float3 col = tex2D(_NoiseTex, IN.uv);
 /*
@@ -1038,7 +1045,7 @@ testpoint = pp;
 
 */
  float displ_mult = 0;
-    float dda= DDA(pp,dir,30,0.3);
+   /* float dda= DDA(pp,dir,30,0.3);
 
     float lic = DDA(pp,dir,40,1.3);//LIC(pp,inptc,data,3,1.5);
     float details = DDA(pp,dir,40,3);
@@ -1054,8 +1061,17 @@ testpoint = pp;
 
     res = lic * 0.4 + dda*0.6;
     res = RixSmoothStep(0,1,res);
-    res = lic;
+*/
 
+
+ float a  = 0;
+ float b = 1;
+ float c = 0.43;
+ d = 0.57;
+
+val = 0.5+0.5*val;
+val = (val - c)*((b-a)/(d-c)) + a;
+res = val;
 
 
 
@@ -1142,18 +1158,18 @@ float blend = RixSmoothStep(0,1 ,res );
             RtColorRGB black(1,1,1);
             RtColorRGB white(1,1,1);
             //resultRGB[n] = RixLerpRGB(black,white,blend);
-            if(index1 != -1)
-                resultRGB[n] = RixLerpRGB( col,hardness_colors_secondary[index1],details);
-            else
+            //if(index1 != -1)
+            //    resultRGB[n] = RixLerpRGB( col,hardness_colors_secondary[index1],details);
+            //else
                 resultRGB[n]  = RtColorRGB(0,0,0);
-            resultRGB[n] = RixLerpRGB( hardness_colors[0], hardness_colors[1],res);
-         //    res += Fbm(pp*0.4,4,0.5);
-         //resultRGB[n].r = resultRGB[n].b = resultRGB[n].g =res;
+            //resultRGB[n] = RixLerpRGB( hardness_colors[0], hardness_colors[1],res);
+          //   res += Fbm(pp*0.4,4,0.5);
+         resultRGB[n].r = resultRGB[n].b = resultRGB[n].g =res;
 
-          resultDispl[n] = (1-res)*displ_mult + displ;
+          //resultDispl[n] = (1-res)*displ_mult + displ;
          // resultDispl[n] =  displ;
 
-       //      resultDispl[n] = 0;// displ;
+             resultDispl[n] = 0;// displ;
 
  //   for (unsigned i=0; i<sctx->numPts; i++)
  //   {

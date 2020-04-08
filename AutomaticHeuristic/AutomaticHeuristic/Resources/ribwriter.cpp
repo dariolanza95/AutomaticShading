@@ -223,10 +223,15 @@ void RIBWriter::WriteTransformationMatrix()
   //      }
   //  }
   //  ss<<" ]"<<std::endl;
-    ss << "Rotate "<< -1*_cam.rotX<<" 1 0 0"<<std::endl;
-    ss << "Rotate "<< _cam.rotY<<" 0 1 0"<<std::endl;
-    ss << "Rotate "<< _cam.rotZ<<" 0 0 1"<<std::endl;
-    std::cout<<ss.str();
+
+
+
+    //ss << "Rotate "<< -1*_cam.rotX<<" 1 0 0"<<std::endl;
+    //ss << "Rotate "<< _cam.rotY<<" 0 1 0"<<std::endl;
+    //ss << "Rotate "<< _cam.rotZ<<" 0 0 1"<<std::endl;
+    //std::cout<<ss.str();
+
+   ss<<"Transform [ 1 0 0 0 0 -0.8660 -0.5  0 0 0.5 -0.8660 0 -151 137.203 447.644 1 ]"<<std::endl;
     _rib_file<<ss.str();
 }
 

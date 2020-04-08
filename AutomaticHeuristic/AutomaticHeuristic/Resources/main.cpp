@@ -661,28 +661,29 @@ void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &me
             exit(EXIT_FAILURE);
         }
     }
-cout<<"There are "<<mesh.n_vertices()<< " counter is == "<< counter<<endl;
+//cout<<"There are "<<mesh.n_vertices()<< " counter is == "<< counter<<endl;
 }
 
 MyMesh LoadMesh(string obj_file,string data_file)
 {
     MyMesh mesh;
 
-    ifstream myfile ("../../Data/mountainsceneTemplate.rib");
-    ifstream geometryfile ("../../Data/input.obj");
-    ifstream datafile ("../../Data/simulationData.txt");
-    ostringstream ss_newline;
+    //ifstream myfile ("../../Data/mountainsceneTemplate.rib");
+//    ifstream geometryfile ("../../Data/input.obj");
+//    ifstream datafile ("../../Data/simulationData.txt");
+
+    //ostringstream ss_newline;
 
 //      DefaultDataLoader<MyMesh> dl = DefaultDataLoader<MyMesh>(obj_file,data_file,mesh);
-    string newline ;
-    newline = ss_newline.str();
-    ostringstream ss_out_name_file;
-    string out_name_file;
-    ss_out_name_file << "../../Data/mountainsceneTemplate" << "Output.rib";
-    out_name_file = ss_out_name_file.str();
-    ofstream omyfile (out_name_file);
-    LoadGeometryData("../../Data/input.obj",mesh);
-    AttachDataFromSimulationToEachVertex("../../Data/simulationData.txt",mesh);
+    //string newline ;
+    //newline = ss_newline.str();
+    //ostringstream ss_out_name_file;
+    //string out_name_file;
+    //ss_out_name_file << "../../Data/mountainsceneTemplate" << "Output.rib";
+    //out_name_file = ss_out_name_file.str();
+    //ofstream omyfile (out_name_file);
+    LoadGeometryData(obj_file,mesh);
+    AttachDataFromSimulationToEachVertex(data_file,mesh);
 
 
 
@@ -760,7 +761,8 @@ int main(int argc, char **argv)
 {
 
 
-  string obj_file = "../../Data/input.obj";
+ // string obj_file = "../../Data/input.obj";
+    string obj_file = "../../Data/cube.obj";
   string data_file = "../../Data/simulationData.txt";
 
 
@@ -784,11 +786,17 @@ int main(int argc, char **argv)
   // fieldwriter.Write();
    filename = "../../Data/test_pointcloud";
    LICMap licmap(mesh);
-    PointCloudWriter pcw(mesh,filename,5,licmap);
-    pcw.Init();
-    pcw.Write();
-    pcw.Read();
-    std::cout<<"Bye bye";
+   float BoxLength = 50;
+   float freq = 30;
+   float step_size = freq > 1 ? 1/(freq*2) : freq;
+   //std::cout<<"Here we go!BoxLength "<< BoxLength <<std::endl;
+   //licmap.LIC(BoxLength,freq,1,mesh);
+   //std::cout<<"LIC calculated"<<std::endl;
+   //PointCloudWriter pcw(mesh,filename,5,licmap);
+   // pcw.Init();
+   // pcw.Write();
+   // pcw.Read();
+    std::cout<<"Bye bye"<<std::endl;
     return 0;
 }
 

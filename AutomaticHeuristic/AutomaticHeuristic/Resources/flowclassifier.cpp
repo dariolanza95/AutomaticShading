@@ -96,8 +96,6 @@ map<MyMesh::VertexHandle,ShaderParameters*> FlowClassifier::ComputeShaderParamet
          shader_parameters->setValue(1,final_vector[1]);
          shader_parameters->setValue(2,final_vector[2]);
          shader_parameters->setVector(tangent_vector);
-         if(glm::any(glm::isnan( shader_parameters->getVector())))
-             cout<<"come here sir there is an error ";
 
           map.insert(make_pair(entry.first,shader_parameters));
     }
