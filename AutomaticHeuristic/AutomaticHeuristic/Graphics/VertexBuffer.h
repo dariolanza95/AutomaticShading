@@ -13,7 +13,12 @@
 #include "platform_includes.h"
 #include "Grid2D.h"
 #include "GLWrapper.h"
-
+#ifdef Success
+  #undef Success
+#endif
+#include <pcl/point_cloud.h>
+#include <pcl/cloud_iterator.h>
+#include <pcl/kdtree/kdtree_flann.h>
 
 
 namespace Graphics
@@ -29,7 +34,8 @@ public:
     void MapData(uint location, bool normalized = false);
     void Bind();
     void SetData(const Grid2D<T>& grid);
-
+    void SetData(const pcl::PointCloud<pcl::PointXYZ>::Ptr pcl);
+    void SetData(const std::vector<glm::vec3> points);
 protected:
     GLuint _id;
 };
@@ -70,6 +76,31 @@ inline void VertexBuffer<T>::SetData(const Grid2D<T> &grid)
     uint bytesize = sizeof(T)*grid.size();
     glBufferData(GL_ARRAY_BUFFER, bytesize, grid.ptr(),GL_STATIC_DRAW);
 }
+
+
+template<typename T>
+
+inline void VertexBuffer<T>::SetData(const pcl::PointCloud<pcl::PointXYZ>::Ptr pcl)
+{
+
+    glBindBuffer(GL_ARRAY_BUFFER,_id);
+    uint bytesize = sizeof(T)*pcl->points.size();
+    pcl::PointXYZ pp = pcl->points[0];
+    std::cout<< "BOJA "<<pp.x<<std::endl;
+    glBufferData(GL_ARRAY_BUFFER, bytesize, &pcl->points[0],GL_STATIC_DRAW);
+}
+
+
+template<typename T>
+
+inline void VertexBuffer<T>::SetData(const std::vector<glm::vec3> points)
+{
+
+    glBindBuffer(GL_ARRAY_BUFFER,_id);
+    uint bytesize = sizeof(T)* points.size();
+    glBufferData(GL_ARRAY_BUFFER, bytesize, points.data(),GL_STATIC_DRAW);
+}
+
 
 // Instances
 ///////////////////////////////////////////////

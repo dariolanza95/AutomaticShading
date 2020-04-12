@@ -26,7 +26,7 @@ public:
 
     Camera();
     Camera(glm::vec3 position);
-    void SetProjection(float angle=45.0f, float aspect=800.0f/600.0f, float near=0.1f, float far=100.0f);
+    void SetProjection(float angle=45.0f, float aspect=300.0f/200.0f, float near=0.1f, float far=100.0f);
 
     void SetAspectRatio(float aspect);
 
@@ -34,31 +34,41 @@ public:
     const glm::mat4x4& ProjMatrix();
     const glm::mat4x4& ViewMatrix();
 
+    const glm::mat4x4& RIBMatrix();
+
 
     glm::vec3 Position();
     // Transform
     void TranslateGlobal(const glm::vec3& delta);
     void TranslateLocal(const glm::vec3& delta);
     void LocalRotate(const glm::vec3& axis, float angle);
+    void LocalRotateRIB(const vec3 &axis, float angle);
     float _aspect;
 
     void GlobalRotate(const glm::vec3& axis, float angle);
-
+    float GetScalingCostant();
+    void  SetScalingCostant(float _scaling_costant);
     float rotX;
     float rotY;
     float rotZ;
 protected:
 
     void recomputeViewMatrix();
+   void recomputeRIBMatrix();
+
 protected:
 
     glm::vec3   _position;
     glm::fquat  _forward;
+    glm::fquat  _forward_RIB;
     glm::fquat  _upward;
 
     glm::mat4x4 _viewMatrix;
+    glm::mat4x4 _RIBMatrix;
     glm::mat4x4 _projMatrix;
 
+
+    float _scaling_costant;
     float _angle;
     float _near, _far;
 

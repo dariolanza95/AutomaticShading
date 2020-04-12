@@ -151,8 +151,9 @@ void RIBWriter::RotateAlongX(glm::mat4x4 & mat,float angle)
 void RIBWriter::WriteTransformationMatrix()
 {
     stringstream ss;
-   // ss<<" Transform [ ";
+    ss<<" Transform [ ";
     glm::mat4x4 viewMatrix = _cam.ViewMatrix();
+    viewMatrix = _cam.RIBMatrix();
     float aaa[16] =
     {
          1 , 0, 0, 0,
@@ -163,9 +164,9 @@ void RIBWriter::WriteTransformationMatrix()
 
     float bbb[16] =
     {
-        -1 , 0, 0, 0,
+        1 , 0, 0, 0,
          0 , 1, 0, 0,
-         0 , 0, -1, 0,
+         0 , 0, 1, 0,
          0 , 0, 0, 1
     };
 
@@ -181,7 +182,7 @@ void RIBWriter::WriteTransformationMatrix()
     glm::vec3 pos = _cam.Position();
     glm::mat4x4 correctiveMatrix = glm::make_mat4x4(ccc);  //glm::mat4x4( -1.0f,0.0f,0.0f,0.0f  0.0f,0.0f,1.0f,0.0f  0,1,0,0  0,0,0,1 );
     //glm::inverse(correctiveMatrix_second)*viewMatrix* correctiveMatrix
-    //viewMatrix =  glm::inverse(viewMatrix)*(correctiveMatrix);
+    //viewMatrix =  viewMatrix * correctiveMatrix_second;
 
    // RotateAlongX( viewMatrix,120);
     //viewMatrix[3][0] = 0;
@@ -189,7 +190,7 @@ void RIBWriter::WriteTransformationMatrix()
     //viewMatrix[3][2] = 0;
     //viewMatrix[3][3] = 1;
 
-
+   // viewMatrix[3][3] *= -1;
 
     //viewMatrix[3][0] = -151;
     //viewMatrix[3][1] = 137.203;
@@ -208,21 +209,32 @@ void RIBWriter::WriteTransformationMatrix()
   //  viewMatrix[3][3] = 1;
 
 
-  //  for(int i= 0;i<4;i++)
-  //  {
-  //      for(int j= 0;j<4;j++)
-  //      {
-  //          // if( j == 3 && i != 3)
-  //          // {
-  //          //     ss<<" "<< 100 * pos[i];
-  //          // }
-  //          // else
-  //          {
-  //              ss<<" "<< viewMatrix[j][i];
-  //          }
-  //      }
-  //  }
-  //  ss<<" ]"<<std::endl;
+    for(int i= 0;i<4;i++)
+    {
+        for(int j= 0;j<4;j++)
+        {
+            // if( j == 3 && i != 3)
+            // {
+            //     ss<<" "<< 100 * pos[i];
+            // }
+            // else
+            if( i == 3 && j != 3)
+            {
+                std::cout<<"scaling cost "<< _cam.GetScalingCostant();
+                std::cout<<" POS "<< viewMatrix[i][j] * _cam.GetScalingCostant();
+                if(j==2)
+                    ss<<" "<< -1 * viewMatrix[i][j] * _cam.GetScalingCostant();
+                else
+                    ss<<" "<<  viewMatrix[i][j] * _cam.GetScalingCostant();
+
+            }
+            else
+            {
+                ss<<" "<< viewMatrix[i][j];
+            }
+        }
+    }
+    ss<<" ]"<<std::endl;
 
 
 
@@ -231,7 +243,8 @@ void RIBWriter::WriteTransformationMatrix()
     //ss << "Rotate "<< _cam.rotZ<<" 0 0 1"<<std::endl;
     //std::cout<<ss.str();
 
-   ss<<"Transform [ 1 0 0 0 0 -0.8660 -0.5  0 0 0.5 -0.8660 0 -151 137.203 447.644 1 ]"<<std::endl;
+ //  ss<<"Transform [ 1 0 0 0 0 -0.8660 -0.5  0 0 0.5 -0.8660 0 -151 137.203 447.644 1 ]"<<std::endl;
+//   ss<<" Transform [ 1 0 0 0  0 1 0 0 0 0 1 0 0 0 0 1 ]"<<std::endl;
     _rib_file<<ss.str();
 }
 
@@ -272,12 +285,19 @@ void RIBWriter::WriteArchive()
            line += " Attribute \"polygon\" \"int smoothdisplacement\" [1] \n";
            line += " Attribute \"trace\" \"int displacements\" [1] \"int autobias\" [1] \"float bias\" [0.00999999978] \n";
           // line += " Displace \"PxrDisplace\" \" "+ displname + "\" \"string __materialid\" [\"" +materialId+ "\"] \n";
-           line += "HierarchicalSubdivisionMesh \"catmull-clark\" ";
+             bool subdiv = false;
+           if(subdiv)
+            line += "HierarchicalSubdivisionMesh \"catmull-clark\" ";
+           else
+            line += "PointsPolygons ";
            _rib_file<<line;
            WriteNumOfVerticesInEachFace();
            WriteIndexBuffer();
-           line = "[\"creasemethod\" \"facevaryingpropagatecorners\" \"interpolateboundary\" ";
-           line +=" \"facevaryinginterpolateboundary\"] [0 0 1 1 0 0 1 0 0 1 0 0] [1 1 3] [] [\"chaikin\"] ";
+           if(subdiv)
+           {
+                line = "[\"creasemethod\" \"facevaryingpropagatecorners\" \"interpolateboundary\" ";
+                line +=" \"facevaryinginterpolateboundary\"] [0 0 1 1 0 0 1 0 0 1 0 0] [1 1 3] [] [\"chaikin\"] ";
+           }
            _rib_file<<line;
            WriteVertexEditTag();
            WriteVertices();
@@ -303,13 +323,22 @@ void RIBWriter:: Write()
              line += " Attribute \"polygon\" \"int smoothdisplacement\" [1] \n";
              line += " Attribute \"trace\" \"int displacements\" [1] \"int autobias\" [1] \"float bias\" [0.00999999978] \n";
              line += " Displace \"PxrDisplace\" \" "+ displname + "\" \"string __materialid\" [\"" +materialId+ "\"] \n";
-             line += "HierarchicalSubdivisionMesh \"catmull-clark\" ";
+             bool subdiv = false;
+           if(subdiv)
+            line += "HierarchicalSubdivisionMesh \"catmull-clark\" ";
+           else
+            line += "PointsPolygons ";
              _rib_file<<line;
              WriteNumOfVerticesInEachFace();
              WriteIndexBuffer();
-             line = "[\"creasemethod\" \"facevaryingpropagatecorners\" \"interpolateboundary\" ";
-             line +=" \"facevaryinginterpolateboundary\"] [0 0 1 1 0 0 1 0 0 1 0 0] [1 1 3] [] [\"chaikin\"] ";
-             _rib_file<<line;
+             if(subdiv)
+             {
+                  line = "[\"creasemethod\" \"facevaryingpropagatecorners\" \"interpolateboundary\" ";
+                  line +=" \"facevaryinginterpolateboundary\"] [0 0 1 1 0 0 1 0 0 1 0 0] [1 1 3] [] [\"chaikin\"] ";
+                   _rib_file<<line;
+             }
+
+
              WriteVertices();
              WriteSimulationData();
              _rib_file<< "ObjectEnd \n";

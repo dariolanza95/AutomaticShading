@@ -37,18 +37,25 @@
 
 #include <glm/gtx/string_cast.hpp>
 
+#ifdef Success
+  #undef Success
+#endif
+#include <pcl/point_cloud.h>
+#include <pcl/cloud_iterator.h>
+#include <pcl/kdtree/kdtree_flann.h>
+
 using namespace glm;
 using namespace Graphics;
 
 typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
-
+typedef pcl::PointCloud<pcl::PointXYZ>::Ptr MyCloudPtr;
 class OpenGlVisualizer
 {
 private :
     Graphics::ShaderManager             _shaderManager;
     Graphics::VertexBuffer<float>       _terrainHeightBuffer;
     Graphics::VertexBuffer<float>       _waterHeightBuffer;
-    Graphics::VertexBuffer<glm::vec2>   _gridCoordBuffer;
+    Graphics::VertexBuffer<glm::vec3>   _gridCoordBuffer;
     Graphics::IndexBuffer               _gridIndexBuffer;
     Graphics::VertexBuffer<float>       _sedimentBuffer;
     Graphics::VertexBuffer<float>       _simDataBuffer;
@@ -69,7 +76,7 @@ private :
     void Render();
     void ShowSimulationDataInput();
     void ShowSelectedFaces();
-    void ParseInputFile(Grid2D<vec2>& gridCoords,std::vector<uint>& gridIndices);
+    void ParseInputFile(std::vector<glm::vec3>& gridCoords,std::vector<uint>& gridIndices);
     Grid2D<float> _terrain;
     Grid2D<float> _water;
     Grid2D<float> _suspendedSediment;

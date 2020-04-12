@@ -761,8 +761,8 @@ int main(int argc, char **argv)
 {
 
 
- // string obj_file = "../../Data/input.obj";
-    string obj_file = "../../Data/cube.obj";
+string obj_file = "../../Data/input.obj";
+//   string obj_file = "../../Data/cube2.obj";
   string data_file = "../../Data/simulationData.txt";
 
 
@@ -772,8 +772,8 @@ int main(int argc, char **argv)
   mesh = features_finder.Find();
   GLFWwindow* window = OpenGLInit();
   OpenGlVisualizer visualizer(window, 300, 300,mesh,obj_file);
-  visualizer.Initialize();
-  visualizer.Visualize();
+  //visualizer.Initialize();
+  //visualizer.Visualize();
 
   RIBWriter writer(mesh,"../../Data/mountainsceneTemplateOutput.rib",visualizer.GetCamera(),features_finder.GetVertexEditTags());
   writer.Write();
@@ -786,16 +786,16 @@ int main(int argc, char **argv)
   // fieldwriter.Write();
    filename = "../../Data/test_pointcloud";
    LICMap licmap(mesh);
-   float BoxLength = 50;
+   float BoxLength = 15;
    float freq = 30;
    float step_size = freq > 1 ? 1/(freq*2) : freq;
-   //std::cout<<"Here we go!BoxLength "<< BoxLength <<std::endl;
-   //licmap.LIC(BoxLength,freq,1,mesh);
-   //std::cout<<"LIC calculated"<<std::endl;
-   //PointCloudWriter pcw(mesh,filename,5,licmap);
-   // pcw.Init();
-   // pcw.Write();
-   // pcw.Read();
+   std::cout<<"Here we go!BoxLength "<< BoxLength <<std::endl;
+   licmap.LIC(BoxLength,freq,1,mesh);
+   std::cout<<"LIC calculated"<<std::endl;
+   PointCloudWriter pcw(mesh,filename,5,licmap);
+    pcw.Init();
+    pcw.Write();
+    pcw.Read();
     std::cout<<"Bye bye"<<std::endl;
     return 0;
 }

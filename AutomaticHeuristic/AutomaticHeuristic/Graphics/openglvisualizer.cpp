@@ -65,6 +65,14 @@ void OpenGlVisualizer::Render()
     _testShader->Bind();
 
     auto CameraviewMatrix = _cam.ViewMatrix();
+   /* float aaa[16] =
+    {
+         0 , 0, 1, 0,
+         0 ,  1 , 0, 0,
+         1 , 0, 0, 0,
+         0 , 0, 0, 1
+    };
+*/
     float aaa[16] =
     {
          -1 , 0, 0, 0,
@@ -81,15 +89,16 @@ void OpenGlVisualizer::Render()
 
     float bbb[16] =
     {
-         -1 , 0, 0, 0,
-         0 , 1, 0, 0,
+         1 , 0, 0, 0,
          0 , 0, -1, 0,
+         0 , -1, 0, 0,
          0 , 0, 0, 1
     };
 
     glm::mat4x4 correctiveMatrix = glm::make_mat4x4(aaa);
     glm::mat4x4 correctiveMatrix_s = glm::mat4_cast(orientation);
-    glm::mat4x4 viewMatrix  =  (CameraviewMatrix) * correctiveMatrix_s* correctiveMatrix  ;
+     glm::mat4x4 correctiveMatrix_3 = glm::make_mat4x4(bbb);
+    glm::mat4x4 viewMatrix  =     (CameraviewMatrix) *  correctiveMatrix_s* correctiveMatrix ;//* correctiveMatrix_3 ;
     _testShader->SetUniform("uProjMatrix", _cam.ProjMatrix());
     _testShader->SetUniform("uViewMatrix",viewMatrix);
     _testShader->SetUniform("uViewMatrixNormal", transpose(inverse(viewMatrix)) );
@@ -98,8 +107,8 @@ void OpenGlVisualizer::Render()
 
     // bind data
     _gridCoordBuffer.MapData(_testShader->AttributeLocation("inGridCoord"));
-    _terrainHeightBuffer.MapData(_testShader->AttributeLocation("inTerrainHeight"));
-    _waterHeightBuffer.MapData(_testShader->AttributeLocation("inWaterHeight"));
+   // _terrainHeightBuffer.MapData(_testShader->AttributeLocation("inTerrainHeight"));
+   // _waterHeightBuffer.MapData(_testShader->AttributeLocation("inWaterHeight"));
     _sedimentBuffer.MapData(_testShader->AttributeLocation("inSediment"));
     _simDataBuffer.MapData(_testShader->AttributeLocation("inSimData"));
 
@@ -122,9 +131,15 @@ void OpenGlVisualizer::Render()
     glFinish();
 }
 
-void OpenGlVisualizer::ParseInputFile(Grid2D<vec2>& gridCoords,std::vector<uint>& gridIndices)
+void OpenGlVisualizer::ParseInputFile(std::vector<glm::vec3>& gridCoords,std::vector<uint>& gridIndices)
 {
 
+    glm::vec3 normalizationVector;
+    glm::vec3 offset;
+    //gridCoords->width = _mesh.n_vertices();
+    //gridCoords->height = 1;
+    //gridCoords->points.resize (gridCoords->width * gridCoords->height);
+    gridCoords.resize( _mesh.n_vertices());
     string line;
     int width  = 300;
     int  height = 300;
@@ -132,18 +147,72 @@ void OpenGlVisualizer::ParseInputFile(Grid2D<vec2>& gridCoords,std::vector<uint>
     std::getline(inputfile,line);
     std::istringstream iss_begin(line);
 
-    gridCoords.resize(width,height);
+    //gridCoords.resize(width,height);
     gridIndices.reserve((width-1)*(height-1)*6);
 
     int i = 0;
-   MyMesh::VertexIter v_it, v_end(_mesh.vertices_end());
+
+
+    MyMesh::Point min_box = MyMesh::Point(INFINITY,INFINITY,INFINITY);
+    MyMesh::Point max_box = MyMesh::Point(-INFINITY,-INFINITY,-INFINITY) ;
+
+    MyMesh::VertexIter v_it, v_end(_mesh.vertices_end());
+
+
+
+
+   //MyMesh::VertexIter v_it, v_end(_mesh.vertices_end());
    for (v_it = _mesh.vertices_sbegin() ; v_it!= v_end;++v_it )
    {
        MyMesh::Point point = _mesh.point(*v_it);
-       gridCoords(i++) = glm::vec2(point[0]/300,point[1]/300);
-       if(point[0]<0 || point[1]<0)
-           cout<<"negative here"<<endl;
+     /*  for(int k = 0;k<3;k++)
+       point[k] += offset[k]/normalizationVector[k];
+
+       gridCoords[i++] =glm::vec3(point[0],point[1],point[2] );
+               //pcl::PointXYZ(point[0]/normalizationVector[0],point[1]/normalizationVector[1],point[2]/normalizationVector[2]);
+       //gridCoords(i++) = glm::vec2();
+*/
+
+       min_box[0] = point[0] < min_box[0] ? point[0] : min_box[0];
+       min_box[1] = point[1] < min_box[1] ? point[1] : min_box[1];
+       min_box[2] = point[2] < min_box[2] ? point[2] : min_box[2];
+
+
+       max_box[0] = point[0] > max_box[0] ? point[0] : max_box[0];
+       max_box[1] = point[1] > max_box[1] ? point[1] : max_box[1];
+       max_box[2] = point[2] > max_box[2] ? point[2] : max_box[2];
+
+
+
+
+
+
    }
+
+    MyMesh::Point mesh_center = (min_box + max_box) / 2;
+    MyMesh::Point normalized_cube_center(0.5,0.5,0.5);
+    float longest_dimension = -INFINITY;
+    for(int k = 0;k<3;k++)
+    {
+        offset[k] =  normalized_cube_center[k]-mesh_center[k];
+        normalizationVector[k] = max_box[k]-min_box[k];
+        if(normalizationVector[k]<1)
+            normalizationVector[k] =1;
+        longest_dimension = longest_dimension < normalizationVector[k]  ? normalizationVector[k] : longest_dimension;
+    }
+   for (v_it = _mesh.vertices_sbegin() ; v_it!= v_end;++v_it )
+   {
+       MyMesh::Point point = _mesh.point(*v_it);
+       for(int k = 0;k<3;k++)
+       point[k] = (point[k])/longest_dimension;
+
+       gridCoords[i++] =glm::vec3(point[0],point[1],point[2] );
+
+
+
+   }
+    _cam.SetScalingCostant(longest_dimension);
+
    for (auto& face_handle : _mesh.faces())
    {
        OpenMesh::TriMesh_ArrayKernelT<>::FaceVertexIter face_vertex_circulator;
@@ -204,18 +273,23 @@ void OpenGlVisualizer::CameraMovement(float dt)
     if (glfwGetKey(_window,'F')) _cam.TranslateLocal(vec3(0,-camSpeed,0));
     if (glfwGetKey(_window,'W')) _cam.TranslateLocal(vec3(0,0,-camSpeed));
     if (glfwGetKey(_window,'S')) _cam.TranslateLocal(vec3(0,0,camSpeed));
-    if (glfwGetKey(_window,'Q')) _cam.LocalRotate(yAxis,-rotSpeed);
-    if (glfwGetKey(_window,'E')) _cam.LocalRotate(yAxis,rotSpeed);
-    if (glfwGetKey(_window,'T')) _cam.LocalRotate(xAxis,-rotSpeed);
-    if (glfwGetKey(_window,'G')) _cam.LocalRotate(xAxis,rotSpeed);
-    if (glfwGetKey(_window,'Z')) _cam.LocalRotate(zAxis,-rotSpeed);
-    if (glfwGetKey(_window,'X')) _cam.LocalRotate(zAxis,rotSpeed);
+    if (glfwGetKey(_window,'Q')) {  _cam.LocalRotate(yAxis,-rotSpeed);   _cam.LocalRotateRIB(yAxis,rotSpeed);    }
+    if (glfwGetKey(_window,'E')) {  _cam.LocalRotate(yAxis,rotSpeed);    _cam.LocalRotateRIB(yAxis, -rotSpeed);  }
+    if (glfwGetKey(_window,'T')) {  _cam.LocalRotate(xAxis,-rotSpeed);   _cam.LocalRotateRIB(xAxis,rotSpeed);    }
+    if (glfwGetKey(_window,'G')) {  _cam.LocalRotate(xAxis,rotSpeed);    _cam.LocalRotateRIB(xAxis, -rotSpeed);  }
+    if (glfwGetKey(_window,'Z')) {  _cam.LocalRotate(zAxis,-rotSpeed);   _cam.LocalRotateRIB(zAxis, -rotSpeed);   }
+    if (glfwGetKey(_window,'X')) {  _cam.LocalRotate(zAxis,rotSpeed);    _cam.LocalRotateRIB(zAxis, rotSpeed);  }
+
+
+
+
+
     if (glfwGetKey(_window,'1')) ShowSimulationDataInput();
     if (glfwGetKey(_window,'2')) ShowSelectedFaces();
     glm::vec3 pos = _cam.Position();
     //std::cout<<"Position "<< pos[0]<<" "<< pos[1]<<" "<< pos[2]<< std::endl;
-    std::cout<<" aspect " << _cam._aspect << std::endl;
-   // std::cout<< " viewMatrix "<< glm::to_string(_cam.ViewMatrix())<< std::endl ;
+   // std::cout<<" aspect " << _cam._aspect << std::endl;
+    std::cout<< " viewMatrix "<< glm::to_string(_cam.ViewMatrix())<< std::endl ;
     //std::cout<<" inverse " << glm::to_string(transpose(inverse(_cam.ViewMatrix())))<< std::endl;
 
 }
@@ -238,19 +312,21 @@ void OpenGlVisualizer::InitializeBuffers()
     glBindVertexArray(vao);
 
     // Create some data
-    Grid2D<vec2> gridCoords;
+    //Grid2D<vec3> vertexCoords;
+    //MyCloudPtr vertexCoords (new pcl::PointCloud<pcl::PointXYZ>);
+    std::vector<glm::vec3> vertexCoords;
+
     std::vector<uint> gridIndices;
 
     uint dimX = _grid_width;//_simulationState.terrain.width();
     uint dimY = _grid_height;//_simulationState.terrain.height();
 
-    ParseInputFile(gridCoords,gridIndices);
-    //Grid2DHelper::MakeGridIndices(gridIndices,dimX,dimY);
-    //Grid2DHelper::MakeUniformGrid(gridCoords,dimX,dimY);
+
+    ParseInputFile(vertexCoords,gridIndices);
 
     // Send data to the GPU
     _gridIndexBuffer.SetData(gridIndices);
-    _gridCoordBuffer.SetData(gridCoords);
+    _gridCoordBuffer.SetData(vertexCoords);
 
     _water.resize(_grid_width,_grid_height);
     _suspendedSediment.resize(_grid_width,_grid_height);
@@ -279,8 +355,8 @@ void OpenGlVisualizer::InitializeBuffers()
     // Load and configure shaders
     _testShader = _shaderManager.LoadShader(resourcePath+"lambert_v.glsl",resourcePath+"lambert_f.glsl");
     _testShader->MapAttribute("inGridCoord",0);
-    _testShader->MapAttribute("inTerrainHeight",1);
-    _testShader->MapAttribute("inWaterHeight",2);
+    //_testShader->MapAttribute("inTerrainHeight",1);
+    //_testShader->MapAttribute("inWaterHeight",2);
     _testShader->MapAttribute("inSediment",3);
     //change the number
     (_testShader->MapAttribute("inSimData",4));
@@ -288,11 +364,11 @@ void OpenGlVisualizer::InitializeBuffers()
     _testShader->MapAttribute("inNormal",7);
 
     // position camera
-    float scale = 100;
-    float a = 0;
-    float b = 0;
-    float c = 0;
-    _cam.TranslateGlobal(vec3(a/scale,b/scale,c/scale));
+   // float scale = 100;
+   // float a = 0;
+   // float b = 0;
+   // float c = 0;
+   // _cam.TranslateGlobal(vec3(a/scale,b/scale,c/scale));
 
     // OpenGL Settings
     glClearColor(0.4f,0.4f,0.4f,0.0f);
@@ -315,6 +391,7 @@ void OpenGlVisualizer::InitializeBuffers()
                      N = normalize(N);
 
                      _surfaceNormals(y,x) = N;
+                     _surfaceNormals(y,x) = glm::vec3(1,1,1);
                  }
              }
      _normalBuffer.SetData(_surfaceNormals);
