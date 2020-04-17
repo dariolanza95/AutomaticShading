@@ -151,77 +151,16 @@ void RIBWriter::RotateAlongX(glm::mat4x4 & mat,float angle)
 void RIBWriter::WriteTransformationMatrix()
 {
     stringstream ss;
-    ss<<" Transform [ ";
+   /* ss<<" Transform [ ";
     glm::mat4x4 viewMatrix = _cam.ViewMatrix();
     viewMatrix = _cam.RIBMatrix();
-    float aaa[16] =
-    {
-         1 , 0, 0, 0,
-         0 , 0, -1, 0,
-         0 , 1, 0, 0,
-         0 , 0, 0, 1
-    };
-
-    float bbb[16] =
-    {
-        1 , 0, 0, 0,
-         0 , 1, 0, 0,
-         0 , 0, 1, 0,
-         0 , 0, 0, 1
-    };
-
-
-    float ccc[16] =
-    {
-        1 , 0, 0, 0,
-         0 , 1, 0, 0,
-         0 , 0, 1, 0,
-         0 , 0, 0, 1
-    };
-    glm::mat4x4 correctiveMatrix_second = glm::make_mat4x4(bbb);
-    glm::vec3 pos = _cam.Position();
-    glm::mat4x4 correctiveMatrix = glm::make_mat4x4(ccc);  //glm::mat4x4( -1.0f,0.0f,0.0f,0.0f  0.0f,0.0f,1.0f,0.0f  0,1,0,0  0,0,0,1 );
-    //glm::inverse(correctiveMatrix_second)*viewMatrix* correctiveMatrix
-    //viewMatrix =  viewMatrix * correctiveMatrix_second;
-
-   // RotateAlongX( viewMatrix,120);
-    //viewMatrix[3][0] = 0;
-    //viewMatrix[3][1] = 0;
-    //viewMatrix[3][2] = 0;
-    //viewMatrix[3][3] = 1;
-
-   // viewMatrix[3][3] *= -1;
-
-    //viewMatrix[3][0] = -151;
-    //viewMatrix[3][1] = 137.203;
-    //viewMatrix[3][2] = 287.644;
-    //viewMatrix[3][3] = 1;
-
-   // glm::inverse(viewMatrix);
-  //  viewMatrix[0][3] = -100 * pos[0];
-  //  viewMatrix[1][3] = -100 * pos[1];
-  //  viewMatrix[2][3] = 300 * pos[2];
-  //  viewMatrix[3][3] = 1;
-  //
-  //  viewMatrix[0][3] = -151;
-  //  viewMatrix[1][3] = 137.203;
-  //  viewMatrix[2][3] = 287.644;
-  //  viewMatrix[3][3] = 1;
-
 
     for(int i= 0;i<4;i++)
     {
         for(int j= 0;j<4;j++)
         {
-            // if( j == 3 && i != 3)
-            // {
-            //     ss<<" "<< 100 * pos[i];
-            // }
-            // else
             if( i == 3 && j != 3)
             {
-                std::cout<<"scaling cost "<< _cam.GetScalingCostant();
-                std::cout<<" POS "<< viewMatrix[i][j] * _cam.GetScalingCostant();
                 if(j==2)
                     ss<<" "<< -1 * viewMatrix[i][j] * _cam.GetScalingCostant();
                 else
@@ -237,7 +176,7 @@ void RIBWriter::WriteTransformationMatrix()
     ss<<" ]"<<std::endl;
 
 
-
+*/
     //ss << "Rotate "<< -1*_cam.rotX<<" 1 0 0"<<std::endl;
     //ss << "Rotate "<< _cam.rotY<<" 0 1 0"<<std::endl;
     //ss << "Rotate "<< _cam.rotZ<<" 0 0 1"<<std::endl;
@@ -245,6 +184,8 @@ void RIBWriter::WriteTransformationMatrix()
 
  //  ss<<"Transform [ 1 0 0 0 0 -0.8660 -0.5  0 0 0.5 -0.8660 0 -151 137.203 447.644 1 ]"<<std::endl;
 //   ss<<" Transform [ 1 0 0 0  0 1 0 0 0 0 1 0 0 0 0 1 ]"<<std::endl;
+    ss<<" Transform [ 1 0 0 0 0 -0.8660 -0.5  0 0 0.5 -0.8660 0 -151 177.203 447.644 1 ]"<<std::endl;;
+
     _rib_file<<ss.str();
 }
 
@@ -277,15 +218,16 @@ void RIBWriter::WriteArchive()
     string displname = "PxrDisplace1";
     string materialId = "PxrSurface1SG";
     string objID = "Landscape";
+    float displacementBound = 1;
     string line = "ObjectBegin \""+ objID+"\"\n";
            line += " Attribute \"Ri\" \"string Orientation\" [\"outside\"] \n" ;
-           line += " Attribute \"dice\" \"float micropolygonlength\" [1] \"int rasterorient\" [1] \"int watertight\" [0] \"string referencecamera\" [\"\"] \n";
-           line += " Attribute \"displacementbound\" \"float sphere\" [0.5] \"string CoordinateSystem\" [\"object\"] \n";
+           line += " Attribute \"dice\" \"float micropolygonlength\" [1] \"int rasterorient\" [1] \"int watertight\" [1] \"string referencecamera\" [\"\"] \n";
+           line += " Attribute \"displacementbound\" \"float sphere\" [1.5] \"string CoordinateSystem\" [\"object\"] \n";
            line += " Attribute \"identifier\" \"string object\" [\"input:MeshShape\"] \n";
            line += " Attribute \"polygon\" \"int smoothdisplacement\" [1] \n";
            line += " Attribute \"trace\" \"int displacements\" [1] \"int autobias\" [1] \"float bias\" [0.00999999978] \n";
           // line += " Displace \"PxrDisplace\" \" "+ displname + "\" \"string __materialid\" [\"" +materialId+ "\"] \n";
-             bool subdiv = false;
+             bool subdiv = true;
            if(subdiv)
             line += "HierarchicalSubdivisionMesh \"catmull-clark\" ";
            else
@@ -323,7 +265,7 @@ void RIBWriter:: Write()
              line += " Attribute \"polygon\" \"int smoothdisplacement\" [1] \n";
              line += " Attribute \"trace\" \"int displacements\" [1] \"int autobias\" [1] \"float bias\" [0.00999999978] \n";
              line += " Displace \"PxrDisplace\" \" "+ displname + "\" \"string __materialid\" [\"" +materialId+ "\"] \n";
-             bool subdiv = false;
+             bool subdiv = true;
            if(subdiv)
             line += "HierarchicalSubdivisionMesh \"catmull-clark\" ";
            else

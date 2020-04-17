@@ -15,7 +15,7 @@
 #include <glm/vec3.hpp>
 #include <glm/glm.hpp>
 
-
+#include "subdividerandinterpolator.h"
 
 typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
 
@@ -26,14 +26,17 @@ class LICMap
 {
     pcl::KdTreeFLANN<pcl::PointXYZLNormal> kdtree;
     pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud;
-
     pcl::KdTreeFLANN<pcl::PointXYZI> kdtree_output;
     pcl::PointCloud<pcl::PointXYZI>::Ptr Outputcloud;
+    void ReIterationLIC(float box_length,float frequency,float step_size,MyMesh mesh);
+    MyMesh _mesh;
 public:
-    LICMap(MyMesh mesh);
+    LICMap(MyMesh mesh,int subdivision_levels);
     float GetPoint(float point[3]);
+    
     void LIC(float box_length,float frequency,float step_size,MyMesh mesh);
-
+    void LIC2(float box_length,float frequency,float step_size,MyMesh _mesh);
+    int _subdiv_levels;
 };
 
 #endif // PCL_H

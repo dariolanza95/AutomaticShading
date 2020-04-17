@@ -13,34 +13,6 @@ char* fromStringToChar(std::string input)
 void PointCloudWriter::Init()
 {
 
-    char* _file_name;
-    _file_name = fromStringToChar(_output_file_name);
-    char *var_types[_num_shader_parameters];
-    char *var_names[_num_shader_parameters];
-    for(int i = 0; i<_num_shader_parameters;i++)
-    {
-        var_types[i] = fromStringToChar("float");
-        std::string var_name("shader_parameter_");
-        var_name+=std::to_string(i);
-        var_names[i] = fromStringToChar(var_name);
-    }
-    float world_to_eye [16];
-    float world_to_ndc [16];
-    for(int i = 0;i<16;i++)
-    {
-        world_to_eye[i] = world_to_ndc[i] = 0;
-    }
-    float format[3];
-    format[0] = 10;
-    format[1] = 10;
-    format[2] = 1.3;
-     _output_file = PtcCreatePointCloudFile (_file_name,_num_shader_parameters, var_types,var_names,
-                                                          world_to_eye, world_to_ndc,format);
-    if(_output_file == NULL )
-    {
-        std::cout<<"Err in the creation of the file... exiting";
-        exit(1);
-    }
 
 }
 
@@ -55,13 +27,19 @@ void PointCloudWriter::Write()
 
 
 
-    OpenMesh::Subdivider::Uniform::CatmullClarkT<MyMesh> catmull;
+    //OpenMesh::Subdivider::Uniform::CatmullClarkT<MyMesh> catmull;
     // Execute 1 subdivision steps
     std::cout<<_mesh.n_vertices()<<std::endl;
 
     //iterate for number of desired subdivisions
-    catmull.attach(_mesh);
-    catmull( 1 );
+    if(_subdiv_levels>0)
+    {SubdividerAndInterpolator<MyMesh> catmull;
+
+        catmull.attach(_mesh);
+        catmull( _subdiv_levels );
+        catmull.detach();
+    }
+
 int k = 0;
     std::cout<<"n vertices "<<_mesh.n_vertices()<<std::endl;
     MyMesh::VertexIter vertex_handle;
@@ -74,12 +52,13 @@ int k = 0;
         if(shader_param!=nullptr)
         {
             data[0] = shader_param->getId();
-            for(int i = 0;i<_num_shader_parameters-1;i++)
+            for(int i = 0;i<5-1;i++)
             {
                 data[i+1] = shader_param->getValue(i);
             }
 
         }
+
 
         mesh_point =  _mesh.point(*vertex_handle);
         point[0] = mesh_point[0];
@@ -94,14 +73,16 @@ int k = 0;
         //{
         //    data[i+1] = flow_dir[i];
         //}
-        data[2] = flow_res;
+        data[5] = flow_res;
+        if(flow_res < 0 || flow_res>1)
+            std::cout<<"err in flow_res "<< flow_res << std::endl;
         normal[0] = normal[1] = normal[2] = 0;
         PtcWriteDataPoint(_output_file, point, normal, radius, data);
     k++;
     }
     std::cout<<"k == "<<k<<std::endl;
     PtcClosePointCloudFile(_output_file);
-    catmull.detach();
+
 }
 
 //Useful debug function too check inside of a PointCloud file
@@ -160,9 +141,42 @@ void PointCloudWriter::Read()
 }
 
 
-PointCloudWriter::PointCloudWriter(MyMesh mesh,std::string input_file_name,int num_shader_parameters,LICMap licmap):
+PointCloudWriter::PointCloudWriter(MyMesh mesh,std::string input_file_name,int num_shader_parameters,LICMap licmap,int subdiv_levels):
     _mesh(mesh),
     _output_file_name(input_file_name),
     _num_shader_parameters(num_shader_parameters),
-    _licmap (licmap)
-{}
+    _licmap (licmap),
+    _subdiv_levels(subdiv_levels)
+{
+
+    char* _file_name;
+    _file_name = fromStringToChar(_output_file_name);
+    char *var_types[_num_shader_parameters];
+    char *var_names[_num_shader_parameters];
+    for(int i = 0; i<_num_shader_parameters;i++)
+    {
+        var_types[i] = fromStringToChar("float");
+        std::string var_name("shader_parameter_");
+        var_name+=std::to_string(i);
+        var_names[i] = fromStringToChar(var_name);
+    }
+    float world_to_eye [16];
+    float world_to_ndc [16];
+    for(int i = 0;i<16;i++)
+    {
+        world_to_eye[i] = world_to_ndc[i] = 0;
+    }
+    float format[3];
+    format[0] = 10;
+    format[1] = 10;
+    format[2] = 1.3;
+     _output_file = PtcCreatePointCloudFile (_file_name,_num_shader_parameters, var_types,var_names,
+                                                          world_to_eye, world_to_ndc,format);
+    if(_output_file == NULL )
+    {
+        std::cout<<"Err in the creation of the file... exiting";
+        exit(1);
+    }
+
+
+}

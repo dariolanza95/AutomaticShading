@@ -96,7 +96,9 @@ HEADERS += *.h\
     Resources/pointcloudwritertester.h \
     Resources/materialclassifier.h \
     Resources/LICMap.h \
-    ../Noise/FastNoise/FastNoise.h
+    ../Noise/FastNoise/FastNoise.h \
+    Resources/subdividerandinterpolator.h \
+    Resources/subdividerandinterpolator_impl.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system

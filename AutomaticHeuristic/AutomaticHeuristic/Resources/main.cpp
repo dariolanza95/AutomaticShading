@@ -782,20 +782,22 @@ string obj_file = "../../Data/input.obj";
 
 
   std::string filename("../../Data/test_file.f3d");
-  //FieldThreeDWriter fieldwriter(mesh,filename);
-  // fieldwriter.Write();
+  FieldThreeDWriter fieldwriter(mesh,filename);
+   fieldwriter.Write();
    filename = "../../Data/test_pointcloud";
-   LICMap licmap(mesh);
-   float BoxLength = 15;
-   float freq = 30;
+   int subdivs = 1;
+   LICMap licmap(mesh,subdivs);
+   float multiplier = 2;
+   float BoxLength = 70;
+   float freq = 20*multiplier;
    float step_size = freq > 1 ? 1/(freq*2) : freq;
    std::cout<<"Here we go!BoxLength "<< BoxLength <<std::endl;
-   licmap.LIC(BoxLength,freq,1,mesh);
+   licmap.LIC2(BoxLength,freq,1,mesh);
    std::cout<<"LIC calculated"<<std::endl;
-   PointCloudWriter pcw(mesh,filename,5,licmap);
-    pcw.Init();
+   PointCloudWriter pcw(mesh,filename,6,licmap,subdivs);
+    //pcw.Init();
     pcw.Write();
-    pcw.Read();
+   // pcw.Read();
     std::cout<<"Bye bye"<<std::endl;
     return 0;
 }

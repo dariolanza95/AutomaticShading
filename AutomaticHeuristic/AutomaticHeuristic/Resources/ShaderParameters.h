@@ -6,13 +6,16 @@
 class ShaderParameters
 {
    const int  _id ;
-    std::vector<float> _list;
+
     glm::vec3 _vector;
 public:
 
     ShaderParameters();
+    //ShaderParameters(ShaderParameters &sp);
+
     ShaderParameters(int id,int size);
     int getId();
+    std::vector<float> _list;
     int getParametersListSize();
     void setVector(glm::vec3);
     glm::vec3 getVector();

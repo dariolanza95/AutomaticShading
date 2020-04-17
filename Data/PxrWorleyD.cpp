@@ -148,6 +148,20 @@ PxrWorleyD::Init(RixContext &ctx, RtUString const pluginpath)
         return 0;
 }
 
+RtVector3 PxrWorleyD::FindOrthogonalVector(RtVector3 dir)
+{
+    RtVector3 UpDir(1,0,0);
+    RtVector3 temp_vector = Cross(dir,UpDir);
+    if(temp_vector[0]==0 && temp_vector[1]==0 && temp_vector[2]==0)
+    {
+        UpDir = RtVector3(0,1,0);
+        temp_vector = Cross(dir,UpDir);
+    }
+    RtVector3 orthogonal_vec= Cross(dir,temp_vector);
+    Normalize(orthogonal_vec);
+    return orthogonal_vec ;
+}
+
 float PxrWorleyD::LIC(RtPoint3 pp,PtcPointCloud inptc,float *data,int _FlowLength,float scale)
 {
  int w = 0;
@@ -495,9 +509,9 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
 
 
       //  if (*surfacePosition == k_usePo)
-        //    sctx->GetBuiltinVar(RixShadingContext::k_Po, &Q);
+            sctx->GetBuiltinVar(RixShadingContext::k_Po, &Q);
         //else
-            sctx->GetBuiltinVar(RixShadingContext::k_P, &Q);
+       //     sctx->GetBuiltinVar(RixShadingContext::k_P, &Q);
 
         sP = pool.AllocForPattern<RtPoint3>(sctx->numPts);
         memcpy(sP, Q, sizeof(RtPoint3)*sctx->numPts);
@@ -556,6 +570,19 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
         hardness_colors[2].r = 0.16;
         hardness_colors[2].g = 0.1;
         hardness_colors[2].b = 0.07;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         RtColorRGB hardness_colors_secondary[hardness_levels];
@@ -757,6 +784,7 @@ float temp_res;
 
         }
 */
+
 testpoint = pp;
         proj = 0;
 
@@ -826,19 +854,8 @@ testpoint = pp;
                             f3cell = f2cell;
                             f2cell = pos;
                         }
-                       /* else
-                        if(dist<f3)
-                        {
-                            f4 = f3;
-                            f3 = dist;
-                            f4cell = f3cell;
-                            f3cell = pos;
-                        }
-                        else if(dist<f4)
-                        {
-                            f4=dist;
-                            f4cell = pos;
-                        }*/
+
+
                 }
             }
         }
@@ -885,28 +902,30 @@ testpoint = pp;
             //point[2] = sP[n].z;
             //
 
+                int K = 10;
             RtVector3 dir(0,0,0);
 
                 point[0] = pp.x;//thiscell.x;
                 point[1] = pp.y;//thiscell.y;
                 point[2] = pp.z;//thiscell.z;
 
-                int Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, 27, data);
+                int Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, K, data);
                 float val = 1;
 
                 if(Readres==1)
                 {
 
-                    //val = data[2];
+                    val = data[5];
                    // val = 0.5 + 0.5*val;
                   //  testpoint = thiscell - pp;
+
                     dir.x = (data[2]);
                     dir.y = (data[3]);
                     dir.z = (data[4]);
                     //Normalize( dir);
-
+                  //  std::cout<<" x " << dir.x << " y "<< dir.y << " z " << dir.z<<std::endl;
                 }
-
+                dir = FindOrthogonalVector(dir);
 
                 point[0] = f1cell.x;
                 point[1] = f1cell.y;
@@ -936,8 +955,40 @@ testpoint = pp;
 
                 }
 
+/*
 
 
+
+    float delta = 0.25;
+    float val_dflow = 0;
+    float val_minus_dflow = 0;
+                point[0] = pp.x + dir.x*delta;
+                point[1] = pp.y + dir.y*delta;
+                point[2] = pp.z + dir.z*delta;
+
+                Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, K, data);
+
+
+                if(Readres==1)
+                {
+                  //  testpoint = thiscell - pp;
+                  val_dflow = data[5];
+
+                }
+
+                            point[0] = pp.x - dir.x*delta;
+                            point[1] = pp.y - dir.y*delta;
+                            point[2] = pp.z - dir.z*delta;
+
+                            Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, K, data);
+
+
+                            if(Readres==1)
+                            {
+                              //  testpoint = thiscell - pp;
+                              val_minus_dflow = data[5];
+
+                            }
 
 
                      //   float3 col = tex2D(_NoiseTex, IN.uv);
@@ -1044,8 +1095,9 @@ testpoint = pp;
 //                res = std::pow(2.0f, -8.0*res*res);
 
 */
- float displ_mult = 0;
-    float dda= DDA(pp,dir,30,0.3);
+
+ float displ_mult = 1;
+    /*float dda= DDA(pp,dir,30,0.3);
 
     float lic = DDA(pp,dir,40,1.3);//LIC(pp,inptc,data,3,1.5);
     float details = DDA(pp,dir,40,3);
@@ -1063,23 +1115,47 @@ testpoint = pp;
     res = RixSmoothStep(0,1,res);
     res = RixSmoothStep(0,1,details);
 
-
-/*
- float a  = 0;
- float b = 1;
- float c = 0.43;
- d = 0.57;
-
-val = 0.5+0.5*val;
-val = (val - c)*((b-a)/(d-c)) + a;
-res = val;
 */
 
+ float a  = 0;
+ float b = 1;
+
+ float c = 0.5;//0.43;
+       d = 0.9;//0.57;
+//
+//
+//val = (val - c)*((b-a)/(d-c)) + a;
+//val = std::pow(1.5f, -2.0*val*val);
+//val = 0.5+0.5*val;
+
+//std::cout<<"val "<<val<<std::endl;
+
+/*
+val_dflow = 0.5+0.5*val_dflow;
+val_dflow = (val_dflow - c)*((b-a)/(d-c)) + a;
+val_minus_dflow = 0.5+0.5*val_minus_dflow;
+val_minus_dflow = (val_minus_dflow - c)*((b-a)/(d-c)) + a;
+float min = 0.1;
+float maxx = 0.85;
+val = RixSmoothStep(0,1 ,val );
+val_dflow =       RixSmoothStep(min,maxx ,val_dflow );
+val_minus_dflow = RixSmoothStep(min,maxx ,val_minus_dflow );
+*
+float gradient = (val_dflow - val)/delta + ( val_minus_dflow-val)/delta;
+float details = (val + gradient)*0.5;
+//details = (val_dflow - val)/delta;
+//val = (val_minus_dflow- val  )/delta;
+float details = 0;
+details = RixSmoothStep(0,1 ,details );
+*/
+res = val;
+
+
+res = RixSmoothStep(0,1 ,res );
 
 
 
-
-float blend = RixSmoothStep(0,1 ,res );
+//float blend = RixSmoothStep(0,1 ,res );
 
 
         float dist1,dist2 ;
@@ -1112,7 +1188,7 @@ float blend = RixSmoothStep(0,1 ,res );
 
 
         //index1 = min_dist1<min_dist2 ? index1 : index2;
-        RtColorRGB col;
+        RtColorRGB col(1,0,0) ;
         float displ =0 ;
         if(index1>=0)
         {
@@ -1160,17 +1236,24 @@ float blend = RixSmoothStep(0,1 ,res );
             RtColorRGB white(1,1,1);
             //resultRGB[n] = RixLerpRGB(black,white,blend);
             //if(index1 != -1)
-                resultRGB[n] = RixLerpRGB( col,hardness_colors_secondary[index1],details);
+
+
+
+            //    resultRGB[n] = RixLerpRGB( col,hardness_colors_secondary[index1],details);
             //else
-            //    resultRGB[n]  = RtColorRGB(0,0,0);
-            //resultRGB[n] = RixLerpRGB( hardness_colors[0], hardness_colors[1],res);
-             res += 0.5*Fbm(pp*0.4,4,0.5);
-         //resultRGB[n].r = resultRGB[n].b = resultRGB[n].g =res;
+                resultRGB[n]  = RtColorRGB(0.3,0.3,0.3);
+           // resultRGB[n] = RixLerpRGB(red, blue,res);
+//              resultRGB[n] = RixLerpRGB( hardness_colors[0], hardness_colors[1],res);
+            // res = 0.5*Fbm(pp*0.4,4,0.5);
 
-          resultDispl[n] = (1-res)*displ_mult + displ;
-          //resultDispl[n] =0;//  displ;
+             //res = res + 0.5*Fbm(pp*0.4,4,0.3);
 
-             //resultDispl[n] =  displ;
+             resultRGB[n].r = resultRGB[n].b = resultRGB[n].g =res;
+          //  resultRGB[n] = col;
+                displ = 0;
+          //resultDispl[n] = (1-res)*displ_mult + displ;
+          resultDispl[n] = 0;//  displ;
+
 
  //   for (unsigned i=0; i<sctx->numPts; i++)
  //   {
