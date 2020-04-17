@@ -243,9 +243,9 @@ int w = 0;
                 if(j==1)
                     flow_vector = -flow_vector;
                //  MyMesh::VertexVertexIter vvit = _mesh.vv_iter(next_point);
-                 actual_point[0] += flow_vector[0];
-                 actual_point[1] += flow_vector[1];
-                 actual_point[2] += flow_vector[2];
+                 actual_point[0] += flow_vector[0]*step_size;
+                 actual_point[1] += flow_vector[1]*step_size;
+                 actual_point[2] += flow_vector[2]*step_size;
 
                  dist = 0;
                  min_dist = INFINITY;
@@ -403,9 +403,9 @@ int w = 0;
                 if(j==1)
                     flow_vector = -flow_vector;
                //  MyMesh::VertexVertexIter vvit = _mesh.vv_iter(next_point);
-                 actual_point[0] += flow_vector[0];
-                 actual_point[1] += flow_vector[1];
-                 actual_point[2] += flow_vector[2];
+                 actual_point[0] += flow_vector[0]*step_size;
+                 actual_point[1] += flow_vector[1]*step_size;
+                 actual_point[2] += flow_vector[2]*step_size;
 
                  dist = 0;
                  min_dist = INFINITY;
@@ -528,7 +528,7 @@ void LICMap::ReIterationLIC(float box_length,float frequency,float step_size,MyM
 
 }*/
 
-
+/*
 void LICMap::LIC(float box_length,float frequency,float step_size,MyMesh mesh)
 {
      FastNoise noise;
@@ -644,7 +644,7 @@ for(int j = 0;j<cloud->points.size();j++)
     Outputcloud = new_point_cloud;
   kdtree_output.setInputCloud (Outputcloud);
 }
-
+*/
 
 float LICMap::GetPoint(float point[3])
 {

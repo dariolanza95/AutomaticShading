@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+echo "Halo"
+cd ../../Data/
+prman -progress mountainsceneTemplateOutput.rib

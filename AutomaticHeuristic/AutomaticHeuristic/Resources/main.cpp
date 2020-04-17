@@ -787,18 +787,21 @@ string obj_file = "../../Data/input.obj";
    filename = "../../Data/test_pointcloud";
    int subdivs = 1;
    LICMap licmap(mesh,subdivs);
-   float multiplier = 2;
+   float multiplier = 3;
    float BoxLength = 70;
    float freq = 20*multiplier;
-   float step_size = freq > 1 ? 1/(freq*2) : freq;
+   float step_size =  subdivs!= 0 ? 1/subdivs : 1;
    std::cout<<"Here we go!BoxLength "<< BoxLength <<std::endl;
-   licmap.LIC2(BoxLength,freq,1,mesh);
+   licmap.LIC2(BoxLength,freq,step_size,mesh);
    std::cout<<"LIC calculated"<<std::endl;
    PointCloudWriter pcw(mesh,filename,6,licmap,subdivs);
     //pcw.Init();
-    pcw.Write();
-   // pcw.Read();
+   pcw.Write();
+    // pcw.Read();
     std::cout<<"Bye bye"<<std::endl;
+
+    char *args_prman[]={"./myscript",NULL};
+    execvp (args_prman[0],args_prman);
     return 0;
 }
 

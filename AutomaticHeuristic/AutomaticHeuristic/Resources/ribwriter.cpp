@@ -184,7 +184,7 @@ void RIBWriter::WriteTransformationMatrix()
 
  //  ss<<"Transform [ 1 0 0 0 0 -0.8660 -0.5  0 0 0.5 -0.8660 0 -151 137.203 447.644 1 ]"<<std::endl;
 //   ss<<" Transform [ 1 0 0 0  0 1 0 0 0 0 1 0 0 0 0 1 ]"<<std::endl;
-    ss<<" Transform [ 1 0 0 0 0 -0.8660 -0.5  0 0 0.5 -0.8660 0 -151 177.203 447.644 1 ]"<<std::endl;;
+    ss<<" Transform [  1 0 0 0 0 -0.241805 -0.970205 0 0 0.970205 -0.241805 0 -164.45 43.2274 314.337 1 ]"<<std::endl;;
 
     _rib_file<<ss.str();
 }

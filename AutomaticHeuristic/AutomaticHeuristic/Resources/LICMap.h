@@ -34,8 +34,8 @@ public:
     LICMap(MyMesh mesh,int subdivision_levels);
     float GetPoint(float point[3]);
     
-    void LIC(float box_length,float frequency,float step_size,MyMesh mesh);
-    void LIC2(float box_length,float frequency,float step_size,MyMesh _mesh);
+    void LIC2(float box_length,float frequency,float step_size,MyMesh mesh);
+    //void LIC2(float box_length,float frequency,float step_size,MyMesh _mesh);
     int _subdiv_levels;
 };
 
