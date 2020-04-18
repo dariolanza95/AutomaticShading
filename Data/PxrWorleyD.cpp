@@ -572,19 +572,6 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
         hardness_colors[2].b = 0.07;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         RtColorRGB hardness_colors_secondary[hardness_levels];
 
 
@@ -597,6 +584,17 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
         hardness_colors_secondary[2].r = 0.16*1.5;
         hardness_colors_secondary[2].g =  0.1*1.5;
         hardness_colors_secondary[2].b = 0.07*1.5;
+
+       // hardness_colors_secondary[0].r = 0.21;
+       // hardness_colors_secondary[0].g = 0.16;
+       // hardness_colors_secondary[0].b = 0.13;
+       // hardness_colors_secondary[1].r = 0.24;
+       // hardness_colors_secondary[1].g = 0.17;
+       // hardness_colors_secondary[1].b = 0.11;
+       // hardness_colors_secondary[2].r = 0.19;
+       // hardness_colors_secondary[2].g = 0.17;
+       // hardness_colors_secondary[2].b =  0.1;
+
 
         int datasize;
         normal[0] = normal[1] = normal[2] = 0;
@@ -925,6 +923,7 @@ testpoint = pp;
                     //Normalize( dir);
                   //  std::cout<<" x " << dir.x << " y "<< dir.y << " z " << dir.z<<std::endl;
                 }
+                RtVector3 dir_details = dir;
                 dir = FindOrthogonalVector(dir);
 
                 point[0] = f1cell.x;
@@ -955,7 +954,7 @@ testpoint = pp;
 
                 }
 
-/*
+
 
 
 
@@ -1119,37 +1118,38 @@ testpoint = pp;
 
  float a  = 0;
  float b = 1;
+float color_details = DDA(pp,dir_details,40,3);
 
- float c = 0.5;//0.43;
-       d = 0.9;//0.57;
+ float c = 0.43;
+       d = 0.57;
 //
 //
-//val = (val - c)*((b-a)/(d-c)) + a;
+color_details = (color_details - c)*((b-a)/(d-c)) + a;
 //val = std::pow(1.5f, -2.0*val*val);
 //val = 0.5+0.5*val;
 
 //std::cout<<"val "<<val<<std::endl;
 
-/*
-val_dflow = 0.5+0.5*val_dflow;
-val_dflow = (val_dflow - c)*((b-a)/(d-c)) + a;
-val_minus_dflow = 0.5+0.5*val_minus_dflow;
-val_minus_dflow = (val_minus_dflow - c)*((b-a)/(d-c)) + a;
+
+//val_dflow = 0.5+0.5*val_dflow;
+//val_dflow = (val_dflow - c)*((b-a)/(d-c)) + a;
+//val_minus_dflow = 0.5+0.5*val_minus_dflow;
+//val_minus_dflow = (val_minus_dflow - c)*((b-a)/(d-c)) + a;
 float min = 0.1;
 float maxx = 0.85;
 val = RixSmoothStep(0,1 ,val );
 val_dflow =       RixSmoothStep(min,maxx ,val_dflow );
 val_minus_dflow = RixSmoothStep(min,maxx ,val_minus_dflow );
-*
+
 float gradient = (val_dflow - val)/delta + ( val_minus_dflow-val)/delta;
 float details = (val + gradient)*0.5;
 //details = (val_dflow - val)/delta;
-//val = (val_minus_dflow- val  )/delta;
-float details = 0;
+details  = (val_minus_dflow- val  )/delta;
+details = details<0 ? -details : details;
 details = RixSmoothStep(0,1 ,details );
-*/
-res = val;
 
+res = val;
+//res = details;
 
 res = RixSmoothStep(0,1 ,res );
 
@@ -1230,37 +1230,56 @@ res = RixSmoothStep(0,1 ,res );
 
 
             RtColorRGB red(1,0,0);
-            RtColorRGB blue(0,0,1);
+            RtColorRGB green(0,0,1);
+            red.r = 0.18;
+            red.g = 0.13;
+            red.b = 0.09;
+
+            green.r = 0.13;
+            green.g = 0.18;
+            green.b = 0.09;
+
+           // col = hardness_colors[2];
+
 
             RtColorRGB black(1,1,1);
             RtColorRGB white(1,1,1);
             //resultRGB[n] = RixLerpRGB(black,white,blend);
             //if(index1 != -1)
+            float center = 0.12;
+            offset = 0.1;
+            float red_stripes = RixSmoothStep(center - offset   ,center+offset ,res );
+            center = 0.712;
+             float green_stripes = RixSmoothStep(center - offset   ,center+offset ,res );
 
+          //resultRGB[n] = RixLerpRGB( red,col,red_stripes);
+          //resultRGB[n] = RixLerpRGB( green,resultRGB[n],green_stripes);
 
-
-            //    resultRGB[n] = RixLerpRGB( col,hardness_colors_secondary[index1],details);
+        resultRGB[n] = RixLerpRGB( col,hardness_colors_secondary[index1],color_details);
+//resultRGB[n] = hardness_colors_secondary[index1];
+//                resultRGB[n] = RixLerpRGB( col,hardness_colors_secondary[index1],color_details);
             //else
-                resultRGB[n]  = RtColorRGB(0.3,0.3,0.3);
+   //             resultRGB[n]  = RtColorRGB(0.3,0.3,0.3);
            // resultRGB[n] = RixLerpRGB(red, blue,res);
-//              resultRGB[n] = RixLerpRGB( hardness_colors[0], hardness_colors[1],res);
+          //   resultRGB[n] = RixLerpRGB( hardness_colors[0], hardness_colors[1],res);
             // res = 0.5*Fbm(pp*0.4,4,0.5);
 
              //res = res + 0.5*Fbm(pp*0.4,4,0.3);
 
-             resultRGB[n].r = resultRGB[n].b = resultRGB[n].g =res;
+          //   resultRGB[n].r = resultRGB[n].b = resultRGB[n].g =res;
           //  resultRGB[n] = col;
-                displ = 0;
-          //resultDispl[n] = (1-res)*displ_mult + displ;
-          resultDispl[n] = 0;//  displ;
+
+          resultDispl[n] = (1-res)*displ_mult + displ;
+          //resultDispl[n] = 0;//  displ;
 
 
- //   for (unsigned i=0; i<sctx->numPts; i++)
- //   {
- //      // resultRGB[i] = resultRGB[i] * colorScale[i] + colorOffset[i];
- //       resultF[i] = resultF[i] * floatScale[i] + floatOffset[i];
- //   }
 }
+
+    for (unsigned i=0; i<sctx->numPts; i++)
+    {
+        resultRGB[i] = resultRGB[i] * colorScale[i] + colorOffset[i];
+        resultF[i] = resultF[i] * floatScale[i] + floatOffset[i];
+    }
     return 0;
 }
 
