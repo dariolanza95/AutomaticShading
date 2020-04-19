@@ -9,6 +9,8 @@
 typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
 using namespace std;
 
+
+
 class AClassifier
 {
 protected:

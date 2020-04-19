@@ -82,10 +82,10 @@ private :
     Grid2D<float> _suspendedSediment;
     Grid2D<float> _simData;
     Grid2D<vec3>  _surfaceNormals;
-    string _obj_file;
+    std::string _obj_file;
 
 public:
-    OpenGlVisualizer(GLFWwindow* window,int width,int height,MyMesh mesh,string obj_file);
+    OpenGlVisualizer(GLFWwindow* window,int width,int height,MyMesh mesh,std::string obj_file);
     void Initialize();
     void Visualize();
 

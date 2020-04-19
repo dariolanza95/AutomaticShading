@@ -3,20 +3,31 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include <iterator>
-#include <vector>
 #include <map>
 #include <exception>
-#include <boost/any.hpp>
 #include <glm/vec3.hpp>
-using namespace std;
+#include <vector>
+#include "../Graphics/exceptionclass.h"
+
+
+enum class SimulationDataEnum{vegetation,river,hardness,flow_normal};
+
 class SimulationData
 {
-    public:
-        map<string,boost::any> _map;
-        SimulationData(map<string,boost::any> map);
+        std::map<std::string, SimulationDataEnum> SimulationDataEnummap = {
+            {"flow_normal", SimulationDataEnum::flow_normal},
+            {"hardness", SimulationDataEnum::hardness}
+            };
 
-        SimulationData(vector<string> nameVariables, const string& str);
+        std::map<SimulationDataEnum,float> map_of_floats;
+        std::map<SimulationDataEnum,glm::vec3> map_of_vectors;
+        void readLine(const std::string line );
+
+    public:
+        SimulationData(const std::string str);
+        void getData(SimulationDataEnum data_enum, float& data);
+        void getData(SimulationDataEnum data_enum, glm::vec3& data);
+
 
 };
 #endif // SIMULATIONDATA_H

@@ -12,7 +12,9 @@ class selectRiverFrontierFunctorClass
             int operator() (MyMesh::VertexHandle vertex_handle) {
             auto simulation_data_wrapper = getOrMakeProperty<VertexHandle,SimulationData*>(_mesh, "simulation_data");
             SimulationData* sd  = simulation_data_wrapper[vertex_handle];
-            if(boost::any_cast<float>(sd->_map.at("rivers"))<=0.0f)
+            float river;
+            sd->getData(SimulationDataEnum::river,river);
+            if(river<=0.0f)
                 return 1;
             else
                 return 0;
@@ -121,11 +123,12 @@ _max_height = max;
               {
                   auto simulation_data_wrapper = getOrMakeProperty<VertexHandle,SimulationData*>(_mesh, "simulation_data");
                   SimulationData* sd = simulation_data_wrapper[*vertex_vertex_iterator];
-                  river = boost::any_cast<float>(sd->_map.at("rivers"));
+                  float river;
+                  sd->getData(SimulationDataEnum::river,river);
                   if( river == 0)
                   {
                       //insert in the map the actual vertex
-                      frontier.insert(make_pair(vertex_handle,boost::any_cast<float>(simulation_data_wrapper[*vertex_vertex_iterator]->_map.at("rivers"))));
+                      frontier.insert(make_pair(vertex_handle,river));
                       break;
                   }
               }
@@ -140,9 +143,11 @@ _max_height = max;
           for(vertex_iterator=_mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
          {
              SimulationData* sd = simulation_data_wrapper[*vertex_iterator];
-             if(boost::any_cast<float>(sd->_map.at("rivers"))>0.0f)
+             float river;
+             sd->getData(SimulationDataEnum::river,river);
+             if(river>0.0f)
              {
-                 river_vertices.insert(make_pair(*vertex_iterator,boost::any_cast<float>(sd->_map.at("rivers"))));
+                 river_vertices.insert(make_pair(*vertex_iterator,river));
              }
          }
      return river_vertices;

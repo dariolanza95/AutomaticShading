@@ -180,10 +180,7 @@ distclean: clean
 	-$(DEL_FILE) Makefile
 
 
-first: $(first) copydata
 
-copydata:
-	$(COPY_DIR) /home/pandora/thesis/AutomaticShading/terrain-erosion/Resources /home/pandora/thesis/AutomaticShading/build-TerrainFluid-Qt_4_8_7_in_PATH_qt4-Release
 
 check: first
 

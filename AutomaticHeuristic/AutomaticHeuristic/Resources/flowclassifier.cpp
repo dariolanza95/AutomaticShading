@@ -22,7 +22,6 @@ map<MyMesh::VertexHandle,ShaderParameters*> FlowClassifier::ClassifyVertices()
     map<MyMesh::VertexHandle,ShaderParameters*> selected_vertices;
     auto flow_vertices = selectFlowVertices();
     selected_vertices =  ComputeShaderParameters(flow_vertices);
-    //selected_vertices =  DebugFunction(flow_vertices);
     return selected_vertices;
 }
 
@@ -113,11 +112,11 @@ map<MyMesh::VertexHandle,glm::vec3> FlowClassifier::selectFlowVertices()
     {
         SimulationData* sd = simulation_data_wrapper[*vertex_iterator];
         //normalize it!
-        glm::vec3 normal = boost::any_cast<glm::vec3>(sd->_map.at("normalFlow"));
-
+        glm::vec3 normal;
+        sd->getData(SimulationDataEnum::flow_normal,normal);
         if(normal[0] != 0 || normal[1] != 0 || normal[2] != 0)
         {
-            flow_vertices.insert(make_pair(*vertex_iterator,boost::any_cast<glm::vec3>(sd->_map.at("normalFlow"))));
+            flow_vertices.insert(make_pair(*vertex_iterator,normal));
         }
     }
 return flow_vertices;

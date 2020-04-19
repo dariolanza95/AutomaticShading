@@ -256,10 +256,10 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
         for (uint x=0; x < _simulationState.vegetation.width(); x++)
         {
             temp++;
-            (*datafile )<< _simulationState.simData(x,y);
-            (*datafile )<<" "<< _simulationState.vegetation(x,y);
+            //(*datafile )<< _simulationState.simData(x,y);
+            //(*datafile )<<" "<< _simulationState.vegetation(x,y);
             float z = _simulationState.terrain(x,y);
-            (*datafile)<< " "<< GetTerrainCapacity(x,y,z,_simulation.noise_sediment_frequency,_simulation._stratified_layer_width);
+            (*datafile)<< "hardness "<< GetTerrainCapacity(x,y,z,_simulation.noise_sediment_frequency,_simulation._stratified_layer_width);
 
             //vec3 flowNormal (_simulation.uVel(x,y),_simulation.vVel(x,y),_simulation.zVel(x,y));
             vec3 flowNormal(0,0,0);
@@ -269,7 +269,7 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
                 flowNormal = normalize(flowNormal);
             }
 
-            (*datafile )<<" v "<< flowNormal[0]  << " "<< flowNormal[1]<< " "<< flowNormal[2];
+            (*datafile )<<" flow_normal v "<< flowNormal[0]  << " "<< flowNormal[1]<< " "<< flowNormal[2];
             (*datafile)<< std::endl;
         }
     }

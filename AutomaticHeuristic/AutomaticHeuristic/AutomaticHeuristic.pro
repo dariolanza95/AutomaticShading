@@ -45,7 +45,8 @@ SOURCES += *.cpp \
     Resources/pointcloudwritertester.cpp \
     Resources/materialclassifier.cpp \
     Resources/LICMap.cpp \
-    ../Noise/FastNoise/FastNoise.cpp
+    ../Noise/FastNoise/FastNoise.cpp \
+    Graphics/exceptionclass.cpp
 
 
 
@@ -98,7 +99,8 @@ HEADERS += *.h\
     Resources/LICMap.h \
     ../Noise/FastNoise/FastNoise.h \
     Resources/subdividerandinterpolator.h \
-    Resources/subdividerandinterpolator_impl.h
+    Resources/subdividerandinterpolator_impl.h \
+    Graphics/exceptionclass.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system

@@ -1,106 +1,98 @@
 #include "simulationdata.h"
+using namespace std;
 
-class SimulationDataException: public exception
+bool isANumber(const string str,float& converted)
 {
-  int _num_of_variables;
-  int _num_of_data_in_file;
-public:
-  SimulationDataException(int num_of_variables,int num_of_data_in_file)
-  {
-      _num_of_variables = num_of_variables;
-      _num_of_data_in_file = num_of_data_in_file;
-  }
-  virtual const char* what() const throw()
-  {
-    stringstream res;
-    res<<"In the file there are at least"<< _num_of_data_in_file << " variables but the programm is expecting  "<< _num_of_variables<<endl;
-    string temp(res.str());
-    return temp.c_str();
-  }
-};
-
-
-SimulationData::SimulationData(map<string,boost::any> map)
+    char cstr[str.size() + 1];
+    strcpy(cstr, str.c_str());
+    char* p;
+    converted = strtof(cstr, &p);
+    if(*p)
+        return false;
+    else
+        return true;
+}
+void SimulationData::readLine(const string line )
 {
-    _map = map;
+    std::string buf;
+    std::stringstream ss(line);
+    std::vector<std::string> tokens;
+    while (ss >> buf)
+        tokens.push_back(buf);
+    SimulationDataEnum data_name;
+    bool waiting_for_a_number = false;
+    bool waiting_for_a_vector = false;
+
+       for(uint i = 0 ; i< tokens.size();i++) {
+           string str= tokens[i];
+            float converted = -1;
+           if (!isANumber(str,converted)) {
+              if(SimulationDataEnummap.count(str)>0 && !waiting_for_a_number){
+                  data_name = SimulationDataEnummap[str];
+                  waiting_for_a_number = true;
+                  waiting_for_a_vector = false;
+                }
+              else{
+                  if(waiting_for_a_number && str[0] == 'v'){
+                      waiting_for_a_vector = true;
+                      continue;
+                  }
+                  else {
+                      stringstream err("Symbol not present ");
+                      ss<<str;
+                      throw ExceptionClass(err.str());
+                  }
+
+              }
+           }
+           else {
+               if(waiting_for_a_vector){
+                    glm::vec3 vec;
+                    for(int j = 0;j<3;j++,i++)
+                    {
+                        str= tokens[i];
+                        if(isANumber(str,converted)){
+                            vec[j] = converted;
+                        }else{
+                            string err("Incomplete vector");
+                            throw ExceptionClass (err);
+                        }
+                    }
+                    map_of_vectors.insert(pair<SimulationDataEnum,glm::vec3> (data_name,vec));
+               }
+               else {
+                    if(waiting_for_a_number){
+                       map_of_floats.insert(pair<SimulationDataEnum,float> (data_name,converted));
+                        waiting_for_a_number = false;
+                    }
+                    else{
+                        stringstream err("Found a number without the name of the data");
+                        throw ExceptionClass(err.str());
+                    }
+               }
+
+           }
+       }}
+
+void SimulationData::getData(SimulationDataEnum data_enum, glm::vec3& data){
+    if(map_of_vectors.count(data_enum)>0)
+        data = map_of_vectors[data_enum];
+
 }
 
-SimulationData::SimulationData(vector<string> nameVariables, const string& str)
+
+void SimulationData::getData(SimulationDataEnum data_enum, float& data){
+    if(map_of_floats.count(data_enum)>0)
+        data = map_of_floats[data_enum];
+
+}
+
+SimulationData::SimulationData(const string str)
 {
-
-        //vector<float> cont;
-        char delim = ' ';
-        int i = 0;
-        std::size_t current, previous = 0;
-        stringstream res;
-        current = str.find(delim);
-        string substring;
-        while (current != std::string::npos)
-        {
-            substring=str.substr(previous, current - previous);
-            if( i <nameVariables.size())
-            {
-                if(!substring.empty())
-                {
-                    //next 3 floats will be a vector
-                    if(substring.at(0) == 'v')
-                    {
-                        glm::vec3 vec;
-
-                        for(int j=0;j<3;j++)
-                        {
-                            previous = current +1;
-                            current = str.find(delim, previous);
-                            if(current== std::string::npos)
-                            {
-                                substring = str.substr(previous, str.length()-previous);
-                                current = previous -1 ;
-                            }
-                            else
-                            {
-                                substring=str.substr(previous, current - previous);
-
-                            }
-                            //previous = current +1;
-                            vec[j] = stof(substring,NULL);
-                        }
-                        _map.insert(make_pair(nameVariables[i++],vec));
-
-                    }
-                    else
-                    {
-                        _map.insert(pair<string,float> (nameVariables[i++],stof(substring,NULL)));
-                    }
-
-
-                }
-
-            }
-            else
-            {
-                res<<"In the file there are at least"<< i << " variables but the programm is expecting  "<< nameVariables.size()<<endl;
-                string temp(res.str());
-                throw temp.c_str();
-            }
-            previous = current +1;
-            current = str.find(delim, previous);
-        }
-
-        if(i<nameVariables.size())
-        {
-            if(!substring.empty())
-                _map.insert(pair<string,float> (nameVariables[i++],stof(substring,NULL)));
-        }
-        else
-        {
-            if(i=!nameVariables.size())
-            {
-                res<<"In the file there are at least"<< i << " variables but the programm is expecting  "<< nameVariables.size()<<endl;
-                string temp(res.str());
-                throw temp.c_str();
-
-            }
-        }
-        if(_map.empty())
-            throw "map is empty";
+try{
+         readLine(str);
+    }
+    catch(ExceptionClass exc){
+        std::cout<<exc.what()<<std::endl;
+    }
 }

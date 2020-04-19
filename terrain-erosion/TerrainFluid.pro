@@ -65,11 +65,7 @@ mac {
     LIBS+=-lGL
     LIBS+=  -L/lib/x86_64-linux-gnu -ldl
     LIBS+=-lX11
-    copydata.commands = $(COPY_DIR) $$PWD/Resources $$OUT_PWD
-    first.depends = $(first) copydata
-    export(first.depends)
-    export(copydata.commands)
-    QMAKE_EXTRA_TARGETS += first copydata
+
 
 }
 

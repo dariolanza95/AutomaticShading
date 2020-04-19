@@ -1,5 +1,5 @@
 #include "openglvisualizer.h"
-
+using namespace std;
 
 
 
@@ -448,11 +448,14 @@ void OpenGlVisualizer::ShowSimulationDataInput()
       _water(i) = 0;
       _simData(i) = 0;
       _suspendedSediment(i) = 0;
-
-      float river = boost::any_cast<float>(sd->_map.at("rivers"));
+      float river;
+      sd->getData(SimulationDataEnum::river,river);
       _water(i)=  glm::clamp( river,0.f,1.f );
-      if(river == 0)
-        _simData(i)= glm::clamp(boost::any_cast<float>(sd->_map.at("vegetation")),0.f,1.f);
+      if(river == 0){
+          float val = -1;
+          sd->getData(SimulationDataEnum::vegetation,val);
+          glm::clamp(val,0.f,1.f);
+        }//_simData(i)= glm::clamp(sd->g map_of_floats[SimulationDataEnum::vegetation];,0.f,1.f);
 
     i++;
   }

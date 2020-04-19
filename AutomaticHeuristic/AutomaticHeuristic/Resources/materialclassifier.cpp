@@ -6,9 +6,13 @@ class SelectMaterialVerticesFunctorClass
     public:
     ShaderParameters* getValue(SimulationData* sd) {
         ShaderParameters* shader_parameter = new ShaderParameters(_id,4);
-        float val = boost::any_cast<float>(sd->_map.at("hardness"));
-        shader_parameter->setValue(0,val);
-            glm::vec3 flow_normal = boost::any_cast<glm::vec3>(sd->_map.at("normalFlow"));
+       float hardness;
+       sd->getData(SimulationDataEnum::hardness,hardness);
+
+        shader_parameter->setValue(0,hardness);
+        glm::vec3 flow_normal;
+        sd->getData(SimulationDataEnum::flow_normal,flow_normal);
+
             if(!isnan(flow_normal[0]))
                 shader_parameter->setValue(1,flow_normal[0]);
             else
@@ -46,7 +50,10 @@ class SelectMaterialVerticesFunctorClass
             int operator() (SimulationData *sd) {
    //         auto simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,SimulationData*>(_mesh, "simulation_data");
    //         SimulationData* sd  = simulation_data_wrapper[vertex_handle];
-            if(boost::any_cast<float>(sd->_map.at("hardness"))>=0.0f)
+                float hardness;
+                sd->getData(SimulationDataEnum::hardness,hardness);
+
+                if(hardness>=0.0f)
                 return 1;
             else
                 return 0;

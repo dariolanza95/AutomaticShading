@@ -48,7 +48,14 @@ using namespace std;
 
 using namespace Field3D;
 
-
+/*
+ Snake-case
+    - variables either private or pubblic lower-case with underscore diving them
+    - functions camelsCase
+    - classes camelCase
+    - void testFunction () {
+    }
+*/
 
 
 char* filetobuf(char *file)
@@ -638,7 +645,8 @@ void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &me
 {
     string line;
     int counter=0;
-    vector<string> variablenames = {"vegetation","rivers","hardness","normalFlow"};
+    //vector<string> variablenames = {"vegetation","rivers","hardness","normalFlow"};
+
     ifstream inputfile(simulation_data_file);
     auto simulation_data = getOrMakeProperty<VertexHandle, SimulationData*>(mesh, "simulation_data");
     for (auto& vertex_handle : mesh.vertices())
@@ -652,7 +660,7 @@ void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &me
         counter++;
         try
         {
-            SimulationData *sd =new SimulationData(variablenames,line);
+            SimulationData *sd =new SimulationData(line);
             simulation_data[vertex_handle] = sd;
         }
         catch(const char* excp)
@@ -664,30 +672,11 @@ void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &me
 //cout<<"There are "<<mesh.n_vertices()<< " counter is == "<< counter<<endl;
 }
 
-MyMesh LoadMesh(string obj_file,string data_file)
+void LoadMesh(string obj_file,string data_file,MyMesh& mesh)
 {
-    MyMesh mesh;
-
-    //ifstream myfile ("../../Data/mountainsceneTemplate.rib");
-//    ifstream geometryfile ("../../Data/input.obj");
-//    ifstream datafile ("../../Data/simulationData.txt");
-
-    //ostringstream ss_newline;
-
-//      DefaultDataLoader<MyMesh> dl = DefaultDataLoader<MyMesh>(obj_file,data_file,mesh);
-    //string newline ;
-    //newline = ss_newline.str();
-    //ostringstream ss_out_name_file;
-    //string out_name_file;
-    //ss_out_name_file << "../../Data/mountainsceneTemplate" << "Output.rib";
-    //out_name_file = ss_out_name_file.str();
-    //ofstream omyfile (out_name_file);
     LoadGeometryData(obj_file,mesh);
     AttachDataFromSimulationToEachVertex(data_file,mesh);
 
-
-
-return mesh;
 }
 
 void WriteOnRibFile(MyMesh mesh)
@@ -767,7 +756,7 @@ string obj_file = "../../Data/input.obj";
 
 
   MyMesh mesh;
-  mesh = LoadMesh(obj_file,data_file);
+  LoadMesh(obj_file,data_file,mesh);
   FeaturesFinder features_finder(mesh);
   mesh = features_finder.Find();
   GLFWwindow* window = OpenGLInit();
@@ -780,11 +769,7 @@ string obj_file = "../../Data/input.obj";
   //WriteOnRibFile(mesh);
   // Call initIO() to initialize standard I/O methods and load plugins
 
-
-  std::string filename("../../Data/test_file.f3d");
-  FieldThreeDWriter fieldwriter(mesh,filename);
-   fieldwriter.Write();
-   filename = "../../Data/test_pointcloud";
+  string filename = "../../Data/test_pointcloud";
    int subdivs = 1;
    LICMap licmap(mesh,subdivs);
    float multiplier = 3;
