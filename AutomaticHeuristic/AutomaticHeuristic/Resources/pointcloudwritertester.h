@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-#include "ShaderParameters.h"
+#include "ShaderWrapper.h"
 
 // --------------------OpenMesh----------------------------
 #include <OpenMesh/Core/IO/MeshIO.hh>

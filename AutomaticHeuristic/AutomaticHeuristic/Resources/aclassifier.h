@@ -1,7 +1,7 @@
 #ifndef ACLASSIFIER_H
 #define ACLASSIFIER_H
 #include <stdlib.h>
-#include "ShaderParameters.h"
+#include "ShaderWrapper.h"
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
 #include <OpenMesh/Core/Utils/PropertyManager.hh>
 #include "simulationdata.h"

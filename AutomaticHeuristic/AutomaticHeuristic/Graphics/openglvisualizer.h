@@ -9,7 +9,7 @@
 #include <iostream>
 #include <inttypes.h>
 #include <cassert>
-#include "Resources/ShaderParameters.h"
+#include "Resources/ShaderWrapper.h"
 #include "Graphics/Shader.h"
 #include "Graphics/VertexBuffer.h"
 #include "Graphics/IndexBuffer.h"

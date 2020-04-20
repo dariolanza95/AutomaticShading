@@ -1,7 +1,7 @@
 #ifndef MATERIALCLASSIFIER_H
 #define MATERIALCLASSIFIER_H
 #include "aclassifier.h"
-#include "ShaderParameters.h"
+#include "ShaderWrapper.h"
 class MaterialClassifier : public  AClassifier
 {
 public:

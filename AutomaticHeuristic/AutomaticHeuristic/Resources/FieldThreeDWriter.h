@@ -6,7 +6,7 @@
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
 #include <OpenMesh/Core/Utils/PropertyManager.hh>
-#include "ShaderParameters.h"
+#include "ShaderWrapper.h"
 #include <iostream>
 #include <vector>
 

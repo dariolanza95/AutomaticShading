@@ -52,12 +52,13 @@ map<MyMesh::VertexHandle,ShaderParameters*> FlowClassifier::DebugFunction(map<My
     {
         MyMesh::VertexFaceIter vertex_face_circulator;
 
-        ShaderParameters* shader_parameters = new ShaderParameters(_id,_shader_parameter_size);
+        ShaderParameters* shader_parameters = new ShaderParameters(_id,1.0f);
 
         glm::vec3 final_vector = glm::vec3(1,0,0);
-        shader_parameters->setValue(0,final_vector[0]);
-        shader_parameters->setValue(1,final_vector[1]);
-        shader_parameters->setValue(2,final_vector[2]);
+        shader_parameters->AddParameter(ShaderParametersEnum::flow_normal,final_vector);
+        //shader_parameters->setValue(0,final_vector[0]);
+        //shader_parameters->setValue(1,final_vector[1]);
+        //shader_parameters->setValue(2,final_vector[2]);
        // RefineShaderParameters(entry.first,shader_parameters);
         map.insert(make_pair(entry.first,shader_parameters));
 
@@ -90,11 +91,13 @@ map<MyMesh::VertexHandle,ShaderParameters*> FlowClassifier::ComputeShaderParamet
          float res_2 = fabs(dot(normal,tangent_vector));
          glm::vec3 final_vector = res > res_2 ? tangent_vector : orthogonal_vector;
    //     final_vector = tangent_vector;
-         ShaderParameters* shader_parameters = new ShaderParameters(_id,_shader_parameter_size);
-         shader_parameters->setValue(0,final_vector[0]);
-         shader_parameters->setValue(1,final_vector[1]);
-         shader_parameters->setValue(2,final_vector[2]);
-         shader_parameters->setVector(tangent_vector);
+         ShaderParameters* shader_parameters = new ShaderParameters(_id,1.0f);
+
+         shader_parameters->AddParameter(ShaderParametersEnum::flow_normal,final_vector);
+         //shader_parameters->setValue(0,final_vector[0]);
+         //shader_parameters->setValue(1,final_vector[1]);
+         //shader_parameters->setValue(2,final_vector[2]);
+         //shader_parameters->setVector(tangent_vector);
 
           map.insert(make_pair(entry.first,shader_parameters));
     }

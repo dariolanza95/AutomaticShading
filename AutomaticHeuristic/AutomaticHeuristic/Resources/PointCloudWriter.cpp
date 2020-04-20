@@ -18,7 +18,7 @@ void PointCloudWriter::Init()
 
 void PointCloudWriter::Write()
 {
-    auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShaderParameters*>(_mesh, "shader_parameters");
+    auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
     int i=0;
     float point[3], normal[3];
     float radius = 0.02;
@@ -48,10 +48,25 @@ int k = 0;
 
     for(_mesh.vertices_begin();vertex_handle!= vertex_iterator_end;++vertex_handle)
     {
-        ShaderParameters* const shader_param = shader_parameters_data_wrapper[vertex_handle];
+        ShadersWrapper* const shader_wrapper = shader_parameters_data_wrapper[vertex_handle];
+        std::vector<ShaderParameters> list;
+        shader_wrapper->GetListOfShaders(list);
+        for(ShaderParameters sp : list)
+        {
+        float hardness;
+        sp.GetParameter(ShaderParametersEnum::hardness,hardness);
+        glm::vec3 flow_vector;
+        sp.GetParameter(ShaderParametersEnum::flow_normal,flow_vector);
+        data[1] = hardness;
+        data[2] = flow_vector[0];
+        data[3] = flow_vector[1];
+        data[4] = flow_vector[2];
+        }
+
+/*
         if(shader_param!=nullptr)
         {
-            data[0] = shader_param->getId();
+            data[0] = shader_param->GetId();
             for(int i = 0;i<5-1;i++)
             {
                 data[i+1] = shader_param->getValue(i);
@@ -59,7 +74,7 @@ int k = 0;
 
         }
 
-
+*/
         mesh_point =  _mesh.point(*vertex_handle);
         point[0] = mesh_point[0];
         point[1] = mesh_point[1];

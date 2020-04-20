@@ -5,7 +5,7 @@
 #include <fstream>
 #include "ribnode.h"
 #include "Graphics/Camera.h"
-#include "ShaderParameters.h"
+#include "ShaderWrapper.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "VertexEditTag.h"
 

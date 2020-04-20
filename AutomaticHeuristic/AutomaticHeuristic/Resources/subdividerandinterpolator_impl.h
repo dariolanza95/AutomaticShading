@@ -256,12 +256,12 @@ SubdividerAndInterpolator<MeshType,RealType>::split_edge( MeshType& _m, const Ed
   _m.set_point( vh, _m.property( ep_pos_, _eh ) );
 
   //copy data from previous vertex
-  auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShaderParameters*>(_m, "shader_parameters");
+  auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_m, "shader_parameters");
 
-  ShaderParameters* shader_param = shader_parameters_data_wrapper[vh1];
-  ShaderParameters* new_shader_param = new ShaderParameters(*shader_param);
-  if(new_shader_param->_list.empty())
-      new_shader_param = new ShaderParameters();
+  ShadersWrapper* shader_param = shader_parameters_data_wrapper[vh1];
+  ShadersWrapper* new_shader_param = new ShadersWrapper(*shader_param);
+//  if(new_shader_param->_list.empty())
+//      new_shader_param = new ShaderParameters();
   shader_parameters_data_wrapper[vh] = new_shader_param;
 
   // Re-link mesh entities

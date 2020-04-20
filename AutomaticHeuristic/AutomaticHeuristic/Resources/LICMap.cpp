@@ -183,7 +183,7 @@ if(_subdiv_levels>0)
 
 }
 
-auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShaderParameters*>(_mesh, "shader_parameters");
+auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
 
 
 std::cout<<"InterpolationDone"<<std::endl;
@@ -196,7 +196,9 @@ MyMesh::Point offset;
 glm::vec3 flow_vector(0,0,0);
 MyMesh::VertexVertexIter vvit;
 MyMesh::VertexVertexIter next_point;
-ShaderParameters*  shader_param;
+ShaderParameters  shader_param;
+ShadersWrapper*  shader_wrapper;
+
 float dist;
 float min_dist = INFINITY;
 int k = 0;
@@ -229,11 +231,18 @@ int w = 0;
      float samepoint_iter = 1;
      actual_point = _mesh.point(*mesh_vertex_iterator);
 
-      shader_param = shader_parameters_data_wrapper[mesh_vertex_iterator];
-      if(shader_param == nullptr)
-          std::cout<<"Err shader param is empty"<<std::endl;
-      else
-        flow_vector = glm::vec3( shader_param->getValue(1),shader_param->getValue(2),shader_param->getValue(3));
+      shader_wrapper = shader_parameters_data_wrapper[mesh_vertex_iterator];
+      std::vector<ShaderParameters> list;
+      shader_wrapper->GetListOfShaders(list);
+      for(ShaderParameters sp : list)
+      {
+          sp.GetParameter(ShaderParametersEnum::flow_normal,flow_vector);
+
+      }
+     // if(shader_param == nullptr)
+     //     std::cout<<"Err shader param is empty"<<std::endl;
+     // else
+     //   flow_vector = glm::vec3( shader_param->getValue(1),shader_param->getValue(2),shader_param->getValue(3));
 
      vvit = _mesh.vv_iter(mesh_vertex_iterator);
      // = _mesh.vv_iter(*mesh_vertex_iterator);
@@ -276,9 +285,19 @@ int w = 0;
                  w++;
                  if( next_point.is_valid())
                  {
-                     shader_param = shader_parameters_data_wrapper[next_point];
-                     glm::vec3 next_flow_vector = glm::vec3( shader_param->getValue(1),shader_param->getValue(2),shader_param->getValue(3));
-                     flow_vector = flow_vector* (1-1/(min_dist+1)) + next_flow_vector*(1-min_dist/(min_dist+1));
+                     glm::vec3 next_flow_vector ;
+                     shader_wrapper = shader_parameters_data_wrapper[mesh_vertex_iterator];
+                     shader_wrapper->GetListOfShaders(list);
+                     for(ShaderParameters sp : list)
+                     {
+                         sp.GetParameter(ShaderParametersEnum::flow_normal,next_flow_vector);
+
+                     }
+
+
+                  //   shader_param = shader_parameters_data_wrapper[next_point];
+                  //   glm::vec3 next_flow_vector = glm::vec3( shader_param->getValue(1),shader_param->getValue(2),shader_param->getValue(3));
+//                     flow_vector = flow_vector* (1-1/(min_dist+1)) + next_flow_vector*(1-min_dist/(min_dist+1));
                      flow_vector = next_flow_vector;
                      //vvit  = _mesh.vv_iter(next_point);
                      vvit = next_point;
@@ -306,7 +325,8 @@ int w = 0;
 Pdf[quantizied_level]++;
  actual_point = _mesh.point(*mesh_vertex_iterator);
  shader_param = shader_parameters_data_wrapper[mesh_vertex_iterator];
- shader_param->setValue(5,val);
+ shader_param.AddParameter(ShaderParametersEnum::LIC,val);
+
  //std::cout<<"val "<<shader_param->getValue(5)<<std::endl;
  shader_parameters_data_wrapper[mesh_vertex_iterator] = shader_param;
 
@@ -353,9 +373,18 @@ Pdf[quantizied_level]++;
 
       for(;mesh_vertex_iterator!= vertex_iterator_end;++mesh_vertex_iterator)
       {
-          shader_param = shader_parameters_data_wrapper[mesh_vertex_iterator];
-        float val = shader_param->getValue(5);
-        float temp = shader_param->getValue(2);
+          //shader_param = shader_parameters_data_wrapper[mesh_vertex_iterator];
+
+          shader_wrapper = shader_parameters_data_wrapper[mesh_vertex_iterator];
+          std::vector<ShaderParameters> list;
+          shader_wrapper->GetListOfShaders(list);
+           float val;
+          for(ShaderParameters sp : list)
+          {
+                shader_param.GetParameter(ShaderParametersEnum::LIC,val);
+          }
+
+
         val = (val - c)*((b-a)/(d-c)) + a;
 
         shader_param->setValue(5,val);
@@ -389,11 +418,20 @@ int w = 0;
      float samepoint_iter = 1;
     actual_point = _mesh.point(*mesh_vertex_iterator);
 
-      shader_param = shader_parameters_data_wrapper[mesh_vertex_iterator];
-      if(shader_param == nullptr)
-          std::cout<<"Err shader param is empty"<<std::endl;
-      else
-        flow_vector = glm::vec3( shader_param->getValue(1),shader_param->getValue(2),shader_param->getValue(3));
+//      shader_param = shader_parameters_data_wrapper[mesh_vertex_iterator];
+      shader_wrapper = shader_parameters_data_wrapper[mesh_vertex_iterator];
+      std::vector<ShaderParameters> list;
+      shader_wrapper->GetListOfShaders(list);
+      for(ShaderParameters sp : list)
+      {
+          sp.GetParameter(ShaderParametersEnum::flow_normal,flow_vector);
+
+      }
+      //previously
+      //if(shader_param == nullptr)
+      //    std::cout<<"Err shader param is empty"<<std::endl;
+      //else
+      //  flow_vector = glm::vec3( shader_param->getValue(1),shader_param->getValue(2),shader_param->getValue(3));
 
      vvit = _mesh.vv_iter(mesh_vertex_iterator);
      // = _mesh.vv_iter(*mesh_vertex_iterator);
@@ -437,8 +475,16 @@ int w = 0;
                  w++;
                  if( next_point.is_valid())
                  {
-                     shader_param = shader_parameters_data_wrapper[next_point];
-                     glm::vec3 next_flow_vector = glm::vec3( shader_param->getValue(1),shader_param->getValue(2),shader_param->getValue(3));
+                     //shader_param = shader_parameters_data_wrapper[next_point];
+                     shader_wrapper = shader_parameters_data_wrapper[next_point];
+                     std::vector<ShaderParameters> list;
+                     shader_wrapper->GetListOfShaders(list);
+                     glm::vec3 next_flow_vector;
+                      for(ShaderParameters sp : list)
+                     {
+                           shader_param.GetParameter(ShaderParametersEnum::flow_normal,next_flow_vector);
+                     }
+                     // = glm::vec3( shader_param->getValue(1),shader_param->getValue(2),shader_param->getValue(3));
                      //flow_vector = flow_vector* (1-1/(min_dist+1)) + next_flow_vector*(1-min_dist/(min_dist+1));
                      flow_vector = next_flow_vector;
                      //vvit  = _mesh.vv_iter(next_point);
@@ -461,7 +507,7 @@ int w = 0;
  quantizied_level =  roundf(val*L);
 Pdf[quantizied_level]++;
  actual_point = _mesh.point(*mesh_vertex_iterator);
- shader_param = shader_parameters_data_wrapper[mesh_vertex_iterator];
+ shader_wrapper = shader_parameters_data_wrapper[mesh_vertex_iterator];
  shader_param->setValue(5,val);
 
 //shader_parameters_data_wrapper[mesh_vertex_iterator] = shader_param;

@@ -51,13 +51,13 @@ void FeaturesFinder::UpdateSimulationData(map<MyMesh::VertexHandle,ShaderParamet
 
 void FeaturesFinder::InitializerSimulationData()
 {
-auto shader_parameters_data_wrapper= getOrMakeProperty<VertexHandle, ShaderParameters*>(_mesh, "shader_parameters");
+auto shader_parameters_data_wrapper= getOrMakeProperty<VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
 
     MyMesh::VertexIter vertex_iterator;
     MyMesh::VertexIter vertex_iterator_end(_mesh.vertices_end());
     for(vertex_iterator = _mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
     {
-        ShaderParameters* shader_parameter = new ShaderParameters(0,10);
-        shader_parameters_data_wrapper[vertex_iterator] = shader_parameter;
+        ShadersWrapper* shaders_wrapper= new ShadersWrapper();
+        shader_parameters_data_wrapper[vertex_iterator] = shaders_wrapper;
     }
 }

@@ -10,7 +10,7 @@
 #include "screeclassifier.h"
 #include "simulationdata.h"
 #include "ribwriter.h"
-#include "ShaderParameters.h"
+#include "ShaderWrapper.h"
 #include "./Graphics/openglvisualizer.h"
 #include "featuresfinder.h"
 #include "FieldThreeDWriter.h"
@@ -409,16 +409,15 @@ void UpdateSimulationData(MyMesh& mesh, map<MyMesh::VertexHandle,ShaderParameter
 }
 void InitializerSimulationData(MyMesh& mesh)
 {
-auto shader_parameters_data_wrapper= getOrMakeProperty<VertexHandle, ShaderParameters*>(mesh, "shader_parameters");
+auto shader_parameters_data_wrapper= getOrMakeProperty<VertexHandle, ShadersWrapper*>(mesh, "shader_parameters");
 
 
     MyMesh::VertexIter vertex_iterator;
     MyMesh::VertexIter vertex_iterator_end(mesh.vertices_end());
     for(vertex_iterator=mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
     {
-            ShaderParameters* shader_parameter = new ShaderParameters(0,10);
-            shader_parameter->setValue(0,-1);
-            shader_parameters_data_wrapper[vertex_iterator] = shader_parameter;
+            ShadersWrapper* shaders_wrapper= new ShadersWrapper();
+            shader_parameters_data_wrapper[vertex_iterator] = shaders_wrapper;
     }
 }
 void FindFeatures(MyMesh& mesh)
@@ -448,7 +447,7 @@ void FindFeatures(MyMesh& mesh)
 //    return out;
 //}
 
-
+/*
 void WriteSimulationData(MyMesh& mesh,ostream& outputfile)
 {
     auto shader_parameters_data_wrapper = getOrMakeProperty<VertexHandle, ShaderParameters*>(mesh, "shader_parameters");
@@ -522,13 +521,14 @@ bool WriteSimulationData(string line,ifstream& myfile,ostream& omyfile,MyMesh& m
             newstring +=" " + line;
         }*/
         //newstring += " ] ";
+/*
         templine.erase(0,found +1);
         omyfile<<templine<<'\n';
         return true;
           }
     return false;
 }
-
+*/
 
 
 
@@ -678,7 +678,7 @@ void LoadMesh(string obj_file,string data_file,MyMesh& mesh)
     AttachDataFromSimulationToEachVertex(data_file,mesh);
 
 }
-
+/*
 void WriteOnRibFile(MyMesh mesh)
 {
       string line;
@@ -742,7 +742,7 @@ void WriteOnRibFile(MyMesh mesh)
         else cout << "Unable to open file";
 
 }
-
+*/
 
 
 

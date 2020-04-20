@@ -5,15 +5,15 @@ class SelectMaterialVerticesFunctorClass
 {
     public:
     ShaderParameters* getValue(SimulationData* sd) {
-        ShaderParameters* shader_parameter = new ShaderParameters(_id,4);
+        ShaderParameters* shader_parameter = new ShaderParameters(_id);
        float hardness;
        sd->getData(SimulationDataEnum::hardness,hardness);
 
-        shader_parameter->setValue(0,hardness);
+        shader_parameter->AddParameter(ShaderParametersEnum::hardness,hardness);// setValue(0,hardness);
         glm::vec3 flow_normal;
         sd->getData(SimulationDataEnum::flow_normal,flow_normal);
-
-            if(!isnan(flow_normal[0]))
+        shader_parameter->AddParameter(ShaderParametersEnum::flow_normal,flow_normal);
+    /*        if(!isnan(flow_normal[0]))
                 shader_parameter->setValue(1,flow_normal[0]);
             else
                 shader_parameter->setValue(2,0);
@@ -24,7 +24,7 @@ class SelectMaterialVerticesFunctorClass
             if(!isnan(flow_normal[2]))
                 shader_parameter->setValue(3,flow_normal[2]);
             else
-                shader_parameter->setValue(3,0);
+                shader_parameter->setValue(3,0);*/
             //shader_parameter->setValue(2,flow_normal[1]);
             //shader_parameter->setValue(3,flow_normal[2]);
 

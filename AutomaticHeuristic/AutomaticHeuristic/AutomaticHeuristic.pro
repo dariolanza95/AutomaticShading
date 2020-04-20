@@ -34,7 +34,6 @@ SOURCES += *.cpp \
     Resources/flowclassifier.cpp \
     Resources/main.cpp \
     Resources/simulationdata.cpp \
-    Resources/ShaderParameters.cpp \
     Resources/riverclassifiertester.cpp \
     Resources/screeclassifier.cpp \
     Resources/riverclassifier.cpp \
@@ -46,7 +45,9 @@ SOURCES += *.cpp \
     Resources/materialclassifier.cpp \
     Resources/LICMap.cpp \
     ../Noise/FastNoise/FastNoise.cpp \
-    Graphics/exceptionclass.cpp
+    Graphics/exceptionclass.cpp \
+    Resources/shaderparameter.cpp \
+    Resources/ShaderWrapper.cpp
 
 
 
@@ -82,7 +83,6 @@ HEADERS += *.h\
     Graphics/platform_includes.h \
     Resources/ribnode.h \
     Resources/aclassifier.h \
-    Resources/ShaderParameters.h \
     Resources/featuresfinder.h \
     Resources/flowclassifier.h \
     Resources/dataloader.h \
@@ -100,7 +100,9 @@ HEADERS += *.h\
     ../Noise/FastNoise/FastNoise.h \
     Resources/subdividerandinterpolator.h \
     Resources/subdividerandinterpolator_impl.h \
-    Graphics/exceptionclass.h
+    Graphics/exceptionclass.h \
+    Resources/shaderparameter.h \
+    Resources/ShaderWrapper.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system

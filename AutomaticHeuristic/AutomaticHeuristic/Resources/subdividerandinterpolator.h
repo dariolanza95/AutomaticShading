@@ -3,7 +3,7 @@
 // --------------------OpenMesh----------------------------
 
 
-#include "ShaderParameters.h"
+#include "ShaderWrapper.h"
 
 #include <OpenMesh/Core/Utils/vector_traits.hh>
 #include <OpenMesh/Core/Utils/PropertyManager.hh>

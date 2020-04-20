@@ -28,6 +28,7 @@ class selectRiverFrontierFunctorClass
 
 class splitInGroupsFunctorClass
 {
+
     public:
     ShaderParameters* getValue(MyMesh::VertexHandle vertex_handle) {
         if(_map.count(vertex_handle) == 1 )
@@ -36,11 +37,11 @@ class splitInGroupsFunctorClass
         }
         else
         {
-            return  new ShaderParameters();
+            return  new ShaderParameters(_id);
         }
 
     }
-    splitInGroupsFunctorClass(map<MyMesh::VertexHandle,ShaderParameters*> map): _map(map){}
+    splitInGroupsFunctorClass(map<MyMesh::VertexHandle,ShaderParameters*> map,int id): _map(map),_id(id){}
             int operator() (MyMesh::VertexHandle vertex_handle) {
             if(_map.count(vertex_handle) == 1 )
                 return 1;
@@ -49,6 +50,7 @@ class splitInGroupsFunctorClass
             }
     private:
             map<MyMesh::VertexHandle,ShaderParameters*> _map;
+            int _id;
 
 };
 
@@ -266,8 +268,9 @@ vector<map<MyMesh::VertexHandle, ShaderParameters *>> RiverClassifier::FindLocal
             //min = (min /(_max_height-_min_height))*2;
             for(auto &entry : single_group)
             {
-                ShaderParameters* shader_parameters = new ShaderParameters(_id,_shader_parameter_size);
-                shader_parameters->setValue(0,min);
+                ShaderParameters* shader_parameters = new ShaderParameters(_id);
+                shader_parameters->AddParameter(ShaderParametersEnum::river,min);
+                //shader_parameters->setValue(0,min);
                 entry.second = shader_parameters;
             }
              vector_of_groups[i] = single_group;
@@ -290,7 +293,7 @@ vector<map<MyMesh::VertexHandle, ShaderParameters *>> RiverClassifier::FindLocal
             {
             map<MyMesh::VertexHandle,ShaderParameters*> initial_point;
             initial_point.insert(entry);
-            splitInGroupsFunctorClass functor(points_to_be_grouped);
+            splitInGroupsFunctorClass functor(points_to_be_grouped,_id);
             map<MyMesh::VertexHandle,ShaderParameters*> group = BFS(1000,initial_point,functor);
             for(auto group_element : group)
             {
@@ -331,8 +334,7 @@ vector<map<MyMesh::VertexHandle, ShaderParameters *>> RiverClassifier::FindLocal
                     {
                         MyMesh::Point point = _mesh.point(vertex_handle);
                         ShaderParameters* shader_parameters = new ShaderParameters(_id,10);
-                        //roundf should work
-                        shader_parameters->setValue(0,bins*floorf(point[2]/bins));//setValue(0, bins*roundf(point[2]/bins));
+                        shader_parameters->AddParameter(ShaderParametersEnum::river,bins*floorf(point[2]/bins));
                         selected_faces.insert(pair<MyMesh::VertexHandle,ShaderParameters*>(vertex_handle,shader_parameters));
                     }
             }

@@ -243,7 +243,7 @@ void RIBWriter::WriteArchive()
            _rib_file<<line;
            WriteVertexEditTag();
            WriteVertices();
-           WriteSimulationData();
+       //    WriteSimulationData();
            _rib_file<< "ObjectEnd \n";
            InstanceLandscape();
 }
@@ -302,14 +302,14 @@ std::ostream &operator<< (std::ostream &out, const glm::vec3 &vec)
 
 void RIBWriter::WriteSimulationData()
 {
-    auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShaderParameters*>(_mesh, "shader_parameters");
+   /* auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShaderParameters*>(_mesh, "shader_parameters");
     int i=0;
     string newstring = " \"varying float simulation_data\"[";
     _rib_file<<newstring;
     for (auto& vertex_handle : _mesh.vertices())
     {
         ShaderParameters* const shader_param = shader_parameters_data_wrapper[vertex_handle];
-        _rib_file<< shader_param->getId()<<".0"<< endl;
+        _rib_file<< shader_param->GetId()<<".0"<< endl;
         if(i%50==0)
             _rib_file<< std::endl;
         i++;
@@ -335,7 +335,7 @@ void RIBWriter::WriteSimulationData()
         }
         _rib_file<< " ]  ";
     }
-
+*/
 //    newstring = " \"vertex float[3] shader_vector";
 //    _rib_file<<newstring;
 //    _rib_file << "\" [";

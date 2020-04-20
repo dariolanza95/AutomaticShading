@@ -402,28 +402,33 @@ void OpenGlVisualizer::ShowSelectedFaces()
 {
     std::cout<<"showing selected faces"<<std::endl;
     int i = 0;
-    auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle, ShaderParameters*>(_mesh, "shader_parameters");
+    auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
 
     for (auto& vertex_handle : _mesh.vertices())
         {
             MyMesh::Point point = _mesh.point(vertex_handle);
-            ShaderParameters* sp = shader_parameters_data_wrapper[vertex_handle];
+            ShadersWrapper* sp = shader_parameters_data_wrapper[vertex_handle];
+            std::vector<ShaderParameters> list;
+            sp->GetListOfShaders(list);
 
             //clear the previous data
             _water(i) = 0;
             _simData(i) = 0;
             _suspendedSediment(i) = 0;
             _terrain(i) = point[2];
-            if(sp->getId()==1)
+            for(auto it = list.begin();it != list.end();++i){
+            if(it->GetId() ==1)
                  _water(i) = 1;
-            if(sp->getId()==3)
+            if(it->GetId()==3)
                 _simData(i)= 5;
-           if(sp->getId()== 0)
+           if(it->GetId()== 0)
            {
                _water(i) = 0;
                _simData (i) = 0;
                _suspendedSediment(i) = 1.f;
            }
+
+            }
         i++;
 
         }

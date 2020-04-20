@@ -1,6 +1,6 @@
 #ifndef PCL_H
 #define PCL_H
-#include "ShaderParameters.h"
+#include "ShaderWrapper.h"
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
 #include <OpenMesh/Core/Utils/PropertyManager.hh>
 #include "simulationdata.h"
