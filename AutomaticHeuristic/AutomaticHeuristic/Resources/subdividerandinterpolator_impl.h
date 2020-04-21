@@ -186,12 +186,12 @@ SubdividerAndInterpolator<MeshType,RealType>::split_face( MeshType& _m, const Fa
   HalfedgeHandle hend = _m.halfedge_handle(_fh);
   HalfedgeHandle hh = _m.next_halfedge_handle(hend);
 
-  auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShaderParameters*>(_m, "shader_parameters");
+  auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_m, "shader_parameters");
 
   VertexHandle  t_vh1( _m.to_vertex_handle(hend));
   //for now just  a simple NN interpolation should work
-  ShaderParameters* shader_param = shader_parameters_data_wrapper[t_vh1];
-  ShaderParameters* new_shader_param = new ShaderParameters(*shader_param);
+  ShadersWrapper* shader_param = shader_parameters_data_wrapper[t_vh1];
+  ShadersWrapper* new_shader_param = new ShadersWrapper(*shader_param);
      shader_parameters_data_wrapper[vh] = new_shader_param;
 
 

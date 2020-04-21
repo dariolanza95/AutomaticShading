@@ -2,7 +2,7 @@
 #include <unordered_set>
 #include <list>
 
-
+/*
 class selectRiverFrontierFunctorClass
 {
     public:
@@ -89,7 +89,7 @@ _max_height = max;
 
 
 
-    map<MyMesh::VertexHandle,ShaderParameters*> RiverClassifier::ClassifyVertices()
+    map<MyMesh::VertexHandle,AShader> RiverClassifier::ClassifyVertices()
     {
         map<MyMesh::VertexHandle,float> river_vertices = SelectRiverVertices();
         FindMeshExtremes();
@@ -308,7 +308,7 @@ vector<map<MyMesh::VertexHandle, ShaderParameters *>> RiverClassifier::FindLocal
     }
 
 
-    map<MyMesh::VertexHandle,ShaderParameters*> RiverClassifier::SelectFacesBySlope(map<MyMesh::VertexHandle,float> rivers_boundaries)
+    map<MyMesh::VertexHandle,AShader*> RiverClassifier::SelectFacesBySlope(map<MyMesh::VertexHandle,float> rivers_boundaries)
     {
         //along the river boundaries (i.e. the rivers frontier with some treshold)
         //We select those faces which are still rather steep.
@@ -340,5 +340,4 @@ vector<map<MyMesh::VertexHandle, ShaderParameters *>> RiverClassifier::FindLocal
             }
         }
         return selected_faces;
-    }
-
+    }*/

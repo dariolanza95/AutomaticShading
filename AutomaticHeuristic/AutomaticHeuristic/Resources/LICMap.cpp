@@ -1,5 +1,5 @@
 #include "LICMap.h"
-
+/*
 
 LICMap::LICMap(MyMesh mesh,int subdiv_level) : _subdiv_levels(subdiv_level)
 {
@@ -163,6 +163,7 @@ LICMap::LICMap(MyMesh mesh,int subdiv_level) : _subdiv_levels(subdiv_level)
       }
 
 */
+/*
 }
 
 void LICMap::LIC2(float box_length,float frequency,float step_size,MyMesh mesh)
@@ -690,7 +691,7 @@ for(int j = 0;j<cloud->points.size();j++)
     Outputcloud = new_point_cloud;
   kdtree_output.setInputCloud (Outputcloud);
 }
-*/
+
 
 float LICMap::GetPoint(float point[3])
 {
@@ -710,5 +711,5 @@ float LICMap::GetPoint(float point[3])
     }
     return 0;
 }
-
+*/
 

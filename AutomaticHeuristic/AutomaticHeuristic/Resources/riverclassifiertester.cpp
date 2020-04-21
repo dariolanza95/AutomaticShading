@@ -1,5 +1,5 @@
 #include "riverclassifiertester.h"
-
+/*
 class selectRiverFrontierFunctorClass
 {
     public:
@@ -488,3 +488,4 @@ for(vertex_iterator=mesh.vertices_begin();vertex_iterator != vertex_iterator_end
  cout<<"MAX is "<< max<<" but min is "<< min <<endl;
 
 }
+*/

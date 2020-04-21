@@ -24,14 +24,14 @@ class PointCloudWriter
     int _num_shader_parameters;
     PtcPointCloud _output_file;
     std::string _output_file_name;
-    LICMap _licmap;
     MyMesh _mesh;
+    AShader* _shader;
     int _subdiv_levels;
 public:
     void Init();
     void Write();
     void Read();
-    PointCloudWriter(MyMesh mesh,std::string input_file_name,int num_shader_parameters,LICMap licmap,int _subdiv_levels);
+    PointCloudWriter(MyMesh mesh,std::string input_file_name,AShader* shader,int _subdiv_levels);
 };
 
 #endif // POINTCLOUDWRITER_H

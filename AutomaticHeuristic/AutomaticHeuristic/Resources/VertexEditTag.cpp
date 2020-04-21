@@ -49,6 +49,5 @@ string VertexEditTag::GetValuesToBeChanged()
           }
     }
     result << " ] "<<endl;
-return result.str();
-
+    return result.str();
 }

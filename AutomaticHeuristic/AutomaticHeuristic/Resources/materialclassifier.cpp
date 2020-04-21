@@ -4,15 +4,14 @@
 class SelectMaterialVerticesFunctorClass
 {
     public:
-    ShaderParameters* getValue(SimulationData* sd) {
-        ShaderParameters* shader_parameter = new ShaderParameters(_id);
-       float hardness;
-       sd->getData(SimulationDataEnum::hardness,hardness);
-
-        shader_parameter->AddParameter(ShaderParametersEnum::hardness,hardness);// setValue(0,hardness);
-        glm::vec3 flow_normal;
-        sd->getData(SimulationDataEnum::flow_normal,flow_normal);
-        shader_parameter->AddParameter(ShaderParametersEnum::flow_normal,flow_normal);
+    AShader* getValue(SimulationData* sd) {
+        float hardness;
+        sd->getData(SimulationDataEnum::hardness,hardness);
+        AShader* shader_parameter = new MaterialShader(_id,1.0f,hardness);
+//        shader_parameter->AddParameter(ShaderParametersEnum::hardness,hardness);// setValue(0,hardness);
+//        glm::vec3 flow_normal;
+//        sd->getData(SimulationDataEnum::flow_normal,flow_normal);
+//        shader_parameter->AddParameter(ShaderParametersEnum::flow_normal,flow_normal);
     /*        if(!isnan(flow_normal[0]))
                 shader_parameter->setValue(1,flow_normal[0]);
             else
@@ -68,13 +67,13 @@ class SelectMaterialVerticesFunctorClass
 
 MaterialClassifier::MaterialClassifier(MyMesh mesh) : AClassifier(mesh)
 {
+    _shader = new MaterialShader(_id);
 }
-map<MyMesh::VertexHandle,ShaderParameters*> MaterialClassifier::ClassifyVertices()
+map<MyMesh::VertexHandle,AShader*> MaterialClassifier::ClassifyVertices()
 {
 
     SelectMaterialVerticesFunctorClass functor(_mesh,_id);
-   map<MyMesh::VertexHandle,ShaderParameters*>  res;
-  res = SelectClassVertices(functor);
-return res;
+   return SelectClassVertices(functor);
+
 }
 

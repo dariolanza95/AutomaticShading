@@ -3,11 +3,10 @@
 #include <glm/vec3.hpp>
 #include <map>
 #include <boost/any.hpp>
-#include "ShaderWrapper.h"
-
+#include "Ashader.h"
 enum class ShaderParametersEnum{empty,flow_normal,hardness,river,LIC};
 enum class BlendingMode{Add,Mix,Overlap};
-
+/*
 
 class ShaderParameters
 {
@@ -18,19 +17,20 @@ class ShaderParameters
 public:
     ShaderParameters(int id,float confidence);
     ShaderParameters(int id);
-
     float GetConfidence();
     void SetConfidence(float new_confidence);
     int GetId();
-    template <typename T>
-    void AddParameter(ShaderParametersEnum data_name,T data_value);
-    template <typename T>
-    void GetParameter(ShaderParametersEnum data_name,T& data_value);
-    void GetParameters(std::map<ShaderParametersEnum,boost::any>& data_value);
+    void virtual Serialize();
+
+    //template <typename T>
+    //void AddParameter(ShaderParametersEnum data_name,T data_value);
+    //template <typename T>
+    //void GetParameter(ShaderParametersEnum data_name,T& data_value);
+    //void GetParameters(std::map<ShaderParametersEnum,boost::any>& data_value);
 
 };
 
-
+/*
 template<typename T>
 void ShaderParameters::AddParameter(ShaderParametersEnum data_name,T data_value)
 {
@@ -45,6 +45,6 @@ void ShaderParameters::GetParameter(ShaderParametersEnum data_name,T& data_retur
     {
         data_returned_value =boost::any_cast<T> (map[data_name]);
     }
-}
+}*/
 
 #endif // SHADERPARAMET_H

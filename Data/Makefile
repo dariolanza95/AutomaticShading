@@ -5,7 +5,8 @@ LD = $(CC) -shared
 LINKS = -L/usr/lib/x86_64-linux-gnu -L/home/pandora/OpenMesh-8.0/build/Build/lib/ -lOpenMeshCore -lboost_system -lboost_filesystem -L/home/pandora/thesis/AutomaticShading/AutomaticHeuristic/AutomaticHeuristic/../../../../../../usr/lib/x86_64-linux-gnu/ -lglfw -lGLEW -lGL -lField3D -L/usr/include/hdf5/serial -lhdf5_hl_cpp -L/usr/local/lib -lglfw3 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lQtCore -lpthread 
 
 SOURCES=\
-	PxrWorleyD.cpp
+	MaterialShader.cpp
+	
 
 OBJECTS = $(SOURCES:.cpp=.o)
 DSO = $(SOURCES:.cpp=.so)

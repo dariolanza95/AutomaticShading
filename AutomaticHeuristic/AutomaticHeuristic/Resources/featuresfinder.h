@@ -14,15 +14,14 @@ typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
 class FeaturesFinder
 {
     MyMesh _mesh;
-    void UpdateSimulationData(map<MyMesh::VertexHandle,ShaderParameters*> selected_vertices);
+    void UpdateSimulationData(map<MyMesh::VertexHandle,AShader*> selected_vertices);
     void InitializerSimulationData();
     vector<VertexEditTag> _vertex_edit_tags;
 
 public:
     FeaturesFinder(MyMesh mesh);
     vector<VertexEditTag> GetVertexEditTags();
-
-    MyMesh Find();
+    MyMesh Find(std::vector<AShader* > &list_of_used_shaders);
 };
 
 #endif // FEATURESFINDER_H

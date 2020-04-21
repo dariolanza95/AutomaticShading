@@ -47,7 +47,11 @@ SOURCES += *.cpp \
     ../Noise/FastNoise/FastNoise.cpp \
     Graphics/exceptionclass.cpp \
     Resources/shaderparameter.cpp \
-    Resources/ShaderWrapper.cpp
+    Resources/ShaderWrapper.cpp \
+    Resources/Ashader.cpp \
+    Resources/flowshader.cpp \
+    Resources/materialshader.cpp \
+    Resources/utils.cpp
 
 
 
@@ -102,7 +106,11 @@ HEADERS += *.h\
     Resources/subdividerandinterpolator_impl.h \
     Graphics/exceptionclass.h \
     Resources/shaderparameter.h \
-    Resources/ShaderWrapper.h
+    Resources/ShaderWrapper.h \
+    Resources/Ashader.h \
+    Resources/flowshader.h \
+    Resources/materialshader.h \
+    Resources/utils.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system

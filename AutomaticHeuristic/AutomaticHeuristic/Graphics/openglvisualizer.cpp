@@ -400,7 +400,7 @@ void OpenGlVisualizer::InitializeBuffers()
 
 void OpenGlVisualizer::ShowSelectedFaces()
 {
-    std::cout<<"showing selected faces"<<std::endl;
+    /*std::cout<<"showing selected faces"<<std::endl;
     int i = 0;
     auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
 
@@ -435,7 +435,7 @@ void OpenGlVisualizer::ShowSelectedFaces()
 
     _terrainHeightBuffer.SetData(_terrain);
     _waterHeightBuffer.SetData(_water);
-    _simDataBuffer.SetData(_simData);
+    _simDataBuffer.SetData(_simData);*/
 }
 
 void OpenGlVisualizer::ShowSimulationDataInput()

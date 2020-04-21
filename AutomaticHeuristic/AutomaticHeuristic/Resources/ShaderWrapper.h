@@ -6,26 +6,18 @@
 #include <map>
 #include <boost/any.hpp>
 #include <queue>
-
-#include "shaderparameter.h"
+#include "Ashader.h"
+//#include "shaderparameter.h"
 
 class ShadersWrapper
 {
-
-
-    std::map<std::string, ShaderParametersEnum> ShaderParameterOutputEnumMap= {
-        {"flow_normal", ShaderParametersEnum::flow_normal},
-        {"flow_normal", ShaderParametersEnum::flow_normal},
-        {"hardness",    ShaderParametersEnum::hardness}
-        };
-
     glm::vec3 _vector;
-    std::vector<ShaderParameters> list_of_shaders;
+    std::vector<AShader*> list_of_shaders;
 
 public:
     ShadersWrapper();
-    void AddShaderParameters(ShaderParameters sp);
-    void GetListOfShaders(std::vector<ShaderParameters>& list);
+    void AddShaderParameters(AShader* shader);
+    void GetListOfShaders(std::vector<AShader*>& list);
     //ShadersWrapper(int id);
     //int getId();
     //std::vector<float> _list;

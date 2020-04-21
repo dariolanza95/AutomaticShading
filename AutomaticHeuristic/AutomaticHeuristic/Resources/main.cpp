@@ -395,15 +395,17 @@ void window_close_callback(GLFWwindow* window)
     return window;
 }
 
-void UpdateSimulationData(MyMesh& mesh, map<MyMesh::VertexHandle,ShaderParameters*> selected_vertices,int shaderID)
+void UpdateSimulationData(MyMesh& mesh, map<MyMesh::VertexHandle,AShader*> selected_vertices,int shaderID)
 {
-    auto shader_parameters_property = getOrMakeProperty<VertexHandle, ShaderParameters*>(mesh, "shader_parameters");
+    auto shader_parameters_property = getOrMakeProperty<VertexHandle, ShadersWrapper*>(mesh, "shader_parameters");
     for (auto const& x : selected_vertices)
     {
         MyMesh::VertexHandle vertex_handle = x.first;
-        ShaderParameters* shader_parameter = x.second;
+        AShader* shader_parameter = x.second;
 
-        shader_parameters_property[vertex_handle] = shader_parameter;
+        ShadersWrapper* wrapper = shader_parameters_property[vertex_handle] ;
+        wrapper->AddShaderParameters(shader_parameter);
+        //shader_parameters_property[vertex_handle] = shader_parameter;
 
     }
 }
@@ -420,6 +422,7 @@ auto shader_parameters_data_wrapper= getOrMakeProperty<VertexHandle, ShadersWrap
             shader_parameters_data_wrapper[vertex_iterator] = shaders_wrapper;
     }
 }
+/*
 void FindFeatures(MyMesh& mesh)
 {
 
@@ -439,7 +442,7 @@ void FindFeatures(MyMesh& mesh)
      rct.Test();
 
 }
-
+*/
 
 //std::ostream &operator<< (std::ostream &out, const glm::vec3 &vec) {
 //    out << vec.x << " " << vec.y << " "<< vec.z << endl;
@@ -758,7 +761,8 @@ string obj_file = "../../Data/input.obj";
   MyMesh mesh;
   LoadMesh(obj_file,data_file,mesh);
   FeaturesFinder features_finder(mesh);
-  mesh = features_finder.Find();
+  std::vector<AShader*> list_of_used_shaders;
+  mesh = features_finder.Find(list_of_used_shaders);
   GLFWwindow* window = OpenGLInit();
   OpenGlVisualizer visualizer(window, 300, 300,mesh,obj_file);
   //visualizer.Initialize();
@@ -769,24 +773,29 @@ string obj_file = "../../Data/input.obj";
   //WriteOnRibFile(mesh);
   // Call initIO() to initialize standard I/O methods and load plugins
 
-  string filename = "../../Data/test_pointcloud";
-   int subdivs = 1;
-   LICMap licmap(mesh,subdivs);
+  string filename("../../Data/pointcloud");
+   int subdivs = 0;
+   //LICMap licmap(mesh,subdivs);
    float multiplier = 3;
    float BoxLength = 70;
    float freq = 20*multiplier;
    float step_size =  subdivs!= 0 ? 1/subdivs : 1;
    std::cout<<"Here we go!BoxLength "<< BoxLength <<std::endl;
-   licmap.LIC2(BoxLength,freq,step_size,mesh);
+   //licmap.LIC2(BoxLength,freq,step_size,mesh);
    std::cout<<"LIC calculated"<<std::endl;
-   PointCloudWriter pcw(mesh,filename,6,licmap,subdivs);
-    //pcw.Init();
-   pcw.Write();
-    // pcw.Read();
+    int i = 0;
+   for(AShader* shader : list_of_used_shaders )
+   {
+       std::cout<<"i "<<i<<std::endl;
+      // filename<<i++;
+       PointCloudWriter pcw(mesh,filename,shader,subdivs);
+       pcw.Write();
+   }
+     //pcw.Read();
     std::cout<<"Bye bye"<<std::endl;
 
     char *args_prman[]={"./myscript",NULL};
-    execvp (args_prman[0],args_prman);
+    //execvp (args_prman[0],args_prman);
     return 0;
 }
 
