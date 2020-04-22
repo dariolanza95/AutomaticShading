@@ -14,9 +14,11 @@ public:
     MaterialShader(int id);
 
     MaterialShader(int id,float confidence,float hardness);
-    void allocateData(float** data);
-    void getSerializedData(float **data);
-    void getSerializedTypes(char ***types, char ***variables_names, int *num_variables) ;
+
+    void getOutputCloudPath(std::string& path);
+    void allocateData(std::vector<float> &data);
+    void getSerializedData(std::vector<float> &data);
+    void getSerializedTypes(std::vector<char*>& types,std::vector<char*>& var_names,int& num_variables);
 };
 
 #endif // MATERIALSHADER_H

@@ -774,6 +774,7 @@ string obj_file = "../../Data/input.obj";
   // Call initIO() to initialize standard I/O methods and load plugins
 
   string filename("../../Data/pointcloud");
+  stringstream filename_str("../../Data/pointcloud");
    int subdivs = 0;
    //LICMap licmap(mesh,subdivs);
    float multiplier = 3;
@@ -787,8 +788,8 @@ string obj_file = "../../Data/input.obj";
    for(AShader* shader : list_of_used_shaders )
    {
        std::cout<<"i "<<i<<std::endl;
-      // filename<<i++;
-       PointCloudWriter pcw(mesh,filename,shader,subdivs);
+       //filename<<i++;
+       PointCloudWriter pcw(mesh,shader,subdivs);
        pcw.Write();
    }
      //pcw.Read();

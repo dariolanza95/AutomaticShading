@@ -9,14 +9,22 @@
 #include <glm/glm.hpp>
 #include <math.h>
 #include "flowshader.h"
-//using namespace  OpenMesh;
+#include <./../Noise/FastNoise/FastNoise.h>
+#include "subdividerandinterpolator.h"
+
 class FlowClassifier : public AClassifier
 {
     VertexEditTag _vertex_edit_tag;
     int _shader_parameter_size;
+    map<MyMesh::VertexHandle,AShader*> LIC(float box_length, float step_size, float frequency);
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , SimulationData*>::type, MyMesh> simulation_data_wrapper;
-    map<MyMesh::VertexHandle,AShader*> ComputeShaderParameters(map<MyMesh::VertexHandle,glm::vec3>  flow_vertices);
+    OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , FlowShader*>::type, MyMesh> flow_shader_temp_propery;
+    void ContrastEnhancement(map<MyMesh::VertexHandle,AShader*> map,std::vector<int> Pdf);
+
+    void ComputeShaderParameters(map<MyMesh::VertexHandle,glm::vec3>  flow_vertices);
     map<MyMesh::VertexHandle,glm::vec3> selectFlowVertices();
+    void TemporaryUpdate(map<MyMesh::VertexHandle,FlowShader*> selected_vertices);
+
     //map<MyMesh::VertexHandle,ShaderParameters*> DebugFunction(map<MyMesh::VertexHandle,glm::vec3>  flow_vertices);
     //void LIC2(float box_length,float frequency,float step_size,MyMesh mesh);
     //void RefineShaderParameters(MyMesh::VertexHandle vertex,ShaderParameters *shader_parameters);

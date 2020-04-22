@@ -27,11 +27,12 @@ class PointCloudWriter
     MyMesh _mesh;
     AShader* _shader;
     int _subdiv_levels;
+    std::vector<float > allocated_data;
 public:
     void Init();
     void Write();
     void Read();
-    PointCloudWriter(MyMesh mesh,std::string input_file_name,AShader* shader,int _subdiv_levels);
+    PointCloudWriter(MyMesh mesh,AShader* shader,int _subdiv_levels);
 };
 
 #endif // POINTCLOUDWRITER_H
