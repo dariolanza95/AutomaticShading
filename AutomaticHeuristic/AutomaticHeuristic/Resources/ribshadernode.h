@@ -1,0 +1,4 @@
+#ifndef RIBSHADERNODE_H
+#define RIBSHADERNODE_H
+
+#endif // RIBSHADERNODE_H
