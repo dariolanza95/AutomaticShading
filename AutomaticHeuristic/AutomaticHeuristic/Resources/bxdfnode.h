@@ -2,10 +2,19 @@
 #define BXDFNODE_H
 
 
-class BXDFNode
+#include "ribnode.h"
+#include "sstream"
+class BXDFNode : public RIBNode
 {
+    static int _shared_id;
+    int _unique_id;
+    RIBNode* _node;
 public:
-    BXDFNode();
+    std::string GetMaterialId();
+    BXDFNode(RIBNode *node);
+    std::string GetName();
+    std::string WriteNode();
+
 };
 
 #endif // BXDFNODE_H

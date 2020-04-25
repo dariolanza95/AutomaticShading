@@ -10,13 +10,19 @@ MaterialShader::MaterialShader(int id, float confidence, float hardness) : AShad
 {
 }
 
+
+std::string MaterialShader::getShaderName(){
+    return "MaterialShader";
+}
+
 void MaterialShader::getSerializedData(std::vector<float> &data)
 {
     data[0] = hardness;
 }
 
-void MaterialShader::getOutputCloudPath(std::string& path){
-    std::string temp = std::string("../../Data/pointcloud_MaterialShader");
+void MaterialShader::getCloudPathName(std::string& path){
+    std::string temp =std::string("pointcloud_MaterialShader");
+            //std::string("../../Data/pointcloud_MaterialShader");
     path = temp;}
 
 void MaterialShader::allocateData(std::vector<float> &data){

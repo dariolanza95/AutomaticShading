@@ -1,5 +1,5 @@
 #include "PointCloudWriter.h"
-
+/*
 char* fromStringToChar(std::string input)
 {
     char* output;
@@ -13,18 +13,19 @@ void PointCloudWriter::Init()
 
 
 }
-
+*/
 void PointCloudWriter::Write()
 {
     auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
     float point[3], normal[3];
     float radius = 0.02;
     MyMesh::Point mesh_point;
+    if(_writing_a_shader_mask){
+        allocated_data.resize(1);
+    }else{
+        _shader->allocateData(allocated_data);
+    }
 
-    _shader->allocateData(allocated_data);
-
-    //OpenMesh::Subdivider::Uniform::CatmullClarkT<MyMesh> catmull;
-    // Execute 1 subdivision steps
     std::cout<<_mesh.n_vertices()<<std::endl;
 
     //iterate for number of desired subdivisions
@@ -49,47 +50,20 @@ int k = 0;
         shader_wrapper->GetListOfShaders(list);
         for(AShader* sp : list)
         {
-            if(sp->GetId()==_shader->GetId())
-            //if(sp->GetId()==3)
-                sp->getSerializedData(allocated_data);
-       // float hardness;
-       // sp.GetParameter(ShaderParametersEnum::hardness,hardness);
-       // glm::vec3 flow_vector;
-       // sp.GetParameter(ShaderParametersEnum::flow_normal,flow_vector);
-       // data[1] = hardness;
-       // data[2] = flow_vector[0];
-       // data[3] = flow_vector[1];
-       // data[4] = flow_vector[2];
-        }
-
-/*
-        if(shader_param!=nullptr)
-        {
-            data[0] = shader_param->GetId();
-            for(int i = 0;i<5-1;i++)
-            {
-                data[i+1] = shader_param->getValue(i);
+            if(sp->GetId()==_shader->GetId()){
+                if(_writing_a_shader_mask){
+                    allocated_data[0] = 1;
+                }else{
+                    sp->getSerializedData(allocated_data);
+                }
             }
 
         }
 
-*/
         mesh_point =  _mesh.point(*vertex_handle);
         point[0] = mesh_point[0];
         point[1] = mesh_point[1];
         point[2] = mesh_point[2];
-//        float flow_res;
-//        flow_res = _licmap.GetPoint(point);
-       // std::cout<<"FlowRes "<< flow_res<<std::endl;
-        //THIS PART MUST BE CHANGED
-
-        //for(int i= 0;i<3;i++)
-        //{
-        //    data[i+1] = flow_dir[i];
-        //}
-     //   data[5] = flow_res;
-     //   if(flow_res < 0 || flow_res>1)
-     //       std::cout<<"err in flow_res "<< flow_res << std::endl;
         normal[0] = normal[1] = normal[2] = 0;
         PtcWriteDataPoint(_output_file, point, normal, radius,&allocated_data[0] );
     k++;
@@ -104,7 +78,7 @@ int k = 0;
 void PointCloudWriter::Read()
 {
 
-    PtcPointCloud inptc = PtcSafeOpenPointCloudFile(fromStringToChar( _output_file_name));
+    PtcPointCloud inptc = PtcSafeOpenPointCloudFile(AutomaticShaders::Utils::fromStringToChar( _output_file_name));
         if (!inptc) {
           fprintf(stderr, "ptmerge error: unable to open input file %s\n",
                   _output_file);
@@ -160,32 +134,44 @@ void PointCloudWriter::Read()
 }
 
 
-PointCloudWriter::PointCloudWriter(MyMesh mesh,AShader* shader,int subdiv_levels):
+char* PointCloudWriter::CreateMaskFile(AShader* shader,std::vector<char*>& var_types,std::vector<char*>& var_names,int& num_variables)
+{
+    char* _file_name;
+    std::string output_file_name;
+    shader->getCloudPathName(output_file_name);
+    _output_file_name=output_file_name+"_mask";
+    _file_name = AutomaticShaders::Utils::fromStringToChar(_output_file_name);
+    var_names.resize(1);
+    var_types.resize(1);
+    var_types[0] = AutomaticShaders::Utils::fromStringToChar("float");
+    var_names[0] = AutomaticShaders::Utils::fromStringToChar("mask");
+    num_variables = 1;
+    return _file_name;
+}
+
+PointCloudWriter::PointCloudWriter(MyMesh mesh,AShader* shader,int subdiv_levels,bool mask):
     _mesh(mesh),
     _shader(shader),
-    _subdiv_levels(subdiv_levels)
+    _subdiv_levels(subdiv_levels),
+    _writing_a_shader_mask(mask)
 {
-    std::string output_file_name;
-    shader->getOutputCloudPath(output_file_name);
-    _output_file_name=output_file_name;
 
     char* _file_name;
-    _file_name = fromStringToChar(_output_file_name);
-//    char *var_types[_num_shader_parameters];
-//    char *var_names[_num_shader_parameters];
- //   char** var_types;
- //   char** var_names;
     int num_variables;
     std::vector<char*> var_types;
     std::vector<char*> var_names;
-    _shader->getSerializedTypes(var_types,var_names,num_variables);
-    //for(int i = 0; i<_num_shader_parameters;i++)
-    //{
-    //    var_types[i] = fromStringToChar("float");
-    //    std::string var_name("shader_parameter_");
-    //    var_name+=std::to_string(i);
-    //    var_names[i] = fromStringToChar(var_name);
-    //}
+
+    if(mask){
+        _file_name = CreateMaskFile(shader,var_types,var_names,num_variables);
+    }
+    else{
+        std::string output_file_name;
+        shader->getCloudPathName(output_file_name);
+        _output_file_name=output_file_name;
+        _file_name = AutomaticShaders::Utils::fromStringToChar(_output_file_name);
+        _shader->getSerializedTypes(var_types,var_names,num_variables);
+    }
+
     float world_to_eye [16];
     float world_to_ndc [16];
     for(int i = 0;i<16;i++)
@@ -198,7 +184,9 @@ PointCloudWriter::PointCloudWriter(MyMesh mesh,AShader* shader,int subdiv_levels
     format[0] = 10;
     format[1] = 10;
     format[2] = 1.3;
-     _output_file = PtcCreatePointCloudFile (_file_name,num_variables, &var_types[0],&var_names[0],
+
+
+    _output_file = PtcCreatePointCloudFile (_file_name,num_variables, &var_types[0],&var_names[0],
                                                           world_to_eye, world_to_ndc,format);
     if(_output_file == NULL )
     {

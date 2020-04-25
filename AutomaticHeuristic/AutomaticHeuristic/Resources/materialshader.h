@@ -11,11 +11,12 @@ class MaterialShader : public AShader
     float hardness;
 public:
     MaterialShader();
-    MaterialShader(int id);
+    MaterialShader(int _id);
 
-    MaterialShader(int id,float confidence,float hardness);
+    MaterialShader(int _id,float _confidence,float hardness);
 
-    void getOutputCloudPath(std::string& path);
+    std::string getShaderName();
+    void getCloudPathName(std::string& path);
     void allocateData(std::vector<float> &data);
     void getSerializedData(std::vector<float> &data);
     void getSerializedTypes(std::vector<char*>& types,std::vector<char*>& var_names,int& num_variables);

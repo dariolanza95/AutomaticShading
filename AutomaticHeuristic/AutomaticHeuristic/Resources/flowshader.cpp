@@ -30,10 +30,13 @@ void FlowShader::getSerializedData(std::vector<float>& data)
         data[k] = flow_normal[k];
     data[3] = lic_val;
 }
+std::string FlowShader::getShaderName(){
+    return "FlowShader";
+}
 
-
-void FlowShader::getOutputCloudPath(std::string& path){
-    std::string temp = std::string("../../Data/pointcloud_FlowShader");
+void FlowShader::getCloudPathName(std::string& path){
+    std::string temp = std::string("pointcloud_FlowShader");
+            //std::string("../../Data/pointcloud_FlowShader");
     path = temp;
 }
 glm::vec3 FlowShader::GetFlowNormal(){return flow_normal;}
