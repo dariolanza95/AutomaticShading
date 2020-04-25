@@ -28,7 +28,6 @@ SOURCES += *.cpp \
     Resources/defaultdataloader.cpp \
     defaultdataloader.cpp \
     Graphics/PerlinNoise.cpp \
-    Resources/ribnode.cpp \
     Resources/aclassifier.cpp \
     Resources/featuresfinder.cpp \
     Resources/flowclassifier.cpp \
@@ -51,7 +50,16 @@ SOURCES += *.cpp \
     Resources/Ashader.cpp \
     Resources/flowshader.cpp \
     Resources/materialshader.cpp \
-    Resources/utils.cpp
+    Resources/utils.cpp \
+    Resources/ribconstant.cpp \
+    Resources/RibShaderNode.cpp \
+    Resources/ribmasknode.cpp \
+    Resources/ribnode.cpp \
+    Resources/ribmixnode.cpp \
+    Resources/ribaddnode.cpp \
+    Resources/bxdfnode.cpp \
+    Resources/riblight.cpp \
+    Resources/displnode.cpp
 
 
 
@@ -85,7 +93,6 @@ HEADERS += *.h\
     defaultdataloader.h \
     Graphics/PerlinNoise.h \
     Graphics/platform_includes.h \
-    Resources/ribnode.h \
     Resources/aclassifier.h \
     Resources/featuresfinder.h \
     Resources/flowclassifier.h \
@@ -110,7 +117,16 @@ HEADERS += *.h\
     Resources/Ashader.h \
     Resources/flowshader.h \
     Resources/materialshader.h \
-    Resources/utils.h
+    Resources/utils.h \
+    Resources/ribconstant.h \
+    Resources/ribshadernode.h \
+    Resources/ribmasknode.h \
+    Resources/ribnode.h \
+    Resources/ribmixnode.h \
+    Resources/ribaddnode.h \
+    Resources/bxdfnode.h \
+    Resources/riblight.h \
+    Resources/displnode.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system

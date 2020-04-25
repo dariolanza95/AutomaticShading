@@ -15,6 +15,7 @@
   #undef Success
 #endif
 #include "LICMap.h"
+#include "utils.h"
 typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
 
 
@@ -26,13 +27,15 @@ class PointCloudWriter
     std::string _output_file_name;
     MyMesh _mesh;
     AShader* _shader;
+    bool _writing_a_shader_mask;
     int _subdiv_levels;
     std::vector<float > allocated_data;
+    char* CreateMaskFile(AShader* shader,std::vector<char*>& var_types,std::vector<char*>& var_names,int& num_variables);
+
 public:
-    void Init();
     void Write();
     void Read();
-    PointCloudWriter(MyMesh mesh,AShader* shader,int _subdiv_levels);
+    PointCloudWriter(MyMesh mesh, AShader* shader, int _subdiv_levels, bool mask);
 };
 
 #endif // POINTCLOUDWRITER_H

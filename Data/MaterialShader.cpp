@@ -529,7 +529,7 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
     }
 
 
-    std::string input = "pointcloud";
+    std::string input = "pointcloud_MaterialShader";
     char* _output_file_name;
     _output_file_name = (char *) malloc((input.size()+1) * sizeof(char));
     input.copy(_output_file_name, input.size() + 1);
@@ -984,7 +984,7 @@ res = RixSmoothStep(0,1 ,res );
           //   resultRGB[n].r = resultRGB[n].b = resultRGB[n].g =res;
             resultRGB[n] = col;
 
-          resultDispl[n] = 0;
+          resultF[n] = displ;
                   //(1-res)*displ_mult + displ;
           //resultDispl[n] = 0;//  displ;
 

@@ -266,59 +266,6 @@ GLfloat *mat ;
        /* Enable attribute index 1 as being used */
        glEnableVertexAttribArray(1);
 
-
-
-
-
-
-
-
-    /*
- //const GLfloat diamond[4][2]
-    //mesh.n_vertices()
-    int verticesNumber = 3;
-    vector<GLfloat> buffer = new vector<GLfloat>();
-    buffer.resize(verticesNumber);
-    for(int i = 0;i<verticesNumber;i++)
-    {
-        buffer[i].resize(3);
-        switch (i) {
-        case 0:
-            buffer[i][0] = 0;
-            buffer[i][1] = 0;
-            buffer[i][2] = 0;
-            break;
-        case 1:
-            buffer[i][0] = 1;
-            buffer[i][1] = 0;
-            buffer[i][2] = 0;
-            break;
-        case 2:
-            buffer[i][0] = 0.5;
-            buffer[i][1] = 1;
-            buffer[i][2] = 0;
-            break;
-        default:
-            break;
-        }
-     }
-    buffer.
-
-    const GLfloat diamond[4][2] = {
-       {  0.0,  1.0  }, /* Top point */
-  //     {  1.0,  0.0  }, /* Right point */
-  //     {  0.0, -1.0  }, /* Bottom point */
-//       { -1.0,  0.0  } };
-
-
-   /* MyMesh::VertexIter vertex_iterator= mesh.fv_iter(face_handle);
-
-    for(; face_vertex_circulator.is_valid(); ++face_vertex_circulator)
-    {
-
-        MyMesh::VertexHandle vertex_handle = face_vertex_circulator.handle();
-        simulation_data[vertex_handle] = 3.14;
-    }*/
 }
 
 int onWindowClose(GLFWwindow* window)
@@ -422,116 +369,6 @@ auto shader_parameters_data_wrapper= getOrMakeProperty<VertexHandle, ShadersWrap
             shader_parameters_data_wrapper[vertex_iterator] = shaders_wrapper;
     }
 }
-/*
-void FindFeatures(MyMesh& mesh)
-{
-
-    //angle of repose is usually between 33-37 degreee depending on the rock type
-    float angle = 10;
-    float treshold = 3;
-     map<MyMesh::VertexHandle,ShaderParameters*> selected_faces;
-     InitializerSimulationData(mesh);
-     AClassifier *sc = new ScreeClassifier(mesh,angle,treshold);
-     selected_faces = sc->ClassifyVertices();
-     UpdateSimulationData(mesh,selected_faces,1);
-     selected_faces.clear();
-     AClassifier *rc = new RiverClassifier(mesh,75,20,5,34,-35);
-     selected_faces = rc->ClassifyVertices();
-     UpdateSimulationData(mesh,selected_faces,2);
-     RiverClassifierTester rct;
-     rct.Test();
-
-}
-*/
-
-//std::ostream &operator<< (std::ostream &out, const glm::vec3 &vec) {
-//    out << vec.x << " " << vec.y << " "<< vec.z << endl;
-//
-//    return out;
-//}
-
-/*
-void WriteSimulationData(MyMesh& mesh,ostream& outputfile)
-{
-    auto shader_parameters_data_wrapper = getOrMakeProperty<VertexHandle, ShaderParameters*>(mesh, "shader_parameters");
-    //varying
-    string newstring = " \"varying float simulation_data\"[";
-    outputfile<<newstring;
-    for (auto& vertex_handle : mesh.vertices())
-    {
-        ShaderParameters* const shader_param = shader_parameters_data_wrapper[vertex_handle];
-        outputfile<< shader_param->getId()<<".0"<< endl;
-    }
-    outputfile<< " ]";
-    for(int i= 0;i<1;i++)
-    {
-        string newstring = " \"vertex float shader_property_";
-        outputfile<<newstring;
-        outputfile<<i;
-        outputfile << "\" [";
-
-//        newstring += i + ;
-
-        for (auto& vertex_handle : mesh.vertices())
-        {
-
-            ShaderParameters* shader_param = shader_parameters_data_wrapper[vertex_handle];
-            outputfile<< shader_param->getValue(i)<< endl;
-        }
-        //how it was before -> outputfile<< " ] \" ";
-        outputfile<< " ]  ";
-    }
-
-    newstring = " \"vertex float[3] shader_vector";
-    outputfile<<newstring;
-    outputfile << "\" [";
-
-    for (auto& vertex_handle : mesh.vertices())
-    {
-        ShaderParameters* shader_param = shader_parameters_data_wrapper[vertex_handle];
-        //outputfile<< shader_param->getVector()<< endl;
-    }
-    outputfile<< " ]  ";
-}
-
-bool WriteSimulationData(string line,ifstream& myfile,ostream& omyfile,MyMesh& mesh)
-{
-    int counter = 0;
-    size_t found;
-    while (counter <2)
-    {
-        found = line.find("]");
-        if(found!=string::npos)
-        {
-            counter++;
-            if(counter == 2)
-                break;
-        }
-         omyfile << line<<'\n' ;
-         if(!getline(myfile,line))
-             break;
-
-    }
-    if (counter == 2)
-    {
-        string templine = line;
-        line.erase(found + 1 ,line.length());
-        omyfile << line<<'\n' ;
-
-        WriteSimulationData(mesh,omyfile);
-       /* while(getline(datafile, line))
-        {
-            newstring +=" " + line;
-        }*/
-        //newstring += " ] ";
-/*
-        templine.erase(0,found +1);
-        omyfile<<templine<<'\n';
-        return true;
-          }
-    return false;
-}
-*/
 
 
 
@@ -672,7 +509,6 @@ void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &me
             exit(EXIT_FAILURE);
         }
     }
-//cout<<"There are "<<mesh.n_vertices()<< " counter is == "<< counter<<endl;
 }
 
 void LoadMesh(string obj_file,string data_file,MyMesh& mesh)
@@ -681,74 +517,6 @@ void LoadMesh(string obj_file,string data_file,MyMesh& mesh)
     AttachDataFromSimulationToEachVertex(data_file,mesh);
 
 }
-/*
-void WriteOnRibFile(MyMesh mesh)
-{
-      string line;
-      char target[] = " \"vertex point P\"";
-      char target2[] = "\"facevarying float[2] st\"";
-      size_t foundVertices,foundSimulationData;
-
-      ifstream myfile ("../../Data/mountainsceneTemplate.rib");
-      ifstream geometryfile ("../../Data/input.obj");
-      ifstream datafile ("../../Data/simulationData.txt");
-      ostringstream ss_newline;
-      ostringstream ss_out_name_file;
-
-      string out_name_file;
-      ss_out_name_file << "../../Data/mountainsceneTemplate" << "Output.rib";
-      out_name_file = ss_out_name_file.str();
-      ofstream omyfile (out_name_file);
-
-      if (myfile.is_open() && geometryfile.is_open() && datafile.is_open())
-      {
-        cout<<"files opened"<<endl;
-        while ( getline(myfile, line))
-        {
-            foundVertices  = line.find(target);
-
-
-
-            if (foundVertices != string::npos)
-            {
-                cout<<"found first targer\n";
-                string templine = line;
-                templine.erase(foundVertices,templine.length());
-                omyfile<<templine;
-                templine = line;
-                line.erase(0,foundVertices);
-                WriteVerticesDataOnRibFile(mesh,line,myfile,omyfile);
-
-            }
-
-            foundSimulationData  = line.find(target2);
-
-            if (foundSimulationData != string::npos )
-            {
-                cout<<"found secondtarget\n";
-                cout<<line<<endl;
-                WriteSimulationData(line,myfile,omyfile,mesh);
-            }
-            else
-            {
-                  omyfile << line << '\n';
-            }
-
-         }
-
-        geometryfile.close();
-        myfile.close();
-        omyfile.close();
-        datafile.close();
-
-      }
-        else cout << "Unable to open file";
-
-}
-*/
-
-
-
 int main(int argc, char **argv)
 {
 
@@ -767,8 +535,11 @@ string obj_file = "../../Data/input.obj";
   OpenGlVisualizer visualizer(window, 300, 300,mesh,obj_file);
   //visualizer.Initialize();
   //visualizer.Visualize();
+  string shaders_path("@:./");
+  string plugins_path("@:./");
+  string output_name_image("try03");
 
-  RIBWriter writer(mesh,"../../Data/mountainsceneTemplateOutput.rib",visualizer.GetCamera(),features_finder.GetVertexEditTags());
+  RIBWriter writer(mesh,"../../Data/mountainsceneTemplateOutput.rib",shaders_path,plugins_path,output_name_image ,visualizer.GetCamera(),list_of_used_shaders);
   writer.Write();
   //WriteOnRibFile(mesh);
   // Call initIO() to initialize standard I/O methods and load plugins
@@ -785,18 +556,27 @@ string obj_file = "../../Data/input.obj";
    //licmap.LIC2(BoxLength,freq,step_size,mesh);
    std::cout<<"LIC calculated"<<std::endl;
     int i = 0;
+
+    for(AShader* shader : list_of_used_shaders )
+    {
+        std::cout<<"i "<<i<<std::endl;
+        //filename<<i++;
+        PointCloudWriter pcw(mesh,shader,subdivs,true);
+        pcw.Write();
+    }
+
    for(AShader* shader : list_of_used_shaders )
    {
        std::cout<<"i "<<i<<std::endl;
        //filename<<i++;
-       PointCloudWriter pcw(mesh,shader,subdivs);
+       PointCloudWriter pcw(mesh,shader,subdivs,false);
        pcw.Write();
    }
      //pcw.Read();
     std::cout<<"Bye bye"<<std::endl;
 
     char *args_prman[]={"./myscript",NULL};
-    //execvp (args_prman[0],args_prman);
+    execvp (args_prman[0],args_prman);
     return 0;
 }
 

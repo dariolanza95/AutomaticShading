@@ -1269,8 +1269,8 @@ res = RixSmoothStep(0,1 ,res );
           //   resultRGB[n].r = resultRGB[n].b = resultRGB[n].g =res;
           //  resultRGB[n] = col;
 
-          resultDispl[n] = (1-res)*displ_mult + displ;
-          //resultDispl[n] = 0;//  displ;
+          //resultDispl[n] = (1-res)*displ_mult + displ;
+          resultDispl[n] = 0;//  displ;
 
 
 }

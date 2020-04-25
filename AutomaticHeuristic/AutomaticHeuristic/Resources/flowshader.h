@@ -16,15 +16,16 @@ class FlowShader : public AShader
     glm::vec3 flow_normal;
     float lic_val;
 public:
-    FlowShader(int id,float confidence,glm::vec3 flow_normal);
-    FlowShader(int id,float confidence,glm::vec3 flow_normal,float lic_value);
+    FlowShader(int _id,float _confidence,glm::vec3 flow_normal);
+    FlowShader(int _id,float _confidence,glm::vec3 flow_normal,float lic_value);
 
     FlowShader();
-    FlowShader(int id);
+    FlowShader(int _id);
     glm::vec3 GetFlowNormal();
     float GetLicValue();
     void SetLicValue(float new_val);
-    void getOutputCloudPath(std::string& path);
+    std::string getShaderName();
+    void getCloudPathName(std::string& path);
     void allocateData(std::vector<float> &data);
     void getSerializedData(std::vector<float> &data);
     void getSerializedTypes(std::vector<char*>& types,std::vector<char*>& var_names,int& num_variables);

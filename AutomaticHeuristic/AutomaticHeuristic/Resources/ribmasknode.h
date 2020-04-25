@@ -1,11 +1,18 @@
 #ifndef RIBMASKNODE_H
 #define RIBMASKNODE_H
 
-
-class RIBMaskNode
+#include "Ashader.h"
+#include "ribnode.h"
+#include "sstream"
+class RIBMaskNode : public RIBNode
 {
+    AShader* _shader;
+    static int _unique_id;
+    int _id;
 public:
-    RIBMaskNode();
+    RIBMaskNode(AShader* shader);
+    std::string WriteNode();
+    std::string GetName();
 };
 
 #endif // RIBMASKNODE_H
