@@ -163,6 +163,7 @@
     <statsview>
 	<version>2</version>
 	<rmanHtmlDir>/opt/pixar/RenderManProServer-23.1/etc/statsview/</rmanHtmlDir>
+<<<<<<< HEAD
     </statsview>
     <stats name="frame1" description="Rendering statistics" kind="frame">
 	<stats name="time" description="Timing summary" kind="section">
@@ -3378,3 +3379,6 @@
     </stats>
 </rm:statsDoc>
 </doc>
+=======
+    </statsview>
+>>>>>>> RefactoringBranch
