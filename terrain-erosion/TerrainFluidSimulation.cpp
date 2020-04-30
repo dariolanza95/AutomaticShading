@@ -75,8 +75,10 @@ void TerrainFluidSimulation::runMainloop()
 
         if(! _inPause)
         {
+            ulong time = std::chrono::duration_cast<seconds>(accumulator).count();
+            //std::cout<<"time "<<time<<std::endl;
             // physics simulation
-            updatePhysics(dt);
+            updatePhysics(dt,time);
         }
 
         // check for input events
@@ -89,7 +91,7 @@ void TerrainFluidSimulation::runMainloop()
         {
             double ms = std::chrono::duration_cast<milliseconds>(accumulator).count()/100.0;
             std::cout << 1000.0 /ms << " FPS\n";
-            accumulator = high_resolution_clock::duration(0);
+          //  accumulator = high_resolution_clock::duration(0);
             counterSim = 0;
         }
 
@@ -179,16 +181,17 @@ void TerrainFluidSimulation::cameraMovement(double dt)
     if (glfwGetKey(_window,'4')) _hardness_mode = false;
 }
 
-void TerrainFluidSimulation::updatePhysics(double dt)
+void TerrainFluidSimulation::updatePhysics(double dt,ulong time)
 {
     // Run simulation
-    _simulation.update(dt,_rain,_flood);
+    _simulation.update(time,dt,_rain,_flood);
 
     // Copy data to GPU
     _terrainHeightBuffer.SetData(_simulationState.terrain);
     _waterHeightBuffer.SetData(_simulationState.water);
     _sedimentBuffer.SetData(_simulationState.suspendedSediment);
     _simDataBuffer.SetData(_simulationState.simData);
+    _simDataBuffer_2.SetData(_simulationState.simData_2);
     _normalBuffer.SetData(_simulationState.surfaceNormals);
 
 }
@@ -262,8 +265,9 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
             (*datafile)<< "hardness "<< GetTerrainCapacity(x,y,z,_simulation.noise_sediment_frequency,_simulation._stratified_layer_width);
 
             //vec3 flowNormal (_simulation.uVel(x,y),_simulation.vVel(x,y),_simulation.zVel(x,y));
-            vec3 flowNormal(0,0,0);
-            if(_simulation.count(x,y)>0)
+            vec3 flowNormal(NAN,NAN,NAN);
+
+            if(dot(_simulation.flowNormal(x,y),_simulation.flowNormal(x,y))> 0.001)//  &&  _simulationState.simData_2(x,y)>0)
             {
                 flowNormal = vec3(_simulation.flowNormal(x,y)/_simulation.count(x,y));
                 flowNormal = normalize(flowNormal);
@@ -343,6 +347,8 @@ void TerrainFluidSimulation::render()
     _waterHeightBuffer.MapData(_testShader->AttributeLocation("inWaterHeight"));
     _sedimentBuffer.MapData(_testShader->AttributeLocation("inSediment"));
     _simDataBuffer.MapData(_testShader->AttributeLocation("inSimData"));
+    _simDataBuffer_2.MapData(_testShader->AttributeLocation("inSimData_2"));
+
 
     _normalBuffer.MapData(_testShader->AttributeLocation("inNormal"));
 
@@ -549,6 +555,7 @@ void TerrainFluidSimulation::init()
     _waterHeightBuffer.SetData(_simulationState.water);
     _sedimentBuffer.SetData(_simulationState.suspendedSediment);
     _simDataBuffer.SetData(_simulationState.simData);
+    _simDataBuffer_2.SetData(_simulationState.simData_2);
 
     // Load and configure shaders
     _testShader = _shaderManager.LoadShader(resourcePath+"lambert_v.glsl",resourcePath+"lambert_f.glsl");
@@ -557,7 +564,7 @@ void TerrainFluidSimulation::init()
     _testShader->MapAttribute("inWaterHeight",2);
     _testShader->MapAttribute("inSediment",3);
     _testShader->MapAttribute("inSimData",4);
-
+    _testShader->MapAttribute("inSimData_2",6);
     _testShader->MapAttribute("inNormal",7);
 
 
@@ -580,6 +587,7 @@ void TerrainFluidSimulation::init()
     _waterHeightBuffer.SetData(_simulationState.water);
     _sedimentBuffer.SetData(_simulationState.suspendedSediment);
     _simDataBuffer.SetData(_simulationState.simData);
+    _simDataBuffer_2.SetData(_simulationState.simData_2);
     _normalBuffer.SetData(_simulationState.surfaceNormals);
     _inPause = false;
 }

@@ -7,7 +7,7 @@
 class MaterialClassifier : public  AClassifier
 {
 public:
-    MaterialClassifier(MyMesh mesh);
+    MaterialClassifier(MyMesh &mesh);
     map<MyMesh::VertexHandle,AShader*> ClassifyVertices();
     AShader* GetShader();
 };

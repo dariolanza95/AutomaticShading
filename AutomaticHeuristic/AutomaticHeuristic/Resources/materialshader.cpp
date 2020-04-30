@@ -21,7 +21,7 @@ void MaterialShader::getSerializedData(std::vector<float> &data)
 }
 
 void MaterialShader::getCloudPathName(std::string& path){
-    std::string temp =std::string("pointcloud_MaterialShader");
+    std::string temp =std::string("../../Data/pointcloud_MaterialShader");
             //std::string("../../Data/pointcloud_MaterialShader");
     path = temp;}
 

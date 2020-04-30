@@ -1,19 +1,6 @@
 #include "PointCloudWriter.h"
-/*
-char* fromStringToChar(std::string input)
-{
-    char* output;
-    output = (char *) malloc((input.size()+1) * sizeof(char));
-    input.copy(output, input.size() + 1);
-    output[input.size()] = '\0';
-    return output;
-}
-void PointCloudWriter::Init()
-{
 
 
-}
-*/
 void PointCloudWriter::Write()
 {
     auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
@@ -25,24 +12,12 @@ void PointCloudWriter::Write()
     }else{
         _shader->allocateData(allocated_data);
     }
-
     std::cout<<_mesh.n_vertices()<<std::endl;
-
-    //iterate for number of desired subdivisions
-    if(_subdiv_levels>0)
-    {SubdividerAndInterpolator<MyMesh> catmull;
-
-        catmull.attach(_mesh);
-        catmull( _subdiv_levels );
-        catmull.detach();
-    }
-
-int k = 0;
     std::cout<<"n vertices "<<_mesh.n_vertices()<<std::endl;
     MyMesh::VertexIter vertex_handle;
     MyMesh::VertexIter vertex_iterator_end(_mesh.vertices_end());
+    bool found = 0;
     vertex_handle=_mesh.vertices_begin();
-
     for(_mesh.vertices_begin();vertex_handle!= vertex_iterator_end;++vertex_handle)
     {
         ShadersWrapper* const shader_wrapper = shader_parameters_data_wrapper[vertex_handle];
@@ -50,27 +25,30 @@ int k = 0;
         shader_wrapper->GetListOfShaders(list);
         for(AShader* sp : list)
         {
+            if(sp==nullptr)
+                continue;
             if(sp->GetId()==_shader->GetId()){
+               found = true;
                 if(_writing_a_shader_mask){
-                    allocated_data[0] = 1;
+                    float conf = sp->GetConfidence();
+                    allocated_data[0] = conf;
                 }else{
                     sp->getSerializedData(allocated_data);
                 }
             }
 
         }
-
-        mesh_point =  _mesh.point(*vertex_handle);
-        point[0] = mesh_point[0];
-        point[1] = mesh_point[1];
-        point[2] = mesh_point[2];
-        normal[0] = normal[1] = normal[2] = 0;
-        PtcWriteDataPoint(_output_file, point, normal, radius,&allocated_data[0] );
-    k++;
+        if(found){
+            mesh_point =  _mesh.point(*vertex_handle);
+            point[0] = mesh_point[0];
+            point[1] = mesh_point[1];
+            point[2] = mesh_point[2];
+            normal[0] = normal[1] = normal[2] = 0;
+            PtcWriteDataPoint(_output_file, point, normal, radius,&allocated_data[0] );
+            found = false;
+        }
     }
-    std::cout<<"k == "<<k<<std::endl;
     PtcClosePointCloudFile(_output_file);
-    //delete *data;
 }
 
 //Useful debug function too check inside of a PointCloud file
@@ -134,12 +112,12 @@ void PointCloudWriter::Read()
 }
 
 
-char* PointCloudWriter::CreateMaskFile(AShader* shader,std::vector<char*>& var_types,std::vector<char*>& var_names,int& num_variables)
+char* PointCloudWriter::CreateMaskFile(AShader* shader, std::vector<char*>& var_types, std::vector<char*>& var_names, int& num_variables)
 {
     char* _file_name;
     std::string output_file_name;
     shader->getCloudPathName(output_file_name);
-    _output_file_name=output_file_name+"_mask";
+    _output_file_name=_output_path + output_file_name+"_mask";
     _file_name = AutomaticShaders::Utils::fromStringToChar(_output_file_name);
     var_names.resize(1);
     var_types.resize(1);
@@ -149,11 +127,12 @@ char* PointCloudWriter::CreateMaskFile(AShader* shader,std::vector<char*>& var_t
     return _file_name;
 }
 
-PointCloudWriter::PointCloudWriter(MyMesh mesh,AShader* shader,int subdiv_levels,bool mask):
+PointCloudWriter::PointCloudWriter(MyMesh mesh,AShader* shader,int subdiv_levels,std::string output_path,bool mask=true):
     _mesh(mesh),
     _shader(shader),
     _subdiv_levels(subdiv_levels),
-    _writing_a_shader_mask(mask)
+    _writing_a_shader_mask(mask),
+   _output_path(output_path)
 {
 
     char* _file_name;
@@ -167,7 +146,8 @@ PointCloudWriter::PointCloudWriter(MyMesh mesh,AShader* shader,int subdiv_levels
     else{
         std::string output_file_name;
         shader->getCloudPathName(output_file_name);
-        _output_file_name=output_file_name;
+
+        _output_file_name= _output_path + output_file_name;
         _file_name = AutomaticShaders::Utils::fromStringToChar(_output_file_name);
         _shader->getSerializedTypes(var_types,var_names,num_variables);
     }

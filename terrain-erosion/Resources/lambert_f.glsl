@@ -31,6 +31,7 @@ in float vTerrainHeight;
 in float vWaterHeight;
 in float vSediment;
 in float vSimData;
+in float vSimData_2;
 
 in vec3  vP; // shading position in camera space
 in vec3  vN; // shading normal in camera space
@@ -66,7 +67,7 @@ void main(void)
  
     fColor = (factor*waterColor+(1.0-factor)*terrainColor)*light;
     vec4 hardnessColor =  vec4(0,0,0,1);
-
+    vec4 simDataColor =  vec4(1,1,0,1);
 
     float temp = 1;
     if(uHardnessMode)
@@ -75,9 +76,19 @@ void main(void)
     }
     else
         temp = 0;
+
+    float temp2 = 1;
+    if(uHardnessMode)
+    {
+        temp2 = vSimData_2;
+    }
+    else
+        temp2 = 0;
+
     fColor = mix(fColor,vec4(0,1,0,1),vSediment);
     fColor = mix(fColor,sedimentColor,vSediment);
     fColor = mix(fColor,hardnessColor,temp);
+    fColor = mix(fColor,simDataColor,temp2);
     float gamma = 2.2;
     fColor.rgb = pow(fColor.rgb,vec3(1,1,1)/gamma);
 }

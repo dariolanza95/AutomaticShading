@@ -35,8 +35,8 @@ public:
     Grid2D<float>& water;
     Grid2D<float>& terrain;
     Grid2D<float>& sediment;
-    Grid2D<float>& counter_from_last_time_water_passed;
-    Grid2D<float>& counter_times_water_was_still;
+    Grid2D<float> counter_from_last_time_water_passed;
+    Grid2D<float> counter_times_water_was_still;
     Grid2D<float> tmpSediment;
     Grid2D<float> uVel;
     Grid2D<float> vVel;
@@ -57,7 +57,7 @@ public:
     const float gravity;
     const float _stratified_layer_width = 0.001;
 
-    void update(double dt, bool makeRain=true, bool flood=false);
+    void update(ulong time, double dt, bool makeRain=true, bool flood=false);
     void simulateFlow(double dt);
     void simulateErosion(double dt);
     void simulateSedimentTransportation(double dt);
@@ -65,7 +65,7 @@ public:
     float sampleTerrain(int x,int y );
     void makeRain(double dt);
     void makeFlood(double dt);
-    void makeRiver(double dt);
+    void makeRiver(double dt, ulong time);
 
     void addRainDrop(const vec2& pos, int rad, float amount);
 

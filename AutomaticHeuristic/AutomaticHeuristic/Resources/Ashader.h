@@ -15,8 +15,9 @@ class AShader
     BlendMode _displ_blend_mode;
 public:
     AShader();
-    AShader(int _id,BlendMode displ_blend_mode = BlendMode::Overlay);
-    AShader(int _id,float _confidence);
+    AShader(int id);
+   // AShader(int _id,BlendMode displ_blend_mode = BlendMode::Overlay);
+    AShader(int _id,float _confidence,BlendMode displ_blend_mode = BlendMode::Overlay );
     float GetConfidence();
     void SetConfidence(float new_confidence);
     BlendMode GetDisplBlendMode();

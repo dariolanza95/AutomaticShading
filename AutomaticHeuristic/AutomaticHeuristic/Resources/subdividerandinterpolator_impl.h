@@ -187,6 +187,9 @@ SubdividerAndInterpolator<MeshType,RealType>::split_face( MeshType& _m, const Fa
   HalfedgeHandle hh = _m.next_halfedge_handle(hend);
 
   auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_m, "shader_parameters");
+  auto sim_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,SimulationData*> (_m,"simulation_data");
+
+
 
   VertexHandle  t_vh1( _m.to_vertex_handle(hend));
   //for now just  a simple NN interpolation should work
@@ -194,6 +197,9 @@ SubdividerAndInterpolator<MeshType,RealType>::split_face( MeshType& _m, const Fa
   ShadersWrapper* new_shader_param = new ShadersWrapper(*shader_param);
      shader_parameters_data_wrapper[vh] = new_shader_param;
 
+     SimulationData* sim_data= sim_data_wrapper[t_vh1];
+     SimulationData* new_sim_data= new SimulationData(*sim_data);
+   sim_data_wrapper[vh] = new_sim_data;
 
 
   HalfedgeHandle hold = _m.new_edge(_m.to_vertex_handle(hend), vh);
@@ -257,12 +263,18 @@ SubdividerAndInterpolator<MeshType,RealType>::split_edge( MeshType& _m, const Ed
 
   //copy data from previous vertex
   auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_m, "shader_parameters");
-
+  auto sim_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,SimulationData*> (_m,"simulation_data");
+//  auto OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , SimulationData*>::type, MyMesh> simulation_data_wrapper;
   ShadersWrapper* shader_param = shader_parameters_data_wrapper[vh1];
   ShadersWrapper* new_shader_param = new ShadersWrapper(*shader_param);
-//  if(new_shader_param->_list.empty())
+
+  SimulationData* sim_data= sim_data_wrapper[vh1];
+  SimulationData* new_sim_data= new SimulationData(*sim_data);
+
+  //  if(new_shader_param->_list.empty())
 //      new_shader_param = new ShaderParameters();
   shader_parameters_data_wrapper[vh] = new_shader_param;
+  sim_data_wrapper[vh] = new_sim_data;
 
   // Re-link mesh entities
   if (_m.is_boundary(_eh))

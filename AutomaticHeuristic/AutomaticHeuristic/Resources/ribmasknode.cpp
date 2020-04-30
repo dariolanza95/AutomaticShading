@@ -20,6 +20,6 @@ string RIBMaskNode::WriteNode(){
     cloud_file_name+"_mask";
     stringstream res;
     res<< "Pattern \"MaskReader\" \"MaskReader"<< _id <<
-            "\" \"string filename\" [\""<<cloud_file_name<<"\"]";
+            "\" \"string filename\" [\""<<cloud_file_name<<"_mask\"]";
     return res.str();
 }

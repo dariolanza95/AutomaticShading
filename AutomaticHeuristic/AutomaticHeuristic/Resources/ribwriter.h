@@ -41,7 +41,7 @@ class RIBWriter
     string _output_name_image;
     void WriteVertexEditTag();
     void RotateAlongX(glm::mat4x4 & mat,float angle);
-    void  WriteTransformationMatrix();
+    string WriteTransformationMatrix();
     void  WriteNumOfVerticesInEachFace();
     void  WriteIndexBuffer();
     void  WriteSimulationData();

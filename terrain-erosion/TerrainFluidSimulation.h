@@ -55,7 +55,7 @@ protected:
     void checkInput();
 
     /// Advances physics by timestep dt (in milliseconds).
-    void updatePhysics(double dt);
+    void updatePhysics(double dt, ulong time);
 
     /// Renders the simulation
     void render();
@@ -101,6 +101,8 @@ protected:
     Graphics::IndexBuffer               _gridIndexBuffer;
     Graphics::VertexBuffer<float>       _sedimentBuffer;
     Graphics::VertexBuffer<float>       _simDataBuffer;
+    Graphics::VertexBuffer<float>       _simDataBuffer_2;
+
     Graphics::VertexBuffer<glm::vec3>   _normalBuffer;
 
 

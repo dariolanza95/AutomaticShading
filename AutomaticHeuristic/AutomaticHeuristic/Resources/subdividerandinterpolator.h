@@ -7,7 +7,7 @@
 
 #include <OpenMesh/Core/Utils/vector_traits.hh>
 #include <OpenMesh/Core/Utils/PropertyManager.hh>
-
+#include  "simulationdata.h"
 #include <OpenMesh/Tools/Subdivider/Uniform/SubdividerT.hh>
 
 #if defined(OM_CC_MIPS)

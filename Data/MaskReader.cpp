@@ -394,7 +394,7 @@ PxrTexture::ComputeOutputParams(RixShadingContext const *sctx,
         PtcGetPointCloudInfo(inptc, "datasize", &datasize);
         data = (float *) malloc(datasize * sizeof(float));
 
-int K = 1;
+int K = 5;
 float maxdist = 5;
 
     // looping through the different output ids
@@ -409,127 +409,25 @@ float maxdist = 5;
         float val = 0;
         if(Readres==1)
         {
-            val = 1;
-//            val= data[0];
-        }
+           val= data[0];
+         //  std::cout<<val<<std::endl;
+            }
+        /*else{
+            Readres = PtcGetNearestPointsData (inptc, point, normal,1.5, K, data);
+            if(Readres==1)
+                val = 0.75;
+            else{
+                Readres = PtcGetNearestPointsData (inptc, point, normal,2, K, data);
+                if(Readres==1)
+                    val = 0.25;
+
+            }
+        }*/
         resultF[i] = val;
-        /*out[i].paramId = i;
-        out[i].detail = k_RixSCInvalidDetail;
-        out[i].value = NULL;
-
-        type = paramTable[i].type;    // we know this
-
-        sctx->GetParamInfo(i, &type, &cinfo);
-        if(cinfo == k_RixSCNetworkValue)
-        {
-            if( type == k_RixSCColor )
-            {
-                out[i].detail = k_RixSCVarying;
-                out[i].value = pool.AllocForPattern<RtColorRGB>(sctx->numPts);
-            }
-            else if( type == k_RixSCFloat )
-            {
-                out[i].detail = k_RixSCVarying;
-                out[i].value = pool.AllocForPattern<RtFloat>(sctx->numPts);
-            }
-        }
-    }
-
-    RtColorRGB* resultRGB = (RtColorRGB*) out[k_resultRGB].value;
-    if(!resultRGB)
-    {
-        // make sure the resultRGB space is allocated because it
-        // will store the composite color results.
-        resultRGB = pool.AllocForPattern<RtColorRGB>(sctx->numPts);
-    }
-    RtFloat* resultR = (RtFloat*) out[k_resultR].value;
-    RtFloat* resultG = (RtFloat*) out[k_resultG].value;
-    RtFloat* resultB = (RtFloat*) out[k_resultB].value;
-    RtFloat* resultA = (RtFloat*) out[k_resultA].value;
-
-    // Either st, or Q, will be non-NULL depending on a connected manifold.
-    RtFloat2 const* st = NULL;
-    RtPoint3 const* Q = NULL;
-    RtFloat const* QRadius = NULL;
-
-    // check for manifold input
-    sctx->GetParamInfo(k_manifold, &type, &cinfo);
-    if(cinfo != k_RixSCNetworkValue)
-    {
-        RtFloat2 const defaultST(0.0f, 0.0f);
-        sctx->GetPrimVar(Rix::k_st, defaultST, &st, &QRadius);
-
-        // Alternatively: call four-deriv version of GetPrimVar() to
-        // get dsdu etc and then do the mapping from du,dv to ds,dt.
-        // This would take stretching and/or rotation in s and t into
-        // account.  However, the results of such calls are not
-        // currently cached, so even though the results would be
-        // better, we cannot afford the performance degradation.
-        // (OSL has a separate cache that handles this, and also the
-        // proper mapping from du,dv to ds,dt.)
-        //sctx->GetPrimVar(Rix::k_st, &st, &dsdu, &dtdu, &dsdv, &dtdv);
-        //ds[i] = dsdu[i] * du[i] + dsdv[i] * dv[i];
-        //dt[i] = dtdu[i] * du[i] + dtdv[i] * dv[i];
-
-        if (atlasStyle != RixTexture::AtlasNone) txParams.invertT = true;
-    }
-    else
-    {
-        sctx->EvalParam(k_manifoldQ, -1, &Q);
-        sctx->EvalParam(k_manifoldQradius, -1, &QRadius);
-        // We don't invert manifolds (since the upstream node can invert)
-        txParams.invertT = false;
-    }
-
-    // Optionally clamp the filter width to prevent the texture system
-    // from accessing too detailed mip levels
-    RtFloat *stRadius;
-    if (mipBias != 0 || maxResolution > 0.f)
-    {
-        stRadius = pool.AllocForPattern<RtFloat>(sctx->numPts);
-        memcpy(stRadius, QRadius, sizeof(RtFloat) * sctx->numPts);
-        PxrTxMipControls(sctx, mipBias, maxResolution, stRadius);
-    }
-    else
-    {
-        stRadius = const_cast<RtFloat*>(QRadius);
-    }
-
-    // Do the actual texture map lookup
-    PxrReadTexture rtex(m_tex, *filename, atlasStyle, linearize);
-    int err = rtex.Texture(txParams, sctx->numPts, st, Q, stRadius,
-                           resultRGB, resultA); // results
-
-    // Handle failed lookup
-    if (err == RixTexture::FileNotFound)
-    {
-        if ((atlasStyle == RixTexture::AtlasNone) && !filename->Empty())
-            m_msg->Error("PxrTexture could not open \"%s\"", filename->CStr());
-
-        RtColorRGB const* missingColor;
-        RtFloat const* missingAlpha;
-        sctx->EvalParam(k_missingColor, -1, &missingColor, &m_missingColor, true);
-        sctx->EvalParam(k_missingAlpha, -1, &missingAlpha, &m_missingAlpha, true);
-
-        rtex.FillMissingTexture(sctx->numPts, missingColor, resultRGB);
-        rtex.FillMissingTexture(sctx->numPts, missingAlpha, resultA);*/
-    }
-
-    // Reorder the outputs
-  /*  PxrInterleavedToPlanar(sctx->numPts, resultRGB, resultR, resultG, resultB);
-
-    for (unsigned i=0; i<sctx->numPts; i++)
-    {
-        resultRGB[i] = resultRGB[i] * colorScale[i] + colorOffset[i];
-        RixSaturation(resultRGB[i], saturation[i]);
-        if (resultA) resultA[i] = resultA[i] * alphaScale[i] + alphaOffset[i];
-        if (resultR) resultR[i] = resultRGB[i].r;
-        if (resultG) resultG[i] = resultRGB[i].g;
-        if (resultB) resultB[i] = resultRGB[i].b;
-    }
-*/
+}
     return 0;
 }
+
 
 
 RIX_PATTERNCREATE

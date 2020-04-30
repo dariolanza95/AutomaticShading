@@ -37,7 +37,7 @@ FluidSimulation::FluidSimulation(SimulationState& state)
       terrain(state.terrain),
       sediment(state.suspendedSediment),
       counter_from_last_time_water_passed(state.vegetation),
-      counter_times_water_was_still(state.simData),
+      counter_times_water_was_still(state.vegetation),
       tmpSediment(state.water.width(),state.water.height()),
       uVel(water.width(), water.height()),
       vVel(water.width(), water.height()),
@@ -86,23 +86,31 @@ RANDOM rnd;
 
 
 
-void FluidSimulation::makeRiver(double dt)
+void FluidSimulation::makeRiver(double dt,ulong time)
 
 {
+    float scaler = 0.01;
+ //   if(time>30)
+ //       scaler = 0.05;
+ //   if(time>60)
+ //       scaler = 0.1;
+ //   if(time>80)
+ //       scaler = 0.12;
     int maxrand = 1000;
     std::uniform_int_distribution<ushort> rndInt(1,3);
-    std::uniform_real_distribution<float> rndFloat(0,5);
+  //  std::uniform_real_distribution<float> rndFloat(0,5);
+    std::uniform_real_distribution<float> rndFloat(0,3);
     std::uniform_int_distribution<ushort> rndInt2(0,maxrand);
 
     const vec2 pos = vec2(0.01,water.height()/2);
     int x = rndInt(rnd);
     int z = rndInt2(rnd);
     int y = rndFloat(rnd);
-    addRainDrop(pos,x,dt*0.01*y);
+    addRainDrop(pos,x,dt*scaler*y);
 
     //simulate occasional flooding
-    if(z==maxrand)
-        addRainDrop(pos,x,dt*2*y);
+    //if(z==maxrand)
+    //    addRainDrop(pos,x,dt*2*y);
 
 }
 void FluidSimulation::makeRain(double dt)
@@ -409,24 +417,39 @@ void FluidSimulation::simulateFlow(double dt)
             flowNormal(y,x) += vec3(uV,vV,actualWater -oldWater);
             float vel = sqrtf(uV*uV+vV*vV);
             water(y,x) = actualWater;
-           /* if(vel <= river_max_speed_treshold && vel>= river_min_speed_treshold && water(y,x)>river_min_height_treshold &&
+
+           if(vel <= river_max_speed_treshold && vel>= river_min_speed_treshold && water(y,x)>river_min_height_treshold &&
                     water(y,x) <= river_height_treshold)
             {
-                counter_times_water_was_still(y,x)++;
-                counter_times_water_was_still(y,x) = counter_times_water_was_still(y,x)>treshold_time? treshold_time +1:counter_times_water_was_still(y,x)++;
+
+              //  counter_times_water_was_still(y,x)++;
+               float temp_count = counter_times_water_was_still(y,x);
+               //std::cout<<temp_count<<std::endl;
+//                counter_times_water_was_still(y,x) = counter_times_water_was_still(y,x)>treshold_time? treshold_time +1:counter_times_water_was_still(y,x)++;
+                if(temp_count>treshold_time){
+                  //  state.simData_2(y,x) =1;
+                    counter_times_water_was_still(y,x) = treshold_time+1;
+                }
+                else{
+                    counter_times_water_was_still(y,x)++;
+                }
 
             }
             else
             {
                 if(counter_times_water_was_still(y,x) >  treshold_time )
                 {
+                     state.simData_2(y,x) =1;
                     counter_times_water_was_still(y,x)++;
                     if(counter_times_water_was_still(y,x)>3000)
                         counter_times_water_was_still(y,x)=0;
                 }
-                else
-                     counter_times_water_was_still(y,x)=0;
-            }*/
+                else{
+                    state.simData_2(y,x) =0;
+                    counter_times_water_was_still(y,x)=0;
+
+                }
+            }
         }
     }
 
@@ -540,6 +563,7 @@ void FluidSimulation::simulateErosion(double dt)
              kc =kc + n*(kc/10);
 
             state.simData(y,x) = kc/42;
+            kc = 35;
             float capacity = kc* sqrtf(uV*uV+vV*vV)*sinAlpha*(std::min(water(y,x),0.01f)/0.01f) ;
             float delta = (capacity-sediment(y,x));
 
@@ -709,14 +733,14 @@ void FluidSimulation::simulateEvaporation(double dt)
 #endif
 }
 
-void FluidSimulation::update(double dt, bool rain, bool flood)
+void FluidSimulation::update(ulong time, double dt, bool rain, bool flood)
 {
     // 1. Add water to the system
     if (rain)
         makeRain(dt);
 
     if (flood)
-       makeRiver(dt);// makeFlood(dt);
+       makeRiver(dt,time);// makeFlood(dt);
 
     // 2. Simulate Flow
     simulateFlow(dt);

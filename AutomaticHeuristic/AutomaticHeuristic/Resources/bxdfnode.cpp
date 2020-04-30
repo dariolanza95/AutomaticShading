@@ -25,6 +25,8 @@ std::string BXDFNode::GetName(){
 std::string BXDFNode::WriteNode(){
     stringstream res;
     stringstream name;
+    if(_node == nullptr)
+        return "";
     name<<"PxrSurface"<<_unique_id;
     res<<"Bxdf \"PxrSurface\" \""<<GetName()<<"\" \"reference color diffuseColor\" [\""<<_node->GetName()<<":resultRGB\"] ";
     res<<"\"string __materialid\" [\""<<GetMaterialId()<<"\"]"<<std::endl;

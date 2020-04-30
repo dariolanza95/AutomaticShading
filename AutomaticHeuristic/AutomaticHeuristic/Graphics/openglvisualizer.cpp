@@ -286,11 +286,6 @@ void OpenGlVisualizer::CameraMovement(float dt)
 
     if (glfwGetKey(_window,'1')) ShowSimulationDataInput();
     if (glfwGetKey(_window,'2')) ShowSelectedFaces();
-    glm::vec3 pos = _cam.Position();
-    //std::cout<<"Position "<< pos[0]<<" "<< pos[1]<<" "<< pos[2]<< std::endl;
-   // std::cout<<" aspect " << _cam._aspect << std::endl;
-    std::cout<< " viewMatrix "<< glm::to_string(_cam.ViewMatrix())<< std::endl ;
-    //std::cout<<" inverse " << glm::to_string(transpose(inverse(_cam.ViewMatrix())))<< std::endl;
 
 }
 
@@ -390,14 +385,21 @@ void OpenGlVisualizer::InitializeBuffers()
                      N = vec3(l-r, t - b, 2 );
                      N = normalize(N);
 
-                     _surfaceNormals(y,x) = N;
-                     _surfaceNormals(y,x) = glm::vec3(1,1,1);
+
                  }
              }
-     _normalBuffer.SetData(_surfaceNormals);
 
+            MyMesh::VertexIter mesh_vertex_iterator;
+            MyMesh::VertexIter vertex_iterator_end(_mesh.vertices_end());
+int i = 0;
+    for(mesh_vertex_iterator=_mesh.vertices_begin();mesh_vertex_iterator!= vertex_iterator_end;++mesh_vertex_iterator){
+        MyMesh::Normal temp_normal = _mesh.normal(mesh_vertex_iterator);
+        glm::vec3 normal(temp_normal[0],temp_normal[0],temp_normal[0]);
+    _surfaceNormals(i) = normal;
+i++;
 }
-
+_normalBuffer.SetData(_surfaceNormals);
+}
 void OpenGlVisualizer::ShowSelectedFaces()
 {
     /*std::cout<<"showing selected faces"<<std::endl;

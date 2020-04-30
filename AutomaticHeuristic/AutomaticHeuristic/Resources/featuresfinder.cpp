@@ -1,18 +1,23 @@
 #include "featuresfinder.h"
 
-FeaturesFinder::FeaturesFinder(MyMesh mesh): _mesh(mesh){}
+FeaturesFinder::FeaturesFinder(MyMesh &mesh): _mesh(mesh){}
 
 MyMesh  FeaturesFinder::Find(std::vector<AShader*>& list_of_used_shaders)
 {
+
+
 
     //angle of repose is usually between 33-37 degreee depending on the rock type
     float angle = 10;
     float treshold = 3;
      map<MyMesh::VertexHandle,AShader*> selected_faces;
      InitializerSimulationData();
+
+
+
      AClassifier *sc = new ScreeClassifier(_mesh,angle,treshold);
      selected_faces = sc->ClassifyVertices();
-     UpdateSimulationData(selected_faces);
+     //UpdateSimulationData(selected_faces);
      selected_faces.clear();
      //AClassifier *rc = new RiverClassifier(_mesh,75,20,5,34,-35);
      //selected_faces = rc->ClassifyVertices();
@@ -32,8 +37,8 @@ MyMesh  FeaturesFinder::Find(std::vector<AShader*>& list_of_used_shaders)
      if(selected_faces.size()>0)
      {
          UpdateSimulationData(selected_faces);
-         AShader* shad = mt->GetShader();
-        list_of_used_shaders.push_back(shad);
+         //AShader* shad = mt->GetShader();
+        //list_of_used_shaders.push_back(shad);
      }
 
      //RiverClassifierTester rct;

@@ -28,6 +28,7 @@ public:
     Grid2D<float> suspendedSediment;
     Grid2D<float> vegetation;
     Grid2D<float> simData;
+    Grid2D<float> simData_2;
     Grid2D<float> rivers;
 
     //Grid2D<vec3>  flowNormal;
@@ -42,7 +43,7 @@ public:
             surfaceNormals(w,h),
             vegetation(w,h),
             rivers(w,h),
-            simData(w,h)
+            simData(w,h),simData_2(w,h)
             //flowNormal(w,h)
     {
 
@@ -74,6 +75,7 @@ public:
                 suspendedSediment(y,x) = 0.0f;
                 vegetation(y,x) = 0.0f;
                 simData(y,x) = 0.0f;
+                 simData_2(y,x) = 0.0f;
                 rivers(y,x) = 0.0f;
                 if (x < (water.height()*2/3))
                 {
@@ -120,6 +122,7 @@ public:
                 suspendedSediment(y,x) = 0.0f;// 0.1*terrain(y,x);
                 vegetation(y,x) = 0.0f;
                 simData(y,x) = 0.0f;
+                simData_2(y,x) = 0.0f;
                 rivers(y,x) = 0.0f;
 
             }

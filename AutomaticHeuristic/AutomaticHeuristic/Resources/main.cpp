@@ -527,10 +527,12 @@ string obj_file = "../../Data/input.obj";
 
 
   MyMesh mesh;
+  MyMesh mesh2;
   LoadMesh(obj_file,data_file,mesh);
-  FeaturesFinder features_finder(mesh);
+  mesh2 = mesh;
+  FeaturesFinder features_finder(mesh2);
   std::vector<AShader*> list_of_used_shaders;
-  mesh = features_finder.Find(list_of_used_shaders);
+  mesh2 = features_finder.Find(list_of_used_shaders);
   GLFWwindow* window = OpenGLInit();
   OpenGlVisualizer visualizer(window, 300, 300,mesh,obj_file);
   //visualizer.Initialize();
@@ -556,20 +558,22 @@ string obj_file = "../../Data/input.obj";
    //licmap.LIC2(BoxLength,freq,step_size,mesh);
    std::cout<<"LIC calculated"<<std::endl;
     int i = 0;
+    string path("../../Data/");
 
     for(AShader* shader : list_of_used_shaders )
     {
         std::cout<<"i "<<i<<std::endl;
         //filename<<i++;
-        PointCloudWriter pcw(mesh,shader,subdivs,true);
+        PointCloudWriter pcw(mesh2,shader,subdivs,path,true);
         pcw.Write();
+    //    pcw.Read();
     }
 
    for(AShader* shader : list_of_used_shaders )
    {
        std::cout<<"i "<<i<<std::endl;
        //filename<<i++;
-       PointCloudWriter pcw(mesh,shader,subdivs,false);
+       PointCloudWriter pcw(mesh2,shader,subdivs,path,false);
        pcw.Write();
    }
      //pcw.Read();

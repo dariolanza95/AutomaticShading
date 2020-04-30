@@ -30,12 +30,13 @@ class PointCloudWriter
     bool _writing_a_shader_mask;
     int _subdiv_levels;
     std::vector<float > allocated_data;
+    std::string _output_path;
     char* CreateMaskFile(AShader* shader,std::vector<char*>& var_types,std::vector<char*>& var_names,int& num_variables);
 
 public:
     void Write();
     void Read();
-    PointCloudWriter(MyMesh mesh, AShader* shader, int _subdiv_levels, bool mask);
+    PointCloudWriter(MyMesh mesh, AShader* shader, int _subdiv_levels, std::string output_path,bool mask);
 };
 
 #endif // POINTCLOUDWRITER_H

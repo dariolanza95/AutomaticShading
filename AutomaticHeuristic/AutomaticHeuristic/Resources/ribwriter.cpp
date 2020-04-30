@@ -168,10 +168,10 @@ void RIBWriter::RotateAlongX(glm::mat4x4 & mat,float angle)
     mat[2][2] = cos(angle);
 }
 
-void RIBWriter::WriteTransformationMatrix()
+string RIBWriter::WriteTransformationMatrix()
 {
-    stringstream ss;
-   /* ss<<" Transform [ ";
+    stringstream ss;/*
+    ss<<" Transform [ ";
     glm::mat4x4 viewMatrix = _cam.ViewMatrix();
     viewMatrix = _cam.RIBMatrix();
 
@@ -195,18 +195,20 @@ void RIBWriter::WriteTransformationMatrix()
     }
     ss<<" ]"<<std::endl;
 
-
 */
+
     //ss << "Rotate "<< -1*_cam.rotX<<" 1 0 0"<<std::endl;
     //ss << "Rotate "<< _cam.rotY<<" 0 1 0"<<std::endl;
     //ss << "Rotate "<< _cam.rotZ<<" 0 0 1"<<std::endl;
     //std::cout<<ss.str();
 
  //  ss<<"Transform [ 1 0 0 0 0 -0.8660 -0.5  0 0 0.5 -0.8660 0 -151 137.203 447.644 1 ]"<<std::endl;
-//   ss<<" Transform [ 1 0 0 0  0 1 0 0 0 0 1 0 0 0 0 1 ]"<<std::endl;
-    ss<<" Transform [  1 0 0 0 0 -0.241805 -0.970205 0 0 0.970205 -0.241805 0 -164.45 43.2274 314.337 1 ]"<<std::endl;;
-
-    _rib_file<<ss.str();
+  // ss<<"  Transform [ 1 0 0 0 0 -0.8660 -0.5  0 0 0.5 -0.8660 0 -151 137.203 447.644 1 ]"<<std::endl;
+    //ss<<" Transform [  1 0 0 0 0 -0.241805 -0.970205 0 0 0.970205 -0.241805 0 -164.45 43.2274 314.337 1 ]"<<std::endl;;
+   // ss<<" Transform [  0.921877 -0.0256774 0.386597 0 0.384045 -0.0712268 -0.920367 0 0.0512425 0.996948 -0.0557853 0 -219.769 -11.0496 182.197 1 ]"<<std::endl;
+ //   ss<<" Transform [  0.933785 -0.113397 -0.339363 0 -0.357194 -0.350701 -0.865463 0 -0.0209266 0.929384 -0.367977 0 -105.163 65.7922 341.325 1 ]";
+    ss<<" Transform [  1 0 0 0 0 -0.221461 -0.97508 0 0 0.97508 -0.221461 0 -156.477 0.150198 171.625 1 ]"<<std::endl;
+    return ss.str();
 }
 
 void RIBWriter::CopyFinalPart(ifstream& myfile)
@@ -290,7 +292,7 @@ void RIBWriter::WriteInialization(){
     string_to_write<<"Option \"ribparse\" \"string varsubst\" [\"\"]"<<std::endl;
     string_to_write<<"Option \"ribparse\" \"string varsubst\" [\"$\"]"<<std::endl;
     string_to_write<<"Option \"Ri\" \"int Frame\" [1] \"float PixelVariance\" [0.00999999978] \"string PixelFilterName\" [\"gaussian\"] "<<std::endl;
-    string_to_write<<"\"float[2] PixelFilterWidth\" [2 2] \"int[2] FormatResolution\" [300 200] \"float FormatPixelAspectRatio\" [1.5] \"float[2] Clipping\" [0.100000001 10000] \"float[4] ScreenWindow\" [-1 1 -0.5625 0.5625]"<<std::endl;
+    string_to_write<<"\"float[2] PixelFilterWidth\" [2 2] \"int[2] FormatResolution\" [600 400] \"float FormatPixelAspectRatio\" [1.5] \"float[2] Clipping\" [0.100000001 10000] \"float[4] ScreenWindow\" [-1 1 -0.5625 0.5625]"<<std::endl;
     string_to_write<<" \"float[2] Shutter\" [0 0]"<<std::endl;
     string_to_write<<"Option \"bucket\" \"string order\" [\"circle\"]"<<std::endl;
     string_to_write<<"Option \"lighting\" \"int selectionlearningscheme\" [1]"<<std::endl;
@@ -307,7 +309,7 @@ void RIBWriter::WriteInialization(){
     string_to_write<<"DisplayChannel \"color Ci\" \"string source\" [\"Ci\"]"<<std::endl;
     string_to_write<<"DisplayChannel \"float a\" \"string source\" [\"a\"]"<<std::endl;
     string_to_write<<"Projection \"PxrPerspective\" \"float fov\" [70] \"float fStop\" [9.99999968e+37] \"float focalLength\" [0] \"float focalDistance\" [1]"<<std::endl;
-    WriteTransformationMatrix();
+    string_to_write<< WriteTransformationMatrix();
     string_to_write<<"Camera \"|persp|perspShape\" \"float shutterOpenTime\" [0] \"float shutterCloseTime\" [1] \"int apertureNSides\" [0] \"float apertureAngle\" [0] \"float apertureRoundness\" [0] \"float apertureDensity\" [0] \"float dofaspect\" [1] \"float nearClip\" [0.100000001] \"float farClip\" [10000]"<<std::endl;
     string_to_write<<"Display \""<<_output_path + _output_name_image<<".exr\" \"openexr\" \"Ci,a\" \"int asrgba\" [1] \"string storage\" [\"scanline\"] \"string exrpixeltype\" [\"half\"] \"string compression\" [\"zips\"] \"float compressionlevel\" [45] \"string camera\" [\"|persp|perspShape\"]"<<std::endl;
     string_to_write<<"WorldBegin"<<std::endl<<"AttributeBegin"<<std::endl;
@@ -332,6 +334,7 @@ void RIBWriter:: Write()
       string materialId = "PxrSurface1SG";
       string objID = "Landscape";
       stringstream line;
+             line <<"AttributeEnd"<<std::endl;
              line << "ObjectBegin \""<< objID<<"\"\n";
              line << " Attribute \"Ri\" \"string Orientation\" [\"outside\"] \n" ;
              line << " Attribute \"dice\" \"float micropolygonlength\" [1] \"int rasterorient\" [1] \"int watertight\" [1] \"string referencecamera\" [\"\"] \n";

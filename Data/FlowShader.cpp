@@ -543,7 +543,7 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
         float scaler = 4;
         float scale =2 * M_PI/scaler;
         float cell_scale = 1;
-        float maxdist = 10;//cell_scale;
+        //cell_scale;
       //  scale = scale   / cell_scale;
         float *data;
         float point[3];
@@ -632,7 +632,8 @@ testpoint = pp;
         resultF[n] = 1;
 
 
-                int K = 10;
+                int K = 5;
+                float maxdist = 5;
             RtVector3 dir(0,0,0);
 
                 point[0] = pp.x;
@@ -859,7 +860,7 @@ res = RixSmoothStep(0,1 ,res );
              resultRGB[n].r = resultRGB[n].b = resultRGB[n].g =res;
           //  resultRGB[n] = col;
 
-          resultF[n] = (1-res)*displ_mult;// + displ;
+          resultF[n] =  res;//(res);// + displ;
           //resultF[n] = 0;//  displ;
 
 

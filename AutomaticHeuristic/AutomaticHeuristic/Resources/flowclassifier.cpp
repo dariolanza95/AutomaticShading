@@ -1,15 +1,196 @@
 #include "flowclassifier.h"
 using namespace  OpenMesh;
 
-FlowClassifier::FlowClassifier(MyMesh mesh) : AClassifier(mesh),_shader_parameter_size(3)
+FlowClassifier::FlowClassifier(MyMesh &mesh) : AClassifier(mesh),_shader_parameter_size(3)
 {
     simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,SimulationData*>(_mesh, "simulation_data");
      _shader = new FlowShader(_id);
 }
 
+
+class splitInGroupsFunctorClass
+{
+
+    public:
+    FlowShader* getValue(MyMesh::VertexHandle vertex_handle,float depth,FlowShader* val) {
+        if(_map.count(vertex_handle) == 1 )
+        {
+            return _map[vertex_handle];
+        }
+        else
+        {
+            float confidence = ((float) _max_depth-depth)/(float) _max_depth;
+            return  new FlowShader(_id,confidence,val->GetFlowNormal());
+        }
+
+    }
+    splitInGroupsFunctorClass(map<MyMesh::VertexHandle,FlowShader*> map,int id,int max_depth): _map(map),_id(id),_max_depth(max_depth){}
+            int operator() (MyMesh::VertexHandle vertex_handle) {
+            if(_map.count(vertex_handle) == 1 )
+                return 0;
+            else
+                return 1;
+            }
+    private:
+            map<MyMesh::VertexHandle,FlowShader*> _map;
+            int _id;
+            int _max_depth;
+
+};
+
+template <typename T>
+struct BFS_cell
+{
+    MyMesh::VertexHandle vertex_handle;
+    T val;
+    int depth;
+    bool operator==(const struct BFS_cell& c) const
+        {
+            return (this->vertex_handle.idx() == c.vertex_handle.idx());
+        }
+};
+
+class BFS_CellHashFunction {
+public:
+    template <typename T>
+    size_t operator()(const BFS_cell<T> & cell) const
+    {
+        VertexHandle vh = cell.vertex_handle;
+        return vh.idx();
+    }
+};
+template <typename T,typename FuncType>
+map<MyMesh::VertexHandle,T> FlowClassifier::BFS(int max_depth,map<MyMesh::VertexHandle,T> frontier_map,FuncType pred)
+{
+    unordered_set<BFS_cell<T>,BFS_CellHashFunction> visitedNodes;
+    map<MyMesh::VertexHandle,T>  selected_nodes;
+    list<struct BFS_cell<T>> queue;
+    selected_nodes = frontier_map;
+    for (auto const entry : frontier_map )
+    {
+        struct BFS_cell<T> cell = {entry.first,entry.second,0};
+        visitedNodes.insert(cell);
+        queue.push_back(cell);
+    }
+    while(!queue.empty())
+    {
+        BFS_cell<T> cell = queue.front();
+        queue.pop_front();
+        if( cell.depth < max_depth)
+        {
+            //circulate over the vertex
+            for (MyMesh::VertexVertexIter vertex_vertex_iterator = _mesh.vv_iter(cell.vertex_handle); vertex_vertex_iterator.is_valid(); ++vertex_vertex_iterator)
+            {
+       //         SimulationData* sd  = simulation_data_wrapper[*vertex_vertex_iterator];
+                //takes only vertices that are out of the set (since it's given that we're using the frontier vertices)
+              //  if(sd->_map.at("rivers")<=0.0f)
+                if(pred(*vertex_vertex_iterator))
+                {
+                    BFS_cell<T> new_cell = {*vertex_vertex_iterator,cell.val,cell.depth+1};
+                    if(visitedNodes.count(new_cell)<=0)
+                    {
+                     visitedNodes.insert(new_cell);
+                     selected_nodes.insert(make_pair<MyMesh::VertexHandle,T>(*vertex_vertex_iterator,pred.getValue(vertex_vertex_iterator,new_cell.depth,(FlowShader*)new_cell.val)));
+                     queue.push_back(new_cell);
+                    }
+                }
+            }
+            visitedNodes.insert(cell);
+        }
+
+    }
+
+return selected_nodes;
+}
+
+
+
+
+void FlowClassifier::selectFrontier(map<MyMesh::VertexHandle,FlowShader*>& selected_vertices)
+{
+    map<MyMesh::VertexHandle,FlowShader*> frontier;
+    float river;
+    for (pair<MyMesh::VertexHandle,FlowShader*> const& entry : selected_vertices)
+    {
+        VertexHandle vertex_handle = entry.first;
+        //for each selected vertices iterate over its neighborhood, if a vertex that doesnt have the required property
+        //is encountered then add the actual vertex in the frontier.
+         for (MyMesh::VertexVertexIter vertex_vertex_iterator = _mesh.vv_iter(vertex_handle); vertex_vertex_iterator.is_valid(); ++vertex_vertex_iterator)
+          {
+             if(selected_vertices.count(*vertex_vertex_iterator)>0)
+                 continue;
+             else{
+                 frontier.insert(entry);
+                //entry.second->SetConfidence(0.3);
+             }
+//              auto simulation_data_wrapper = getOrMakeProperty<VertexHandle,SimulationData*>(_mesh, "simulation_data");
+//              SimulationData* sd = simulation_data_wrapper[*vertex_vertex_iterator];
+//              float river;
+//              sd->getData(SimulationDataEnum::river,river);
+//              if( river == 0)
+//              {
+//                  //insert in the map the actual vertex
+//                  frontier.insert(make_pair(vertex_handle,river));
+//                  break;
+//              }
+          }
+    }
+    int max_depth = 5;
+    splitInGroupsFunctorClass functor(selected_vertices,_id,max_depth);
+    auto temp_nodes = BFS(max_depth,frontier,functor);
+    for(auto const entry : temp_nodes){
+        selected_vertices.insert(entry);
+    }
+}
+
+
  VertexEditTag FlowClassifier::GetVertexEditTag()
  {
      return _vertex_edit_tag;
+ }map<MyMesh::VertexHandle,glm::vec3> FlowClassifier::selectFlowVertices(glm::vec3& min_bb,glm::vec3& max_bb)
+ {
+
+
+     MyMesh::VertexIter vertex_iterator,vertex_iterator_end(_mesh.vertices_end());
+     for(int k=0;k<3;k++){
+         min_bb[k] = INFINITY;
+         max_bb[k] = -INFINITY;
+     }
+
+     map<MyMesh::VertexHandle,glm::vec3> flow_vertices;
+     for(vertex_iterator=_mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
+     {
+         SimulationData* sd = simulation_data_wrapper[*vertex_iterator];
+         //normalize it!
+         glm::vec3 sim_data_normal;
+         sd->getData(SimulationDataEnum::flow_normal,sim_data_normal);
+         if(glm::any(glm::isnan(sim_data_normal)))
+                 continue;
+
+         glm::vec3 up_normal(0,0,1);
+         MyMesh::Normal openMesh_normal = _mesh.normal(vertex_iterator);
+         glm::vec3 normal= glm::vec3(openMesh_normal[0],openMesh_normal [1],openMesh_normal[2]);
+
+           float res =   (glm::dot(normal,up_normal));
+         if(res>0.75 ){
+             continue;
+         }
+       //  if(normal[0]!=0 || normal[2]!=0 || normal[1]!=0)
+
+
+             MyMesh::Point temp =_mesh.point(*vertex_iterator);
+             for(int k = 0;k<3;k++){
+                 if(temp[k]<min_bb[k]){
+                     min_bb[k] = temp[k];
+                 }
+                 if(temp[k]>max_bb[k]){
+                     max_bb[k] = temp[k];
+                 }
+             }
+             flow_vertices.insert(make_pair(*vertex_iterator,normal));
+
+     }
+     return flow_vertices;
  }
 
  void FlowClassifier::TemporaryUpdate(map<MyMesh::VertexHandle,FlowShader*> selected_vertices)
@@ -22,7 +203,7 @@ FlowClassifier::FlowClassifier(MyMesh mesh) : AClassifier(mesh),_shader_paramete
          shader_parameters_property[vertex_handle] = shader;
          //ShadersWrapper* shaders_wrapper = shader_parameters_property[vertex_handle];
          //shaders_wrapper->AddShaderParameters(shader);
- //        shader_parameters_property[vertex_handle] = shader_parameter;
+         //shader_parameters_property[vertex_handle] = shader_parameter;
 
      }
  }
@@ -33,12 +214,26 @@ map<MyMesh::VertexHandle,AShader*> FlowClassifier::ClassifyVertices()
 
     map<MyMesh::VertexHandle,AShader*> selected_vertices;
     map<MyMesh::VertexHandle,FlowShader*> temporary_selected_vertices;
+    glm::vec3 min_bb;
+    glm::vec3 max_bb;
 
-    auto flow_vertices = selectFlowVertices();
-    ComputeShaderParameters(flow_vertices);
+    SubdividerAndInterpolator<MyMesh> catmull;
+    int _subdiv_levels = 2;
+    if(_subdiv_levels>0)
+    {
+        catmull.attach(_mesh);
+        catmull(_subdiv_levels);
+        catmull.detach();
+
+    }
+
+    auto flow_vertices = selectFlowVertices(min_bb,max_bb);
+    temporary_selected_vertices = ComputeShaderParameters(flow_vertices);
+     selectFrontier(temporary_selected_vertices);
     //TemporaryUpdate(temporary_selected_vertices);
-    selected_vertices = LIC(10,1,20);
-
+    float scale=1;
+    selected_vertices = LIC(temporary_selected_vertices, scale,min_bb,max_bb);
+    std::cout<<"vertices "<< _mesh.n_vertices()<<std::endl;
     return selected_vertices;
 }
 
@@ -87,55 +282,38 @@ map<MyMesh::VertexHandle,AShader*> FlowClassifier::ClassifyVertices()
 }
 */
 
-//map<MyMesh::VertexHandle,AShader*>
-void FlowClassifier::ComputeShaderParameters(map<MyMesh::VertexHandle,glm::vec3>  flow_vertices)
+//
+ map<MyMesh::VertexHandle,FlowShader*> FlowClassifier::ComputeShaderParameters(map<MyMesh::VertexHandle,glm::vec3>  flow_vertices)
 {
   //  map<MyMesh::VertexHandle,FlowShader*> map;
     glm::vec3 up(0,1,0);
-  //  map<MyMesh::VertexHandle,AShader*> map;
-    auto shader_parameters_property = getOrMakeProperty<VertexHandle, FlowShader*>(_mesh, "flow_shader_temp_propery");
+    map<MyMesh::VertexHandle,FlowShader*> map;
+   // auto shader_parameters_property = getOrMakeProperty<VertexHandle, FlowShader*>(_mesh, "flow_shader_temp_propery");
     for(pair<MyMesh::VertexHandle,glm::vec3> entry : flow_vertices)
     {
-
         if(!glm::any(glm::isnan(entry.second)))
         {
-
-
-            //the shaders requires the orthogoanl vector
-          glm::vec3 orthogonal_vector = glm::cross(entry.second,up);
-
-          //for(int i=0;i<3;i++)
-          //  orthogonal_vector[i] = orthogonal_vector[i]>0.01 ? orthogonal_vector[i]:0;
-          orthogonal_vector = glm::normalize (orthogonal_vector);          
-          glm::vec3 tangent_vector = glm::cross(entry.second,orthogonal_vector);
-
-         MyMesh::Normal openMesh_normal = _mesh.normal(entry.first);
-         glm::vec3 normal = glm::vec3(openMesh_normal[0],openMesh_normal [1],openMesh_normal[2]);
-         float res =   fabs(dot(normal,orthogonal_vector));
-         float res_2 = fabs(dot(normal,tangent_vector));
-         glm::vec3 final_vector = res > res_2 ? tangent_vector : orthogonal_vector;
-         //final_vector = tangent_vector;
-         FlowShader* shader = new FlowShader(_id,1.0f,final_vector);
-         //shader_parameters->AddParameter(ShaderParametersEnum::flow_normal,final_vector);
-         //shader_parameters->setValue(0,final_vector[0]);
-         //shader_parameters->setValue(1,final_vector[1]);
-         //shader_parameters->setValue(2,final_vector[2]);
-         //shader_parameters->setVector(tangent_vector);
-         glm::vec3 victor = shader->GetFlowNormal();
-
-         shader_parameters_property[entry.first] = shader;
-//         ShadersWrapper* shaders_wrapper = shader_parameters_property[entry.first];
-//         shaders_wrapper->AddShaderParameters(shader);
-
-        //  map.insert(make_pair(entry.first,shader));
+            glm::vec3 orthogonal_vector = glm::cross(entry.second,up);
+            orthogonal_vector = glm::normalize (orthogonal_vector);
+            glm::vec3 tangent_vector = glm::cross(entry.second,orthogonal_vector);
+            MyMesh::Normal openMesh_normal = _mesh.normal(entry.first);
+            glm::vec3 normal = glm::vec3(openMesh_normal[0],openMesh_normal [1],openMesh_normal[2]);
+            float res =   fabs(dot(normal,orthogonal_vector));
+            float res_2 = fabs(dot(normal,tangent_vector));
+            glm::vec3 final_vector = res > res_2 ? tangent_vector : orthogonal_vector;
+            FlowShader* shader = new FlowShader(_id,1.0f,tangent_vector);
+            //FlowShader* shader = new FlowShader(_id,1.0f,entry.second);//final_vector);
+//            map.insert(std::make_pair(entry.first,shader));
+          map.insert(std::make_pair(entry.first,shader));
+//            shader_parameters_property[entry.first] = shader;
+        }
     }
-    }
-//return map;
+return map;
 }
 
 
 
-void FlowClassifier::ContrastEnhancement(map<MyMesh::VertexHandle,AShader*> map,std::vector<int> Pdf)
+void FlowClassifier::ContrastEnhancement(map<MyMesh::VertexHandle,AShader*>& map,std::vector<int> Pdf,int z)
 {
     int L = Pdf.size();
     float value_counter= 0;
@@ -143,16 +321,22 @@ void FlowClassifier::ContrastEnhancement(map<MyMesh::VertexHandle,AShader*> map,
     float b = 1;
     float c = 0;
     float d = 1;
+    int f;
+    if(z==1){
+        f = 6;
+    }else{
+        f=5;
+    }
     int num_vertices = map.size();
     for(int i = 0;i<L;i++)
     {
         value_counter += Pdf[i];
-        if ( value_counter < num_vertices * 5 /100  )
+        if ( value_counter < num_vertices *  f /100  )
             if(i!=0)
                 c =(float) (i-1)/L;
             else
                 c= (float) i/L;
-        if ( value_counter > num_vertices* 95 /100  )
+        if ( value_counter > num_vertices* (100-f) /100  )
         {
             if(i!=num_vertices)
                 d =(float) (i+1)/L;
@@ -167,10 +351,14 @@ void FlowClassifier::ContrastEnhancement(map<MyMesh::VertexHandle,AShader*> map,
     //shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShaderParameters*>(_mesh, "shader_parameters");
 
     FlowShader* shader;
-
+int i = 0;
     for (auto const& x : map)
     {
-      shader =(FlowShader*) x.second;
+        i++;
+      if(x.second != nullptr)
+          shader =(FlowShader*) x.second;
+      else
+          map[x.first] = shader;
       float val = shader->GetLicValue();
       val = (val - c)*((b-a)/(d-c)) + a;
       shader->SetLicValue(val);
@@ -186,12 +374,25 @@ void FlowClassifier::ContrastEnhancement(map<MyMesh::VertexHandle,AShader*> map,
     //   }
 }
 
-
-
-map<MyMesh::VertexHandle,AShader*> FlowClassifier::LIC(float box_length,float step_size,float frequency)
+map<MyMesh::VertexHandle,AShader*> FlowClassifier:: LIC(map<MyMesh::VertexHandle,FlowShader*>const map,float scale,glm::vec3 min_bb,glm::vec3 max_bb)
 {
+    float longest_dimension = -INFINITY;
+    for(int k=0;k<3;k++){
+        float dim = max_bb[k]-min_bb[k];
+        if(dim>longest_dimension){
+            longest_dimension = dim;
+        }
+    }
+
+    float box_length = longest_dimension/4;
+    float step_size = 1;//scale;
+    float frequency = 200;//longest_dimension/2;//scale*2;
+    box_length = 75;
     FastNoise noise;
-    map<MyMesh::VertexHandle,AShader*> map;
+    std::map<MyMesh::VertexHandle,AShader*> map_output;
+   std::map<MyMesh::VertexHandle,AShader*> map1;
+   //std::uniform_int_distribution<float> rndfloat(0,1);
+
     std::cout<<"InterpolationDone"<<std::endl;
     MyMesh::Point actual_point;
     MyMesh::Point circulator_point;
@@ -209,62 +410,73 @@ map<MyMesh::VertexHandle,AShader*> FlowClassifier::LIC(float box_length,float st
     int L = 1000;
     int quantizied_level;
     std::vector<int> Pdf(L,0) ;
-    MyMesh::VertexIter mesh_vertex_iterator;
+
+
+
+    float total_value = 0;
+
+    int num_vertices = map.size();
+    int percentual_part = num_vertices/100;
+    //MyMesh::VertexIter mesh_vertex_iterator;
+    MyMesh::VertexHandle mesh_vertex_handle;
     MyMesh::VertexIter vertex_iterator_end(_mesh.vertices_end());
 
+int f = 0;
+for(int z = 0;z<2;z++){
+    Pdf = std::vector<int>(L,0);
 
-    int num_vertices = _mesh.n_vertices();
-    int percentual_part = num_vertices/100;
+
+
+    std::cout<<"iteration "<<z<<std::endl;
     k = 0;
-    float total_value = 0;
-    mesh_vertex_iterator=_mesh.vertices_begin();
-
-    for(;mesh_vertex_iterator!= vertex_iterator_end;++mesh_vertex_iterator,k++)
-    {
+    for(pair<MyMesh::VertexHandle,FlowShader*> entry : map)
+      {
+        //mesh_vertex_iterator = entry.first;
+        f++;
+        mesh_vertex_handle = entry.first;
      if(k%percentual_part == 0)
          std::cout<< "LIC map "<<k / percentual_part<< " %  completed"<< std::endl;
+     k++;
+     float val = 0;
+     int w = 0;
+    flow_shader = entry.second;//shader_parameters_data_wrapper[mesh_vertex_handle];
+    if(flow_shader==nullptr)
+         continue;
+    else{
+    for(int j=0;j<2;j++)
+    {
+        float samepoint_iter = 1;
+        actual_point = _mesh.point(mesh_vertex_handle);
+        if(z==1){
+            flow_shader = (FlowShader*)map_output.at(mesh_vertex_handle);
+            if(flow_shader==nullptr)
+                continue;
+        }else{
 
-        //fw advection
- float val = 0;
- int w = 0;
- flow_shader = shader_parameters_data_wrapper[mesh_vertex_iterator];
+            flow_shader = map.at(mesh_vertex_handle);// [mesh_vertex_handle];// shader_parameters_data_wrapper[mesh_vertex_handle];
+        }
+        flow_vector = flow_shader->GetFlowNormal();
+        if(glm::any(glm::isnan(flow_vector)))
+        {
+            std::cout<<"Error flow_vect is empty AT THE BEGGINING"<<std::endl;
+        }
+        vvit = _mesh.vv_iter(mesh_vertex_handle);
 
- if(flow_shader==nullptr)
-      continue;
- else{
-  for(int j=0;j<2;j++)
-  {
-      float samepoint_iter = 1;
-      actual_point = _mesh.point(*mesh_vertex_iterator);
-      flow_shader = shader_parameters_data_wrapper[mesh_vertex_iterator];
-       flow_vector = flow_shader->GetFlowNormal();
-       if(glm::any(glm::isnan(flow_vector)))
-       {
-           std::cout<<"Error flow_vect is empty AT THE BEGGINING"<<std::endl;
-       }
-      // if(shader_param == nullptr)
-      //     std::cout<<"Err shader param is empty"<<std::endl;
-      // else
-      //   flow_vector = glm::vec3( shader_param->getValue(1),shader_param->getValue(2),shader_param->getValue(3));
-
-      vvit = _mesh.vv_iter(mesh_vertex_iterator);
-      // = _mesh.vv_iter(*mesh_vertex_iterator);
-
-         for(float i = 0;i<box_length;i++)
+         for(float i = 0;i<box_length;i+= step_size)
              {
+
                  if(j==1)
                      flow_vector = -flow_vector;
                 //  MyMesh::VertexVertexIter vvit = _mesh.vv_iter(next_point);
                   actual_point[0] += flow_vector[0]*step_size;
                   actual_point[1] += flow_vector[1]*step_size;
                   actual_point[2] += flow_vector[2]*step_size;
-
                   dist = 0;
                   min_dist = INFINITY;
-                  if(i!=0 && samepoint_iter == 1)
-                      vvit = _mesh.vv_iter(vvit);
+                  if(i!=0 )//&& samepoint_iter == 1)
+                      vvit = _mesh.vv_iter(*vvit);
                   else
-                       vvit = _mesh.vv_iter(mesh_vertex_iterator);
+                       vvit = _mesh.vv_iter(mesh_vertex_handle);
                   for ( ;vvit.is_valid(); ++vvit)
                   {
                       circulator_point = _mesh.point(*vvit);
@@ -276,44 +488,40 @@ map<MyMesh::VertexHandle,AShader*> FlowClassifier::LIC(float box_length,float st
                          next_point = vvit;
                      }
                   }
-                  float n = noise.GetPerlin(actual_point[0] * frequency ,
-                                            actual_point[1] * frequency,
-                                            actual_point[2] * frequency);
+                  float n;
+                  if(z==1){
+                     n =  flow_shader->GetLicValue();
 
-
- //                 if( next_point.is_valid())
- //                    actual_point = _mesh.point(*next_point);
-
+                  }else{
+                      n = noise.GetPerlin(actual_point[0] * frequency ,
+                                               actual_point[1] * frequency,
+                                               actual_point[2] * frequency);
+                  }
+                //rndfloat.
                   val+=n;
                   w++;
                   if( next_point.is_valid())
                   {
                       glm::vec3 next_flow_vector ;
-                      flow_shader = shader_parameters_data_wrapper[next_point];
-                      if(flow_shader!=nullptr)
+                      FlowShader* temp_shader;
+                      if(z==1){
+                          if(map_output.count(*next_point)>0){
+                              temp_shader =  ((FlowShader*)map_output.at(*next_point));
+                          }
+                      }else{
+                          if(map.count(*next_point)>0){
+                              temp_shader =map.at(*next_point);// map[next_point];//shader_parameters_data_wrapper[next_point];
+                          }
+                      }
+                      if(temp_shader!=nullptr)
                       {
-                          next_flow_vector = flow_shader->GetFlowNormal();
+                          next_flow_vector = temp_shader->GetFlowNormal();
                           flow_vector = next_flow_vector;
-
+                           flow_shader = temp_shader;
+                           vvit = next_point;
+                           samepoint_iter = 1;
                       }
 
-
-                //      shader_wrapper = shader_parameters_data_wrapper[mesh_vertex_iterator];
-                //      shader_wrapper->GetListOfShaders(list);
-                //      for(ShaderParameters sp : list)
-                //      {
-                //          sp.GetParameter(ShaderParametersEnum::flow_normal,next_flow_vector);
-                //
-                //      }
-
-
-                   //   shader_param = shader_parameters_data_wrapper[next_point];
-                   //   glm::vec3 next_flow_vector = glm::vec3( shader_param->getValue(1),shader_param->getValue(2),shader_param->getValue(3));
- //                     flow_vector = flow_vector* (1-1/(min_dist+1)) + next_flow_vector*(1-min_dist/(min_dist+1));
-             //         flow_vector = next_flow_vector;
-                      //vvit  = _mesh.vv_iter(next_point);
-                      vvit = next_point;
-                     samepoint_iter = 1;
                   }
                   else
                   {
@@ -329,25 +537,46 @@ map<MyMesh::VertexHandle,AShader*> FlowClassifier::LIC(float box_length,float st
   //float d = 0.57;
   //
   //
-  val = 0.5 + 0.5 * val ;
+  if(z==0)
+    val = 0.5 + 0.5 * val ;
   //val = (val - c)*((b-a)/(d-c)) + a;
   val = val > 1 ? 1 : val;
+  val = val < 0 ? 0 : val;
   total_value += val;
   quantizied_level =  roundf(val*L);
   Pdf[quantizied_level]++;
-  actual_point = _mesh.point(*mesh_vertex_iterator);
-  FlowShader* old_flow_shader = shader_parameters_data_wrapper[mesh_vertex_iterator];
+  actual_point = _mesh.point(mesh_vertex_handle);
+  FlowShader* old_flow_shader ;
+//  if(z==1){
+//    old_flow_shader = (FlowShader*) map[mesh_vertex_iterator];
+//  }else
+   old_flow_shader =  entry.second;// shader_parameters_data_wrapper[mesh_vertex_handle];
   //glm::vec3 victor = old_flow_shader->GetFlowNormal();
-  AShader* new_flow_shader = new FlowShader(_id,1.0,old_flow_shader->GetFlowNormal(),val);
 //std::pair<MyMesh::VertexHandle,AShader*> pair= std::make_pair(mesh_vertex_iterator,new_flow_shader);
-  map.insert(std::make_pair(mesh_vertex_iterator,new_flow_shader));
-  //std::cout<<"val "<<shader_param->getValue(5)<<std::endl;
-  //shader_parameters_data_wrapper[mesh_vertex_iterator] = shader_param;
- }
+  //if(z==1){
+  //    map1.insert(std::make_pair(mesh_vertex_iterator,new_flow_shader));
+  //
+  //}else{
+  if(map_output.count(mesh_vertex_handle)>0){
+       ((FlowShader*) map_output[mesh_vertex_handle])->SetLicValue(val);
     }
-    ContrastEnhancement(map,Pdf);
+  else{
+      if(old_flow_shader!=nullptr && !glm::any(glm::isnan(old_flow_shader->GetFlowNormal()))){
+      AShader* new_flow_shader = new FlowShader(_id,old_flow_shader->GetConfidence(),old_flow_shader->GetFlowNormal(),val);
+      map_output.insert(std::make_pair(mesh_vertex_handle,new_flow_shader));
+    }
+  }
 
-return map;
+  }
+}
+   // if(z==0)
+   ContrastEnhancement(map_output,Pdf,z);
+
+}
+
+std::cout<<"f is "<<f<<std::endl;
+
+return map_output;
 
 
 }
@@ -728,23 +957,6 @@ Pdf[quantizied_level]++;
 }
 */
 
-map<MyMesh::VertexHandle,glm::vec3> FlowClassifier::selectFlowVertices()
-{
-    MyMesh::VertexIter vertex_iterator,vertex_iterator_end(_mesh.vertices_end());
-    map<MyMesh::VertexHandle,glm::vec3> flow_vertices;
-    for(vertex_iterator=_mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
-    {
-        SimulationData* sd = simulation_data_wrapper[*vertex_iterator];
-        //normalize it!
-        glm::vec3 normal;
-        sd->getData(SimulationDataEnum::flow_normal,normal);
-        if(normal[0] != 0 || normal[1] != 0 || normal[2] != 0)
-        {
-            flow_vertices.insert(make_pair(*vertex_iterator,normal));
-        }
-    }
-    return flow_vertices;
-}
 /*
 void FlowClassifier::LIC2(float box_length,float frequency,float step_size,MyMesh mesh)
 {

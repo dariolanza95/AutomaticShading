@@ -31,7 +31,7 @@ class SelectMaterialVerticesFunctorClass
 
 
 
-MaterialClassifier::MaterialClassifier(MyMesh mesh) : AClassifier(mesh)
+MaterialClassifier::MaterialClassifier(MyMesh& mesh) : AClassifier(mesh)
 {
     _shader = new MaterialShader(_id);
 }
