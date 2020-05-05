@@ -31,6 +31,7 @@ TerrainFluidSimulation::TerrainFluidSimulation(GLFWwindow* window, uint dim)
     : _simulationState(dim,dim),
       _simulation(_simulationState),
       _rain(false),
+      _air(false),
       _rainPos(dim/2,dim/2),
       _flood(false),
       _window(window),
@@ -122,6 +123,9 @@ void TerrainFluidSimulation::checkInput()
     if (glfwGetKey(_window,'O')) _rain = true;
     if (glfwGetKey(_window,'P')) _rain = false;
 
+    if (glfwGetKey(_window,'B')) _air = true;
+    if (glfwGetKey(_window,'N')) _air = false;
+
     if (glfwGetKey(_window,'K')) _flood = true;
     if (glfwGetKey(_window,'L')) _flood = false;
 
@@ -184,12 +188,14 @@ void TerrainFluidSimulation::cameraMovement(double dt)
 void TerrainFluidSimulation::updatePhysics(double dt,ulong time)
 {
     // Run simulation
-    _simulation.update(time,dt,_rain,_flood);
+    _simulation.update(time,dt,_rain,_flood,_air);
 
     // Copy data to GPU
     _terrainHeightBuffer.SetData(_simulationState.terrain);
     _waterHeightBuffer.SetData(_simulationState.water);
+    _airHeightBuffer.SetData(_simulationState.air);
     _sedimentBuffer.SetData(_simulationState.suspendedSediment);
+    _sedimentedTerrainBuffer.SetData(_simulationState.sedimented_terrain);
     _simDataBuffer.SetData(_simulationState.simData);
     _simDataBuffer_2.SetData(_simulationState.simData_2);
     _normalBuffer.SetData(_simulationState.surfaceNormals);
@@ -269,7 +275,7 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
 
             if(dot(_simulation.flowNormal(x,y),_simulation.flowNormal(x,y))> 0.001)//  &&  _simulationState.simData_2(x,y)>0)
             {
-                flowNormal = vec3(_simulation.flowNormal(x,y)/_simulation.count(x,y));
+                flowNormal = vec3(_simulation.flowNormal(x,y));//_simulation.count(x,y));
                 flowNormal = normalize(flowNormal);
             }
 
@@ -345,7 +351,9 @@ void TerrainFluidSimulation::render()
     _gridCoordBuffer.MapData(_testShader->AttributeLocation("inGridCoord"));
     _terrainHeightBuffer.MapData(_testShader->AttributeLocation("inTerrainHeight"));
     _waterHeightBuffer.MapData(_testShader->AttributeLocation("inWaterHeight"));
+    _airHeightBuffer.MapData(_testShader->AttributeLocation("inAirHeight"));
     _sedimentBuffer.MapData(_testShader->AttributeLocation("inSediment"));
+    _sedimentedTerrainBuffer.MapData(_testShader->AttributeLocation("inSedimentedTerrain"));
     _simDataBuffer.MapData(_testShader->AttributeLocation("inSimData"));
     _simDataBuffer_2.MapData(_testShader->AttributeLocation("inSimData_2"));
 
@@ -386,13 +394,15 @@ void TerrainFluidSimulation::RenderDebugTool()
     //int x = 190;
     //int y = 150;
     //int x = 10;
-    int y = 165;
-    int x = 160;
-    glm::vec3 normal(_simulation.uVel(y,x),_simulation.vVel(y,x),_simulation.zVel(y,x));
+    int y = 143;
+    int x = 45;
+
+    glm::vec3 normal = _simulation.flowNormal(x,y);
+    //glm::vec3 normal(_simulation.uVel_air(y,x),_simulation.vVel_air(y,x),_simulation.zVel_air(y,x));
     glm::vec3 empty_vector(0,0,0);
     if(glm::any( glm::isnan(normal)) )
     {
-        normal = glm::vec3(0,0,1);
+        normal = normalize(glm::vec3(0,1,1));
     }
     else
     {
@@ -403,10 +413,17 @@ void TerrainFluidSimulation::RenderDebugTool()
         }
         else
         {
-            glm::normalize(normal);
+          normal=  glm::normalize(normal);
         }
     }
+    if(glm::any( glm::isnan(normal)) )
+    {
+        normal = normalize(glm::vec3(0,1,1));
+    }
 
+    //vec3 wind_direction(0.1,0.5,0);
+    //normalize(wind_direction);
+  //  normal =  glm::vec3(_simulationState.windDirection[0],_simulationState.windDirection[1],0);
   float y1 = (float) 2*((float)y/ 100)-3;
   float x1 = (float) 2*((float)x/ 100)-3;
 
@@ -553,7 +570,9 @@ void TerrainFluidSimulation::init()
 
     _terrainHeightBuffer.SetData(_simulationState.terrain);
     _waterHeightBuffer.SetData(_simulationState.water);
+    _airHeightBuffer.SetData(_simulationState.air);
     _sedimentBuffer.SetData(_simulationState.suspendedSediment);
+    _sedimentedTerrainBuffer.SetData(_simulationState.sedimented_terrain);
     _simDataBuffer.SetData(_simulationState.simData);
     _simDataBuffer_2.SetData(_simulationState.simData_2);
 
@@ -562,7 +581,9 @@ void TerrainFluidSimulation::init()
     _testShader->MapAttribute("inGridCoord",0);
     _testShader->MapAttribute("inTerrainHeight",1);
     _testShader->MapAttribute("inWaterHeight",2);
+    _testShader->MapAttribute("inAirHeight",8);
     _testShader->MapAttribute("inSediment",3);
+    _testShader->MapAttribute("inSedimentedTerrain",5);
     _testShader->MapAttribute("inSimData",4);
     _testShader->MapAttribute("inSimData_2",6);
     _testShader->MapAttribute("inNormal",7);
@@ -585,7 +606,9 @@ void TerrainFluidSimulation::init()
     
     _terrainHeightBuffer.SetData(_simulationState.terrain);
     _waterHeightBuffer.SetData(_simulationState.water);
+     _airHeightBuffer.SetData(_simulationState.air);
     _sedimentBuffer.SetData(_simulationState.suspendedSediment);
+    _sedimentedTerrainBuffer.SetData(_simulationState.sedimented_terrain);
     _simDataBuffer.SetData(_simulationState.simData);
     _simDataBuffer_2.SetData(_simulationState.simData_2);
     _normalBuffer.SetData(_simulationState.surfaceNormals);

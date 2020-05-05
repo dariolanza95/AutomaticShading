@@ -5,6 +5,8 @@
 #include "simulationdata.h"
 #include <OpenMesh/Core/Utils/PropertyManager.hh>
 #include <OpenMesh/Core/Mesh/PolyConnectivity.hh>
+#include <OpenMesh/Tools/Subdivider/Adaptive/Composite/RuleInterfaceT.hh>
+#include <OpenMesh/Tools/Subdivider/Adaptive/Composite/CompositeT.hh>
 #include <glm/vec3.hpp>
 #include <glm/glm.hpp>
 #include <math.h>
@@ -21,6 +23,8 @@ class FlowClassifier : public AClassifier
     map<MyMesh::VertexHandle,AShader*> LIC(map<MyMesh::VertexHandle,FlowShader*>const map,float scale,glm::vec3 min_bb,glm::vec3 max_bb);
     template <typename T,typename FuncType>
     map<MyMesh::VertexHandle,T> BFS(int max_depth,map<MyMesh::VertexHandle,T> frontier_map,FuncType pred);
+
+
 
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , SimulationData*>::type, MyMesh> simulation_data_wrapper;
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , FlowShader*>::type, MyMesh> flow_shader_temp_propery;

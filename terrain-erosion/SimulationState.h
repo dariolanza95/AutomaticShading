@@ -24,26 +24,30 @@ class SimulationState
 {
 public:
     Grid2D<float> water;
+    Grid2D<float> air;
     Grid2D<float> terrain;
     Grid2D<float> suspendedSediment;
     Grid2D<float> vegetation;
     Grid2D<float> simData;
     Grid2D<float> simData_2;
     Grid2D<float> rivers;
-
+    Grid2D<float> sedimented_terrain;
     //Grid2D<vec3>  flowNormal;
-
+    glm::vec2 windDirection;
     Grid2D<vec3> surfaceNormals;
 public:
 
-    SimulationState(uint w, uint h)
+    SimulationState(uint w, uint h,glm::vec2 WindDirection = glm::vec2(0,1))
         :   water(w,h),
+            air(w,h),
             terrain(w,h),
             suspendedSediment(w,h),
+            sedimented_terrain(w,h),
             surfaceNormals(w,h),
             vegetation(w,h),
             rivers(w,h),
-            simData(w,h),simData_2(w,h)
+            simData(w,h),simData_2(w,h),
+            windDirection(WindDirection)
             //flowNormal(w,h)
     {
 
@@ -64,6 +68,7 @@ public:
 
     void createRiverTerrain()
     {
+        glm::normalize(windDirection);
         PerlinNoise perlin;
         float angle1 = 20;
         float angle2 = 10;
@@ -72,6 +77,7 @@ public:
             for (uint x=0; x<water.width(); x++)
             {
                 water(y,x) = 0.0f;
+                air(y,x) = 0.0f;
                 suspendedSediment(y,x) = 0.0f;
                 vegetation(y,x) = 0.0f;
                 simData(y,x) = 0.0f;
@@ -90,6 +96,7 @@ public:
                     }
                     float temp= (-x+water.height()*2/3) * tan(M_PI*angle2/180);
                     terrain (y,x) = std::max(terrain(y,x),temp);
+                    sedimented_terrain(y,x) = 0;
 
                 }
                 else
@@ -110,7 +117,7 @@ public:
             for (uint x=0; x<water.width(); x++)
             {
                 water(y,x) = 0.0f;
-
+                air(y,x) = 0.0f;
                 //flowNormal(y,x) = 0.0f;
                 float h = 0.0f; float f = 0.05f;
                 h += perlin.Sample(y*f,x*f)*1; f /= 2;
@@ -136,6 +143,7 @@ public:
             for (uint x=0; x<water.width(); x++)
             {
                 water(y,x) = 0.0f;
+                air(y,x) = 0.0f;
                 if (x > (water.height()/2)) {
                     terrain(y,x) = 0.2*(x-water.height()/2);
                 } else {

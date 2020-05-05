@@ -34,23 +34,32 @@ using namespace std;
 FluidSimulation::FluidSimulation(SimulationState& state)
     : state(state),
       water(state.water),
+      air(state.air),
       terrain(state.terrain),
       sediment(state.suspendedSediment),
+      sedimented_terrain(state.sedimented_terrain),
       counter_from_last_time_water_passed(state.vegetation),
       counter_times_water_was_still(state.vegetation),
       tmpSediment(state.water.width(),state.water.height()),
       uVel(water.width(), water.height()),
       vVel(water.width(), water.height()),
-      zVel(water.width(), water.height()),
-      flowNormal(water.width(), water.height()),
+      vVel_air(air.width(), air.height()),
+      uVel_air(air.width(), air.height()),
+      zVel_air(air.width(), air.height()),
+      flowNormal(air.width(), air.height()),
        count(water.width(), water.height()),
       lFlux(water.width(), water.height()),
       rFlux(water.width(), water.height()),
       tFlux(water.width(), water.height()),
       bFlux(water.width(), water.height()),
+      lFlux_air(air.width(), air.height()),
+      rFlux_air(air.width(), air.height()),
+      tFlux_air(air.width(), air.height()),
+      bFlux_air(air.width(), air.height()),
       lX(1.0),
       lY(1.0),
       gravity(9.81),
+      _windDirection(state.windDirection),
       _stratified_layer_width(0.7),
 
       noise_sediment_frequency(0.1)
@@ -62,10 +71,18 @@ FluidSimulation::FluidSimulation(SimulationState& state)
         for (uint j=0; j<uVel.height(); ++j) {
             uVel(i,j) = 0;
             vVel(i,j) = 0;
-            zVel(i,j) = 0;
+            uVel_air(i,j) = 0;
+            vVel_air(i,j) = 0;
+            zVel_air(i,j) = 0;
             count(i,j) = 0;
-            flowNormal(i,j)= vec3(0,0,0);
+
             lFlux(i,j) = rFlux(i,j) = tFlux(i,j) = bFlux(i,j) = 0;
+            lFlux_air(i,j) = rFlux_air(i,j) = tFlux_air(i,j) = bFlux_air(i,j) = 0;
+        }
+    }
+    for(uint i = 0;i<air.width();i++){
+        for(uint j = 0;j<air.height();j++){
+            flowNormal(i,j)= vec3(0,0,0);
         }
     }
             sediment_layers[0] = 16;
@@ -84,22 +101,33 @@ FluidSimulation::~FluidSimulation() {
 
 RANDOM rnd;
 
+void FluidSimulation::makeWind(double dt){
+    std::uniform_real_distribution<float> rndFloat(0,1);
+  //  std::uniform_real_distribution<float> rndFloat(0,5);
+    std::uniform_real_distribution<float> rndFloat2(-1,1);
+std::uniform_int_distribution<int> rndint(0,100);
+if(rndint(rnd)==100){
+    float x = rndFloat(rnd);
+    float y = rndFloat2(rnd);
+    _windDirection[0] = x;
+    _windDirection[1] = y;
+
+}
+    for(int x = 0 ; x<air.height();x++)
+        air(x,0.01) = 1;
+        //const vec2 pos = vec2(0.01,water.height()/2);
+        //air(air.height()/2,0.01) = 5;
+}
 
 
 void FluidSimulation::makeRiver(double dt,ulong time)
 
 {
     float scaler = 0.01;
- //   if(time>30)
- //       scaler = 0.05;
- //   if(time>60)
- //       scaler = 0.1;
- //   if(time>80)
- //       scaler = 0.12;
     int maxrand = 1000;
     std::uniform_int_distribution<ushort> rndInt(1,3);
   //  std::uniform_real_distribution<float> rndFloat(0,5);
-    std::uniform_real_distribution<float> rndFloat(0,3);
+    std::uniform_real_distribution<float> rndFloat(0,2);
     std::uniform_int_distribution<ushort> rndInt2(0,maxrand);
 
     const vec2 pos = vec2(0.01,water.height()/2);
@@ -109,8 +137,9 @@ void FluidSimulation::makeRiver(double dt,ulong time)
     addRainDrop(pos,x,dt*scaler*y);
 
     //simulate occasional flooding
-    //if(z==maxrand)
-    //    addRainDrop(pos,x,dt*2*y);
+    if(z==maxrand)
+        addRainDrop(pos,x,dt*2*y);
+
 
 }
 void FluidSimulation::makeRain(double dt)
@@ -146,6 +175,10 @@ void FluidSimulation::makeFlood(double dt)
     addRainDrop(rainPos,10,dt*0.01*1);
 }
 
+
+
+
+
 void FluidSimulation::addRainDrop(const vec2 &pos, int rad, float amount)
 {
     int rad2 = rad*rad;
@@ -174,7 +207,7 @@ void FluidSimulation::addRainDrop(const vec2 &pos, int rad, float amount)
 void FluidSimulation::smoothTerrain()
 {
     float maxD = 0.2f;
-
+    float h;
 #if defined(__APPLE__) || defined(__MACH__)
     dispatch_apply(terrain.width(), gcdq, ^(size_t x)
 #else
@@ -184,7 +217,7 @@ void FluidSimulation::smoothTerrain()
     {
         for (int y=0; y<terrain.height(); ++y)
         {
-            float h = getTerrain(y,x);
+            h = getTerrain(y,x);
 
             float hl = getTerrain(y,x-1);
             float hr = getTerrain(y,x+1);
@@ -224,6 +257,7 @@ void FluidSimulation::smoothTerrain()
 #endif
     {
         terrain(i) = tmpSediment(i);
+
     }
 
 #if defined(__APPLE__) || defined(__MACH__)
@@ -261,9 +295,7 @@ void FluidSimulation::computeSurfaceNormals()
 #endif
 }
 
-
-
-void FluidSimulation::simulateFlow(double dt)
+void FluidSimulation::simulateWind(double dt)
 {
 
     // Outflux computation settings
@@ -281,64 +313,70 @@ void FluidSimulation::simulateFlow(double dt)
     const float dx = lX;
     const float dy = lY;
 
-    float fluxFactor = dt*A*gravity/l;
-
+    float wx,wy;
+    glm::vec2 wd(1,0);
+    //wx = wd[0];//_windDirection[0];
+    //wy = wd[1];//_windDirection[1];
+    wx = _windDirection[0];
+    wy = _windDirection[1];
+    float fluxFactor_air = dt*A*gravity/l;
 
     // Outflow Flux Computation with boundary conditions
     ////////////////////////////////////////////////////////////
 #if defined(__APPLE__) || defined(__MACH__)
-    dispatch_apply(uVel.height(), gcdq, ^(size_t y)
+    dispatch_apply(uVel_air.height(), gcdq, ^(size_t y)
 #else
     #pragma omp parallel for
-    for (uint y=0; y<uVel.height(); ++y)
+    for (uint y=0; y<uVel_air.height(); ++y)
 #endif
     {
-        for (uint x=0; x<uVel.width(); ++x)
+        for (uint x=0; x<uVel_air.width(); ++x)
         {
+            float strenght = 3;
             float dh;                               // height difference
-            float h0 = terrain(y,x)+water(y,x);     // water height at current cell
-            float newFlux;
+            float h0 = terrain(y,x)+air(y,x);     // water height at current cell
+            float newFlux_air;
 
             // left outflow
             if (x > 0)
             {
-                dh = h0 - (terrain(y,x-1)+water(y,x-1));
-                newFlux = lFlux(y,x) + fluxFactor*dh;
-                lFlux(y,x) = std::max(0.0f,newFlux);
+                dh =h0 - (terrain(y,x-1)+air(y,x-1));
+                newFlux_air = lFlux_air(y,x) + fluxFactor_air*(dh-wx*strenght);
+                lFlux_air(y,x) = std::max(0.0f,newFlux_air);
             }
             else
             {
-                lFlux(y,x) = 0.0f; // boundary
+                lFlux_air(y,x) = 0.0f; // boundary
             }
 
             // right outflow
-            if (x < water.width()-1) {
-                dh = h0 - (terrain(y,x+1)+water(y,x+1));
-                newFlux = rFlux(y,x) + fluxFactor*dh;
-                rFlux(y,x) = std::max(0.0f,newFlux);
+            if (x < air.width()-1) {
+                dh = h0 - (terrain(y,x+1)+air(y,x+1));
+                newFlux_air = rFlux_air(y,x) + fluxFactor_air*(dh+wx*strenght);
+                rFlux_air(y,x) = std::max(0.0f,newFlux_air);
             }
             else
             {
-                rFlux(y,x) = 0.0f; // boundary
+                rFlux_air(y,x) = 0.0f; // boundary
             }
 
             // bottom outflow
             if (y > 0)
             {
-                dh = h0 - (terrain(y-1,x)+water(y-1,x));
-                newFlux = bFlux(y,x) + fluxFactor*dh;
-                bFlux(y,x) = std::max(0.0f,newFlux);
+                dh = h0 - (terrain(y-1,x)+air(y-1,x));
+                newFlux_air = bFlux_air(y,x) + fluxFactor_air*(dh-wy*strenght);
+                bFlux_air(y,x) = std::max(0.0f,newFlux_air);
             }
             else
             {
-                bFlux(y,x) = 0.0f; // boundary
+                bFlux_air(y,x) = 0.0f; // boundary
             }
 
             // top outflow
-            if (y < water.height()-1) {
-                dh = h0 - (terrain(y+1,x)+water(y+1,x));
-                newFlux = tFlux(y,x) + fluxFactor*dh;
-                tFlux(y,x) = std::max(0.0f,newFlux);
+            if (y < air.height()-1) {
+                dh = h0 - (terrain(y+1,x)+air(y+1,x));
+                newFlux_air = tFlux_air(y,x) + fluxFactor_air*(dh+wy*strenght);
+                tFlux_air(y,x) = std::max(0.0f,newFlux_air);
             }
             else
             {
@@ -346,12 +384,12 @@ void FluidSimulation::simulateFlow(double dt)
             }
 
             // scaling
-            float sumFlux = lFlux(y,x)+rFlux(y,x)+bFlux(y,x)+tFlux(y,x);
-            float K = std::min(1.0f,float((water(y,x)*dx*dy)/(sumFlux*dt)));
-            rFlux(y,x) *= K;
-            lFlux(y,x) *= K;
-            tFlux(y,x) *= K;
-            bFlux(y,x) *= K;
+            float sumFlux_air = lFlux_air(y,x)+rFlux_air(y,x)+bFlux_air(y,x)+tFlux_air(y,x);
+            float K = std::min(1.0f,float((air(y,x)*dx*dy)/(sumFlux_air*dt)));
+            rFlux_air(y,x) *= K;
+            lFlux_air(y,x) *= K;
+            tFlux_air(y,x) *= K;
+            bFlux_air(y,x) *= K;
         }
     }
 #if defined(__APPLE__) || defined(__MACH__)
@@ -361,38 +399,42 @@ void FluidSimulation::simulateFlow(double dt)
     // Update water surface and velocity field
     ////////////////////////////////////////////////////////////
 #if defined(__APPLE__) || defined(__MACH__)
-    dispatch_apply(uVel.height(), gcdq, ^(size_t y)
+    dispatch_apply(uVel_air.height(), gcdq, ^(size_t y)
 #else
     #pragma omp parallel for
-    for (int y=0; y<uVel.height(); ++y)
+    for (int y=0; y<uVel_air.height(); ++y)
 #endif
     {
-        for (int x=0; x<uVel.width(); ++x)
+        for (int x=0; x<uVel_air.width(); ++x)
         {
-            float inFlow = getRFlux(y,x-1) + getLFlux(y,x+1) + getTFlux(y-1,x) + getBFlux(y+1,x);
-            float outFlow = getRFlux(y,x) + getLFlux(y,x) + getTFlux(y,x) + getBFlux(y,x);
+            if (x == uVel_air.width()-1){
+                air(y,x) = 0;
+                continue;
+            }
+            float inFlow =  getRFlux_air(y,x-1) + getLFlux_air(y,x+1) + getTFlux_air(y-1,x) + getBFlux_air(y+1,x);
+            float outFlow = getRFlux_air(y,x) +   getLFlux_air(y,x) +   getTFlux_air(y,x) +   getBFlux_air(y,x);
             float dV = dt*(inFlow-outFlow);
-            float oldWater = water(y,x);
-            float actualWater = water(y,x);
+            float oldAir = air(y,x);
+            float actualAir = air(y,x);
             //water(y,x) += dV/(dx*dy);
             //water(y,x) = std::max(water(y,x),0.0f);
-            actualWater += dV/(dx*dy);
-            actualWater = std::max(actualWater,0.0f);
-            if(actualWater>0)
+            actualAir += dV/(dx*dy);
+            actualAir = std::max(actualAir,0.0f);
+            if(actualAir>0)
                 counter_from_last_time_water_passed(y,x)=0;
             else
                 counter_from_last_time_water_passed(y,x)++;
 
-            float meanWater = 0.5*(oldWater+ actualWater);
+            float meanAir = 0.5*(oldAir+ actualAir);
 
-            if (meanWater == 0.0f)
+            if (meanAir == 0.0f)
             {
-                uVel(y,x) = vVel(y,x) = 0.0f;
+                uVel_air(y,x) = vVel_air(y,x) = zVel_air(y,x)= 0.0f;
             }
             else
             {
-                uVel(y,x) = 0.5*(getRFlux(y,x-1)-getLFlux(y,x)-getLFlux(y,x+1)+getRFlux(y,x))/(dy*meanWater);
-                vVel(y,x) = 0.5*(getTFlux(y-1,x)-getBFlux(y,x)-getBFlux(y+1,x)+getTFlux(y,x))/(dx*meanWater);
+                uVel_air(y,x) =  0.5*(getRFlux_air(y,x-1)-getLFlux_air(y,x)-getLFlux_air(y,x+1)+getRFlux_air(y,x))/(dy*meanAir);
+                vVel_air(y,x) =  0.5*(getTFlux_air(y-1,x)-getBFlux_air(y,x)-getBFlux_air(y+1,x)+getTFlux_air(y,x))/(dx*meanAir);
             }
 
             //we define lakes and seas as places where the incoming and the outcoming water flux is almost zero
@@ -410,13 +452,35 @@ void FluidSimulation::simulateFlow(double dt)
             }
             */
 
-            float uV = uVel(y,x);
-            float vV = vVel(y,x);
-            zVel(y,x) = (actualWater -oldWater);
+            float uV = uVel_air(y,x);
+            float vV = vVel_air(y,x);
+            float zV = ( actualAir-oldAir);
+
+         //   std::cout<<"uV "<<uV<<" vV "<<vV<<" zV "<<zV<<std::endl;
+
+
+            zVel_air(y,x) = zV;
             count(y,x)++;
-            flowNormal(y,x) += vec3(uV,vV,actualWater -oldWater);
+            //flowNormal(y,x) += vec3(uV,vV,actualAir -oldAir);
             float vel = sqrtf(uV*uV+vV*vV);
-            water(y,x) = actualWater;
+            glm::vec3 local_speed_vector = vec3(uV,vV,zV);
+glm::vec3 previous_vec = flowNormal(y,x);
+            if(glm::any(glm::isnan(previous_vec)))
+                previous_vec = glm::vec3(0,0,0);
+            //flowNormal(y,x) += local_speed_vector ;
+          //  local_speed_vector =  normalize(local_speed_vector);
+            for(int i = 0;i<3;i++){
+                local_speed_vector[i] = floorf(local_speed_vector[i]*100);
+                //std::cout<<local_speed_vector[i]<<std::endl;
+
+            }
+            if(glm::any(glm::isnan(previous_vec))){
+                previous_vec = glm::vec3(0,0,0);
+                std::cout<<"is NAN"<<std::endl;
+            }
+            flowNormal(y,x) = (previous_vec + local_speed_vector);
+            //float dot_prod = glm::dot(glm::normalize(local_speed_vector),wind_direction);
+            air(y,x) = actualAir;// * dot_prod;
 
            if(vel <= river_max_speed_treshold && vel>= river_min_speed_treshold && water(y,x)>river_min_height_treshold &&
                     water(y,x) <= river_height_treshold)
@@ -459,6 +523,202 @@ void FluidSimulation::simulateFlow(double dt)
 
 }
 
+
+void FluidSimulation::simulateFlow(double dt)
+{
+
+    // Outflux computation settings
+    ////////////////////////////////////////////////////////////
+    float l = 1;
+    float A = 0.00005;
+    float treshold_time = 100;
+    float still_water_treshold = 0.05;
+    float river_min_speed_treshold = 0.01;//0.043;
+    float river_max_speed_treshold = 1;
+
+    float river_height_treshold = 1;
+    float river_min_height_treshold = 0.001;
+    const float ocean_level = 0.75;
+    const float dx = lX;
+    const float dy = lY;
+
+    float fluxFactor = dt*A*gravity/l;
+
+
+    // Outflow Flux Computation with boundary conditions
+    ////////////////////////////////////////////////////////////
+#if defined(__APPLE__) || defined(__MACH__)
+    dispatch_apply(uVel.height(), gcdq, ^(size_t y)
+#else
+    #pragma omp parallel for
+    for (uint y=0; y<uVel.height(); ++y)
+#endif
+    {
+        for (uint x=0; x<uVel.width(); ++x)
+        {
+            float dh;                               // height difference
+            float h0 = terrain(y,x)+water(y,x);     // water height at current cell
+            float newFlux;
+            float strenght = 0.1;
+            // left outflow
+            if (x > 0)
+            {
+                dh =h0 - (terrain(y,x-1)+water(y,x-1));
+                newFlux =  lFlux(y,x) + fluxFactor*(dh);
+                lFlux(y,x) = std::max(0.0f,newFlux);
+            }
+            else
+            {
+                lFlux(y,x) = 0.0f; // boundary
+            }
+
+            // right outflow
+            if (x < water.width()-1) {
+                dh =  h0 - (terrain(y,x+1)+water(y,x+1));
+                newFlux =  rFlux(y,x) + fluxFactor*(dh);
+                rFlux(y,x) = std::max(0.0f,newFlux);
+            }
+            else
+            {
+                rFlux(y,x) = 0.0f; // boundary
+            }
+
+            // bottom outflow
+            if (y > 0)
+            {
+                dh = h0 - (terrain(y-1,x)+water(y-1,x));
+                newFlux = bFlux(y,x) + fluxFactor*(dh);
+                bFlux(y,x) = std::max(0.0f,newFlux);
+            }
+            else
+            {
+                bFlux(y,x) = 0.0f; // boundary
+            }
+
+            // top outflow
+            if (y < water.height()-1) {
+                dh = h0 - (terrain(y+1,x)+water(y+1,x));
+                newFlux = tFlux(y,x) + fluxFactor*(dh);
+                tFlux(y,x) = std::max(0.0f,newFlux);
+            }
+            else
+            {
+                tFlux(y,x) = 0.0f; // boundary
+            }
+
+            // scaling
+            float sumFlux = lFlux(y,x)+rFlux(y,x)+bFlux(y,x)+tFlux(y,x);
+            float K = std::min(1.0f,float((water(y,x)*dx*dy)/(sumFlux*dt)));
+            rFlux(y,x) *= (K);
+            lFlux(y,x) *= (K);
+            tFlux(y,x) *= (K);
+            bFlux(y,x) *= (K);
+        }
+    }
+#if defined(__APPLE__) || defined(__MACH__)
+    );
+#endif
+
+    // Update water surface and velocity field
+    ////////////////////////////////////////////////////////////
+#if defined(__APPLE__) || defined(__MACH__)
+    dispatch_apply(uVel.height(), gcdq, ^(size_t y)
+#else
+    #pragma omp parallel for
+    for (int y=0; y<uVel.height(); ++y)
+#endif
+    {
+        for (int x=0; x<uVel.width(); ++x)
+        {
+            float inFlow = getRFlux(y,x-1) + getLFlux(y,x+1) + getTFlux(y-1,x) + getBFlux(y+1,x);
+            float outFlow = getRFlux(y,x) + getLFlux(y,x) + getTFlux(y,x) + getBFlux(y,x);
+            float dV = dt*(inFlow-outFlow);
+            float oldWater = water(y,x);
+            float actualWater = water(y,x);
+            //water(y,x) += dV/(dx*dy);
+            //water(y,x) = std::max(water(y,x),0.0f);
+            actualWater += dV/(dx*dy);
+            actualWater = std::max(actualWater,0.0f);
+            if(actualWater>0)
+                counter_from_last_time_water_passed(y,x)=0;
+            else
+                counter_from_last_time_water_passed(y,x)++;
+
+            float meanWater = 0.5*(oldWater+ actualWater);
+
+            if (meanWater == 0.0f)
+            {
+                uVel(y,x) = vVel(y,x) = 0.0f;
+            }
+            else
+            {
+                uVel(y,x) =  0.5*(getRFlux(y,x-1)-getLFlux(y,x)-getLFlux(y,x+1)+getRFlux(y,x))/(dy*meanWater);
+                vVel(y,x) =  0.5*(getTFlux(y-1,x)-getBFlux(y,x)-getBFlux(y+1,x)+getTFlux(y,x))/(dx*meanWater);
+            }
+
+            //we define lakes and seas as places where the incoming and the outcoming water flux is almost zero
+           /* if( inFlow  >= 0 - still_water_treshold && inFlow  <= 0 + still_water_treshold &&
+                outFlow  >= 0 - still_water_treshold && outFlow  <= 0 + still_water_treshold && water(y,x)>ocean_level)
+            {
+                counter_times_water_was_still(y,x)++;
+            }
+            else
+            {
+                if(counter_times_water_was_still(y,x) < treshold_time )
+                {
+                    counter_times_water_was_still(y,x) = 0;
+                }
+            }
+            */
+water(y,x) = actualWater;/*
+            float uV = uVel(y,x);
+            float vV = vVel(y,x);
+            count(y,x)++;
+
+            float vel = sqrtf(uV*uV+vV*vV);
+            
+
+           if(vel <= river_max_speed_treshold && vel>= river_min_speed_treshold && water(y,x)>river_min_height_treshold &&
+                    water(y,x) <= river_height_treshold)
+            {
+
+              //  counter_times_water_was_still(y,x)++;
+               float temp_count = counter_times_water_was_still(y,x);
+               //std::cout<<temp_count<<std::endl;
+//                counter_times_water_was_still(y,x) = counter_times_water_was_still(y,x)>treshold_time? treshold_time +1:counter_times_water_was_still(y,x)++;
+                if(temp_count>treshold_time){
+                  //  state.simData_2(y,x) =1;
+                    counter_times_water_was_still(y,x) = treshold_time+1;
+                }
+                else{
+                    counter_times_water_was_still(y,x)++;
+                }
+
+            }
+            else
+            {
+                if(counter_times_water_was_still(y,x) >  treshold_time )
+                {
+                     state.simData_2(y,x) =1;
+                    counter_times_water_was_still(y,x)++;
+                    if(counter_times_water_was_still(y,x)>3000)
+                        counter_times_water_was_still(y,x)=0;
+                }
+                else{
+                    state.simData_2(y,x) =0;
+                    counter_times_water_was_still(y,x)=0;
+
+                }
+            }*/
+        }
+    }
+
+#if defined(__APPLE__) || defined(__MACH__)
+    );
+#endif
+
+}
+
 // flux acess
 float FluidSimulation::getRFlux(int y, int x) {
     if (x<0 || x>rFlux.width()-1) {
@@ -492,6 +752,40 @@ float FluidSimulation::getTFlux(int y, int x) {
     }
 }
 
+float FluidSimulation::getRFlux_air(int y, int x) {
+    if (x<0 || x>rFlux_air.width()-1) {
+        return 0.0f;
+    } else {
+        return rFlux_air(y,x);
+    }
+}
+
+float FluidSimulation::getLFlux_air(int y, int x) {
+    if (x<0 || x>lFlux_air.width()-1) {
+        return 0.0f;
+    } else {
+        return lFlux_air(y,x);
+    }
+}
+
+float FluidSimulation::getBFlux_air(int y, int x) {
+    if (y<0 || y>bFlux_air.height()-1) {
+        return 0.0f;
+    } else {
+        return bFlux_air(y,x);
+    }
+}
+
+float FluidSimulation::getTFlux_air(int y, int x) {
+    if (y<0 || y>tFlux_air.height()-1) {
+        return 0.0f;
+    } else {
+        return tFlux_air(y,x);
+    }
+}
+
+
+
 float FluidSimulation::getTerrain(int y, int x) {
     return terrain(glm::clamp(y,0,(int) terrain.height()-1),glm::clamp(x,0,(int) terrain.width()-1));
 }
@@ -500,6 +794,10 @@ float FluidSimulation::getTerrain(int y, int x) {
 
 float FluidSimulation::getWater(int y, int x){
     return water(glm::clamp(y,0,(int) water.height()-1),glm::clamp(x,0,(int) water.width()-1));
+}
+
+float FluidSimulation::getAir(int y, int x){
+    return air(glm::clamp(y,0,(int) air.height()-1),glm::clamp(x,0,(int) air.width()-1));
 }
 
 void FluidSimulation::simulateErosion(double dt)
@@ -561,9 +859,9 @@ void FluidSimulation::simulateErosion(double dt)
 
              }
              kc =kc + n*(kc/10);
-
+            kc *= 2;
             state.simData(y,x) = kc/42;
-            kc = 35;
+
             float capacity = kc* sqrtf(uV*uV+vV*vV)*sinAlpha*(std::min(water(y,x),0.01f)/0.01f) ;
             float delta = (capacity-sediment(y,x));
 
@@ -576,14 +874,16 @@ void FluidSimulation::simulateErosion(double dt)
                 terrain(y,x)  -= d;
                 water(y,x)    += d;
                 sediment(y,x) += d;
+                sedimented_terrain(y,x) -= d;
             }
             // deposit onto ground
-            else if (delta < 0.0f && uV< 0.01 && vV < 0.01)
+            else if (delta < 0.0f )
             {
                 float d = Kd*delta;
                 terrain(y,x)  -= d;
                 water(y,x)    += d;
                 sediment(y,x) += d;
+                sedimented_terrain(y,x) -= d;
             }
         }
     }
@@ -733,7 +1033,7 @@ void FluidSimulation::simulateEvaporation(double dt)
 #endif
 }
 
-void FluidSimulation::update(ulong time, double dt, bool rain, bool flood)
+void FluidSimulation::update(ulong time, double dt, bool rain, bool flood,bool wind)
 {
     // 1. Add water to the system
     if (rain)
@@ -741,9 +1041,14 @@ void FluidSimulation::update(ulong time, double dt, bool rain, bool flood)
 
     if (flood)
        makeRiver(dt,time);// makeFlood(dt);
-
+    if(wind)
+        makeWind(dt);
     // 2. Simulate Flow
     simulateFlow(dt);
+
+    simulateWind(dt);
+   // simulateWind(dt);
+
     // 3. Simulate Errosion-deposition
     simulateErosion(dt);
     // 4. Advection of suspended sediment

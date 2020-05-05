@@ -9,6 +9,14 @@ _vector = sp._vector;
 
 }*/
 
+/*
+static ShadersWrapper* ShadersWrapper::interpolate(ShadersWrapper* sw1,ShadersWrapper* sw2,float d){
+    //for
+    //sw1->list_of_shaders
+return sw1;
+}
+*/
+
 
 void ShadersWrapper::GetListOfShaders(std::vector<AShader*>& list)
 {

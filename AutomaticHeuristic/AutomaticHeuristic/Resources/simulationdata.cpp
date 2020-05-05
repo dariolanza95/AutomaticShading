@@ -66,7 +66,7 @@ void SimulationData::readLine(const string line )
                         waiting_for_a_number = false;
                     }
                     else{
-                        stringstream err("Found a number without the name of the data");
+                        stringstream err("Found a number without an associated name");
                         throw ExceptionClass(err.str());
                     }
                }

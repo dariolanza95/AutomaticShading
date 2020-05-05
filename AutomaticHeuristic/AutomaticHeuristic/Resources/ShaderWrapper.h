@@ -15,6 +15,7 @@ class ShadersWrapper
     std::vector<AShader*> list_of_shaders;
 
 public:
+ //   static ShadersWrapper* interpolate(ShadersWrapper* sw1,ShadersWrapper* sw2,float d);
     ShadersWrapper();
     void AddShaderParameters(AShader* shader);
     void GetListOfShaders(std::vector<AShader*>& list);

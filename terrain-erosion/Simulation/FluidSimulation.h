@@ -33,16 +33,24 @@ public:
 
     SimulationState& state;
     Grid2D<float>& water;
+    Grid2D<float>& air;
     Grid2D<float>& terrain;
     Grid2D<float>& sediment;
     Grid2D<float> counter_from_last_time_water_passed;
     Grid2D<float> counter_times_water_was_still;
     Grid2D<float> tmpSediment;
+    Grid2D<float>& sedimented_terrain;
     Grid2D<float> uVel;
     Grid2D<float> vVel;
-    Grid2D<float> zVel;
-    Grid2D<vec3> flowNormal;
+    Grid2D<float> uVel_air;
+    Grid2D<float> vVel_air;
+    Grid2D<float> zVel_air;
+    Grid2D<glm::vec3> flowNormal;
     Grid2D<float> count;
+    Grid2D<float> lFlux_air;
+    Grid2D<float> rFlux_air;
+    Grid2D<float> tFlux_air;
+    Grid2D<float> bFlux_air;
     Grid2D<float> lFlux;
     Grid2D<float> rFlux;
     Grid2D<float> tFlux;
@@ -50,14 +58,14 @@ public:
     float noise_sediment_frequency;
     int sediment_layers[7];
     glm::vec2 rainPos;
-
+    glm::vec2 _windDirection;
     // lX and lY have to decrease if we increse the gridsize
     const float lX;
     const float lY;
     const float gravity;
     const float _stratified_layer_width = 0.001;
 
-    void update(ulong time, double dt, bool makeRain=true, bool flood=false);
+    void update(ulong time, double dt, bool makeRain=true, bool flood=false, bool wind=false);
     void simulateFlow(double dt);
     void simulateErosion(double dt);
     void simulateSedimentTransportation(double dt);
@@ -65,9 +73,12 @@ public:
     float sampleTerrain(int x,int y );
     void makeRain(double dt);
     void makeFlood(double dt);
+    void makeWind(double dt);
     void makeRiver(double dt, ulong time);
+    void simulateWind(double dt);
 
     void addRainDrop(const vec2& pos, int rad, float amount);
+    void addWindParticle(const vec2& pos, int rad, float amount);
 
     void smoothTerrain();
 
@@ -80,12 +91,17 @@ public:
     inline float getBFlux(int y, int x);
     inline float getTFlux(int y, int x);
 
+    inline float getRFlux_air(int y, int x);
+    inline float getLFlux_air(int y, int x);
+    inline float getBFlux_air(int y, int x);
+    inline float getTFlux_air(int y, int x);
+
     // terrain access
     //inline float getTerrain(int y, int x);
     float getTerrain(int y, int x);
     // water access
     inline float getWater(int y, int x);
-
+inline float getAir(int y, int x);
 
 };
 

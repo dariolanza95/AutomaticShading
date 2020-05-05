@@ -83,6 +83,7 @@ protected:
     bool _finished;
     bool _inPause;
     bool _rain;
+    bool _air;
     bool _flood;
     bool _debug_mode = false;
     bool _hardness_mode = false;
@@ -95,11 +96,13 @@ protected:
     Graphics::ShaderManager             _shaderManager;
     Graphics::VertexBuffer<float>       _terrainHeightBuffer;
     Graphics::VertexBuffer<float>       _waterHeightBuffer;
+    Graphics::VertexBuffer<float>       _airHeightBuffer;
     Graphics::VertexBuffer<glm::vec2>   _gridCoordBuffer;
     Graphics::VertexBuffer<glm::vec4>   _arrowCoordBuffer;
     Graphics::IndexBuffer               _arrowIndexBuffer;
     Graphics::IndexBuffer               _gridIndexBuffer;
     Graphics::VertexBuffer<float>       _sedimentBuffer;
+    Graphics::VertexBuffer<float>       _sedimentedTerrainBuffer;
     Graphics::VertexBuffer<float>       _simDataBuffer;
     Graphics::VertexBuffer<float>       _simDataBuffer_2;
 

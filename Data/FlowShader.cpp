@@ -632,8 +632,8 @@ testpoint = pp;
         resultF[n] = 1;
 
 
-                int K = 5;
-                float maxdist = 5;
+                int K = 10;
+                float maxdist = 10;
             RtVector3 dir(0,0,0);
 
                 point[0] = pp.x;
@@ -649,8 +649,11 @@ testpoint = pp;
                     dir.z = (data[2]);
                     val = data[3];
                 }
+                K = 5;
+                maxdist = 5;
                 RtVector3 dir_details = dir;
-                dir = FindOrthogonalVector(dir);
+
+                //dir = FindOrthogonalVector(dir);
         float delta = 0.25;
         float val_dflow = 0;
         float val_minus_dflow = 0;
@@ -711,8 +714,8 @@ testpoint = pp;
  float b = 1;
 float color_details = DDA(pp,dir_details,40,3);
 
- float c = 0.43;
-       d = 0.57;
+ float c = 0.3;
+       d = 0.7;
 //
 //
 color_details = (color_details - c)*((b-a)/(d-c)) + a;
@@ -732,6 +735,10 @@ val = RixSmoothStep(0,1 ,val );
 val_dflow =       RixSmoothStep(min,maxx ,val_dflow );
 val_minus_dflow = RixSmoothStep(min,maxx ,val_minus_dflow );
 
+float temp_val = val*0.5 + (val_dflow + val_minus_dflow)*0.25;
+temp_val= (temp_val- c)*((b-a)/(d-c)) + a;
+
+
 float gradient = (val_dflow - val)/delta + ( val_minus_dflow-val)/delta;
 float details = (val + gradient)*0.5;
 //details = (val_dflow - val)/delta;
@@ -739,16 +746,16 @@ details  = (val_minus_dflow- val  )/delta;
 details = details<0 ? -details : details;
 details = RixSmoothStep(0,1 ,details );
 
-res = val;
+res = temp_val;
 //res = details;
-
+//res = val;
 res = RixSmoothStep(0,1 ,res );
 
 
 
 //float blend = RixSmoothStep(0,1 ,res );
 
-
+/*
         float dist1,dist2 ;
         float min_dist1 = 10.0f;
         float min_dist2 = 10.0f;
@@ -805,19 +812,6 @@ res = RixSmoothStep(0,1 ,res );
             resultRGB[n].g = 0;
             resultRGB[n].b = 0;
         }
-/*
-        if (randomScale[n] != 0.f &&  index1!=index2)
-        {
-            float mask = powf(f2-f1, 0.5);//0.25f);
-            mask = RixSmoothStep(randomScaleCenter[n], 1.f, mask);
-            float scale = (m_sFuncs->CellNoise(f1cell) * mask);
-            scale = (scale - randomScaleCenter[n]) * (1.f/(1.f - randomScaleCenter[n]));
-            if (c1[n] != 0.f || c2[n] != 0.f)
-                resultDispl[n] *= RixMix(1.f, scale, randomScale[n]);
-            else
-                resultDispl[n] = RixMix(0.f, scale, randomScale[n]);
-        }
-*/
 
 
             RtColorRGB red(1,0,0);
@@ -856,10 +850,28 @@ res = RixSmoothStep(0,1 ,res );
             // res = 0.5*Fbm(pp*0.4,4,0.5);
 
              //res = res + 0.5*Fbm(pp*0.4,4,0.3);
+*/
+             RtColorRGB main_col;
+             main_col.r = 0.18;
+             main_col.g = 0.13;
+             main_col.b = 0.09;
 
-             resultRGB[n].r = resultRGB[n].b = resultRGB[n].g =res;
-          //  resultRGB[n] = col;
+             RtColorRGB second_col;
+             second_col.r = 0.18*1.5;
+             second_col.g = 0.13*1.5;
+             second_col.b = 0.09*1.5;
 
+            // float dda= DDA(pp,dir,30,0.3);
+
+        second_col.r = 0.18*1.5*0.7;
+        second_col.g = 0.13*1.5*0.7;
+        second_col.b = 0.09*1.5*0.7;
+
+
+        resultRGB[n].r = resultRGB[n].b = resultRGB[n].g = res;
+        //RtColorRGB temp_color =
+          //resultRGB[n]=      RixLerpRGB( main_col,second_col,res);
+        //resultRGB[n] = RixLerpRGB( temp_color,second_col,dda);
           resultF[n] =  res;//(res);// + displ;
           //resultF[n] = 0;//  displ;
 

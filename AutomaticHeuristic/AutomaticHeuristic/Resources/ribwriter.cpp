@@ -195,8 +195,8 @@ string RIBWriter::WriteTransformationMatrix()
     }
     ss<<" ]"<<std::endl;
 
-*/
 
+*/
     //ss << "Rotate "<< -1*_cam.rotX<<" 1 0 0"<<std::endl;
     //ss << "Rotate "<< _cam.rotY<<" 0 1 0"<<std::endl;
     //ss << "Rotate "<< _cam.rotZ<<" 0 0 1"<<std::endl;
@@ -292,7 +292,8 @@ void RIBWriter::WriteInialization(){
     string_to_write<<"Option \"ribparse\" \"string varsubst\" [\"\"]"<<std::endl;
     string_to_write<<"Option \"ribparse\" \"string varsubst\" [\"$\"]"<<std::endl;
     string_to_write<<"Option \"Ri\" \"int Frame\" [1] \"float PixelVariance\" [0.00999999978] \"string PixelFilterName\" [\"gaussian\"] "<<std::endl;
-    string_to_write<<"\"float[2] PixelFilterWidth\" [2 2] \"int[2] FormatResolution\" [600 400] \"float FormatPixelAspectRatio\" [1.5] \"float[2] Clipping\" [0.100000001 10000] \"float[4] ScreenWindow\" [-1 1 -0.5625 0.5625]"<<std::endl;
+    string_to_write<<"\"float[2] PixelFilterWidth\" [2 2] \"int[2] FormatResolution\" [300 200] \"float FormatPixelAspectRatio\" [1.5] \"float[2] Clipping\" [0.100000001 10000] \"float[4] ScreenWindow\" [-1 1 -0.5625 0.5625]  "<<std::endl;
+//    string_to_write<<"\"float[4] CropWindow\" [0.0 0.5 0.5 1.0]"<<std::endl;
     string_to_write<<" \"float[2] Shutter\" [0 0]"<<std::endl;
     string_to_write<<"Option \"bucket\" \"string order\" [\"circle\"]"<<std::endl;
     string_to_write<<"Option \"lighting\" \"int selectionlearningscheme\" [1]"<<std::endl;
@@ -506,7 +507,10 @@ void RIBWriter::WriteShadersList()
 
         rib_mask = new RIBMaskNode(shader);
         if(i==0){
-            rib_shader1 = new RIBConstant(glm::vec3(0.3,0.3,0.3));
+//            second_col.r = ;
+//            second_col.g = ;
+//            second_col.b = ;
+            rib_shader1 = new RIBConstant(glm::vec3(((float)186)/256,((float)151)/256,((float)90)/256));
         }else   {
             rib_shader1 = rib_mix;
         }

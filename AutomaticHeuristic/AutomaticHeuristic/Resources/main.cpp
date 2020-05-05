@@ -554,13 +554,10 @@ string obj_file = "../../Data/input.obj";
    float BoxLength = 70;
    float freq = 20*multiplier;
    float step_size =  subdivs!= 0 ? 1/subdivs : 1;
-   std::cout<<"Here we go!BoxLength "<< BoxLength <<std::endl;
-   //licmap.LIC2(BoxLength,freq,step_size,mesh);
-   std::cout<<"LIC calculated"<<std::endl;
-    int i = 0;
+   int i = 0;
     string path("../../Data/");
 
-    for(AShader* shader : list_of_used_shaders )
+   for(AShader* shader : list_of_used_shaders )
     {
         std::cout<<"i "<<i<<std::endl;
         //filename<<i++;

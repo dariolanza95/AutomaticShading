@@ -5,7 +5,7 @@ void PointCloudWriter::Write()
 {
     auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
     float point[3], normal[3];
-    float radius = 0.02;
+    float radius = 0.0f;
     MyMesh::Point mesh_point;
     if(_writing_a_shader_mask){
         allocated_data.resize(1);
@@ -140,8 +140,17 @@ PointCloudWriter::PointCloudWriter(MyMesh mesh,AShader* shader,int subdiv_levels
     std::vector<char*> var_types;
     std::vector<char*> var_names;
 
+    std::vector<const char*> var_types_n;
+    std::vector<const char*> var_names_n;
+
+    var_names_n.resize(1);
+    var_names_n[0] = AutomaticShaders::Utils::fromStringToChar("");
+    var_types_n.resize(1);
+    var_types_n[0] = AutomaticShaders::Utils::fromStringToChar("");
+
     if(mask){
         _file_name = CreateMaskFile(shader,var_types,var_names,num_variables);
+
     }
     else{
         std::string output_file_name;
@@ -161,13 +170,19 @@ PointCloudWriter::PointCloudWriter(MyMesh mesh,AShader* shader,int subdiv_levels
 
 
     float format[3];
-    format[0] = 10;
-    format[1] = 10;
+    format[0] = 600;
+    format[1] = 400;
     format[2] = 1.3;
+    int tt = 0;
+   // if(mask){
+        _output_file = PtcCreateOrgPointCloudFile( _file_name,num_variables, &var_types[0],&var_names[0],tt,
+                &var_types_n[0],&var_names_n[0],
+                                                              world_to_eye, world_to_ndc,format);
 
-
-    _output_file = PtcCreatePointCloudFile (_file_name,num_variables, &var_types[0],&var_names[0],
-                                                          world_to_eye, world_to_ndc,format);
+//    }else
+//
+//    _output_file = PtcCreatePointCloudFile (_file_name,num_variables, &var_types[0],&var_names[0],
+                                                   //       world_to_eye, world_to_ndc,format);
     if(_output_file == NULL )
     {
         std::cout<<"Err in the creation of the file... exiting";

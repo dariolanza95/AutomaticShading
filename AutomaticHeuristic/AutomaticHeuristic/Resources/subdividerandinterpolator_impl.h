@@ -256,6 +256,7 @@ SubdividerAndInterpolator<MeshType,RealType>::split_edge( MeshType& _m, const Ed
   HalfedgeHandle new_heh, opp_new_heh, t_heh;
   VertexHandle   vh;
   VertexHandle   vh1( _m.to_vertex_handle(heh));
+  VertexHandle   vh2( _m.to_vertex_handle(opp_heh));
   Point          zero(0,0,0);
   // new vertex
   vh                = _m.new_vertex( zero );
@@ -263,10 +264,14 @@ SubdividerAndInterpolator<MeshType,RealType>::split_edge( MeshType& _m, const Ed
 
   //copy data from previous vertex
   auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_m, "shader_parameters");
+  ShadersWrapper* shader_param_v_1 = shader_parameters_data_wrapper[vh1];
+  ShadersWrapper* shader_param_v_2 = shader_parameters_data_wrapper[vh2];
+
+  ShadersWrapper* new_shader_param = new ShadersWrapper(*shader_param_v_1);
+          //(ShadersWrapper::interpolate(shader_param_v_1,shader_param_v_2,0));
   auto sim_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,SimulationData*> (_m,"simulation_data");
 //  auto OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , SimulationData*>::type, MyMesh> simulation_data_wrapper;
-  ShadersWrapper* shader_param = shader_parameters_data_wrapper[vh1];
-  ShadersWrapper* new_shader_param = new ShadersWrapper(*shader_param);
+
 
   SimulationData* sim_data= sim_data_wrapper[vh1];
   SimulationData* new_sim_data= new SimulationData(*sim_data);
