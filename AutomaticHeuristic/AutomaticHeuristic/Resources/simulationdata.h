@@ -25,9 +25,12 @@ class SimulationData
 
     public:
         SimulationData(const std::string str);
+        SimulationData();
         void getData(SimulationDataEnum data_enum, float& data);
         void getData(SimulationDataEnum data_enum, glm::vec3& data);
-
+        void setData(SimulationDataEnum data_enum, glm::vec3 data);
+        //SimulationData* operator /(SimulationData* sd);
+        //SimulationData* operator +(SimulationData* sd);
 
 };
 #endif // SIMULATIONDATA_H

@@ -27,8 +27,8 @@
 #include <GL/glew.h>
 #include <GL/glx.h>
 #include <GLFW/glfw3.h>
-
-typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
+#include "mydefwrapper.h"
+//typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
 
 using namespace std;
 using namespace OpenMesh;

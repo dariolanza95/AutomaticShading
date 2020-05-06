@@ -20,7 +20,8 @@
 #include "ribaddnode.h"
 #include "riblight.h"
 #include "displnode.h"
-typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
+#include "mydefwrapper.h"
+//typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
 
 using namespace std;
 

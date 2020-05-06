@@ -46,8 +46,8 @@
 
 using namespace glm;
 using namespace Graphics;
-
-typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
+#include "./Resources/mydefwrapper.h"
+//typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
 typedef pcl::PointCloud<pcl::PointXYZ>::Ptr MyCloudPtr;
 class OpenGlVisualizer
 {

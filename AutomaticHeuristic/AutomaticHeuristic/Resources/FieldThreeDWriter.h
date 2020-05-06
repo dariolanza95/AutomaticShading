@@ -19,7 +19,8 @@
 #include <Field3D/FieldInterp.h>
 #include <Field3D/InitIO.h>
 #include <Field3D/Log.h>
-typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
+#include "mydefwrapper.h"
+//typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
 
 class FieldThreeDWriter
 {

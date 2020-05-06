@@ -162,6 +162,10 @@ void FlowClassifier::selectFrontier(map<MyMesh::VertexHandle,FlowShader*>& selec
      map<MyMesh::VertexHandle,glm::vec3> flow_vertices;
      for(vertex_iterator=_mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
      {
+
+         //if(glm::any(glm::isnan())){
+         //    std::cout<<"position is NAN"<<std::endl;
+         //}
          SimulationData* sd = simulation_data_wrapper[*vertex_iterator];
          //normalize it!
          glm::vec3 sim_data_normal;
@@ -220,30 +224,61 @@ map<MyMesh::VertexHandle,AShader*> FlowClassifier::ClassifyVertices()
     glm::vec3 min_bb;
     glm::vec3 max_bb;
 
-    typedef OpenMesh::TriMesh_ArrayKernelT<OpenMesh::Subdivider::Adaptive::CompositeTraits>  MyMesh2;
-    MyMesh2 misc;
-     OpenMesh::Subdivider::Adaptive::CompositeT<MyMesh2> tlaf(misc);
+    //typedef OpenMesh::TriMesh_ArrayKernelT<OpenMesh::Subdivider::Adaptive::CompositeTraits>  MyMesh2;
+    //MyMesh2 mplat;
+    /* OpenMesh::Subdivider::Adaptive::CompositeT<MyMesh> adapt_subdiv(_mesh);
+    OpenMesh::Subdivider::Adaptive::Tvv3<MyMesh>::Handle rule1;
+    OpenMesh::Subdivider::Adaptive::myVV<MyMesh>::Handle rule5;
+    OpenMesh::Subdivider::Adaptive::VF<MyMesh>::Handle rule2;
+    OpenMesh::Subdivider::Adaptive::FF<MyMesh>::Handle rule3;
+    OpenMesh::Subdivider::Adaptive::FV<MyMesh>::Handle rule4;
 
-    SubdividerAndInterpolator<MyMesh> catmull;
+    adapt_subdiv.add(rule1);
+    adapt_subdiv.add(rule5);
+  //  adapt_subdiv.add(rule2);
+  //  adapt_subdiv.add(rule3);
+  //  adapt_subdiv.add(rule4);
+    adapt_subdiv.initialize();
+
+*/
+
     //OpenMesh::Subdivider::Uniform::SubdividerT<MyMesh> rancio;
 
+    std::cout<<"vertices "<< _mesh.n_vertices()<<std::endl;
+map<MyMesh::VertexHandle,glm::vec3> flow_vertices;
+    int _subdiv_levels = 3;
+    for(int i=0;i<_subdiv_levels;i++){
 
-    int _subdiv_levels = 2;
-    if(_subdiv_levels>0)
-    {
-        catmull.attach(_mesh);
-        catmull(_subdiv_levels);
-        catmull.detach();
+        auto temp_flow_vertices = selectFlowVertices(min_bb,max_bb);
+        set<MyMesh::FaceHandle> set_of_faces;
+
+        for(auto const entry : temp_flow_vertices){
+                        MyMesh::VertexHandle vh= entry.first;
+         //   adapt_subdiv.refine( vh);
+
+            MyMesh::VertexFaceIter vertex_face_circulator;
+                  vertex_face_circulator = _mesh.vf_iter(entry.first);
+                  for( ;vertex_face_circulator.is_valid(); ++vertex_face_circulator){
+                     set_of_faces.insert(vertex_face_circulator);
+                  }
+        }
+        SubdividerAndInterpolator<MyMesh> catmull(set_of_faces);
+            catmull.attach(_mesh);
+            catmull(1);
+            catmull.detach();
+
 
     }
 
-    auto flow_vertices = selectFlowVertices(min_bb,max_bb);
+    flow_vertices = selectFlowVertices(min_bb,max_bb);
     temporary_selected_vertices = ComputeShaderParameters(flow_vertices);
+ //   for(int x = 0;x<2;x++)
+    std::cout<<"vertices AFTER the treatment "<< _mesh.n_vertices()<<std::endl;
      selectFrontier(temporary_selected_vertices);
     //TemporaryUpdate(temporary_selected_vertices);
     float scale= _subdiv_levels>0?  _subdiv_levels:1;
     selected_vertices = LIC(temporary_selected_vertices, scale,min_bb,max_bb);
-    std::cout<<"vertices "<< _mesh.n_vertices()<<std::endl;
+
     return selected_vertices;
 }
 
@@ -412,8 +447,8 @@ map<MyMesh::VertexHandle,AShader*> FlowClassifier:: LIC(map<MyMesh::VertexHandle
 
     float box_length = longest_dimension/4;
     float step_size = 1;//scale;
-    float frequency = 230*scale;//longest_dimension/2;//scale*2;
-    box_length = 100*scale;
+    float frequency = 500;//longest_dimension/2;//scale*2;
+    box_length = 50*scale;
     FastNoise noise;
     std::map<MyMesh::VertexHandle,AShader*> map_output;
    std::map<MyMesh::VertexHandle,AShader*> map1;

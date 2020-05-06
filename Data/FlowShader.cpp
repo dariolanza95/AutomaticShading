@@ -872,7 +872,7 @@ res = RixSmoothStep(0,1 ,res );
         //RtColorRGB temp_color =
           //resultRGB[n]=      RixLerpRGB( main_col,second_col,res);
         //resultRGB[n] = RixLerpRGB( temp_color,second_col,dda);
-          resultF[n] =  res;//(res);// + displ;
+          resultF[n] =  0;//(res);// + displ;
           //resultF[n] = 0;//  displ;
 
 

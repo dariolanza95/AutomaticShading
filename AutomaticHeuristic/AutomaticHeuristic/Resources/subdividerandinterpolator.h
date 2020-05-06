@@ -9,7 +9,7 @@
 #include <OpenMesh/Core/Utils/PropertyManager.hh>
 #include  "simulationdata.h"
 #include <OpenMesh/Tools/Subdivider/Uniform/SubdividerT.hh>
-
+#include <set>
 #if defined(OM_CC_MIPS)
 #  include <math.h>
 #else
@@ -127,11 +127,19 @@ public:
 
   typedef OpenMesh::Subdivider::Uniform::SubdividerT< MeshType, RealType >           parent_t;
 
+  std::set<typename MeshType::VertexHandle> _set_of_vertices;
+  std::set<typename MeshType::FaceHandle>   _set_of_faces;
+  std::set<typename MeshType::EdgeHandle>   _set_of_edges;
   /// Constructor
-  SubdividerAndInterpolator(  ) : parent_t() {  }
+  SubdividerAndInterpolator( std::set<typename MeshType::FaceHandle> set_of_faces ) : parent_t(),_set_of_faces(set_of_faces) {
+
+  }
 
   /// Constructor
-  SubdividerAndInterpolator(MeshType &_m) : parent_t(_m) {  }
+    SubdividerAndInterpolator(MeshType &_m) : parent_t(_m) {
+
+
+}
 
   ~SubdividerAndInterpolator() {}
 
@@ -154,7 +162,7 @@ protected:
      * @param _update_points Unused here
      * @return successful?
      */
-  bool subdivide( MeshType& _m, size_t _n , const bool _update_points = true);
+  bool subdivide( MeshType& _m, size_t _n , const bool _update_points = false);
 
 private:
 

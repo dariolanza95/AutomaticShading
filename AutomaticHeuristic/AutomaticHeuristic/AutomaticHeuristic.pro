@@ -126,7 +126,9 @@ HEADERS += *.h\
     Resources/ribaddnode.h \
     Resources/bxdfnode.h \
     Resources/riblight.h \
-    Resources/displnode.h
+    Resources/displnode.h \
+    Resources/mydefwrapper.h \
+    Resources/myrules.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system

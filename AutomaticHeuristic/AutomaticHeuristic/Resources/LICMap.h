@@ -16,8 +16,8 @@
 #include <glm/glm.hpp>
 
 #include "subdividerandinterpolator.h"
-
-typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
+#include "./mydefwrapper.h"
+//typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
 
 
 

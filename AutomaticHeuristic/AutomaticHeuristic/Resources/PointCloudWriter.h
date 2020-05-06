@@ -16,7 +16,8 @@
 #endif
 #include "LICMap.h"
 #include "utils.h"
-typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
+#include "mydefwrapper.h"
+//typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
 
 
 class PointCloudWriter

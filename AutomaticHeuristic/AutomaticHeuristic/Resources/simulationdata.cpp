@@ -75,7 +75,7 @@ void SimulationData::readLine(const string line )
        }}
 
 void SimulationData::getData(SimulationDataEnum data_enum, glm::vec3& data){
-    if(map_of_vectors.count(data_enum)>0)
+     if(map_of_vectors.count(data_enum)>0)
         data = map_of_vectors[data_enum];
 
 }
@@ -87,6 +87,15 @@ void SimulationData::getData(SimulationDataEnum data_enum, float& data){
 
 }
 
+void SimulationData::setData(SimulationDataEnum data_enum, glm::vec3 data){
+
+         map_of_vectors[data_enum] = data;
+
+}
+
+SimulationData::SimulationData(){}
+
+
 SimulationData::SimulationData(const string str)
 {
 try{
@@ -96,3 +105,52 @@ try{
         std::cout<<exc.what()<<std::endl;
     }
 }
+
+/*SimulationData SimulationData:: operator+( SimulationData sd) {
+        SimulationData res;
+        for(pair<SimulationDataEnum,float> p : this->map_of_floats){
+            if(sd.map_of_floats.count(p.first)>0){
+                p.second += sd.map_of_floats.at(p.first);
+            }else{
+                p.second += 0;
+            }
+            res.map_of_floats.insert(p);
+        }
+
+        for(pair<SimulationDataEnum,glm::vec3> p : this->map_of_vectors){
+            if(sd.map_of_vectors.count(p.first)>0){
+                p.second += sd.map_of_vectors.at(p.first);
+            }else{
+                p.second += 0;
+            }
+            res.map_of_vectors.insert(p);
+        }
+
+        return res;
+     }
+
+
+SimulationData* SimulationData:: operator/(SimulationData *sd) {
+        SimulationData* res = new SimulationData();
+        for(pair<SimulationDataEnum,float> p : this->map_of_floats){
+            if(sd->map_of_floats.count(p.first)>0){
+                p->second /= sd.map_of_floats.at(p.first);
+            }else{
+                p->second /= 1;
+            }
+            res.map_of_floats.insert(p);
+        }
+
+        for(pair<SimulationDataEnum,glm::vec3> p : this->map_of_vectors){
+            if(sd->map_of_vectors.count(p.first)>0){
+                p.second /= sd.map_of_vectors.at(p.first);
+            }else{
+                p->second /= 1;
+            }
+            res->map_of_vectors.insert(p);
+        }
+
+        return res;
+     }
+
+*/

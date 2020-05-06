@@ -58,7 +58,8 @@
 //== INCLUDES =================================================================
 
 #include <OpenMesh/Tools/Utils/MeshCheckerT.hh>
-
+#include <glm/vec3.hpp>
+#include <glm/glm.hpp>
 //== NAMESPACES ===============================================================
 
 //namespace OpenMesh   { // BEGIN_NS_OPENMESH
@@ -80,6 +81,21 @@ SubdividerAndInterpolator< MeshType, RealType > ::prepare(MeshType &_m)
   for( EdgeIter e_it = _m.edges_begin(); e_it != _m.edges_end(); ++e_it)
      _m.property(creaseWeights_, *e_it ) = 0.0;
 
+  typename MeshType::FaceVertexIter face_vertex_circulator;
+  typename MeshType::FaceEdgeIter face_edge_circulator;
+
+      for(FaceHandle fh : _set_of_faces){
+        face_vertex_circulator = _m.fv_iter(fh);
+        for( ;face_vertex_circulator.is_valid(); ++face_vertex_circulator){
+           _set_of_vertices.insert(face_vertex_circulator);
+        }
+        face_edge_circulator = _m.fe_iter(fh);
+        for( ;face_edge_circulator.is_valid(); ++face_edge_circulator){ 
+            _set_of_edges.insert(face_edge_circulator);
+        }
+    }
+
+
   return true;
 }
 
@@ -98,6 +114,8 @@ SubdividerAndInterpolator<MeshType,RealType>::cleanup( MeshType& _m  )
 
 //-----------------------------------------------------------------------------
 
+
+
 template <typename MeshType, typename RealType>
 bool
 SubdividerAndInterpolator<MeshType,RealType>::subdivide( MeshType& _m , size_t _n , const bool _update_points)
@@ -105,49 +123,112 @@ SubdividerAndInterpolator<MeshType,RealType>::subdivide( MeshType& _m , size_t _
   // Do _n subdivisions
   for ( size_t i = 0; i < _n; ++i)
   {
-
+std::cout<<"Subdivision"<<std::endl;
+      //_set_of_faces
     // Compute face centroid
-    FaceIter f_itr   = _m.faces_begin();
-    FaceIter f_end   = _m.faces_end();
+  /*  typename MeshType::FaceIter f_itr   = _set_of_faces.begin();// .faces_begin();
+    typename MeshType::FaceIter f_end   = _set_of_faces.end();
     for ( ; f_itr != f_end; ++f_itr)
     {
       Point centroid;
       _m.calc_face_centroid( *f_itr, centroid);
       _m.property( fp_pos_, *f_itr ) = centroid;
     }
+*/
+       for(auto const face: _set_of_faces){
+           /*MeshType::fv voh_it = _m.fv_iter( face );
+           for( ; voh_it.is_valid(); ++voh_it )
+           {
+             pos += _m.point( _m.to_vertex_handle( *voh_it ) );
+             valence+=1.0;
+           }*/
+           Point centroid;
+           float valence =0;
+           valence = _m.valence(face);
+           if(face.idx() == 1273){
+               std::cout <<"ajoh centroid"<<std::endl;
+           }
+           _m.calc_face_centroid( face, centroid);
+           glm::vec3 v(centroid[0],centroid[1],centroid[2]);
+           if(glm::any(glm::isnan(v))){
+               std::cout<<"centroid is 0 valence is "<< valence<<std::endl;
+           }
+           _m.property( fp_pos_, face ) = centroid;
+       }
 
     // Compute position for new (edge-) vertices and store them in the edge property
-    EdgeIter e_itr   = _m.edges_begin();
-    EdgeIter e_end   = _m.edges_end();
-    for ( ; e_itr != e_end; ++e_itr)
-      compute_midpoint( _m, *e_itr, _update_points );
+    //EdgeIter e_itr   = _set_of_edges.begin();
+    //EdgeIter e_end   = _set_of_edges.end();
+    //for ( ; e_itr != e_end; ++e_itr)
+    //  compute_midpoint( _m, *e_itr, _update_points );
+
+    for(auto const edge: _set_of_edges){
+        compute_midpoint( _m, edge, _update_points );
+    }
+
+
+
+
+
 
     // position updates activated?
-    if(_update_points)
+    if(false)
     {
       // compute new positions for old vertices
-      VertexIter v_itr = _m.vertices_begin();
-      VertexIter v_end = _m.vertices_end();
-      for ( ; v_itr != v_end; ++v_itr)
-        update_vertex( _m, *v_itr );
+      //VertexIter v_itr = _set_of_vertices.begin();//_m.vertices_begin();
+      //VertexIter v_end = _set_of_vertices.end();  //_m.vertices_end();
+
+        for(auto const vertex: _set_of_vertices){
+            update_vertex(_m, vertex);
+        }
+//        for ( ; v_itr != v_end; ++v_itr)
+//        update_vertex( _m, *v_itr );
 
       // Commit changes in geometry
-      v_itr  = _m.vertices_begin();
-      for ( ; v_itr != v_end; ++v_itr)
-        _m.set_point(*v_itr, _m.property( vp_pos_, *v_itr ) );
+//      v_itr  = _set_of_vertices.begin();//_m.vertices_begin();
+//      for ( ; v_itr != v_end; ++v_itr)
+//        _m.set_point(*v_itr, _m.property( vp_pos_, *v_itr ) );
+//
+      for(auto const vertex: _set_of_vertices){
+          _m.set_point(vertex,_m.property( vp_pos_, vertex ));
+//          update_vertex(_m, vertex);
+      }
     }
+
+
+
 
     // Split each edge at midpoint stored in edge property ep_pos_;
     // Attention! Creating new edges, hence make sure the loop ends correctly.
-    e_itr = _m.edges_begin();
-    for ( ; e_itr != e_end; ++e_itr)
-      split_edge( _m, *e_itr );
+//    e_itr = _set_of_edges.begin();//_m.edges_begin();
+//    for ( ; e_itr != e_end; ++e_itr)
+//      split_edge( _m, *e_itr );
+
+    for(auto const edge: _set_of_edges){
+        split_edge(_m, edge);
+    }
+
+    VertexIter v_itr = _m.vertices_begin();
+    VertexIter v_end = _m.vertices_end();
+/*for(;v_itr!= v_end;++v_itr){
+    Point p = _m.point(*v_itr);
+    glm::vec3 v (p[0],p[1],p[2]);
+    if(glm::any(glm::isnan(v))){
+        std::cout<<"ERR here"<<std::endl;
+    }
+}*/
 
     // Commit changes in topology and reconsitute consistency
     // Attention! Creating new faces, hence make sure the loop ends correctly.
-    f_itr   = _m.faces_begin();
-    for ( ; f_itr != f_end; ++f_itr)
-      split_face( _m, *f_itr);
+//    f_itr   = _set_of_faces.begin();// _m.faces_begin();
+//    for ( ; f_itr != f_end; ++f_itr)
+//      split_face( _m, *f_itr);
+    for(auto const face: _set_of_faces){
+        split_face(_m, face);
+    }
+
+
+
 
 
 #if defined(_DEBUG) || defined(DEBUG)
@@ -157,7 +238,6 @@ SubdividerAndInterpolator<MeshType,RealType>::subdivide( MeshType& _m , size_t _
   }
 
   _m.update_normals();
-
   return true;
 }
 
@@ -261,7 +341,11 @@ SubdividerAndInterpolator<MeshType,RealType>::split_edge( MeshType& _m, const Ed
   // new vertex
   vh                = _m.new_vertex( zero );
   _m.set_point( vh, _m.property( ep_pos_, _eh ) );
-
+ Point pos = _m.point(vh);
+  glm::vec3 v (pos[0],pos[1],pos[2]);
+  if(glm::any(glm::isnan(v))){
+      std::cout<<"ERR here in split_edge"<<std::endl;
+}
   //copy data from previous vertex
   auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_m, "shader_parameters");
   ShadersWrapper* shader_param_v_1 = shader_parameters_data_wrapper[vh1];
@@ -276,9 +360,10 @@ SubdividerAndInterpolator<MeshType,RealType>::split_edge( MeshType& _m, const Ed
   SimulationData* sim_data= sim_data_wrapper[vh1];
   SimulationData* new_sim_data= new SimulationData(*sim_data);
 
-  //  if(new_shader_param->_list.empty())
+//  if(new_shader_param->_list.empty())
 //      new_shader_param = new ShaderParameters();
   shader_parameters_data_wrapper[vh] = new_shader_param;
+ // _set_of_vertices.insert(vh);
   sim_data_wrapper[vh] = new_sim_data;
 
   // Re-link mesh entities
@@ -336,10 +421,21 @@ SubdividerAndInterpolator<MeshType,RealType>::compute_midpoint( MeshType& _m, co
 
   heh      = _m.halfedge_handle( _eh, 0);
   opp_heh  = _m.halfedge_handle( _eh, 1);
-
+  if(_eh.idx() == 567)
+      std::cout<<"Ahoj"<<std::endl;
   Point pos( _m.point( _m.to_vertex_handle( heh)));
 
   pos +=  _m.point( _m.to_vertex_handle( opp_heh));
+
+  glm::vec3 v (pos[0],pos[1],pos[2]);
+  if(glm::any(glm::isnan(v))){
+      std::cout<<"ERR here in midpoint"<<std::endl;
+
+      if(_eh.idx()==636){
+          std::cout<<"hola"<<std::endl;
+      }
+
+}
 
   // boundary edge: just average vertex positions
   // this yields the [1/2 1/2] mask
@@ -355,11 +451,47 @@ SubdividerAndInterpolator<MeshType,RealType>::compute_midpoint( MeshType& _m, co
   else // inner edge: add neighbouring Vertices to sum
     // this yields the [1/16 1/16; 3/8 3/8; 1/16 1/16] mask
   {
-    pos += _m.property(fp_pos_, _m.face_handle(heh));
-    pos += _m.property(fp_pos_, _m.face_handle(opp_heh));
+      Point temp_pos ;
+      glm::vec3 temp_v;
+
+      //pos += _m.property(fp_pos_, _m.face_handle(heh));
+      // pos += _m.property(fp_pos_, _m.face_handle(opp_heh));
+      temp_pos=(_m.property(fp_pos_, _m.face_handle(heh)));
+      temp_v = glm::vec3(temp_pos[0],temp_pos[1],temp_pos[2]);
+      Point centroid;
+      if(glm::any(glm::isnan(temp_v))  ){
+          _m.calc_face_centroid( _m.face_handle(heh), centroid);
+          _m.property( fp_pos_, _m.face_handle(heh)) = centroid;
+          pos += centroid;
+      }
+      else{
+
+          pos += _m.property(fp_pos_, _m.face_handle(heh));
+      }
+
+
+
+
+      temp_pos=(_m.property(fp_pos_, _m.face_handle(opp_heh)));
+      temp_v = glm::vec3(temp_pos[0],temp_pos[1],temp_pos[2]);
+      centroid;
+      if(glm::any(glm::isnan(temp_v))  ){
+          _m.calc_face_centroid( _m.face_handle(opp_heh), centroid);
+          _m.property( fp_pos_, _m.face_handle(opp_heh)) = centroid;
+          pos += centroid;
+      }
+      else{
+
+          pos += _m.property(fp_pos_, _m.face_handle(opp_heh));
+      }
     pos *= static_cast<RealType>(0.25);
   }
+
   _m.property( ep_pos_, _eh ) = pos;
+  glm::vec3 f (pos[0],pos[1],pos[2]);
+  if(glm::any(glm::isnan(f))){
+      std::cout<<"ERR here in midpoint_2"<<std::endl;
+}
 }
 
 //-----------------------------------------------------------------------------
@@ -369,7 +501,7 @@ void
 SubdividerAndInterpolator<MeshType,RealType>::update_vertex( MeshType& _m, const VertexHandle& _vh)
 {
   Point            pos(0.0,0.0,0.0);
-
+    std::cout<<"Updating vertices"<<std::endl;
   // TODO boundary, Extraordinary Vertex and  Creased Surfaces
   // see "A Factored Approach to Subdivision Surfaces"
   // http://faculty.cs.tamu.edu/schaefer/research/tutorial.pdf

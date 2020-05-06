@@ -13,9 +13,12 @@
 #include "flowshader.h"
 #include <./../Noise/FastNoise/FastNoise.h>
 #include "subdividerandinterpolator.h"
+#include <OpenMesh/Tools/Subdivider/Adaptive/Composite/RulesT.hh>
 #include <unordered_set>
 #include <list>
 #include <random>
+#include "myrules.h"
+#include <hash_set>
 class FlowClassifier : public AClassifier
 {
     VertexEditTag _vertex_edit_tag;
