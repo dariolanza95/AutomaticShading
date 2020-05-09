@@ -7,6 +7,7 @@
 #include <OpenMesh/Core/Mesh/PolyConnectivity.hh>
 #include <OpenMesh/Tools/Subdivider/Adaptive/Composite/RuleInterfaceT.hh>
 #include <OpenMesh/Tools/Subdivider/Adaptive/Composite/CompositeT.hh>
+#include <OpenMesh/Tools/Subdivider/Uniform/CatmullClarkT.hh>
 #include <glm/vec3.hpp>
 #include <glm/glm.hpp>
 #include <math.h>
@@ -14,11 +15,15 @@
 #include <./../Noise/FastNoise/FastNoise.h>
 #include "subdividerandinterpolator.h"
 #include <OpenMesh/Tools/Subdivider/Adaptive/Composite/RulesT.hh>
+#include <pointcloud.h>
 #include <unordered_set>
 #include <list>
 #include <random>
 #include "myrules.h"
 #include <hash_set>
+#include <pcl/point_cloud.h>
+#include <pcl/cloud_iterator.h>
+#include <pcl/kdtree/kdtree_flann.h>
 class FlowClassifier : public AClassifier
 {
     VertexEditTag _vertex_edit_tag;
@@ -27,6 +32,8 @@ class FlowClassifier : public AClassifier
     template <typename T,typename FuncType>
     map<MyMesh::VertexHandle,T> BFS(int max_depth,map<MyMesh::VertexHandle,T> frontier_map,FuncType pred);
 
+    pcl::KdTreeFLANN<pcl::PointXYZLNormal> kdtree;
+    pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud;
 
 
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , SimulationData*>::type, MyMesh> simulation_data_wrapper;

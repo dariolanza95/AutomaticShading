@@ -10,22 +10,29 @@
 #include "../Graphics/exceptionclass.h"
 
 
-enum class SimulationDataEnum{vegetation,river,hardness,flow_normal};
+enum class SimulationDataEnum{vegetation,river,hardness,flow_normal,initial_sedimentation_point,sedimentation_history};
 
 class SimulationData
 {
         std::map<std::string, SimulationDataEnum> SimulationDataEnummap = {
             {"flow_normal", SimulationDataEnum::flow_normal},
-            {"hardness", SimulationDataEnum::hardness}
+            {"hardness", SimulationDataEnum::hardness},
+            {"sedimentation_history", SimulationDataEnum::sedimentation_history},
+            {"initial_sedimentation_point", SimulationDataEnum::initial_sedimentation_point}
             };
 
         std::map<SimulationDataEnum,float> map_of_floats;
         std::map<SimulationDataEnum,glm::vec3> map_of_vectors;
+        std::map<SimulationDataEnum,std::vector<float>> map_of_lists;
         void readLine(const std::string line );
 
     public:
         SimulationData(const std::string str);
         SimulationData();
+        SimulationData( std::map<SimulationDataEnum,float> map_of_floats,
+                                        std::map<SimulationDataEnum,glm::vec3> map_of_vectors,
+                                        std::map<SimulationDataEnum,std::vector<float>> map_of_lists);
+        SimulationData* Interpolate(SimulationData* sd1,float t);
         void getData(SimulationDataEnum data_enum, float& data);
         void getData(SimulationDataEnum data_enum, glm::vec3& data);
         void setData(SimulationDataEnum data_enum, glm::vec3 data);

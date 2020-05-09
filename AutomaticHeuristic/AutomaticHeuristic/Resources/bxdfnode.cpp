@@ -3,8 +3,12 @@ using  namespace std;
 
 int BXDFNode::_shared_id = 0;
 
-BXDFNode::BXDFNode(RIBNode* node): _node(node)
+BXDFNode::BXDFNode(RIBNode* node)
 {
+    if(node==nullptr)
+        _node = new RIBConstant(0.0f);
+    else
+        _node = node;
     _unique_id = _shared_id++;
 }
 

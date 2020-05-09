@@ -3,6 +3,7 @@
 
 
 #include "ribnode.h"
+#include "ribconstant.h"
 #include "sstream"
 class BXDFNode : public RIBNode
 {

@@ -69,14 +69,15 @@ void TerrainFluidSimulation::runMainloop()
     currentTime = clock.now();
     while(!_finished)
     {
+
         newTime = clock.now();
         frameTime = newTime - currentTime;
         currentTime = newTime;
         accumulator += frameTime;
-
+         ulong time;
         if(! _inPause)
         {
-            ulong time = std::chrono::duration_cast<seconds>(accumulator).count();
+           time = std::chrono::duration_cast<seconds>(accumulator).count();
             //std::cout<<"time "<<time<<std::endl;
             // physics simulation
             updatePhysics(dt,time);
@@ -106,8 +107,9 @@ void TerrainFluidSimulation::runMainloop()
 #else
         _shaderManager.Update();
 #endif
+
         // rendering
-        render();
+        render(time);
     }
 
 }
@@ -185,17 +187,41 @@ void TerrainFluidSimulation::cameraMovement(double dt)
     if (glfwGetKey(_window,'4')) _hardness_mode = false;
 }
 
+
+void TerrainFluidSimulation::updateSedimentationHistory(){
+    for (uint y=0; y<_simulation.water.height(); y++)
+    {
+        for (uint x=0; x<_simulation.water.width(); x++)
+        {
+
+            int temp_sed = _simulation.sedimented_terrain(x,y);
+            std::vector<int>& local_sedimentation_history = sedimentation_history(x,y);
+            if(local_sedimentation_history.back() != temp_sed){
+                local_sedimentation_history.push_back(temp_sed);
+                if(local_sedimentation_history.size() == 2){
+                    glm::vec3 point(x,y,_simulationState.terrain(x,y));
+                    initial_sedimentation_point(x,y) = point;
+                }
+
+            }
+        }
+    }
+}
+
 void TerrainFluidSimulation::updatePhysics(double dt,ulong time)
 {
     // Run simulation
     _simulation.update(time,dt,_rain,_flood,_air);
+
+    updateSedimentationHistory();
 
     // Copy data to GPU
     _terrainHeightBuffer.SetData(_simulationState.terrain);
     _waterHeightBuffer.SetData(_simulationState.water);
     _airHeightBuffer.SetData(_simulationState.air);
     _sedimentBuffer.SetData(_simulationState.suspendedSediment);
-    _sedimentedTerrainBuffer.SetData(_simulationState.sedimented_terrain);
+    //_sedimentedTerrainBuffer.SetData(_simulationState.sedimented_terrain);
+    //_sedimentedTerrainColorBuffer.SetData(_simulationState.sedimented_terrain_color);
     _simDataBuffer.SetData(_simulationState.simData);
     _simDataBuffer_2.SetData(_simulationState.simData_2);
     _normalBuffer.SetData(_simulationState.surfaceNormals);
@@ -260,26 +286,38 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
     std::string data_string;
     std::cout<<"Writing to some file"<<std::endl;
 
-    for (uint y=0; y < _simulationState.vegetation.height(); y++)
+    for (uint y=0; y < _simulationState.water.height(); y++)
     {
-        for (uint x=0; x < _simulationState.vegetation.width(); x++)
+        for (uint x=0; x < _simulationState.water.width(); x++)
         {
             temp++;
             //(*datafile )<< _simulationState.simData(x,y);
             //(*datafile )<<" "<< _simulationState.vegetation(x,y);
-            float z = _simulationState.terrain(x,y);
+            float z = _simulationState.terrain(y,x);
             (*datafile)<< "hardness "<< GetTerrainCapacity(x,y,z,_simulation.noise_sediment_frequency,_simulation._stratified_layer_width);
 
             //vec3 flowNormal (_simulation.uVel(x,y),_simulation.vVel(x,y),_simulation.zVel(x,y));
             vec3 flowNormal(NAN,NAN,NAN);
 
-            if(dot(_simulation.flowNormal(x,y),_simulation.flowNormal(x,y))> 0.001)//  &&  _simulationState.simData_2(x,y)>0)
+            if(dot(_simulation.flowNormal(y,x),_simulation.flowNormal(y,x))> 0.001)//  &&  _simulationState.simData_2(x,y)>0)
             {
-                flowNormal = vec3(_simulation.flowNormal(x,y));//_simulation.count(x,y));
+                flowNormal = _simulation.flowNormal(y,x);//_simulation.count(x,y));
                 flowNormal = normalize(flowNormal);
             }
-
+            if(x==95 && y == 132)
+                (*datafile)<< "special data ";
             (*datafile )<<" flow_normal v "<< flowNormal[0]  << " "<< flowNormal[1]<< " "<< flowNormal[2];
+            std::vector<int> local_sediments_history = sedimentation_history(y,x) ;
+            if(local_sediments_history.size()>1){
+                (*datafile)<< " sediment_value l "<< local_sediments_history.size()-1<< " ";
+                for(int entry:local_sediments_history){
+                        if(entry != 0)
+                            (*datafile)<< entry<< " ";
+                }
+                glm::vec3 point = initial_sedimentation_point(y,x);
+                (*datafile)<< " initial_sedimentation_point v " << point[0]<< " "<< point[1]<< " "<<point[2]<< " " ;
+
+            }
             (*datafile)<< std::endl;
         }
     }
@@ -312,7 +350,7 @@ void TerrainFluidSimulation:: SaveTerrain (std::fstream *objfile)
 
 
 
-void TerrainFluidSimulation::render()
+void TerrainFluidSimulation::render(ulong time)
 {
     // Resize
     int w,h;
@@ -353,9 +391,14 @@ void TerrainFluidSimulation::render()
     _waterHeightBuffer.MapData(_testShader->AttributeLocation("inWaterHeight"));
     _airHeightBuffer.MapData(_testShader->AttributeLocation("inAirHeight"));
     _sedimentBuffer.MapData(_testShader->AttributeLocation("inSediment"));
-    _sedimentedTerrainBuffer.MapData(_testShader->AttributeLocation("inSedimentedTerrain"));
+    //_sedimentedTerrainBuffer.MapData(_testShader->AttributeLocation("_sedimentedTerrainBuffer"));
+   // _sedimentedTerrainColorBuffer.MapData(_testShader->AttributeLocation("inSedimentedTerrainColor"));
     _simDataBuffer.MapData(_testShader->AttributeLocation("inSimData"));
     _simDataBuffer_2.MapData(_testShader->AttributeLocation("inSimData_2"));
+    //vec4 sedimentedTerrainColor(1,0,0,1);
+    //if(time>10)
+    //    sedimentedTerrainColor = vec4(0,1,0,1);
+    //_testShader->SetUniform("usedimentedTerrainColor", sedimentedTerrainColor);
 
 
     _normalBuffer.MapData(_testShader->AttributeLocation("inNormal"));
@@ -394,33 +437,30 @@ void TerrainFluidSimulation::RenderDebugTool()
     //int x = 190;
     //int y = 150;
     //int x = 10;
-    int y = 143;
-    int x = 45;
-
-    glm::vec3 normal = _simulation.flowNormal(x,y);
+    //int y = 143;
+    //int x = 45;
+    int y = 132;
+    int x = 95;
+    glm::vec3 normal = _simulation.flowNormal(y,x);
     //glm::vec3 normal(_simulation.uVel_air(y,x),_simulation.vVel_air(y,x),_simulation.zVel_air(y,x));
     glm::vec3 empty_vector(0,0,0);
-    if(glm::any( glm::isnan(normal)) )
-    {
+    if(glm::any( glm::isnan(normal)) )    {
         normal = normalize(glm::vec3(0,1,1));
     }
     else
     {
 
-        if(glm::all(glm::equal(normal,empty_vector)))
-        {
+        if(glm::all(glm::equal(normal,empty_vector)))        {
             normal = glm::vec3(0,0,1);
         }
-        else
-        {
-          normal=  glm::normalize(normal);
+        else        {
+            normal=  glm::normalize(normal);
         }
     }
-    if(glm::any( glm::isnan(normal)) )
-    {
+    if(glm::any( glm::isnan(normal)) )    {
         normal = normalize(glm::vec3(0,1,1));
     }
-
+    std::cout<<"normal "<< normal[0] <<" "<< normal[1] <<" "<< normal[2]<<std::endl;
     //vec3 wind_direction(0.1,0.5,0);
     //normalize(wind_direction);
   //  normal =  glm::vec3(_simulationState.windDirection[0],_simulationState.windDirection[1],0);
@@ -572,7 +612,8 @@ void TerrainFluidSimulation::init()
     _waterHeightBuffer.SetData(_simulationState.water);
     _airHeightBuffer.SetData(_simulationState.air);
     _sedimentBuffer.SetData(_simulationState.suspendedSediment);
-    _sedimentedTerrainBuffer.SetData(_simulationState.sedimented_terrain);
+   // _sedimentedTerrainBuffer.SetData(_simulationState.sedimented_terrain);
+   // _sedimentedTerrainColorBuffer.SetData(_simulationState.sedimented_terrain_color);
     _simDataBuffer.SetData(_simulationState.simData);
     _simDataBuffer_2.SetData(_simulationState.simData_2);
 
@@ -583,10 +624,13 @@ void TerrainFluidSimulation::init()
     _testShader->MapAttribute("inWaterHeight",2);
     _testShader->MapAttribute("inAirHeight",8);
     _testShader->MapAttribute("inSediment",3);
-    _testShader->MapAttribute("inSedimentedTerrain",5);
+  //  _testShader->MapAttribute("inSedimentedTerrain",5);
+   // _testShader->MapAttribute("inSedimentedTerrainColor",9);
+
     _testShader->MapAttribute("inSimData",4);
     _testShader->MapAttribute("inSimData_2",6);
     _testShader->MapAttribute("inNormal",7);
+
 
 
 
@@ -608,11 +652,24 @@ void TerrainFluidSimulation::init()
     _waterHeightBuffer.SetData(_simulationState.water);
      _airHeightBuffer.SetData(_simulationState.air);
     _sedimentBuffer.SetData(_simulationState.suspendedSediment);
-    _sedimentedTerrainBuffer.SetData(_simulationState.sedimented_terrain);
+  //  _sedimentedTerrainBuffer.SetData(_simulationState.sedimented_terrain);
+  //  _sedimentedTerrainColorBuffer.SetData(_simulationState.sedimented_terrain_color);
     _simDataBuffer.SetData(_simulationState.simData);
     _simDataBuffer_2.SetData(_simulationState.simData_2);
     _normalBuffer.SetData(_simulationState.surfaceNormals);
     _inPause = false;
+sedimentation_history = Grid2D<std::vector<int>>(_simulation.water.width(),_simulation.water.height());
+initial_sedimentation_point = Grid2D<glm::vec3>(_simulation.water.width(),_simulation.water.height());
+    for (uint y=0; y<_simulation.water.height(); y++)
+    {
+        for (uint x=0; x<_simulation.water.width(); x++)
+        {
+            std::vector<int> v = {0} ;
+            sedimentation_history(y,x) = v;
+            initial_sedimentation_point(y,x) = glm::vec3(0,0,0);
+        }
+    }
+    std::cout<<"shader loaded"<<std::endl;
 }
 
 

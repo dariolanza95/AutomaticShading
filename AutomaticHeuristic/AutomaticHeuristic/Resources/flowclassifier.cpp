@@ -1,7 +1,7 @@
 #include "flowclassifier.h"
 typedef std::mt19937 RANDOM;
 using namespace  OpenMesh;
-
+#define MULTCONSTANT 1000000
 FlowClassifier::FlowClassifier(MyMesh &mesh) : AClassifier(mesh),_shader_parameter_size(3)
 {
     simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,SimulationData*>(_mesh, "simulation_data");
@@ -162,7 +162,10 @@ void FlowClassifier::selectFrontier(map<MyMesh::VertexHandle,FlowShader*>& selec
      map<MyMesh::VertexHandle,glm::vec3> flow_vertices;
      for(vertex_iterator=_mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
      {
-
+         MyMesh::Point p = _mesh.point(*vertex_iterator);
+         if(p[0]==95 && p[1] == 132 || p[1]==95 && p[0] == 132 ){
+             std::cout<<"come here"<<std::endl;
+         }
          //if(glm::any(glm::isnan())){
          //    std::cout<<"position is NAN"<<std::endl;
          //}
@@ -171,6 +174,9 @@ void FlowClassifier::selectFrontier(map<MyMesh::VertexHandle,FlowShader*>& selec
          glm::vec3 sim_data_normal;
          sd->getData(SimulationDataEnum::flow_normal,sim_data_normal);
          sim_data_normal = glm::normalize(sim_data_normal);
+         float tmp = sim_data_normal[0];
+         sim_data_normal[0] = sim_data_normal[1];
+         sim_data_normal[1] = tmp;
          if(glm::any(glm::isnan(sim_data_normal)))
                  continue;
 
@@ -179,7 +185,7 @@ void FlowClassifier::selectFrontier(map<MyMesh::VertexHandle,FlowShader*>& selec
          glm::vec3 normal= glm::vec3(openMesh_normal[0],openMesh_normal [1],openMesh_normal[2]);
 
            float res =   (glm::dot(normal,up_normal));
-         if(res>0.75 ){
+         if(res> 0.85/*0.75*/ ){
              continue;
          }
        //  if(normal[0]!=0 || normal[2]!=0 || normal[1]!=0)
@@ -226,7 +232,7 @@ map<MyMesh::VertexHandle,AShader*> FlowClassifier::ClassifyVertices()
 
     //typedef OpenMesh::TriMesh_ArrayKernelT<OpenMesh::Subdivider::Adaptive::CompositeTraits>  MyMesh2;
     //MyMesh2 mplat;
-    /* OpenMesh::Subdivider::Adaptive::CompositeT<MyMesh> adapt_subdiv(_mesh);
+ /* OpenMesh::Subdivider::Adaptive::CompositeT<MyMesh> adapt_subdiv(_mesh);
     OpenMesh::Subdivider::Adaptive::Tvv3<MyMesh>::Handle rule1;
     OpenMesh::Subdivider::Adaptive::myVV<MyMesh>::Handle rule5;
     OpenMesh::Subdivider::Adaptive::VF<MyMesh>::Handle rule2;
@@ -244,37 +250,114 @@ map<MyMesh::VertexHandle,AShader*> FlowClassifier::ClassifyVertices()
 
     //OpenMesh::Subdivider::Uniform::SubdividerT<MyMesh> rancio;
 
+
     std::cout<<"vertices "<< _mesh.n_vertices()<<std::endl;
 map<MyMesh::VertexHandle,glm::vec3> flow_vertices;
-    int _subdiv_levels = 3;
+    int _subdiv_levels = 2;
     for(int i=0;i<_subdiv_levels;i++){
 
+
         auto temp_flow_vertices = selectFlowVertices(min_bb,max_bb);
+         temporary_selected_vertices = ComputeShaderParameters(temp_flow_vertices);
+        selectFrontier(temporary_selected_vertices);
         set<MyMesh::FaceHandle> set_of_faces;
+      /*  if(i==0){
 
-        for(auto const entry : temp_flow_vertices){
-                        MyMesh::VertexHandle vh= entry.first;
+
+            pcl::KdTreeFLANN<pcl::PointXYZRGB> kdt;
+
+              pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud1 ( new pcl::PointCloud<pcl::PointXYZLNormal>);
+                cloud = cloud1;
+              // Generate pointcloud data
+        MyMesh::Point mesh_point;
+        int j = 0;
+              cloud->width = temp_flow_vertices.size();//numpoints
+              cloud->height = 1;
+              cloud->points.resize (cloud->width * cloud->height);
+                for(auto const entry : temp_flow_vertices){
+                    mesh_point =  _mesh.point((entry.first));
+                    cloud->points[j].x = mesh_point[0];
+                    cloud->points[j].y = mesh_point[1];
+                    cloud->points[j].z = mesh_point[2];
+                    glm::vec3 vec;
+                    vec = entry.second;
+                    cloud->points[j].normal_x =vec[0];// shader_param->getValue(0);
+                    cloud->points[j].normal_y =vec[1];// shader_param->getValue(1);
+                    cloud->points[j].normal_z =vec[2];// shader_param->getValue(2);
+                    j++;
+
+                }
+    kdtree.setInputCloud (cloud);
+        }*/
+        for(auto const entry : temporary_selected_vertices){
+            MyMesh::VertexHandle vh= entry.first;
          //   adapt_subdiv.refine( vh);
-
             MyMesh::VertexFaceIter vertex_face_circulator;
                   vertex_face_circulator = _mesh.vf_iter(entry.first);
                   for( ;vertex_face_circulator.is_valid(); ++vertex_face_circulator){
-                     set_of_faces.insert(vertex_face_circulator);
+                     if(_mesh.valence(vertex_face_circulator)==4 || i == 0)
+                        set_of_faces.insert(vertex_face_circulator);
                   }
-        }
+        }/*
+         MyMesh::FaceIter f_itr   = _mesh.faces_begin();
+         MyMesh::FaceIter f_end   = _mesh.faces_end();
+           for ( ; f_itr != f_end; ++f_itr)
+        set_of_faces.insert(f_itr);
+*/
+
+
         SubdividerAndInterpolator<MyMesh> catmull(set_of_faces);
             catmull.attach(_mesh);
             catmull(1);
             catmull.detach();
-
+            int faces_with_valence_4;
+            for (MyMesh::FaceIter f_it=_mesh.faces_begin(); f_it!=_mesh.faces_end(); ++f_it) {
+             int val = _mesh.valence(*f_it);
+             if(val==4)
+                 faces_with_valence_4++;
+            }
+            std::cout<<"selected faces: "<<set_of_faces.size()<<" faces with valence 4 "<< faces_with_valence_4<<std::endl;
 
     }
 
+    OpenMesh::Subdivider::Uniform::CatmullClarkT<MyMesh> sub;
+/*int _subdiv_levels = 2;
+    sub.attach(_mesh);
+    sub(_subdiv_levels);
+    sub.detach();*/
+     ulong total_dist = 0;
+     ulong i = 0;
+     //MyMesh::EdgeIter edge_iterator = _mesh.;
+     for (MyMesh::EdgeIter e_it=_mesh.edges_begin(); e_it!=_mesh.edges_end(); ++e_it) {
+          i++;
+          HalfedgeHandle heh     = _mesh.halfedge_handle(*e_it, 0);
+          HalfedgeHandle opp_heh = _mesh.halfedge_handle(*e_it, 1);
+
+          VertexHandle   vh1( _mesh.to_vertex_handle(heh));
+          VertexHandle   vh2( _mesh.to_vertex_handle(opp_heh));
+
+          MyMesh::Point p1_mesh = _mesh.point(vh1);
+          MyMesh::Point p2_mesh = _mesh.point(vh2);
+          glm::vec3 p1(p1_mesh[0],p1_mesh[1],p1_mesh[2]);
+          glm::vec3 p2(p2_mesh[0],p2_mesh[1],p2_mesh[2]);
+            //total_dist += OpenMesh::VectorT
+          float res = 0;
+          glm::vec3 offset = p2-p1;
+          res = dot(offset,offset);
+          total_dist += roundf(res*100);
+     }
+
+
+    float avg = total_dist/(float)i;
+    avg /= 100;
+    std::cout<<"AVG is "<< avg << " over "<<i <<std::endl;
+
+    //auto flow_vertices = selectFlowVertices(min_bb,max_bb);
     flow_vertices = selectFlowVertices(min_bb,max_bb);
     temporary_selected_vertices = ComputeShaderParameters(flow_vertices);
- //   for(int x = 0;x<2;x++)
+    //for(int x = 0;x<2;x++)
     std::cout<<"vertices AFTER the treatment "<< _mesh.n_vertices()<<std::endl;
-     selectFrontier(temporary_selected_vertices);
+    selectFrontier(temporary_selected_vertices);
     //TemporaryUpdate(temporary_selected_vertices);
     float scale= _subdiv_levels>0?  _subdiv_levels:1;
     selected_vertices = LIC(temporary_selected_vertices, scale,min_bb,max_bb);
@@ -339,27 +422,28 @@ map<MyMesh::VertexHandle,glm::vec3> flow_vertices;
     {
         if(!glm::any(glm::isnan(entry.second)))
         {
-            glm::vec3 norm = entry.second;
-            for(int i = 0;i<3;i++){
-            norm[i] = std::fabs(norm[i]);
-            }
-
-
-            glm::vec3 orthogonal_vector = glm::cross(norm,up);
-            orthogonal_vector = glm::normalize (orthogonal_vector);
-            glm::vec3 tangent_vector = glm::cross(norm,orthogonal_vector);
-            tangent_vector = glm::normalize(tangent_vector);
-            MyMesh::Normal openMesh_normal = _mesh.normal(entry.first);
-            glm::vec3 normal = glm::vec3(openMesh_normal[0],openMesh_normal [1],openMesh_normal[2]);
-            float res =   fabs(dot(normal,orthogonal_vector));
-            float res_2 = fabs(dot(normal,tangent_vector));
-            glm::vec3 final_vector = res > res_2 ? tangent_vector : orthogonal_vector;
-/*
+            //glm::vec3 norm = entry.second;
+            //for(int i = 0;i<3;i++){
+            //norm[i] = std::fabs(norm[i]);
+            //}
+            //
+            //
+            //glm::vec3 orthogonal_vector = glm::cross(norm,up);
+            //orthogonal_vector = glm::normalize (orthogonal_vector);
+            //glm::vec3 tangent_vector = glm::cross(norm,orthogonal_vector);
+            //tangent_vector = glm::normalize(tangent_vector);
+            //MyMesh::Normal openMesh_normal = _mesh.normal(entry.first);
+            //glm::vec3 normal = glm::vec3(openMesh_normal[0],openMesh_normal [1],openMesh_normal[2]);
+            //float res =   fabs(dot(normal,orthogonal_vector));
+            //float res_2 = fabs(dot(normal,tangent_vector));
+            //glm::vec3 final_vector = res > res_2 ? tangent_vector : orthogonal_vector;
+          //  glm::vec3 tmp_vec (entry.second[1],entry.second[0],entry.second[2]);
+            /*
            for(int i = 0;i<3;i++){
                orthogonal_vector[i] = std::fabs(orthogonal_vector[i]);
            }
 */
-            FlowShader* shader = new FlowShader(_id,1.0f,orthogonal_vector);
+            FlowShader* shader = new FlowShader(_id,1.0f,/*orthogonal_vector*/entry.second);
             //FlowShader* shader = new FlowShader(_id,1.0f,entry.second);//final_vector);
 //            map.insert(std::make_pair(entry.first,shader));
           map.insert(std::make_pair(entry.first,shader));
@@ -383,12 +467,17 @@ void FlowClassifier::ContrastEnhancement(map<MyMesh::VertexHandle,AShader*>& map
     if(z>0){
         f = 3;
     }else{
-        f=5;
+        f=3;
     }
 
 
 
-    int num_vertices = map.size();
+    int num_vertices;
+    if(z==0){
+        num_vertices= cloud->points.size();
+    }else{
+        num_vertices= map.size();
+    }
     for(int i = 0;i<L;i++)
     {
         value_counter += Pdf[i];
@@ -410,9 +499,12 @@ void FlowClassifier::ContrastEnhancement(map<MyMesh::VertexHandle,AShader*>& map
     MyMesh::VertexIter vertex_iterator;//=_mesh.vertices_begin();
     //MyMesh::VertexIter vertex_iterator_end=_mesh.vertices_end();
     //shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShaderParameters*>(_mesh, "shader_parameters");
-
+    int out_of_range_vertices= 0;
     FlowShader* shader;
 int i = 0;
+std::cout<<"c "<< c << " d "<< d << std::endl;
+
+if(z==1){
     for (auto const& x : map)
     {
         i++;
@@ -422,8 +514,23 @@ int i = 0;
           map[x.first] = shader;
       float val = shader->GetLicValue();
       val = (val - c)*((b-a)/(d-c)) + a;
+      if(val>1 || val<0){
+          out_of_range_vertices++;
+      }
       shader->SetLicValue(val);
     }
+}else{
+
+    for(int j = 0;j<cloud->points.size();j++ ){
+        float val = cloud->points[j].label/(float)MULTCONSTANT;
+        val = (val - c)*((b-a)/(d-c)) + a;
+        if(val>1 || val<0)
+          out_of_range_vertices++;
+        cloud->points[j].label = val*MULTCONSTANT;
+    }
+}
+
+    std::cout<<" "<<out_of_range_vertices << " vertices were out of range over "<< num_vertices<<" which is "<< out_of_range_vertices/(float)num_vertices*100<<" %"<<std::endl;
       // for(;vertex_iterator!= vertex_iterator_end;++vertex_iterator)
       // {
            //shader_param = shader_parameters_data_wrapper[mesh_vertex_iterator];
@@ -437,6 +544,11 @@ int i = 0;
 
 map<MyMesh::VertexHandle,AShader*> FlowClassifier:: LIC(map<MyMesh::VertexHandle,FlowShader*>const map,float scale,glm::vec3 min_bb,glm::vec3 max_bb)
 {
+
+
+
+
+
     float longest_dimension = -INFINITY;
     for(int k=0;k<3;k++){
         float dim = max_bb[k]-min_bb[k];
@@ -446,15 +558,15 @@ map<MyMesh::VertexHandle,AShader*> FlowClassifier:: LIC(map<MyMesh::VertexHandle
     }
 
     float box_length = longest_dimension/4;
-    float step_size = 1;//scale;
-    float frequency = 500;//longest_dimension/2;//scale*2;
-    box_length = 50*scale;
+    float step_size = 1;/*0.5*/;//scale;
+    float frequency = 200;//longest_dimension/2;//scale*2;
+    box_length = 5/*150*/;
     FastNoise noise;
-    std::map<MyMesh::VertexHandle,AShader*> map_output;
-   std::map<MyMesh::VertexHandle,AShader*> map1;
-   float prob = 0.001;
-   int max_rnd = 100;
-   std::uniform_int_distribution<int> rnd_int(0,max_rnd);
+    std::map<MyMesh::VertexHandle,AShader*> output_map;
+   std::map<MyMesh::VertexHandle,AShader*> intermediate_map;
+   //float prob = 0.001;
+   //int max_rnd = 100;
+   //std::uniform_int_distribution<int> rnd_int(0,max_rnd);
 
     std::cout<<"InterpolationDone"<<std::endl;
     MyMesh::Point actual_point;
@@ -467,10 +579,11 @@ map<MyMesh::VertexHandle,AShader*> FlowClassifier:: LIC(map<MyMesh::VertexHandle
     FlowShader* flow_shader;
     auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, FlowShader*>(_mesh, "flow_shader_temp_propery");
 
-    float dist;
+    float squared_dist;
     float min_dist = INFINITY;
     int k = 0;
-    int L = 1000;
+    int L = 5000;
+    uint u=0;
     int quantizied_level;
     std::vector<int> Pdf(L,0) ;
 
@@ -486,19 +599,32 @@ map<MyMesh::VertexHandle,AShader*> FlowClassifier:: LIC(map<MyMesh::VertexHandle
     MyMesh::VertexHandle mesh_vertex_handle;
     MyMesh::VertexIter vertex_iterator_end(_mesh.vertices_end());
 
+
+    pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud1 ( new pcl::PointCloud<pcl::PointXYZLNormal>);
+      cloud = cloud1;
+    // Generate pointcloud data
+MyMesh::Point mesh_point;
+int j = 0;
+    cloud->width = map.size();//numpoints
+    cloud->height = 1;
+    cloud->points.resize (cloud->width * cloud->height);
+
+
+
+
 int f = 0;
 for(int z = 0;z<2;z++){
     Pdf = std::vector<int>(L,0);
 
-    if(z==2)
-        box_length = 20*scale;
+  //  if(z==1)
+  //      box_length =10;// 20*scale;
 
     std::cout<<"iteration "<<z<<std::endl;
     k = 0;
     for(pair<MyMesh::VertexHandle,FlowShader*> entry : map)
-      {
+    {
         //mesh_vertex_iterator = entry.first;
-        f++;
+
         mesh_vertex_handle = entry.first;
      if(k%percentual_part == 0)
          std::cout<< "LIC map "<<k / percentual_part<< " %  completed"<< std::endl;
@@ -513,14 +639,31 @@ for(int z = 0;z<2;z++){
     {
         float samepoint_iter = 1;
         actual_point = _mesh.point(mesh_vertex_handle);
-        if(z>0){
-            flow_shader = (FlowShader*)map_output.at(mesh_vertex_handle);
+        /*if(z>0){
+            flow_shader = (FlowShader*)intermediate_map.at(mesh_vertex_handle);
             if(flow_shader==nullptr)
                 continue;
-        }else{
+        }else*/{
 
             flow_shader = map.at(mesh_vertex_handle);// [mesh_vertex_handle];// shader_parameters_data_wrapper[mesh_vertex_handle];
         }
+        pcl::PointXYZLNormal searchPoint_tmp;
+        searchPoint_tmp.x = actual_point[0];
+        searchPoint_tmp.y = actual_point[1];
+        searchPoint_tmp.z = actual_point[2];
+  pcl::PointXYZLNormal new_point;
+        int K = 1;//or 27
+        std::vector<int> pointIdxNKNSearch(K);
+        std::vector<float> pointNKNSquaredDistance(K);
+        /*if ( kdtree.nearestKSearch (searchPoint_tmp, K, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 ){
+            new_point =  cloud->points[ pointIdxNKNSearch[0]];
+            flow_vector[0] = new_point.normal_x;
+            flow_vector[1] = new_point.normal_y;
+            flow_vector[2] = new_point.normal_z;
+        }else{
+            continue;
+        }*/
+
         flow_vector = flow_shader->GetFlowNormal();
         if(glm::any(glm::isnan(flow_vector)))
         {
@@ -530,64 +673,117 @@ for(int z = 0;z<2;z++){
 
          for(float i = 0;i<box_length;i+= step_size)
              {
-
+             f++;
              float n;
+
+
+
              if(z>0){
-                n =  flow_shader->GetLicValue();
-
+                /*n =  flow_shader->GetLicValue();
+                */
+                pcl::PointXYZLNormal searchPoint;
+                                          searchPoint.x = actual_point[0];
+                                          searchPoint.y = actual_point[1];
+                                          searchPoint.z = actual_point[2];
+                                    pcl::PointXYZLNormal new_point;
+                                          int K = 6;//or 27
+                                          std::vector<int> pointIdxNKNSearch(K);
+                                          std::vector<float> pointNKNSquaredDistance(K);
+                                          if ( kdtree.nearestKSearch (searchPoint, K, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 ){
+                                             float tmp_val = 0;
+                                              for(uint b = 0 ;b<pointIdxNKNSearch.size();b++){
+                                                  new_point =  cloud->points[ pointIdxNKNSearch[b]];
+                                                  tmp_val += new_point.label/(float )MULTCONSTANT;
+                                              }
+                                              n = tmp_val/(float) pointIdxNKNSearch.size();
+n = n>1? 0 : n;
+n = n<0? 0 : n;
+                                           }
              }else{
-
                  n = noise.GetNoise(actual_point[0] * frequency ,
                                           actual_point[1] * frequency,
                                           actual_point[2] * frequency);
              }
                  if(j==1)
                      flow_vector = -flow_vector;
-                //  MyMesh::VertexVertexIter vvit = _mesh.vv_iter(next_point);
+           //      if(i!=1)
+           //         actual_point = _mesh.point(*vvit);
                   actual_point[0] += flow_vector[0]*step_size;
                   actual_point[1] += flow_vector[1]*step_size;
                   actual_point[2] += flow_vector[2]*step_size;
-                  dist = 0;
+                  squared_dist = 0;
                   min_dist = INFINITY;
                   if(i!=0 )//&& samepoint_iter == 1)
-                      vvit = _mesh.vv_iter(*vvit);
+                       vvit = _mesh.vv_iter(*vvit);
                   else
                        vvit = _mesh.vv_iter(mesh_vertex_handle);
-                  for ( ;vvit.is_valid(); ++vvit)
+
+                  int expected_valence = _mesh.valence(vvit);
+                  int val_counter=0;
+                  for(;vvit.is_valid(); ++vvit)
                   {
-                      circulator_point = _mesh.point(*vvit);
+                     circulator_point = _mesh.point(*vvit);
                      offset = actual_point - circulator_point;
-                      dist = dot(offset,offset);
-                     if(dist<min_dist)
+                     squared_dist = dot(offset,offset);
+                     if(squared_dist<min_dist && squared_dist != 0)
                      {
-                         min_dist = dist;
+                         min_dist = squared_dist;
                          next_point = vvit;
                      }
+                     val_counter++;
                   }
+
+                //  if(val_counter!=expected_valence)
+                //    std::cout<<"val_counter "<< val_counter<<" vs valence"<<expected_valence<<std::endl;
               // int noise_injection = rnd_int(rnd_seed);
               // if(noise_injection==max_rnd && z != 2)
               //     n *= -1;
                   val+=n;
                   w++;
-                  if( next_point.is_valid())
+                  if(1/* next_point.is_valid()*/)
                   {
                       glm::vec3 next_flow_vector ;
                       FlowShader* temp_shader = nullptr;
-                      if(z>0){
-                          if(map_output.count(*next_point)>0){
-                              temp_shader =  ((FlowShader*)map_output.at(*next_point));
+                      /*if(z>0){
+                          if(intermediate_map.count(*next_point)>0){
+                              temp_shader =  ((FlowShader*)intermediate_map.at(*next_point));
                           }
-                      }else{
+                      }else*/{
                           if(map.count(*next_point)>0){
                               temp_shader =map.at(*next_point);// map[next_point];//shader_parameters_data_wrapper[next_point];
                           }
                       }
                       if(temp_shader!=nullptr)
                       {
+                         /* pcl::PointXYZLNormal searchPoint;
+                          searchPoint.x = actual_point[0];
+                          searchPoint.y = actual_point[1];
+                          searchPoint.z = actual_point[2];
+                    pcl::PointXYZLNormal new_point;
+                          int K = 1;//or 27
+                          std::vector<int> pointIdxNKNSearch(K);
+                          std::vector<float> pointNKNSquaredDistance(K);
+                          if ( kdtree.nearestKSearch (searchPoint, K, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 ){
+                              new_point =  cloud->points[ pointIdxNKNSearch[0]];
+                              actual_point[0] = new_point.x;
+                              actual_point[1] = new_point.y;
+                              actual_point[2] = new_point.z;
+
+
+                              flow_vector[0] = new_point.normal_x;
+                              flow_vector[1] = new_point.normal_y;
+                              flow_vector[2] = new_point.normal_z;
+
+                              //if(actual_point[0] == 95 && actual_point[1] == 132){
+                              //  std::cout<<"here mister"<<std::endl;
+                              //}
+                          }*/
+
                           next_flow_vector = temp_shader->GetFlowNormal();
                           flow_vector = next_flow_vector;
                            flow_shader = temp_shader;
                            vvit = next_point;
+                         //  actual_point = _mesh.point(*vvit);
                            samepoint_iter = 1;
                       }
 
@@ -626,26 +822,51 @@ for(int z = 0;z<2;z++){
   //    map1.insert(std::make_pair(mesh_vertex_iterator,new_flow_shader));
   //
   //}else{
-  if(map_output.count(mesh_vertex_handle)>0){
-       ((FlowShader*) map_output[mesh_vertex_handle])->SetLicValue(val);
+  /*if(intermediate_map.count(mesh_vertex_handle)>0)*/
+   if(z>0){
+      AShader* new_flow_shader = new FlowShader(_id,old_flow_shader->GetConfidence(),old_flow_shader->GetFlowNormal(),val);
+      output_map.insert(std::make_pair(mesh_vertex_handle,new_flow_shader));
+
+//      ((FlowShader*) map_output[mesh_vertex_handle])->SetLicValue(val);
     }
   else{
       if(old_flow_shader!=nullptr && !glm::any(glm::isnan(old_flow_shader->GetFlowNormal()))){
-      AShader* new_flow_shader = new FlowShader(_id,old_flow_shader->GetConfidence(),old_flow_shader->GetFlowNormal(),val);
-      map_output.insert(std::make_pair(mesh_vertex_handle,new_flow_shader));
+      /*AShader* new_flow_shader = new FlowShader(_id,old_flow_shader->GetConfidence(),old_flow_shader->GetFlowNormal(),val);
+          intermediate_map.insert(std::make_pair(mesh_vertex_handle,new_flow_shader));
+*/
+
+      cloud->points[u].x = actual_point[0];
+      cloud->points[u].y = actual_point[1];
+      cloud->points[u].z = actual_point[2];
+      glm::vec3 vec;
+      vec = old_flow_shader->GetFlowNormal();
+      cloud->points[u].normal_x =vec[0];// shader_param->getValue(0);
+      cloud->points[u].normal_y =vec[1];// shader_param->getValue(1);
+      cloud->points[u].normal_z =vec[2];// shader_param->getValue(2);
+      int tmp = val*MULTCONSTANT;
+      cloud->points[u].label = tmp;
+    u++;
+
+//          AShader* new_flow_shader = new FlowShader(_id,old_flow_shader->GetConfidence(),old_flow_shader->GetFlowNormal(),val);
     }
   }
 
   }
 }
-    if(z<2)
-   ContrastEnhancement(map_output,Pdf,z);
+    if(z==0){
+        kdtree.setInputCloud (cloud);
+        ContrastEnhancement(intermediate_map,Pdf,z);
+    }
+   if(z==1)
+    ContrastEnhancement(output_map,Pdf,z);
+    if(output_map.size()==0)
+        output_map = intermediate_map;
 
 }
 
 std::cout<<"f is "<<f<<std::endl;
 
-return map_output;
+return output_map;
 
 
 }

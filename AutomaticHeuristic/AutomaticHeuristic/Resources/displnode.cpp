@@ -4,9 +4,14 @@ using namespace std;
 
 int DisplNode::_shared_id = 0;
 
-DisplNode::DisplNode(BXDFNode *bxdf_node, RIBNode *reference_node, float displ_bound):_bxdf_node(bxdf_node),_displ_bound(displ_bound),
-  _reference_node(reference_node)
+DisplNode::DisplNode(BXDFNode *bxdf_node, RIBNode *reference_node, float displ_bound):_bxdf_node(bxdf_node),_displ_bound(displ_bound)
 {
+    if(reference_node == nullptr){
+        _reference_node= new RIBConstant(0.0f);
+    }
+    else{
+        _reference_node = reference_node;
+    }
     _unique_id = _shared_id++;
 }
 string DisplNode::GetName(){

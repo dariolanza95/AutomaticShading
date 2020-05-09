@@ -632,8 +632,8 @@ testpoint = pp;
         resultF[n] = 1;
 
 
-                int K = 10;
-                float maxdist = 10;
+                int K = 5;
+                float maxdist = 5;
             RtVector3 dir(0,0,0);
 
                 point[0] = pp.x;
@@ -714,8 +714,8 @@ testpoint = pp;
  float b = 1;
 float color_details = DDA(pp,dir_details,40,3);
 
- float c = 0.3;
-       d = 0.7;
+ float c = 0.01;
+       d = 0.99;
 //
 //
 color_details = (color_details - c)*((b-a)/(d-c)) + a;

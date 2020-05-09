@@ -498,8 +498,8 @@ void RIBWriter::WriteShadersList()
     RIBNode* rib_mask ;
     RIBNode* rib_shader1;
     RIBNode* rib_shader2;
-    RIBNode* rib_mix;
-    RIBNode* rib_displ;
+    RIBNode* rib_mix = nullptr;
+    RIBNode* rib_displ = nullptr;
     RIBNode* previous_rib_displ;
     for(AShader* shader : _list_of_used_shaders){
 

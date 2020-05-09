@@ -32,6 +32,8 @@ public:
     Grid2D<float> simData_2;
     Grid2D<float> rivers;
     Grid2D<float> sedimented_terrain;
+    Grid2D<float> temp_sedimented_material;
+    Grid2D<glm::vec4> sedimented_terrain_color;
     //Grid2D<vec3>  flowNormal;
     glm::vec2 windDirection;
     Grid2D<vec3> surfaceNormals;
@@ -43,10 +45,12 @@ public:
             terrain(w,h),
             suspendedSediment(w,h),
             sedimented_terrain(w,h),
+            sedimented_terrain_color(w,h),
             surfaceNormals(w,h),
             vegetation(w,h),
             rivers(w,h),
             simData(w,h),simData_2(w,h),
+            temp_sedimented_material(w,h),
             windDirection(WindDirection)
             //flowNormal(w,h)
     {
@@ -97,6 +101,8 @@ public:
                     float temp= (-x+water.height()*2/3) * tan(M_PI*angle2/180);
                     terrain (y,x) = std::max(terrain(y,x),temp);
                     sedimented_terrain(y,x) = 0;
+                    sedimented_terrain_color(y,x) = glm::vec4(0,0,0,1);
+                    temp_sedimented_material(y,x) = 0;
 
                 }
                 else

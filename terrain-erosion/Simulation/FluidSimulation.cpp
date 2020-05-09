@@ -38,9 +38,12 @@ FluidSimulation::FluidSimulation(SimulationState& state)
       terrain(state.terrain),
       sediment(state.suspendedSediment),
       sedimented_terrain(state.sedimented_terrain),
+      sedimented_terrain_color(state.sedimented_terrain_color),
       counter_from_last_time_water_passed(state.vegetation),
       counter_times_water_was_still(state.vegetation),
       tmpSediment(state.water.width(),state.water.height()),
+      tmp_sediment_material(state.water.width(),state.water.height()),
+
       uVel(water.width(), water.height()),
       vVel(water.width(), water.height()),
       vVel_air(air.width(), air.height()),
@@ -92,6 +95,12 @@ FluidSimulation::FluidSimulation(SimulationState& state)
             sediment_layers[4] = 16;
             sediment_layers[5] = 30;
             sediment_layers[6] = 35;
+
+
+            sediment_materials[0] = 1;
+            sediment_materials[1] = 2;
+           // sediment_materials[2] = 3;
+
 
 }
 
@@ -407,8 +416,8 @@ void FluidSimulation::simulateWind(double dt)
     {
         for (int x=0; x<uVel_air.width(); ++x)
         {
-            if (x == uVel_air.width()-1){
-                air(y,x) = 0;
+            if (x > uVel_air.width()-5){
+                air(x,y) = 0;
                 continue;
             }
             float inFlow =  getRFlux_air(y,x-1) + getLFlux_air(y,x+1) + getTFlux_air(y-1,x) + getBFlux_air(y+1,x);
@@ -800,7 +809,7 @@ float FluidSimulation::getAir(int y, int x){
     return air(glm::clamp(y,0,(int) air.height()-1),glm::clamp(x,0,(int) air.width()-1));
 }
 
-void FluidSimulation::simulateErosion(double dt)
+void FluidSimulation::simulateErosion(double dt,ulong time)
 {
     const float Ks = 0.0001f*12*10; // dissolving constant
     const float Kd = 0.0001f*12*10; // deposition constant
@@ -809,7 +818,15 @@ void FluidSimulation::simulateErosion(double dt)
     float scale = 3;
     float range = max-min;
     PerlinNoise perlin;
-
+    glm::vec4 black_col(0,0,0,1);
+    glm::vec4 sed_color(1,1,0,0);
+    int sediment_material = 1;
+    if(time>10){
+        sediment_material = 2;
+    }
+    if(time>30){
+        sed_color = glm::vec4(0,1,1,1);
+    }
 #if defined(__APPLE__) || defined(__MACH__)
     dispatch_apply(sediment.height(), gcdq, ^(size_t y)
 #else
@@ -874,16 +891,22 @@ void FluidSimulation::simulateErosion(double dt)
                 terrain(y,x)  -= d;
                 water(y,x)    += d;
                 sediment(y,x) += d;
-                sedimented_terrain(y,x) -= d;
+                tmp_sediment_material(y,x) = sediment_material;
+                //sedimented_terrain(y,x) -= sediment_material;
+              // if( sedimented_terrain_color(x,y) == black_col)
+        //           sedimented_terrain_color(x,y)  = sed_color;
             }
             // deposit onto ground
-            else if (delta < 0.0f )
+            else if (delta < 0.0f /*&& water(y,x)!=0 */)
             {
                 float d = Kd*delta;
                 terrain(y,x)  -= d;
                 water(y,x)    += d;
                 sediment(y,x) += d;
-                sedimented_terrain(y,x) -= d;
+               sedimented_terrain(y,x) = tmp_sediment_material(y,x);
+            //    if( sedimented_terrain_color(y,x) == black_col)
+
+                    sedimented_terrain_color(y,x)  = sed_color;
             }
         }
     }
@@ -1050,7 +1073,7 @@ void FluidSimulation::update(ulong time, double dt, bool rain, bool flood,bool w
    // simulateWind(dt);
 
     // 3. Simulate Errosion-deposition
-    simulateErosion(dt);
+    simulateErosion(dt,time);
     // 4. Advection of suspended sediment
     simulateSedimentTransportation(dt);
     // 5. Simulate Evaporation

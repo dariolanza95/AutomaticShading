@@ -39,7 +39,10 @@ public:
     Grid2D<float> counter_from_last_time_water_passed;
     Grid2D<float> counter_times_water_was_still;
     Grid2D<float> tmpSediment;
+    Grid2D<float> tmp_sediment_material;
     Grid2D<float>& sedimented_terrain;
+    //Grid2D<float>& sediments_material;
+    Grid2D<glm::vec4>& sedimented_terrain_color;
     Grid2D<float> uVel;
     Grid2D<float> vVel;
     Grid2D<float> uVel_air;
@@ -57,6 +60,7 @@ public:
     Grid2D<float> bFlux;
     float noise_sediment_frequency;
     int sediment_layers[7];
+    int sediment_materials[2];
     glm::vec2 rainPos;
     glm::vec2 _windDirection;
     // lX and lY have to decrease if we increse the gridsize
@@ -67,7 +71,7 @@ public:
 
     void update(ulong time, double dt, bool makeRain=true, bool flood=false, bool wind=false);
     void simulateFlow(double dt);
-    void simulateErosion(double dt);
+    void simulateErosion(double dt, ulong time);
     void simulateSedimentTransportation(double dt);
     void simulateEvaporation(double dt);
     float sampleTerrain(int x,int y );
