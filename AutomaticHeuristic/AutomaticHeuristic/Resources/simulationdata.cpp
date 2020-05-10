@@ -211,6 +211,8 @@ void SimulationData::readLine(const string line )
 
            }
        }
+
+
 }
 
 void SimulationData::getData(SimulationDataEnum data_enum, glm::vec3& data){

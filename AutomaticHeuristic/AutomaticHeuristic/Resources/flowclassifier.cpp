@@ -253,7 +253,7 @@ map<MyMesh::VertexHandle,AShader*> FlowClassifier::ClassifyVertices()
 
     std::cout<<"vertices "<< _mesh.n_vertices()<<std::endl;
 map<MyMesh::VertexHandle,glm::vec3> flow_vertices;
-    int _subdiv_levels = 2;
+    int _subdiv_levels = 3;
     for(int i=0;i<_subdiv_levels;i++){
 
 
@@ -261,34 +261,34 @@ map<MyMesh::VertexHandle,glm::vec3> flow_vertices;
          temporary_selected_vertices = ComputeShaderParameters(temp_flow_vertices);
         selectFrontier(temporary_selected_vertices);
         set<MyMesh::FaceHandle> set_of_faces;
-      /*  if(i==0){
+       if(i==_subdiv_levels-1){
 
 
             pcl::KdTreeFLANN<pcl::PointXYZRGB> kdt;
 
               pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud1 ( new pcl::PointCloud<pcl::PointXYZLNormal>);
-                cloud = cloud1;
+                cloud_input = cloud1;
               // Generate pointcloud data
         MyMesh::Point mesh_point;
         int j = 0;
-              cloud->width = temp_flow_vertices.size();//numpoints
-              cloud->height = 1;
-              cloud->points.resize (cloud->width * cloud->height);
+              cloud_input->width = temp_flow_vertices.size();//numpoints
+              cloud_input->height = 1;
+              cloud_input->points.resize (cloud_input->width * cloud_input->height);
                 for(auto const entry : temp_flow_vertices){
                     mesh_point =  _mesh.point((entry.first));
-                    cloud->points[j].x = mesh_point[0];
-                    cloud->points[j].y = mesh_point[1];
-                    cloud->points[j].z = mesh_point[2];
+                    cloud_input->points[j].x = mesh_point[0];
+                    cloud_input->points[j].y = mesh_point[1];
+                    cloud_input->points[j].z = mesh_point[2];
                     glm::vec3 vec;
                     vec = entry.second;
-                    cloud->points[j].normal_x =vec[0];// shader_param->getValue(0);
-                    cloud->points[j].normal_y =vec[1];// shader_param->getValue(1);
-                    cloud->points[j].normal_z =vec[2];// shader_param->getValue(2);
+                    cloud_input->points[j].normal_x =vec[0];// shader_param->getValue(0);
+                    cloud_input->points[j].normal_y =vec[1];// shader_param->getValue(1);
+                    cloud_input->points[j].normal_z =vec[2];// shader_param->getValue(2);
                     j++;
 
                 }
-    kdtree.setInputCloud (cloud);
-        }*/
+    kdtree_input.setInputCloud (cloud_input);
+        }
         for(auto const entry : temporary_selected_vertices){
             MyMesh::VertexHandle vh= entry.first;
          //   adapt_subdiv.refine( vh);
@@ -465,9 +465,9 @@ void FlowClassifier::ContrastEnhancement(map<MyMesh::VertexHandle,AShader*>& map
     float d = 1;
     int f;
     if(z>0){
-        f = 3;
+        f = 2;
     }else{
-        f=3;
+        f=1;
     }
 
 
@@ -522,10 +522,18 @@ if(z==1){
 }else{
 
     for(int j = 0;j<cloud->points.size();j++ ){
+
+
+        if(cloud->points[j].x == 130 && cloud->points[j].y == 0){
+            std::cout<<"point of interest"<<std::endl;
+        }
+
         float val = cloud->points[j].label/(float)MULTCONSTANT;
         val = (val - c)*((b-a)/(d-c)) + a;
         if(val>1 || val<0)
           out_of_range_vertices++;
+        val = val > 1 ? 1 : val;
+        val = val < 0 ? 0 : val;
         cloud->points[j].label = val*MULTCONSTANT;
     }
 }
@@ -558,9 +566,9 @@ map<MyMesh::VertexHandle,AShader*> FlowClassifier:: LIC(map<MyMesh::VertexHandle
     }
 
     float box_length = longest_dimension/4;
-    float step_size = 1;/*0.5*/;//scale;
-    float frequency = 200;//longest_dimension/2;//scale*2;
-    box_length = 5/*150*/;
+    float step_size = 0.15/*0.26*/;/*0.5*/;//scale;
+    float frequency = 1200/*200*/;//longest_dimension/2;//scale*2;
+    box_length = 20;/*150*/;
     FastNoise noise;
     std::map<MyMesh::VertexHandle,AShader*> output_map;
    std::map<MyMesh::VertexHandle,AShader*> intermediate_map;
@@ -616,8 +624,8 @@ int f = 0;
 for(int z = 0;z<2;z++){
     Pdf = std::vector<int>(L,0);
 
-  //  if(z==1)
-  //      box_length =10;// 20*scale;
+    if(z==1)
+        box_length /= 2;//step_size;// 20*scale;
 
     std::cout<<"iteration "<<z<<std::endl;
     k = 0;
@@ -652,11 +660,20 @@ for(int z = 0;z<2;z++){
         searchPoint_tmp.y = actual_point[1];
         searchPoint_tmp.z = actual_point[2];
   pcl::PointXYZLNormal new_point;
-        int K = 1;//or 27
+  pcl::PointXYZLNormal temp_point;
+        int K = 3;//or 27
         std::vector<int> pointIdxNKNSearch(K);
         std::vector<float> pointNKNSquaredDistance(K);
-        /*if ( kdtree.nearestKSearch (searchPoint_tmp, K, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 ){
-            new_point =  cloud->points[ pointIdxNKNSearch[0]];
+       /* if ( kdtree_input.nearestKSearch (searchPoint_tmp, K, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 ){
+            for(int b = 0 ;b<pointIdxNKNSearch.size();b++){
+                temp_point =  cloud_input->points[ pointIdxNKNSearch[b]];
+                new_point.normal_x += temp_point.normal_x;
+                new_point.normal_y += temp_point.normal_y;
+                new_point.normal_z += temp_point.normal_z;
+            }
+            new_point.normal_x /= pointIdxNKNSearch.size();
+            new_point.normal_y /= pointIdxNKNSearch.size();
+            new_point.normal_z /= pointIdxNKNSearch.size();
             flow_vector[0] = new_point.normal_x;
             flow_vector[1] = new_point.normal_y;
             flow_vector[2] = new_point.normal_z;
@@ -713,7 +730,7 @@ n = n<0? 0 : n;
                   actual_point[2] += flow_vector[2]*step_size;
                   squared_dist = 0;
                   min_dist = INFINITY;
-                  if(i!=0 )//&& samepoint_iter == 1)
+                /*  if(i!=0 )//&& samepoint_iter == 1)
                        vvit = _mesh.vv_iter(*vvit);
                   else
                        vvit = _mesh.vv_iter(mesh_vertex_handle);
@@ -731,7 +748,7 @@ n = n<0? 0 : n;
                          next_point = vvit;
                      }
                      val_counter++;
-                  }
+                  }*/
 
                 //  if(val_counter!=expected_valence)
                 //    std::cout<<"val_counter "<< val_counter<<" vs valence"<<expected_valence<<std::endl;
@@ -748,13 +765,46 @@ n = n<0? 0 : n;
                           if(intermediate_map.count(*next_point)>0){
                               temp_shader =  ((FlowShader*)intermediate_map.at(*next_point));
                           }
-                      }else*/{
+                      }else{
                           if(map.count(*next_point)>0){
                               temp_shader =map.at(*next_point);// map[next_point];//shader_parameters_data_wrapper[next_point];
                           }
                       }
-                      if(temp_shader!=nullptr)
+                      if(temp_shader!=nullptr)*/
                       {
+
+                          searchPoint_tmp.x = actual_point[0];
+                          searchPoint_tmp.y = actual_point[1];
+                          searchPoint_tmp.z = actual_point[2];
+
+                        new_point.normal_x = 0;
+                        new_point.normal_y = 0;
+                        new_point.normal_z = 0;
+                          if ( kdtree_input.nearestKSearch (searchPoint_tmp, K, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 ){
+                              for(int b = 0 ;b<pointIdxNKNSearch.size();b++){
+                                  temp_point =  cloud_input->points[ pointIdxNKNSearch[b]];
+                                  new_point.normal_x += temp_point.normal_x;
+                                  new_point.normal_y += temp_point.normal_y;
+                                  new_point.normal_z += temp_point.normal_z;
+                                  new_point.x += temp_point.x;
+                                  new_point.y += temp_point.y;
+                                  new_point.z += temp_point.z;
+                              }
+                              new_point.normal_x /= pointIdxNKNSearch.size();
+                              new_point.normal_y /= pointIdxNKNSearch.size();
+                              new_point.normal_z /= pointIdxNKNSearch.size();
+                              new_point.x /= pointIdxNKNSearch.size();
+                              new_point.y /= pointIdxNKNSearch.size();
+                              new_point.z /= pointIdxNKNSearch.size();
+                              flow_vector[0] = new_point.normal_x;
+                              flow_vector[1] = new_point.normal_y;
+                              flow_vector[2] = new_point.normal_z;
+                              //actual_point[0] = new_point.x;
+                              //actual_point[1] = new_point.y;
+                              //actual_point[2] = new_point.z;
+
+                          }
+
                          /* pcl::PointXYZLNormal searchPoint;
                           searchPoint.x = actual_point[0];
                           searchPoint.y = actual_point[1];
@@ -779,12 +829,12 @@ n = n<0? 0 : n;
                               //}
                           }*/
 
-                          next_flow_vector = temp_shader->GetFlowNormal();
+                          /*next_flow_vector = temp_shader->GetFlowNormal();
                           flow_vector = next_flow_vector;
                            flow_shader = temp_shader;
                            vvit = next_point;
                          //  actual_point = _mesh.point(*vvit);
-                           samepoint_iter = 1;
+                           samepoint_iter = 1;*/
                       }
 
                   }
@@ -835,6 +885,9 @@ n = n<0? 0 : n;
           intermediate_map.insert(std::make_pair(mesh_vertex_handle,new_flow_shader));
 */
 
+          if(actual_point[0] == 130 && actual_point[1] == 0){
+              std::cout<<"point of interest"<<std::endl;
+          }
       cloud->points[u].x = actual_point[0];
       cloud->points[u].y = actual_point[1];
       cloud->points[u].z = actual_point[2];
@@ -857,8 +910,8 @@ n = n<0? 0 : n;
         kdtree.setInputCloud (cloud);
         ContrastEnhancement(intermediate_map,Pdf,z);
     }
-   if(z==1)
-    ContrastEnhancement(output_map,Pdf,z);
+   //if(z==1)
+   // ContrastEnhancement(output_map,Pdf,z);
     if(output_map.size()==0)
         output_map = intermediate_map;
 

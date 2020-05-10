@@ -29,14 +29,17 @@ MyMesh  FeaturesFinder::Find(std::vector<AShader*>& list_of_used_shaders)
          UpdateSimulationData(selected_faces);
          AShader* shad = fc->GetShader();
         list_of_used_shaders.push_back(shad);
+        selected_faces.clear();
      }
      UpdateSimulationData(selected_faces);
      AClassifier *mt = new MaterialClassifier(_mesh);
+
      selected_faces = mt->ClassifyVertices();
 
      if(selected_faces.size()>0)
      {
          UpdateSimulationData(selected_faces);
+         selected_faces.clear();
          //AShader* shad = mt->GetShader();
         //list_of_used_shaders.push_back(shad);
      }
@@ -55,10 +58,14 @@ vector<VertexEditTag> FeaturesFinder::GetVertexEditTags()
 
 void FeaturesFinder::UpdateSimulationData(map<MyMesh::VertexHandle,AShader*> selected_vertices)
 {
+    std::cout<<"UpdateSimData"<<std::endl;
     auto shader_parameters_property = getOrMakeProperty<VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
     for (auto const& x : selected_vertices)
     {
         MyMesh::VertexHandle vertex_handle = x.first;
+        if(vertex_handle.idx() == 90010){
+            std::cout<<"breakpoint"<<std::endl;
+        }
         AShader* shader = x.second;
         ShadersWrapper* shaders_wrapper = shader_parameters_property[vertex_handle];
         shaders_wrapper->AddShaderParameters(shader);

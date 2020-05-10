@@ -633,7 +633,7 @@ testpoint = pp;
 
 
                 int K = 5;
-                float maxdist = 5;
+                float maxdist = 1;
             RtVector3 dir(0,0,0);
 
                 point[0] = pp.x;
@@ -870,9 +870,9 @@ res = RixSmoothStep(0,1 ,res );
 
         resultRGB[n].r = resultRGB[n].b = resultRGB[n].g = res;
         //RtColorRGB temp_color =
-          //resultRGB[n]=      RixLerpRGB( main_col,second_col,res);
+       // resultRGB[n]=      RixLerpRGB( main_col,second_col,res);
         //resultRGB[n] = RixLerpRGB( temp_color,second_col,dda);
-          resultF[n] =  0;//(res);// + displ;
+          resultF[n] =  0;//0.5;//(res);// + displ;
           //resultF[n] = 0;//  displ;
 
 
