@@ -632,8 +632,8 @@ testpoint = pp;
         resultF[n] = 1;
 
 
-                int K = 5;
-                float maxdist = 1;
+                int K = 8;
+                float maxdist = 5;
             RtVector3 dir(0,0,0);
 
                 point[0] = pp.x;
@@ -852,27 +852,34 @@ res = RixSmoothStep(0,1 ,res );
              //res = res + 0.5*Fbm(pp*0.4,4,0.3);
 */
              RtColorRGB main_col;
-             main_col.r = 0.18;
-             main_col.g = 0.13;
-             main_col.b = 0.09;
+             main_col.r =0.18;
+             main_col.g =0.13;
+             main_col.b =0.09;
 
              RtColorRGB second_col;
              second_col.r = 0.18*1.5;
              second_col.g = 0.13*1.5;
              second_col.b = 0.09*1.5;
 
-            // float dda= DDA(pp,dir,30,0.3);
+             float dda= DDA(pp,dir,30,0.8);
 
         second_col.r = 0.18*1.5*0.7;
         second_col.g = 0.13*1.5*0.7;
         second_col.b = 0.09*1.5*0.7;
 
 
-        resultRGB[n].r = resultRGB[n].b = resultRGB[n].g = res;
-        //RtColorRGB temp_color =
-       // resultRGB[n]=      RixLerpRGB( main_col,second_col,res);
-        //resultRGB[n] = RixLerpRGB( temp_color,second_col,dda);
-          resultF[n] =  0;//0.5;//(res);// + displ;
+    RtColorRGB third_col;
+
+    third_col.r = 0.18*1.5*0.3;
+    third_col.g = 0.13*1.5*0.3;
+    third_col.b = 0.09*1.5*0.3;
+
+       // resultRGB[n].r = resultRGB[n].b = resultRGB[n].g = res;
+        RtColorRGB temp_color = RixLerpRGB( main_col,second_col,res);
+        //resultRGB[n]=      RixLerpRGB( main_col,second_col,res);
+        resultRGB[n] = RixLerpRGB( temp_color,third_col,dda);
+        float fbm = Fbm(pp*1.3,4,0.3);
+          resultF[n] =  res+ 0.5*fbm;//0.5;//(res);// + displ;
           //resultF[n] = 0;//  displ;
 
 
