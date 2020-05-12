@@ -35,7 +35,7 @@ class SimulationData
         SimulationData* Interpolate(SimulationData* sd1,float t);
         void getData(SimulationDataEnum data_enum, float& data);
         void getData(SimulationDataEnum data_enum, glm::vec3& data);
-        void setData(SimulationDataEnum data_enum, glm::vec3 data);
+        void getData(SimulationDataEnum data_enum, std::vector<float>& data);
         //SimulationData* operator /(SimulationData* sd);
         //SimulationData* operator +(SimulationData* sd);
 

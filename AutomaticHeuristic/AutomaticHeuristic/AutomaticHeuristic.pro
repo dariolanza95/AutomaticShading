@@ -59,7 +59,9 @@ SOURCES += *.cpp \
     Resources/ribaddnode.cpp \
     Resources/bxdfnode.cpp \
     Resources/riblight.cpp \
-    Resources/displnode.cpp
+    Resources/displnode.cpp \
+    Resources/sedimentationclassifier.cpp \
+    Resources/sedimentationshader.cpp
 
 
 
@@ -128,7 +130,9 @@ HEADERS += *.h\
     Resources/riblight.h \
     Resources/displnode.h \
     Resources/mydefwrapper.h \
-    Resources/myrules.h
+    Resources/myrules.h \
+    Resources/sedimentationclassifier.h \
+    Resources/sedimentationshader.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system

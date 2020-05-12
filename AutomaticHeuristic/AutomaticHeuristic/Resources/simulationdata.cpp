@@ -221,6 +221,12 @@ void SimulationData::getData(SimulationDataEnum data_enum, glm::vec3& data){
 
 }
 
+void SimulationData::getData(SimulationDataEnum data_enum, std::vector<float>& data){
+    if(map_of_lists.count(data_enum)>0)
+        data = map_of_lists[data_enum];
+
+}
+
 
 void SimulationData::getData(SimulationDataEnum data_enum, float& data){
     if(map_of_floats.count(data_enum)>0)
@@ -228,11 +234,6 @@ void SimulationData::getData(SimulationDataEnum data_enum, float& data){
 
 }
 
-void SimulationData::setData(SimulationDataEnum data_enum, glm::vec3 data){
-
-         map_of_vectors[data_enum] = data;
-
-}
 
 SimulationData::SimulationData(){}
 
