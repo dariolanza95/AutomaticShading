@@ -170,7 +170,7 @@ void RIBWriter::RotateAlongX(glm::mat4x4 & mat,float angle)
 
 string RIBWriter::WriteTransformationMatrix()
 {
-    stringstream ss;/*
+    stringstream ss;
     ss<<" Transform [ ";
     glm::mat4x4 viewMatrix = _cam.ViewMatrix();
     viewMatrix = _cam.RIBMatrix();
@@ -196,18 +196,20 @@ string RIBWriter::WriteTransformationMatrix()
     ss<<" ]"<<std::endl;
 
 
-*/
+
     //ss << "Rotate "<< -1*_cam.rotX<<" 1 0 0"<<std::endl;
     //ss << "Rotate "<< _cam.rotY<<" 0 1 0"<<std::endl;
     //ss << "Rotate "<< _cam.rotZ<<" 0 0 1"<<std::endl;
     //std::cout<<ss.str();
-
+//ss<<" Transform [ 1 0 0 0 0 -0.8660 -0.5  0 0 0.5 -0.8660 0 -151 137.203 547.644 1 ]"<<std::endl;
  //  ss<<"Transform [ 1 0 0 0 0 -0.8660 -0.5  0 0 0.5 -0.8660 0 -151 137.203 447.644 1 ]"<<std::endl;
   // ss<<"  Transform [ 1 0 0 0 0 -0.8660 -0.5  0 0 0.5 -0.8660 0 -151 137.203 447.644 1 ]"<<std::endl;
     //ss<<" Transform [  1 0 0 0 0 -0.241805 -0.970205 0 0 0.970205 -0.241805 0 -164.45 43.2274 314.337 1 ]"<<std::endl;;
    // ss<<" Transform [  0.921877 -0.0256774 0.386597 0 0.384045 -0.0712268 -0.920367 0 0.0512425 0.996948 -0.0557853 0 -219.769 -11.0496 182.197 1 ]"<<std::endl;
  //   ss<<" Transform [  0.933785 -0.113397 -0.339363 0 -0.357194 -0.350701 -0.865463 0 -0.0209266 0.929384 -0.367977 0 -105.163 65.7922 341.325 1 ]";
-    ss<<" Transform [  1 0 0 0 0 0.138112 -0.990313 0 0 0.990313 0.138112 0 -151.494 -29.5937 107.547 1 ] "<<std::endl;
+//    ss<<" Transform [  1 0 0 0 0 0.138112 -0.990313 0 0 0.990313 0.138112 0 -151.494 -29.5937 107.547 1 ] "<<std::endl;
+   // ss<<" Transform [  0.998505 5.58794e-09 0.0546532 0 0.0544339 -0.0893556 -0.994381 0 0.00489066 0.995869 -0.0892218 0 -172.423 16.756 312.531 1 ]"<<std::endl;
+ //   ss<<"Transform [  0.98823 -2.46614e-06 -0.152963 0 -0.140098 -0.401226 -0.904976 0 -0.0614017 0.915756 -0.396502 0 -202.102 83.1623 351.97 1 ]"<<std::endl;
     return ss.str();
 }
 
@@ -292,7 +294,7 @@ void RIBWriter::WriteInialization(){
     string_to_write<<"Option \"ribparse\" \"string varsubst\" [\"\"]"<<std::endl;
     string_to_write<<"Option \"ribparse\" \"string varsubst\" [\"$\"]"<<std::endl;
     string_to_write<<"Option \"Ri\" \"int Frame\" [1] \"float PixelVariance\" [0.00999999978] \"string PixelFilterName\" [\"gaussian\"] "<<std::endl;
-    string_to_write<<"\"float[2] PixelFilterWidth\" [2 2] \"int[2] FormatResolution\" [600 400] \"float FormatPixelAspectRatio\" [1.5] \"float[2] Clipping\" [0.100000001 10000] \"float[4] ScreenWindow\" [-1 1 -0.5625 0.5625]  "<<std::endl;
+    string_to_write<<"\"float[2] PixelFilterWidth\" [2 2] \"int[2] FormatResolution\" [300 200] \"float FormatPixelAspectRatio\" [1.5] \"float[2] Clipping\" [0.100000001 10000] \"float[4] ScreenWindow\" [-1 1 -0.5625 0.5625]  "<<std::endl;
 //    string_to_write<<"\"float[4] CropWindow\" [0.0 0.5 0.5 1.0]"<<std::endl;
     string_to_write<<" \"float[2] Shutter\" [0 0]"<<std::endl;
     string_to_write<<"Option \"bucket\" \"string order\" [\"circle\"]"<<std::endl;

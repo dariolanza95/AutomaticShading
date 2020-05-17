@@ -11,6 +11,8 @@ class SedimentationShader : public AShader
 
 public:
     SedimentationShader(int id, float confidence,float material_id);
+    SedimentationShader(int id);
+
     void getSerializedData(std::vector<float>& data);
     void allocateData(std::vector<float> &data);
     std::string getShaderName();

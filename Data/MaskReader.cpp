@@ -394,8 +394,8 @@ PxrTexture::ComputeOutputParams(RixShadingContext const *sctx,
         PtcGetPointCloudInfo(inptc, "datasize", &datasize);
         data = (float *) malloc(datasize * sizeof(float));
 
-int K = 50;
-float maxdist = 3;
+int K =  2;       //50;
+float maxdist = 1; //3;
 
     // looping through the different output ids
     for (unsigned i=0; i<sctx->numPts; i++)

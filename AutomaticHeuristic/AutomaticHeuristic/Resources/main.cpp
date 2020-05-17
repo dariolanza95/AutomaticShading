@@ -535,8 +535,8 @@ string obj_file = "../../Data/input.obj";
   mesh2 = features_finder.Find(list_of_used_shaders);
   GLFWwindow* window = OpenGLInit();
   OpenGlVisualizer visualizer(window, 300, 300,mesh,obj_file);
-  //visualizer.Initialize();
-  //visualizer.Visualize();
+  visualizer.Initialize();
+  visualizer.Visualize();
   string shaders_path("@:./");
   string plugins_path("@:./");
   string output_name_image("try03");
@@ -561,7 +561,7 @@ string obj_file = "../../Data/input.obj";
     {
         std::cout<<"i "<<i<<std::endl;
         //filename<<i++;
-        PointCloudWriter pcw(mesh2,shader,subdivs,path,true);
+        PointCloudWriter pcw(mesh2,shader,subdivs,path,&features_finder, true);
         pcw.Write();
     //    pcw.Read();
     }
@@ -570,7 +570,8 @@ string obj_file = "../../Data/input.obj";
    {
        std::cout<<"i "<<i<<std::endl;
        //filename<<i++;
-       PointCloudWriter pcw(mesh2,shader,subdivs,path,false);
+       PointCloudWriter pcw(mesh2,shader,subdivs,path,&features_finder,false);
+       std::cout<<"uga buga"<<std::endl;
        pcw.Write();
    }
      //pcw.Read();

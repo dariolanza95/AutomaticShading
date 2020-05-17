@@ -39,6 +39,7 @@ FluidSimulation::FluidSimulation(SimulationState& state)
       sediment(state.suspendedSediment),
       sedimented_terrain(state.sedimented_terrain),
       sedimented_terrain_color(state.sedimented_terrain_color),
+      sedimented_material(state.sedimented_material),
       counter_from_last_time_water_passed(state.vegetation),
       counter_times_water_was_still(state.vegetation),
       tmpSediment(state.water.width(),state.water.height()),
@@ -147,7 +148,7 @@ void FluidSimulation::makeRiver(double dt,ulong time)
 
     //simulate occasional flooding
     if(z==maxrand)
-        addRainDrop(pos,x,dt*2*y);
+        addRainDrop(pos,x,dt*3*y);
 
 
 }
@@ -265,8 +266,11 @@ void FluidSimulation::smoothTerrain()
     for (uint i=0; i<terrain.size(); ++i)
 #endif
     {
-        terrain(i) = tmpSediment(i);
-
+        float ex_t = terrain(i);
+        float tmpsed = tmpSediment(i);
+        float diff = ex_t - tmpsed;
+        terrain(i) = tmpsed;
+        sedimented_terrain(i) -= diff;
     }
 
 #if defined(__APPLE__) || defined(__MACH__)
@@ -812,7 +816,7 @@ float FluidSimulation::getAir(int y, int x){
 void FluidSimulation::simulateErosion(double dt,ulong time)
 {
     const float Ks = 0.0001f*12*10; // dissolving constant
-    const float Kd = 0.0001f*12*10; // deposition constant
+    const float Kd = 0.01f*12*10; // deposition constant
     float max = 10;
     float min = -10;
     float scale = 3;
@@ -821,10 +825,13 @@ void FluidSimulation::simulateErosion(double dt,ulong time)
     glm::vec4 black_col(0,0,0,1);
     glm::vec4 sed_color(1,1,0,0);
     int sediment_material = 1;
-    if(time>10){
+    if(time%50>15){
+        std::cout<<"new mat"<<std::endl;
         sediment_material = 2;
     }
-    if(time>30){
+    if(time%50>30){
+        std::cout<<"new mat 2"<<std::endl;
+        sediment_material = 3;
         sed_color = glm::vec4(0,1,1,1);
     }
 #if defined(__APPLE__) || defined(__MACH__)
@@ -878,7 +885,7 @@ void FluidSimulation::simulateErosion(double dt,ulong time)
              kc =kc + n*(kc/10);
             kc *= 2;
             state.simData(y,x) = kc/42;
-
+            kc = 35;
             float capacity = kc* sqrtf(uV*uV+vV*vV)*sinAlpha*(std::min(water(y,x),0.01f)/0.01f) ;
             float delta = (capacity-sediment(y,x));
 
@@ -891,6 +898,8 @@ void FluidSimulation::simulateErosion(double dt,ulong time)
                 terrain(y,x)  -= d;
                 water(y,x)    += d;
                 sediment(y,x) += d;
+              //  if(water(y,x)>0.01)
+                    sedimented_terrain(y,x) -= d;
                 tmp_sediment_material(y,x) = sediment_material;
                 //sedimented_terrain(y,x) -= sediment_material;
               // if( sedimented_terrain_color(x,y) == black_col)
@@ -903,8 +912,9 @@ void FluidSimulation::simulateErosion(double dt,ulong time)
                 terrain(y,x)  -= d;
                 water(y,x)    += d;
                 sediment(y,x) += d;
-               sedimented_terrain(y,x) = tmp_sediment_material(y,x);
-            //    if( sedimented_terrain_color(y,x) == black_col)
+               sedimented_terrain(y,x) -= d;//
+               sedimented_material(y,x) = tmp_sediment_material(y,x);
+               //    if( sedimented_terrain_color(y,x) == black_col)
 
                     sedimented_terrain_color(y,x)  = sed_color;
             }
@@ -1033,7 +1043,7 @@ void FluidSimulation::simulateSedimentTransportation(double dt)
 
 void FluidSimulation::simulateEvaporation(double dt)
 {
-    const float Ke = 0.00011*0.5; // evaporation constant
+    const float Ke = 0.00011*0.5;//0.00011*0.5; // evaporation constant
 #if defined(__APPLE__) || defined(__MACH__)
     dispatch_apply(water.height(), gcdq, ^(size_t y)
 #else

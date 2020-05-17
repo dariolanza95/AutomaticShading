@@ -1,8 +1,10 @@
 #include "sedimentationshader.h"
 
 SedimentationShader::SedimentationShader(int id, float confidence,float material_id) : AShader(id,confidence),material_id(material_id)
-{}
+{
 
+}
+SedimentationShader::SedimentationShader(int id): AShader(id){}
 void SedimentationShader::allocateData(std::vector<float> &data){
     data.resize(1);
 }
@@ -13,6 +15,7 @@ void SedimentationShader::getSerializedData(std::vector<float>& data)
         data[k] = flow_normal[k];
     data[3] = lic_val;*/
     data[0] = material_id;
+
 }
 std::string SedimentationShader::getShaderName(){
     return "SedimentationShader";

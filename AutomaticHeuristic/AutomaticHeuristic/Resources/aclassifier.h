@@ -25,7 +25,9 @@ protected:
     map<typename MyMesh::VertexHandle,AShader*> SelectClassVertices(FuncType functor);
     AShader* _shader;
 public:
-    virtual map<MyMesh::VertexHandle,AShader*> ClassifyVertices() = 0;
+    virtual void ClassifyVertices(std::vector<glm::vec3>& list_of_points,std::vector<AShader*>& list_of_data,float& details) = 0;
+
+//    virtual map<MyMesh::VertexHandle,AShader*> ClassifyVertices() = 0;
     AShader* GetShader();
     int GetId();
     AClassifier(MyMesh& mesh);

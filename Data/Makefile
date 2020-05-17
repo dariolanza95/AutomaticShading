@@ -8,6 +8,7 @@ SOURCES=\
 	MaskReader.cpp \
 	FlowShader.cpp \
 	PxrAdd.cpp\
+	SedimentationShader.cpp\
 	MaterialShader.cpp
 	
 

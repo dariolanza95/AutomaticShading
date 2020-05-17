@@ -18,11 +18,11 @@
 #include "utils.h"
 #include "mydefwrapper.h"
 //typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
-
+#include "featuresfinder.h"
 
 class PointCloudWriter
 {
-
+    FeaturesFinder* _features_finder;
     int _num_shader_parameters;
     PtcPointCloud _output_file;
     std::string _output_file_name;
@@ -37,7 +37,7 @@ class PointCloudWriter
 public:
     void Write();
     void Read();
-    PointCloudWriter(MyMesh mesh, AShader* shader, int _subdiv_levels, std::string output_path,bool mask);
+    PointCloudWriter(MyMesh mesh, AShader* shader, int _subdiv_levels, std::string output_path,FeaturesFinder* features_finder,bool mask);
 };
 
 #endif // POINTCLOUDWRITER_H

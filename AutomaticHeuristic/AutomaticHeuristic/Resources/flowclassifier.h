@@ -54,7 +54,8 @@ public:
     VertexEditTag GetVertexEditTag();
     FlowClassifier(MyMesh& mesh);
     AShader* GetShader();
-    map<MyMesh::VertexHandle,AShader*> ClassifyVertices();
+    //map<MyMesh::VertexHandle,AShader*> ClassifyVertices();
+    void ClassifyVertices(std::vector<glm::vec3>& list_of_points,std::vector<AShader*>& list_of_data,float& details);
 
 };
 

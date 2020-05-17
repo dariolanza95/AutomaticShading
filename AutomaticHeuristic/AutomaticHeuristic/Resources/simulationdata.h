@@ -10,15 +10,17 @@
 #include "../Graphics/exceptionclass.h"
 
 
-enum class SimulationDataEnum{vegetation,river,hardness,flow_normal,initial_sedimentation_point,sedimentation_history};
+enum class SimulationDataEnum{vegetation,river,sed_level,hardness,flow_normal,initial_sedimentation_point,sedimentation_history,actual_point};
 
 class SimulationData
 {
         std::map<std::string, SimulationDataEnum> SimulationDataEnummap = {
             {"flow_normal", SimulationDataEnum::flow_normal},
             {"hardness", SimulationDataEnum::hardness},
-            {"sedimentation_history", SimulationDataEnum::sedimentation_history},
-            {"initial_sedimentation_point", SimulationDataEnum::initial_sedimentation_point}
+            {"sediment_value", SimulationDataEnum::sedimentation_history},
+            {"initial_sedimentation_point", SimulationDataEnum::initial_sedimentation_point},
+            {"actual_point",SimulationDataEnum::actual_point},
+            {"sed_level",SimulationDataEnum::sed_level},
             };
 
         std::map<SimulationDataEnum,float> map_of_floats;
@@ -29,6 +31,7 @@ class SimulationData
     public:
         SimulationData(const std::string str);
         SimulationData();
+        ~SimulationData();
         SimulationData( std::map<SimulationDataEnum,float> map_of_floats,
                                         std::map<SimulationDataEnum,glm::vec3> map_of_vectors,
                                         std::map<SimulationDataEnum,std::vector<float>> map_of_lists);

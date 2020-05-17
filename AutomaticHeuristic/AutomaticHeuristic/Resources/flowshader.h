@@ -9,7 +9,6 @@
 #include <glm/glm.hpp>
 #include <math.h>
 #include <strstream>
-#include "flowshader.h"
 #include "utils.h"
 class FlowShader : public AShader
 {

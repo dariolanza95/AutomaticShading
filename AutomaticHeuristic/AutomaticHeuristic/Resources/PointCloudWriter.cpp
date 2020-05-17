@@ -18,9 +18,14 @@ void PointCloudWriter::Write()
     MyMesh::VertexIter vertex_iterator_end(_mesh.vertices_end());
     bool found = 0;
     vertex_handle=_mesh.vertices_begin();
-    for(_mesh.vertices_begin();vertex_handle!= vertex_iterator_end;++vertex_handle)
-    {
-        ShadersWrapper* const shader_wrapper = shader_parameters_data_wrapper[vertex_handle];
+     pcl::PointCloud<pcl::PointXYZL>::Ptr const point_cloud =_features_finder->getPointClouds();
+std::vector<ShadersWrapper*> list_of_shader_wrapper = _features_finder->getListOfShadersWrapper();
+int iterations = list_of_shader_wrapper.size();
+//for(_mesh.vertices_begin();vertex_handle!= vertex_iterator_end;++vertex_handle)
+for(size_t j = 0;j<iterations;j++){
+//std::cout<<"i "<<i << " over "<<  point_cloud->points.size()<<std::endl;
+//        ShadersWrapper* const shader_wrapper = shader_parameters_data_wrapper[vertex_handle];
+ShadersWrapper* const shader_wrapper  = list_of_shader_wrapper[j];
         std::vector<AShader*> list;
         shader_wrapper->GetListOfShaders(list);
         for(AShader* sp : list)
@@ -39,15 +44,15 @@ void PointCloudWriter::Write()
 
         }
         if(found){
-            mesh_point =  _mesh.point(*vertex_handle);
-            point[0] = mesh_point[0];
-            point[1] = mesh_point[1];
-            point[2] = mesh_point[2];
+            point[0] = point_cloud->points[j].x;
+            point[1] = point_cloud->points[j].y;
+            point[2] = point_cloud->points[j].z;
             normal[0] = normal[1] = normal[2] = 0;
             PtcWriteDataPoint(_output_file, point, normal, radius,&allocated_data[0] );
             found = false;
         }
     }
+
     PtcClosePointCloudFile(_output_file);
 }
 
@@ -127,12 +132,13 @@ char* PointCloudWriter::CreateMaskFile(AShader* shader, std::vector<char*>& var_
     return _file_name;
 }
 
-PointCloudWriter::PointCloudWriter(MyMesh mesh,AShader* shader,int subdiv_levels,std::string output_path,bool mask=true):
+PointCloudWriter::PointCloudWriter(MyMesh mesh,AShader* shader,int subdiv_levels,std::string output_path,FeaturesFinder* features_finder, bool mask=true):
     _mesh(mesh),
     _shader(shader),
     _subdiv_levels(subdiv_levels),
     _writing_a_shader_mask(mask),
-   _output_path(output_path)
+   _output_path(output_path),
+   _features_finder(features_finder)
 {
 
     char* _file_name;

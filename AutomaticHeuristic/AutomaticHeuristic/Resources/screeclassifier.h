@@ -10,6 +10,7 @@ using namespace OpenMesh;
 using namespace std;
 
 
+
 class ScreeClassifier: public AClassifier
 {
 public:

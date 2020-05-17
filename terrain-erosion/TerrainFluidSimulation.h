@@ -96,6 +96,7 @@ protected:
     Simulation::FluidSimulation _simulation;
 
     Grid2D<std::vector<int>> sedimentation_history;
+    Grid2D<float> sedimentated_terrain;
     Grid2D<glm::vec3> initial_sedimentation_point;
     Graphics::ShaderManager             _shaderManager;
     Graphics::VertexBuffer<float>       _terrainHeightBuffer;

@@ -126,7 +126,7 @@ void SimulationData::readLine(const string line )
     bool waiting_for_a_vector = false;
     bool waiting_for_a_list = false;
     int list_counter = 0;
-
+int x = tokens.size();
        for(uint i = 0 ; i< tokens.size();i++) {
            string str= tokens[i];
             float converted = -1;
@@ -173,6 +173,8 @@ void SimulationData::readLine(const string line )
                         }
                     }
                     map_of_vectors.insert(pair<SimulationDataEnum,glm::vec3> (data_name,vec));
+                    --i;
+                    waiting_for_a_number = false;
                }
                else {
                     if(waiting_for_a_number){
@@ -189,8 +191,9 @@ void SimulationData::readLine(const string line )
                                 string err("list without a size");
                                 throw ExceptionClass (err);
                             }
-                            std::vector<float> list(list_size);
-                            for(int j = 0;j<list_size;j++,i++){
+                            std::vector<float> list;
+                            for(int j = 0;j<list_size;j++){
+                                i++;
                                 str = tokens[i];
                                 if(isANumber(str,converted)){
                                     list.push_back(converted);
@@ -198,9 +201,19 @@ void SimulationData::readLine(const string line )
                                     string err("incomplete list");
                                     throw ExceptionClass (err);
                                 }
-                                map_of_lists.insert(pair<SimulationDataEnum,std::vector<float>> (data_name,list));
-                                waiting_for_a_number = false;
                             }
+                            waiting_for_a_number = false;
+                            list.clear();
+                            list.push_back(1);
+                            list.push_back(2);
+                            list.push_back(3);
+                            list.push_back(1);
+                            list.push_back(2);
+                            list.push_back(3);
+                            list.push_back(1);
+                            list.push_back(2);
+                            list.push_back(3);
+                            map_of_lists.insert(pair<SimulationDataEnum,std::vector<float>> (data_name,list));
 
                         }else{
                             stringstream err("Found a number without an associated name");
@@ -255,6 +268,11 @@ try{
     }
 }
 
+SimulationData::~SimulationData(){
+    for(pair<SimulationDataEnum,std::vector<float>>  entry : map_of_lists){
+        entry.second.~vector();
+    }
+}
 /*SimulationData SimulationData:: operator+( SimulationData sd) {
         SimulationData res;
         for(pair<SimulationDataEnum,float> p : this->map_of_floats){

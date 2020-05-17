@@ -6,8 +6,17 @@
 #include <glm/glm.hpp>
 
 #include "flowshader.h"
+#include "sedimentationshader.h"
 
-
+#include <OpenMesh/Tools/Subdivider/Adaptive/Composite/RuleInterfaceT.hh>
+#include <OpenMesh/Tools/Subdivider/Adaptive/Composite/CompositeT.hh>
+#include <OpenMesh/Tools/Subdivider/Uniform/CatmullClarkT.hh>
+#include <hash_set>
+#include <pcl/point_cloud.h>
+#include <pcl/cloud_iterator.h>
+#include <pcl/kdtree/kdtree_flann.h>
+#include "subdividerandinterpolator.h"
+#include "Ashader.h"
 struct sedimentationData{
     glm::vec3 initial_position;
     std::vector<float> sediment_history;
@@ -19,11 +28,21 @@ struct sedimentationData{
 class SedimentationClassifier : public AClassifier
 {
 
-    OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , SimulationData*>::type, MyMesh> simulation_data_wrapper;
-    map<MyMesh::VertexHandle, sedimentationData*> SelectSedimentationPoints();
-public:
-    SedimentationClassifier(MyMesh mesh);
-    map<MyMesh::VertexHandle,AShader*> ClassifyVertices();
-};
+    pcl::KdTreeFLANN<pcl::PointXYZLNormal> kdtree_input;
+    pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud_input;
+    void AssignSedimentationParameters(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
 
+    OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , SimulationData*>::type, MyMesh> simulation_data_wrapper;
+    map<MyMesh::VertexHandle, sedimentationData> SelectSedimentationPoints();
+    std::vector<AShader*> list_of_shaders;
+    std::vector<glm::vec3> list_of_sedimentation_points;
+    set<MyMesh::FaceHandle> GetSetOfFaces(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
+    void CreatePointCloud();
+    void ComputeSedimentationParametersForVertex(glm::vec3 actual_point,sedimentationData& sedimenation_data);
+public:
+    SedimentationClassifier(MyMesh &mesh);
+    void ClassifyVertices(std::vector<glm::vec3>& list_of_points,
+                                                   std::vector<AShader*>& list_of_data,
+                                                   float& details);
+};
 #endif // SEDIMENTATIONCLASSIFIER_H

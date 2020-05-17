@@ -9,6 +9,8 @@ FlowClassifier::FlowClassifier(MyMesh &mesh) : AClassifier(mesh),_shader_paramet
 }
 
 
+
+
 class splitInGroupsFunctorClass
 {
     public:
@@ -170,8 +172,12 @@ void FlowClassifier::selectFrontier(map<MyMesh::VertexHandle,FlowShader*>& selec
          //    std::cout<<"position is NAN"<<std::endl;
          //}
          SimulationData* sd = simulation_data_wrapper[*vertex_iterator];
+
          //normalize it!
          glm::vec3 sim_data_normal;
+         std::vector<float> sed_hist;
+         sd->getData(SimulationDataEnum::sedimentation_history,sed_hist);
+         std::cout<<"sed hist"<<sed_hist.size()<< std::endl;
          sd->getData(SimulationDataEnum::flow_normal,sim_data_normal);
          sim_data_normal = glm::normalize(sim_data_normal);
          float tmp = sim_data_normal[0];
@@ -221,8 +227,7 @@ void FlowClassifier::selectFrontier(map<MyMesh::VertexHandle,FlowShader*>& selec
      }
  }
 
-
-map<MyMesh::VertexHandle,AShader*> FlowClassifier::ClassifyVertices()
+void FlowClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_points,std::vector<AShader*>& list_of_data,float& details)
 {
 
     map<MyMesh::VertexHandle,AShader*> selected_vertices;
@@ -252,8 +257,8 @@ map<MyMesh::VertexHandle,AShader*> FlowClassifier::ClassifyVertices()
 
 
     std::cout<<"vertices "<< _mesh.n_vertices()<<std::endl;
-map<MyMesh::VertexHandle,glm::vec3> flow_vertices;
-    int _subdiv_levels = 3;
+    map<MyMesh::VertexHandle,glm::vec3> flow_vertices;
+    int _subdiv_levels = 1;
     for(int i=0;i<_subdiv_levels;i++){
 
 
@@ -362,7 +367,13 @@ map<MyMesh::VertexHandle,glm::vec3> flow_vertices;
     float scale= _subdiv_levels>0?  _subdiv_levels:1;
     selected_vertices = LIC(temporary_selected_vertices, scale,min_bb,max_bb);
 
-    return selected_vertices;
+    for(pair<MyMesh::VertexHandle,AShader*> entry : selected_vertices){
+          MyMesh::Point point = _mesh.point(entry.first);
+          list_of_points.push_back(glm::vec3(point[0],point[1],point[2]));
+          list_of_data.push_back(entry.second);
+    }
+    details = 0.01;
+    //return selected_vertices;
 }
 
 
@@ -568,7 +579,7 @@ map<MyMesh::VertexHandle,AShader*> FlowClassifier:: LIC(map<MyMesh::VertexHandle
     float box_length = longest_dimension/4;
     float step_size = 0.15/*0.26*/;/*0.5*/;//scale;
     float frequency = 1200/*200*/;//longest_dimension/2;//scale*2;
-    box_length = 20;/*150*/;
+    box_length = step_size;//20;/*150*/;
     FastNoise noise;
     std::map<MyMesh::VertexHandle,AShader*> output_map;
    std::map<MyMesh::VertexHandle,AShader*> intermediate_map;

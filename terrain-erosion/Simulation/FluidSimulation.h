@@ -41,7 +41,7 @@ public:
     Grid2D<float> tmpSediment;
     Grid2D<float> tmp_sediment_material;
     Grid2D<float>& sedimented_terrain;
-    //Grid2D<float>& sediments_material;
+    Grid2D<float>& sedimented_material;
     Grid2D<glm::vec4>& sedimented_terrain_color;
     Grid2D<float> uVel;
     Grid2D<float> vVel;
