@@ -535,8 +535,11 @@ string obj_file = "../../Data/input.obj";
   mesh2 = features_finder.Find(list_of_used_shaders);
   GLFWwindow* window = OpenGLInit();
   OpenGlVisualizer visualizer(window, 300, 300,mesh,obj_file);
+#ifndef VISUALIZE
+#define VISUALIZE
   visualizer.Initialize();
   visualizer.Visualize();
+ #endif
   string shaders_path("@:./");
   string plugins_path("@:./");
   string output_name_image("try03");

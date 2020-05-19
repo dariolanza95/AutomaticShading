@@ -35,7 +35,7 @@ in float vSedimentedTerrain;
 //in float vSimData;
 //in float vSimData_2;
 
-//in vec4 vSedimentedTerrainColor;
+in float vSedimentedTerrainColor;
 in vec3  vP; // shading position in camera space
 in vec3  vN; // shading normal in camera space
 in vec4  vFragPos;
@@ -80,7 +80,22 @@ void main(void)
     vec4 hardnessColor =  vec4(0,0,0,1);
     vec4 simDataColor =  vec4(0,0,0,1);
     vec4 sedimentColor = vec4(194.0/255.0,141.0/255.0,76.0/255.0,1);
-    vec4 sedimentedTerrainColor = vec4(1,0,1,0);
+    vec4 sedimentedTerrainColor;
+    if(vSedimentedTerrainColor == 0)
+        sedimentedTerrainColor = vec4(0.3,0.3,0.3,1);
+    else{
+        if(vSedimentedTerrainColor == 1)
+            sedimentedTerrainColor = vec4(1,0,1,1);
+        else{
+            if(vSedimentedTerrainColor == 2)
+                sedimentedTerrainColor = vec4(1,0,0,1);
+            else{
+                if(vSedimentedTerrainColor == 3)
+                    sedimentedTerrainColor = vec4(0,1,1,1);
+
+            }
+        }
+    }
     float temp = 1;
 
     if(uHardnessMode)

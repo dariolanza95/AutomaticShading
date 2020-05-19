@@ -1,13 +1,13 @@
 #ifndef SEDIMENTATIONCLASSIFIER_H
 #define SEDIMENTATIONCLASSIFIER_H
-#include "aclassifier.h"
 
+
+#include "aclassifier.h"
 #include <glm/vec3.hpp>
 #include <glm/glm.hpp>
 
 #include "flowshader.h"
 #include "sedimentationshader.h"
-
 #include <OpenMesh/Tools/Subdivider/Adaptive/Composite/RuleInterfaceT.hh>
 #include <OpenMesh/Tools/Subdivider/Adaptive/Composite/CompositeT.hh>
 #include <OpenMesh/Tools/Subdivider/Uniform/CatmullClarkT.hh>
@@ -31,6 +31,7 @@ class SedimentationClassifier : public AClassifier
     pcl::KdTreeFLANN<pcl::PointXYZLNormal> kdtree_input;
     pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud_input;
     void AssignSedimentationParameters(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
+    void AssignSedimentationParameters2(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
 
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , SimulationData*>::type, MyMesh> simulation_data_wrapper;
     map<MyMesh::VertexHandle, sedimentationData> SelectSedimentationPoints();

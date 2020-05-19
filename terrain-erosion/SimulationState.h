@@ -76,7 +76,8 @@ public:
     {
         glm::normalize(windDirection);
         PerlinNoise perlin;
-        float angle1 = 30;
+        float angle1 = 2;
+        float offset = 20;
         float angle2 = 1.3;
         for (uint y=0; y<water.height(); y++)
         {
@@ -93,11 +94,11 @@ public:
                 {
                     if (y > (water.height()/2))
                     {
-                        terrain(y,x) = (y-water.height()/2) * tan(M_PI*angle1/180);
+                        terrain(y,x) =offset+ (y-water.height()/2) * tan(M_PI*angle1/180);
                                             }
                     else
                     {
-                        terrain(y,x) = (-y+water.height()/2) * tan(M_PI*angle1/180);
+                        terrain(y,x) = offset+ (-y+water.height()/2) * tan(M_PI*angle1/180);
                         //terrain(y,x) = std::max(terrain(y,x),0.2f*(-y+water.height()/2));
                     }
                     float temp= (-x+water.height()*2/3) * tan(M_PI*angle2/180);

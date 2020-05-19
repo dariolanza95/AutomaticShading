@@ -172,6 +172,7 @@ int x = tokens.size();
                             throw ExceptionClass (err);
                         }
                     }
+                  //  vec[2] = -9;
                     map_of_vectors.insert(pair<SimulationDataEnum,glm::vec3> (data_name,vec));
                     --i;
                     waiting_for_a_number = false;
@@ -203,16 +204,21 @@ int x = tokens.size();
                                 }
                             }
                             waiting_for_a_number = false;
-                            list.clear();
+                           /* if(list.size()<13){
+                                list.clear();
+                                list.push_back(1);
+                                list.push_back(2);
+                            }*/
+                           /* list.clear();
                             list.push_back(1);
                             list.push_back(2);
                             list.push_back(3);
+                            list.push_back(4);
+                            list.push_back(5);
+                            list.push_back(6);/*
                             list.push_back(1);
                             list.push_back(2);
-                            list.push_back(3);
-                            list.push_back(1);
-                            list.push_back(2);
-                            list.push_back(3);
+                            list.push_back(3);*/
                             map_of_lists.insert(pair<SimulationDataEnum,std::vector<float>> (data_name,list));
 
                         }else{

@@ -94,10 +94,10 @@ protected:
    // std::vector<uint> gridIndices;
     SimulationState _simulationState;
     Simulation::FluidSimulation _simulation;
-
+    Grid2D<float> sed_color;
     Grid2D<std::vector<int>> sedimentation_history;
     Grid2D<float> sedimentated_terrain;
-    Grid2D<glm::vec3> initial_sedimentation_point;
+    Grid2D<std::vector<glm::vec3>> initial_sedimentation_points;
     Graphics::ShaderManager             _shaderManager;
     Graphics::VertexBuffer<float>       _terrainHeightBuffer;
     Graphics::VertexBuffer<float>       _waterHeightBuffer;
@@ -108,7 +108,7 @@ protected:
     Graphics::IndexBuffer               _gridIndexBuffer;
     Graphics::VertexBuffer<float>       _sedimentBuffer;
     Graphics::VertexBuffer<float>       _sedimentedTerrainBuffer;
-    Graphics::VertexBuffer<glm::vec4>       _sedimentedTerrainColorBuffer;
+    Graphics::VertexBuffer<float>       _sedimentedTerrainColorBuffer;
     Graphics::VertexBuffer<float>       _simDataBuffer;
     Graphics::VertexBuffer<float>       _simDataBuffer_2;
 

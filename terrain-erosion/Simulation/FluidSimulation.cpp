@@ -816,7 +816,7 @@ float FluidSimulation::getAir(int y, int x){
 void FluidSimulation::simulateErosion(double dt,ulong time)
 {
     const float Ks = 0.0001f*12*10; // dissolving constant
-    const float Kd = 0.01f*12*10; // deposition constant
+    const float Kd = 0.0001f*12*10; // deposition constant
     float max = 10;
     float min = -10;
     float scale = 3;
@@ -825,15 +825,35 @@ void FluidSimulation::simulateErosion(double dt,ulong time)
     glm::vec4 black_col(0,0,0,1);
     glm::vec4 sed_color(1,1,0,0);
     int sediment_material = 1;
-    if(time%50>15){
+    if(time%30>10){
         std::cout<<"new mat"<<std::endl;
         sediment_material = 2;
     }
-    if(time%50>30){
+    if(time%30>20){
         std::cout<<"new mat 2"<<std::endl;
         sediment_material = 3;
         sed_color = glm::vec4(0,1,1,1);
+    }/*
+    if(time%100>45){
+        std::cout<<"new mat 4"<<std::endl;
+        sediment_material = 4;
+        sed_color = glm::vec4(0,1,1,1);
     }
+    if(time%100>60){
+        std::cout<<"new mat 5"<<std::endl;
+        sediment_material = 5;
+        sed_color = glm::vec4(0,1,1,1);
+    }
+    if(time%100>75){
+        std::cout<<"new mat 6"<<std::endl;
+        sediment_material = 6;
+        sed_color = glm::vec4(0,1,1,1);
+    }
+    if(time%100>87){
+        std::cout<<"new mat 7"<<std::endl;
+        sediment_material = 7;
+        sed_color = glm::vec4(0,1,1,1);
+    }*/
 #if defined(__APPLE__) || defined(__MACH__)
     dispatch_apply(sediment.height(), gcdq, ^(size_t y)
 #else

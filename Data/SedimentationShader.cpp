@@ -454,7 +454,7 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
         float *data;
         float point[3];
         float normal[3];
-        int hardness_levels = 3;
+        int hardness_levels = 8;
         float hardness_values[hardness_levels];
         float max_hardness_value;
         hardness_values[0] = 23;
@@ -462,7 +462,7 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
         hardness_values[2] = 35;
         max_hardness_value = 35;
 
-        RtColorRGB hardness_colors[4];
+        RtColorRGB hardness_colors[hardness_levels];
 
         hardness_colors[0].r = 0.3456;//0.18;
         hardness_colors[0].g = 0.3456;//0.13;
@@ -477,10 +477,25 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
         hardness_colors[2].g = 1;//0.1;
         hardness_colors[2].b = 0;//0.07;
 
-
-        hardness_colors[3].r = 0;//0.16;
+        hardness_colors[3].r = 1;//0.16;
         hardness_colors[3].g = 1;//0.1;
         hardness_colors[3].b = 1;//0.07;
+
+        hardness_colors[4].r = 1;//0.16;
+        hardness_colors[4].g = 0;//0.1;
+        hardness_colors[4].b = 0;//0.07;
+
+        hardness_colors[5].r = 1;//0.16;
+        hardness_colors[5].g = 1;//0.1;
+        hardness_colors[5].b = 0;//0.07;
+
+        hardness_colors[6].r = 0;//0.16;
+        hardness_colors[6].g = 0;//0.1;
+        hardness_colors[6].b = 1;//0.07;
+
+        hardness_colors[7].r = 0;//0.16;
+        hardness_colors[7].g = 1;//0.1;
+        hardness_colors[7].b = 1;//0.07;
 
 
         RtColorRGB hardness_colors_secondary[hardness_levels];
@@ -627,20 +642,78 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
 
 
 
-                int K = 4;
+                int K = 30;
                 float maxdist = 1;
 
                 point[0] = pp.x;//thiscell.x;
                 point[1] = pp.y;//thiscell.y;
                 point[2] = pp.z;//thiscell.z;
                 int Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, K, data);
-                float val = -1;
+                float val = 0;
 
                 if(Readres==1)
                 {
 
                     val = data[0];
-                }/*
+                }
+/*
+                float delta = 0.01;
+
+                point[0] = pp.x + delta;//thiscell.x;
+                point[1] = pp.y;//thiscell.y;
+                point[2] = pp.z;//thiscell.z;
+                 Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, K, data);
+                float dx_val = 0;
+
+                if(Readres==1)
+                {
+
+                    dx_val = data[0];
+                }
+
+
+                point[0] = pp.x - delta;//thiscell.x;
+                point[1] = pp.y;//thiscell.y;
+                point[2] = pp.z;//thiscell.z;
+                 Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, K, data);
+                float dx_minus_val = 0;
+
+                if(Readres==1)
+                {
+
+                    dx_minus_val = data[0];
+                }
+
+
+
+                point[0] = pp.x;//thiscell.x;
+                point[1] = pp.y + delta;//thiscell.y;
+                point[2] = pp.z;//thiscell.z;
+                 Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, K, data);
+                float dy_val = 0;
+
+                if(Readres==1)
+                {
+
+                    dy_val = data[0];
+                }
+
+                point[0] = pp.x;//thiscell.x;
+                point[1] = pp.y - delta;//thiscell.y;
+                point[2] = pp.z;//thiscell.z;
+                 Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, K, data);
+                float dy_minus_val = 0;
+
+                if(Readres==1)
+                {
+
+                    dy_minus_val = data[0];
+                }
+
+                //res = val;
+                res = val*0.5 + dy_minus_val * 0.125+ dy_val*0.125 + dx_val*0.125 + dx_minus_val*0.125;*/
+                //res = dy_minus_val * 0.25+ dy_val*0.25 + dx_val*0.25 + dx_minus_val*0.25;
+                /*
                 RtVector3 dir_details = dir;
                 dir = FindOrthogonalVector(dir);
 
@@ -675,7 +748,6 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
 
 
 
-res = val;
 //res = details;
 
 res = RixSmoothStep(0,1 ,res );
@@ -713,19 +785,31 @@ res = RixSmoothStep(0,1 ,res );
         }
 */
 
-RtColorRGB  col ;
-int index1 = roundf(val);
+RtColorRGB  col,col1,col2 ;
+int index1 = roundf(val);/*
+int index2 = roundf(dx_val);
+int index3 = roundf(dx_minus_val);
+int index4 = roundf(dy_val);
+int index5 = roundf(dy_minus_val);*/
+//col = hardness_colors[index1];
 
 float displ =0 ;
         if(index1>=0)
         {
-           // std::cout<<"sedimentation"<<std::endl;
+        //    std::cout<<"sedimentation"<<std::endl;
             col = hardness_colors[index1];
-          //  resultRGB[n].r = hardness_colors[index1].r;
+            //col = hardness_colors[val]*0.5 + hardness_colors[dx_val]*0.125 + hardness_colors[dx_minus_val]*0.125 + hardness_colors[dy_val]*0.125 + hardness_colors[dy_minus_val]*0.125
+
+            //col = hardness_colors[index2];
+      /*  col = RixLerpRGB(hardness_colors[index2],hardness_colors[index3], 0.5);
+        col1 = RixLerpRGB(hardness_colors[index4],hardness_colors[index5], 0.5);
+        col2 = RixLerpRGB(col,col1, 0.5);
+        col = RixLerpRGB(col2,hardness_colors[index1],0.5);*/
+        //  resultRGB[n].r = hardness_colors[index1].r;
           //  resultRGB[n].g = hardness_colors[index1].g;
           //  resultRGB[n].b = hardness_colors[index1].b;
 
-            displ = hardness_values[index1]/max_hardness_value;//max_hardness_value;
+           // displ = hardness_values[index1]/max_hardness_value;//max_hardness_value;
            // if(index2!= index1)
            // {
            //     displ =  (f1/(f1+f2))*hardness_values[index1]/max_hardness_value +  (f2/(f1+f2))*hardness_values[index2]/max_hardness_value;;
