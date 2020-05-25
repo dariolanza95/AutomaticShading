@@ -82,6 +82,11 @@ protected:
     ///update the sedimentation history with the data calculated from the last simulation step
     void updateSedimentationHistory();
 
+    ///Avoid accesses out of the matrix
+    float getSedimentHistory(int y, int x);
+
+    float getSedimentHistorySize(int y, int x);
+
 protected:
     bool _finished;
     bool _inPause;
@@ -96,6 +101,7 @@ protected:
     Simulation::FluidSimulation _simulation;
     Grid2D<float> sed_color;
     Grid2D<std::vector<int>> sedimentation_history;
+    Grid2D<int> tmp_sedimentation_history;
     Grid2D<float> sedimentated_terrain;
     Grid2D<std::vector<glm::vec3>> initial_sedimentation_points;
     Graphics::ShaderManager             _shaderManager;

@@ -44,7 +44,7 @@ FluidSimulation::FluidSimulation(SimulationState& state)
       counter_times_water_was_still(state.vegetation),
       tmpSediment(state.water.width(),state.water.height()),
       tmp_sediment_material(state.water.width(),state.water.height()),
-
+      tmp_sediment_material_2(state.water.width(),state.water.height()),
       uVel(water.width(), water.height()),
       vVel(water.width(), water.height()),
       vVel_air(air.width(), air.height()),
@@ -82,6 +82,7 @@ FluidSimulation::FluidSimulation(SimulationState& state)
 
             lFlux(i,j) = rFlux(i,j) = tFlux(i,j) = bFlux(i,j) = 0;
             lFlux_air(i,j) = rFlux_air(i,j) = tFlux_air(i,j) = bFlux_air(i,j) = 0;
+            tmp_sediment_material(i,j) = 0;
         }
     }
     for(uint i = 0;i<air.width();i++){
@@ -133,14 +134,17 @@ if(rndint(rnd)==100){
 void FluidSimulation::makeRiver(double dt,ulong time)
 
 {
-    float scaler = 0.01;
+   // float scaler = 0.01;
+    float scaler = 0.05;
     int maxrand = 1000;
     std::uniform_int_distribution<ushort> rndInt(1,3);
   //  std::uniform_real_distribution<float> rndFloat(0,5);
     std::uniform_real_distribution<float> rndFloat(0,2);
     std::uniform_int_distribution<ushort> rndInt2(0,maxrand);
 
-    const vec2 pos = vec2(0.01,water.height()/2);
+//    const vec2 pos = vec2(0.01,water.height()/2);
+        const vec2 pos = vec2(water.height()*1/3-5,water.height()/2);
+
     int x = rndInt(rnd);
     int z = rndInt2(rnd);
     int y = rndFloat(rnd);
@@ -152,9 +156,30 @@ void FluidSimulation::makeRiver(double dt,ulong time)
 
 
 }
-void FluidSimulation::makeRain(double dt)
+void FluidSimulation::makeRain(double dt,ulong time)
 {
     std::uniform_int_distribution<ushort> rndInt(1,water.width()-2);
+
+    int sediment_material = 1;
+            int scaler = 3;
+    if(time%(50*scaler)>scaler*10){
+     //   std::cout<<"new mat"<<std::endl;
+        sediment_material = 2;
+    }
+    if(time%(50*scaler)>scaler*20){
+       // std::cout<<"new mat 2"<<std::endl;
+        sediment_material = 3;
+    }
+    if(time%(50*scaler)>scaler*30){
+        //std::cout<<"new mat 4"<<std::endl;
+        sediment_material = 4;
+    }
+    if(time%(50*scaler)>scaler*40){
+        //std::cout<<"new mat 5"<<std::endl;
+        sediment_material = 5;
+    }
+    if(time>150)
+        sediment_material = 5;
 
     for (uint i=0; i<100; i++)
     {
@@ -171,6 +196,17 @@ void FluidSimulation::makeRain(double dt)
         water(y+1, x-1)  += 1.0/16.0;
         water(y+1, x)  += 1.0/16.0;
         water(y+1, x+1)  += 1.0/16.0;
+
+        tmp_sediment_material(y-1,x-1) = sediment_material;
+        tmp_sediment_material(y-1,x) = sediment_material;
+        tmp_sediment_material(y-1,x+1) = sediment_material;
+        tmp_sediment_material(y,x-1) = sediment_material;
+        tmp_sediment_material(y,x) = sediment_material;
+        tmp_sediment_material(y,x+1) = sediment_material;
+        tmp_sediment_material(y+1,x-1) = sediment_material;
+        tmp_sediment_material(y+1,x) = sediment_material;
+        tmp_sediment_material(y+1,x+1) = sediment_material;
+
     }
 
 //    std::uniform_real_distribution<float> rndFloat(0.0f,1.0f);
@@ -227,6 +263,7 @@ void FluidSimulation::smoothTerrain()
     {
         for (int y=0; y<terrain.height(); ++y)
         {
+            int counter=0;
             h = getTerrain(y,x);
 
             float hl = getTerrain(y,x-1);
@@ -234,6 +271,27 @@ void FluidSimulation::smoothTerrain()
             float ht = getTerrain(y+1,x);
             float hb = getTerrain(y-1,x);
 
+
+            float h_mat = getSedimentMaterial(y,x);
+            float hl_mat = getSedimentMaterial(y,x-1);
+            float hr_mat = getSedimentMaterial(y,x+1);
+            float ht_mat = getSedimentMaterial(y+1,x);
+            float hb_mat = getSedimentMaterial(y-1,x);
+            if(h_mat>0){
+                counter++;
+            }
+            if(hr_mat>0){
+                counter++;
+            }
+            if(hl_mat>0){
+                counter++;
+            }
+            if(ht_mat>0){
+                counter++;
+            }
+            if(hb_mat>0){
+                counter++;
+            }
             float dl = h - hl;
             float dr = h - hr;
 
@@ -241,22 +299,30 @@ void FluidSimulation::smoothTerrain()
             float db = h - hb;
 
             tmpSediment(y,x) = h;
-
+float avg_material = 0;
             if ((abs(dl) > maxD || abs(dr) > maxD) && dr*dl > 0.0f)
             {
                 float avg = (h+hl+hr+ht+hb)/5;
+               if(counter>0)
+                    avg_material  = roundf((h_mat + hl_mat +hr_mat +ht_mat +hb_mat)/counter);
                 tmpSediment(y,x) = avg;
+                tmp_sediment_material_2(y,x) = avg_material;
             }
             else if ((abs(dt) > maxD || abs(db) > maxD) && dt*db > 0.0f)
             {
+                if(counter>0)
+                    avg_material = roundf((h_mat + hl_mat +hr_mat +ht_mat +hb_mat)/counter);
                 float avg = (h+hl+hr+ht+hb)/5;
                 tmpSediment(y,x) = avg;
+                tmp_sediment_material_2(y,x) = avg_material;
             }
         }
     }
 #if defined(__APPLE__) || defined(__MACH__)
     );
 #endif
+
+//sedimented_material(y,x) = tmp_sediment_material(y,x);
 
 
 #if defined(__APPLE__) || defined(__MACH__)
@@ -271,6 +337,10 @@ void FluidSimulation::smoothTerrain()
         float diff = ex_t - tmpsed;
         terrain(i) = tmpsed;
         sedimented_terrain(i) -= diff;
+        if(tmp_sediment_material(i) == 0 )     {
+             tmp_sediment_material(i) = tmp_sediment_material_2(i);
+             sedimented_material(i) = tmp_sediment_material_2(i);
+        }
     }
 
 #if defined(__APPLE__) || defined(__MACH__)
@@ -803,7 +873,9 @@ float FluidSimulation::getTerrain(int y, int x) {
     return terrain(glm::clamp(y,0,(int) terrain.height()-1),glm::clamp(x,0,(int) terrain.width()-1));
 }
 
-
+float FluidSimulation::getSedimentMaterial(int y, int x) {
+    return tmp_sediment_material(glm::clamp(y,0,(int) tmp_sediment_material.height()-1),glm::clamp(x,0,(int) tmp_sediment_material.width()-1));
+}
 
 float FluidSimulation::getWater(int y, int x){
     return water(glm::clamp(y,0,(int) water.height()-1),glm::clamp(x,0,(int) water.width()-1));
@@ -815,8 +887,10 @@ float FluidSimulation::getAir(int y, int x){
 
 void FluidSimulation::simulateErosion(double dt,ulong time)
 {
-    const float Ks = 0.0001f*12*10; // dissolving constant
-    const float Kd = 0.0001f*12*10; // deposition constant
+    float Ks = 0.0001f*12*10; // dissolving constant
+    float Kd = 0.0001f*12*10; // deposition constant
+   // if(time>150)
+   //     Kd *= 0.5;
     float max = 10;
     float min = -10;
     float scale = 3;
@@ -824,27 +898,7 @@ void FluidSimulation::simulateErosion(double dt,ulong time)
     PerlinNoise perlin;
     glm::vec4 black_col(0,0,0,1);
     glm::vec4 sed_color(1,1,0,0);
-    int sediment_material = 1;
-    if(time%30>10){
-        std::cout<<"new mat"<<std::endl;
-        sediment_material = 2;
-    }
-    if(time%30>20){
-        std::cout<<"new mat 2"<<std::endl;
-        sediment_material = 3;
-        sed_color = glm::vec4(0,1,1,1);
-    }/*
-    if(time%100>45){
-        std::cout<<"new mat 4"<<std::endl;
-        sediment_material = 4;
-        sed_color = glm::vec4(0,1,1,1);
-    }
-    if(time%100>60){
-        std::cout<<"new mat 5"<<std::endl;
-        sediment_material = 5;
-        sed_color = glm::vec4(0,1,1,1);
-    }
-    if(time%100>75){
+        /*if(time%100>75){
         std::cout<<"new mat 6"<<std::endl;
         sediment_material = 6;
         sed_color = glm::vec4(0,1,1,1);
@@ -905,12 +959,16 @@ void FluidSimulation::simulateErosion(double dt,ulong time)
              kc =kc + n*(kc/10);
             kc *= 2;
             state.simData(y,x) = kc/42;
-            kc = 35;
+            //if(z>15)
+            //    kc =15;
+            //else
+                kc = 35;
             float capacity = kc* sqrtf(uV*uV+vV*vV)*sinAlpha*(std::min(water(y,x),0.01f)/0.01f) ;
             float delta = (capacity-sediment(y,x));
 
             //float v = sqrtf(uV*uV+vV*vV);
             //float fctr = (std::min(water(y,x),0.01f)/0.01f);
+            sedimented_terrain(y,x) = 0;
 
             if (delta > 0.0f)
             {
@@ -920,7 +978,8 @@ void FluidSimulation::simulateErosion(double dt,ulong time)
                 sediment(y,x) += d;
               //  if(water(y,x)>0.01)
                     sedimented_terrain(y,x) -= d;
-                tmp_sediment_material(y,x) = sediment_material;
+//                    sedimented_material(y,x) = 0;
+                //tmp_sediment_material(y,x) = sediment_material;
                 //sedimented_terrain(y,x) -= sediment_material;
               // if( sedimented_terrain_color(x,y) == black_col)
         //           sedimented_terrain_color(x,y)  = sed_color;
@@ -934,10 +993,14 @@ void FluidSimulation::simulateErosion(double dt,ulong time)
                 sediment(y,x) += d;
                sedimented_terrain(y,x) -= d;//
                sedimented_material(y,x) = tmp_sediment_material(y,x);
+          //     tmp_sediment_material(y,x) = 0;
                //    if( sedimented_terrain_color(y,x) == black_col)
 
                     sedimented_terrain_color(y,x)  = sed_color;
             }
+            //else{
+            //    tmp_sediment_material(y,x) = 0;
+            //}
         }
     }
 #if defined(__APPLE__) || defined(__MACH__)
@@ -1038,7 +1101,10 @@ void FluidSimulation::simulateSedimentTransportation(double dt)
             y1 = clamp(y1,0,int(sediment.height()-1));
 
             float newVal = mix( mix(sediment(y0,x0),sediment(y0,x1),fX), mix(sediment(y1,x0),sediment(y1,x1),fX), fY);
+            float newValMat = mix( mix(tmp_sediment_material(y0,x0),tmp_sediment_material(y0,x1),fX), mix(tmp_sediment_material(y1,x0),tmp_sediment_material(y1,x1),fX), fY);
+
             tmpSediment(y,x) = newVal;
+            tmp_sediment_material_2(y,x) = roundf(newValMat);
 
         }
     }
@@ -1055,6 +1121,10 @@ void FluidSimulation::simulateSedimentTransportation(double dt)
 #endif
     {
         sediment(i) = tmpSediment(i);
+        tmp_sediment_material(i) = tmp_sediment_material_2(i);
+        /*if(tmpSediment(i)==0){
+            sedimented_material(i) == 0;
+        }*/
     }
 #if defined(__APPLE__) || defined(__MACH__)
     );
@@ -1086,13 +1156,34 @@ void FluidSimulation::simulateEvaporation(double dt)
 #endif
 }
 
+void FluidSimulation::EraseWater(){
+#if defined(__APPLE__) || defined(__MACH__)
+    dispatch_apply(water.height(), gcdq, ^(size_t y)
+#else
+    #pragma omp parallel for
+    for (uint y=0; y<water.height(); ++y)
+#endif
+    {
+        for (uint x=0; x<water.width(); ++x)
+        {
+            if(x > water.width()-5)
+                water(y,x) = 0;
+        }
+        }
+}
+
 void FluidSimulation::update(ulong time, double dt, bool rain, bool flood,bool wind)
 {
     // 1. Add water to the system
-    if (rain)
-        makeRain(dt);
+    if(time%20>10 || time>150)
+        rain= false;
+    else
+        rain = true;
 
-    if (flood)
+    if (rain )
+        makeRain(dt,time);
+
+    if (flood || time>180)
        makeRiver(dt,time);// makeFlood(dt);
     if(wind)
         makeWind(dt);
@@ -1111,6 +1202,6 @@ void FluidSimulation::update(ulong time, double dt, bool rain, bool flood,bool w
 
     smoothTerrain();
     computeSurfaceNormals();
-
+    EraseWater();
 
 }

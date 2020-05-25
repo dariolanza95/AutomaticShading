@@ -39,6 +39,8 @@ public:
     Grid2D<float> counter_from_last_time_water_passed;
     Grid2D<float> counter_times_water_was_still;
     Grid2D<float> tmpSediment;
+    Grid2D<float> tmp_sediment_material_2;
+
     Grid2D<float> tmp_sediment_material;
     Grid2D<float>& sedimented_terrain;
     Grid2D<float>& sedimented_material;
@@ -75,12 +77,12 @@ public:
     void simulateSedimentTransportation(double dt);
     void simulateEvaporation(double dt);
     float sampleTerrain(int x,int y );
-    void makeRain(double dt);
+    void makeRain(double dt,ulong time);
     void makeFlood(double dt);
     void makeWind(double dt);
     void makeRiver(double dt, ulong time);
     void simulateWind(double dt);
-
+    void EraseWater();
     void addRainDrop(const vec2& pos, int rad, float amount);
     void addWindParticle(const vec2& pos, int rad, float amount);
 
@@ -94,6 +96,9 @@ public:
     inline float getLFlux(int y, int x);
     inline float getBFlux(int y, int x);
     inline float getTFlux(int y, int x);
+
+    float getSedimentMaterial(int y, int x);
+
 
     inline float getRFlux_air(int y, int x);
     inline float getLFlux_air(int y, int x);

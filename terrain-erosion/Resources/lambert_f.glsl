@@ -81,7 +81,7 @@ void main(void)
     vec4 simDataColor =  vec4(0,0,0,1);
     vec4 sedimentColor = vec4(194.0/255.0,141.0/255.0,76.0/255.0,1);
     vec4 sedimentedTerrainColor;
-    if(vSedimentedTerrainColor == 0)
+    if(vSedimentedTerrainColor == 0 || vSedimentedTerrainColor>5)
         sedimentedTerrainColor = vec4(0.3,0.3,0.3,1);
     else{
         if(vSedimentedTerrainColor == 1)
@@ -92,7 +92,15 @@ void main(void)
             else{
                 if(vSedimentedTerrainColor == 3)
                     sedimentedTerrainColor = vec4(0,1,1,1);
+                else{
+                    if(vSedimentedTerrainColor == 4)
+                        sedimentedTerrainColor = vec4(1,1,0,1);
+                    else{
+                        if(vSedimentedTerrainColor == 5)
+                            sedimentedTerrainColor = vec4(0,0,1,1);
 
+                    }
+                }
             }
         }
     }
@@ -112,6 +120,8 @@ void main(void)
      //   temp2 = vSimData_2;
         temp3 = vSedimentedTerrain;
         temp3 = max(0,temp3);
+        if(temp3>=-10)
+            temp3 = 1;
 
     }
     else{
@@ -119,9 +129,9 @@ void main(void)
         temp3 = 0;
     }
 
-    fColor = mix(fColor,sedimentedTerrainColor,temp3);
   //  fColor = mix(fColor,vec4(0,1,0,1),vSediment);
     fColor = mix(fColor,sedimentColor,vSediment);
+    fColor = mix(fColor,sedimentedTerrainColor,temp3);
    // fColor = mix(fColor,hardnessColor,temp);
    // fColor = mix(fColor,simDataColor,temp2);
     float gamma = 2.2;

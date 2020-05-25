@@ -204,11 +204,11 @@ int x = tokens.size();
                                 }
                             }
                             waiting_for_a_number = false;
-                           /* if(list.size()<13){
+                            /*if(list.size()<13){
                                 list.clear();
                                 list.push_back(1);
                                 list.push_back(2);
-                            }*/
+                            }
                            /* list.clear();
                             list.push_back(1);
                             list.push_back(2);
@@ -219,6 +219,7 @@ int x = tokens.size();
                             list.push_back(1);
                             list.push_back(2);
                             list.push_back(3);*/
+                            list.resize(40);
                             map_of_lists.insert(pair<SimulationDataEnum,std::vector<float>> (data_name,list));
 
                         }else{

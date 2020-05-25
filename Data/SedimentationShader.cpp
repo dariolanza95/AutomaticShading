@@ -464,9 +464,9 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
 
         RtColorRGB hardness_colors[hardness_levels];
 
-        hardness_colors[0].r = 0.3456;//0.18;
-        hardness_colors[0].g = 0.3456;//0.13;
-        hardness_colors[0].b = 0.3456;//0.09;
+        hardness_colors[0].r =0;// 0.3456;//0.18;
+        hardness_colors[0].g =0;// 0.3456;//0.13;
+        hardness_colors[0].b =0;// 0.3456;//0.09;
 
 
         hardness_colors[1].r = 1;//0.19;
@@ -642,8 +642,8 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
 
 
 
-                int K = 30;
-                float maxdist = 1;
+                int K = 5;
+                float maxdist = 10;
 
                 point[0] = pp.x;//thiscell.x;
                 point[1] = pp.y;//thiscell.y;

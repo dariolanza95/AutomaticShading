@@ -58,7 +58,9 @@ public:
     {
 
         //createPerlinTerrain();
-        createRiverTerrain();
+      //  createRiverTerrain();
+        //createSteepTerrain();
+        createSedimentationTerrain();
         int l = 20;
         int mw = 20;
         int xmin = water.width() - l-mw;
@@ -118,6 +120,56 @@ public:
         }
     }
 
+    void createSedimentationTerrain()
+    {
+        glm::normalize(windDirection);
+        PerlinNoise perlin;
+        float angle1 = 30;
+        float offset = 30;
+        float angle2 = 30;
+        for (uint y=0; y<water.height(); y++)
+        {
+            for (uint x=0; x<water.width(); x++)
+            {
+                water(y,x) = 0.0f;
+                air(y,x) = 0.0f;
+                suspendedSediment(y,x) = 0.0f;
+                vegetation(y,x) = 0.0f;
+                simData(y,x) = 0.0f;
+                 simData_2(y,x) = 0.0f;
+                rivers(y,x) = 0.0f;
+                if (x < (water.height()*1/3))
+                {
+                    if (y > (water.height()/2))
+                    {
+                        terrain(y,x) =offset+ (y-water.height()/2) * tan(M_PI*angle1/180);
+                                            }
+                    else
+                    {
+                        terrain(y,x) = offset+ (-y+water.height()/2) * tan(M_PI*angle1/180);
+                        //terrain(y,x) = std::max(terrain(y,x),0.2f*(-y+water.height()/2));
+                    }
+                    float temp= (-x+water.height()*1/3) * tan(M_PI*angle2/180);
+                   //temp = 0;
+                    terrain (y,x) = std::max(terrain(y,x),temp);
+                    //terrain (y,x) = std::min(terrain(y,x),50);
+
+                    sedimented_terrain(y,x) = 0;
+                    sedimented_material(y,x)= 0;
+                    sedimented_terrain_color(y,x) = glm::vec4(0,0,0,1);
+                    temp_sedimented_material(y,x) = 0;
+
+                }
+                else
+                {
+                    terrain(y,x) = -10;
+                }
+
+            }
+        }
+    }
+
+
     void createPerlinTerrain()
     {
         PerlinNoise perlin;
@@ -164,6 +216,10 @@ public:
                 } else {
                     terrain(y,x) = std::max(terrain(y,x),0.2f*(-y+water.height()/2));
                 }
+                sedimented_terrain(y,x) = 0;
+                sedimented_material(y,x)= 0;
+                sedimented_terrain_color(y,x) = glm::vec4(0,0,0,1);
+                temp_sedimented_material(y,x) = 0;
 
                 suspendedSediment(y,x) = 0.0f;
             }
