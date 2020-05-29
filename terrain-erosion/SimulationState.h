@@ -125,7 +125,7 @@ public:
         glm::normalize(windDirection);
         PerlinNoise perlin;
         float angle1 = 30;
-        float offset = 30;
+        float offset = 40;
         float angle2 = 30;
         for (uint y=0; y<water.height(); y++)
         {
@@ -162,7 +162,8 @@ public:
                 }
                 else
                 {
-                    terrain(y,x) = -10;
+                   // terrain(y,x) = -10;
+                     terrain(y,x) = 0;
                 }
 
             }

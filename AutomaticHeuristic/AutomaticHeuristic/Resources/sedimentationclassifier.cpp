@@ -254,8 +254,8 @@ map<MyMesh::VertexHandle,sedimentationData> SedimentationClassifier::SelectSedim
                        tmp_sediment_history.push_back(entry);
                }
                sedimentationData sdtmp = sedimentationData(initial_sedimentation_point,tmp_sediment_history);
-            sedimentationData& sd = sdtmp;
-            selected_vertices.insert(std::make_pair(vertex_iterator,sd));
+
+            selected_vertices.insert(std::make_pair(vertex_iterator,sdtmp));
            }
     }
 
@@ -384,7 +384,7 @@ void SedimentationClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_p
 
 
 
-
+/*
     auto selected_vertices = SelectSedimentationPoints();
     for(auto entry : selected_vertices) {
         MyMesh::Point point = _mesh.point(entry.first);
@@ -392,7 +392,7 @@ void SedimentationClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_p
         ComputeSedimentationParametersForVertex(actual_point,entry.second);
         //delete entry.second;
     }
-  /*CreatePointCloud();
+ /* CreatePointCloud();
 
      int _subdiv_levels = 2;
      for(int i=0;i<_subdiv_levels;i++){
@@ -407,10 +407,10 @@ void SedimentationClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_p
 
     AssignSedimentationParameters(selected_vertices);*/
    // AverageData();
-   AssignSedimentationParameters2(selected_vertices);
+ /*  AssignSedimentationParameters2(selected_vertices);
     list_of_points = list_of_sedimentation_points;
     list_of_data = list_of_shaders;
-    details = 0.5;
+    details = 0.5;*/
 }
 
 

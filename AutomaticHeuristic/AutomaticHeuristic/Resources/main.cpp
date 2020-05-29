@@ -15,7 +15,7 @@
 #include "featuresfinder.h"
 #include "FieldThreeDWriter.h"
 #include "PointCloudWriter.h"
-//#define VISUALIZE
+#define VISUALIZE
 
 #include "LICMap.h"
 // --------------------OpenMesh----------------------------
@@ -561,7 +561,7 @@ string obj_file = "../../Data/input.obj";
    int i = 0;
     string path("../../Data/");
 
-   for(AShader* shader : list_of_used_shaders )
+   /*for(AShader* shader : list_of_used_shaders )
     {
         std::cout<<"i "<<i<<std::endl;
         //filename<<i++;
@@ -573,16 +573,14 @@ string obj_file = "../../Data/input.obj";
    for(AShader* shader : list_of_used_shaders )
    {
        std::cout<<"i "<<i<<std::endl;
-       //filename<<i++;
        PointCloudWriter pcw(mesh2,shader,subdivs,path,&features_finder,false);
-       std::cout<<"uga buga"<<std::endl;
        pcw.Write();
-   }
+   }*/
      //pcw.Read();
     std::cout<<"Bye bye"<<std::endl;
 
     char *args_prman[]={"./myscript",NULL};
-    execvp (args_prman[0],args_prman);
+    //execvp (args_prman[0],args_prman);
     return 0;
 }
 

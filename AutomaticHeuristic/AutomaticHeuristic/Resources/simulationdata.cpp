@@ -172,7 +172,6 @@ int x = tokens.size();
                             throw ExceptionClass (err);
                         }
                     }
-                  //  vec[2] = -9;
                     map_of_vectors.insert(pair<SimulationDataEnum,glm::vec3> (data_name,vec));
                     --i;
                     waiting_for_a_number = false;

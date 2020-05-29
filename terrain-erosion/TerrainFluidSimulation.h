@@ -80,12 +80,13 @@ protected:
     void RenderDebugTool();
 
     ///update the sedimentation history with the data calculated from the last simulation step
-    void updateSedimentationHistory();
+    void updateSedimentationHistory(ulong time);
 
     ///Avoid accesses out of the matrix
     float getSedimentHistory(int y, int x);
 
     float getSedimentHistorySize(int y, int x);
+    std::vector<int> CreateMockUpData(int y,int x,int num_levels,int num_materials);
 
 protected:
     bool _finished;

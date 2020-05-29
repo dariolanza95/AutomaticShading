@@ -158,10 +158,12 @@ void FluidSimulation::makeRiver(double dt,ulong time)
 }
 void FluidSimulation::makeRain(double dt,ulong time)
 {
-    std::uniform_int_distribution<ushort> rndInt(1,water.width()-2);
+    //std::uniform_int_distribution<ushort> rndInt(1,water.width()-2);
+    std::uniform_int_distribution<ushort> rndIntX(1,water.height()*1/3-2);
+    std::uniform_int_distribution<ushort> rndIntY(1,water.width()-2);
 
     int sediment_material = 1;
-            int scaler = 3;
+            int scaler = 2;
     if(time%(50*scaler)>scaler*10){
      //   std::cout<<"new mat"<<std::endl;
         sediment_material = 2;
@@ -178,13 +180,13 @@ void FluidSimulation::makeRain(double dt,ulong time)
         //std::cout<<"new mat 5"<<std::endl;
         sediment_material = 5;
     }
-    if(time>150)
+    if(time>50*scaler)
         sediment_material = 5;
 
     for (uint i=0; i<100; i++)
     {
-        uint x = rndInt(rnd);
-        uint y = rndInt(rnd);
+        uint x = rndIntX(rnd);
+        uint y = rndIntY(rnd);
 
 //        water(y,x) += 1;
         water(y-1, x-1)  += 1.0/16.0;
@@ -962,7 +964,37 @@ void FluidSimulation::simulateErosion(double dt,ulong time)
             //if(z>15)
             //    kc =15;
             //else
-                kc = 35;
+            int sed_mat = roundf(tmp_sediment_material(y,x));
+            switch (sed_mat) {
+            case 1 :
+            {
+                kc = 18;
+                break;
+            }
+            case 2:
+            {
+                kc = 20;
+                break;
+            }
+            case 3:
+            {
+                kc = 28;
+                break;
+            }
+            case 4:
+            {
+                kc = 36;
+                break;
+            }
+            case 5:
+            {
+                kc = 44;
+                break;
+            }
+
+            default:
+                kc = 50;
+            }
             float capacity = kc* sqrtf(uV*uV+vV*vV)*sinAlpha*(std::min(water(y,x),0.01f)/0.01f) ;
             float delta = (capacity-sediment(y,x));
 
@@ -1174,16 +1206,16 @@ void FluidSimulation::EraseWater(){
 
 void FluidSimulation::update(ulong time, double dt, bool rain, bool flood,bool wind)
 {
-    // 1. Add water to the system
-    if(time%20>10 || time>150)
-        rain= false;
-    else
-        rain = true;
+  // if(time%40>30 || time>50*4-1)
+  //     rain= false;
+  // else
+  //     rain = true;
 
+    // 1. Add water to the system
     if (rain )
         makeRain(dt,time);
 
-    if (flood || time>180)
+    if (flood || time>160)
        makeRiver(dt,time);// makeFlood(dt);
     if(wind)
         makeWind(dt);
