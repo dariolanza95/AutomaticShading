@@ -113,7 +113,7 @@ void FlowClassifier::selectFrontier(map<MyMesh::VertexHandle,FlowShader*>& selec
 
 
     map<MyMesh::VertexHandle,FlowShader*> frontier;
-    float river;
+    //float river;
     for (pair<MyMesh::VertexHandle,FlowShader*> const& entry : selected_vertices)
     {
         VertexHandle vertex_handle = entry.first;

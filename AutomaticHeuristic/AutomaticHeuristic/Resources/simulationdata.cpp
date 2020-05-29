@@ -275,9 +275,10 @@ try{
 }
 
 SimulationData::~SimulationData(){
-    for(pair<SimulationDataEnum,std::vector<float>>  entry : map_of_lists){
-        entry.second.~vector();
-    }
+  // std::cout<<"Call dtor"<<std::endl;
+    // for(pair<SimulationDataEnum,std::vector<float>>  entry : map_of_lists){
+   //     entry.second.~vector();
+   // }
 }
 /*SimulationData SimulationData:: operator+( SimulationData sd) {
         SimulationData res;

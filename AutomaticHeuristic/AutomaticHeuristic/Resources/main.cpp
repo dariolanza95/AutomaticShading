@@ -15,6 +15,7 @@
 #include "featuresfinder.h"
 #include "FieldThreeDWriter.h"
 #include "PointCloudWriter.h"
+#include <memory>
 #define VISUALIZE
 
 #include "LICMap.h"
@@ -489,7 +490,10 @@ void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &me
     //vector<string> variablenames = {"vegetation","rivers","hardness","normalFlow"};
 
     ifstream inputfile(simulation_data_file);
-    auto simulation_data = getOrMakeProperty<VertexHandle, SimulationData*>(mesh, "simulation_data");
+    //vector<unique_ptr<SuperObject>> v ;
+    //v.push_back( make_unique<Object>( ... ) ) ;
+    std::shared_ptr<SimulationData> bolla;
+    auto simulation_data = getOrMakeProperty<VertexHandle,std::shared_ptr<SimulationData>>(mesh, "simulation_data");
     for (auto& vertex_handle : mesh.vertices())
     {
         getline(inputfile,line);
@@ -501,11 +505,15 @@ void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &me
         counter++;
         try
         {
-            SimulationData *sd =new SimulationData(line);
-            simulation_data[vertex_handle] = sd;
+            std::shared_ptr<SimulationData> sd_uniq(new SimulationData(line));
+            simulation_data[vertex_handle] = sd_uniq;
+
+//            SimulationData *sd =new SimulationData(line);
+//            simulation_data[vertex_handle] = sd;
         }
         catch(const char* excp)
         {
+
             cout<<excp<<endl;
             exit(EXIT_FAILURE);
         }
@@ -528,12 +536,13 @@ string obj_file = "../../Data/input.obj";
 
 
   MyMesh mesh;
-  MyMesh mesh2;
   LoadMesh(obj_file,data_file,mesh);
-  mesh2 = mesh;
+  MyMesh mesh2;//(mesh);
+  LoadMesh(obj_file,data_file,mesh2);
+  //mesh2 = mesh;
   FeaturesFinder features_finder(mesh2);
   std::vector<AShader*> list_of_used_shaders;
-  mesh2 = features_finder.Find(list_of_used_shaders);
+  features_finder.Find(list_of_used_shaders);
   GLFWwindow* window = OpenGLInit();
   OpenGlVisualizer visualizer(window, 300, 300,mesh,obj_file);
 #ifndef VISUALIZE
@@ -561,7 +570,7 @@ string obj_file = "../../Data/input.obj";
    int i = 0;
     string path("../../Data/");
 
-   /*for(AShader* shader : list_of_used_shaders )
+   for(AShader* shader : list_of_used_shaders )
     {
         std::cout<<"i "<<i<<std::endl;
         //filename<<i++;
@@ -575,12 +584,11 @@ string obj_file = "../../Data/input.obj";
        std::cout<<"i "<<i<<std::endl;
        PointCloudWriter pcw(mesh2,shader,subdivs,path,&features_finder,false);
        pcw.Write();
-   }*/
-     //pcw.Read();
+   }
     std::cout<<"Bye bye"<<std::endl;
 
     char *args_prman[]={"./myscript",NULL};
-    //execvp (args_prman[0],args_prman);
+    execvp (args_prman[0],args_prman);
     return 0;
 }
 

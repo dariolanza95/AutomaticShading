@@ -17,7 +17,7 @@ const std::vector<ShadersWrapper*>  FeaturesFinder::getListOfShadersWrapper(){
 }
 
 
-MyMesh  FeaturesFinder::Find(std::vector<AShader*>& list_of_used_shaders)
+MyMesh&  FeaturesFinder::Find(std::vector<AShader*>& list_of_used_shaders)
 {
 
 
@@ -105,7 +105,8 @@ void FeaturesFinder::UpdateSimulationData(std::vector<glm::vec3> list_of_points,
             list_of_shaders_wrappers.push_back(sw);
         }
         point_cloud->width = list_of_points.size();
-        kdtree.setInputCloud(point_cloud);
+        if(point_cloud->points.size()>0)
+            kdtree.setInputCloud(point_cloud);
     }else   {
         for(size_t i = 0;i<list_of_points.size();i++){
             glm::vec3 actual_point= list_of_points[i];
@@ -116,6 +117,7 @@ void FeaturesFinder::UpdateSimulationData(std::vector<glm::vec3> list_of_points,
             int K = 1;
             std::vector<int> pointIdxNKNSearch(K);
             std::vector<float> pointNKNSquaredDistance(K);
+            if(point_cloud->points.size()>0)
             if ( kdtree.nearestKSearch (searchPoint, K, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 ){
                 if(sqrtf(pointNKNSquaredDistance[0])<= density){
                     int idx = pointIdxNKNSearch[0];
@@ -161,6 +163,6 @@ auto shader_parameters_data_wrapper= getOrMakeProperty<VertexHandle, ShadersWrap
     for(vertex_iterator = _mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
     {
         ShadersWrapper* shaders_wrapper= new ShadersWrapper();
-        shader_parameters_data_wrapper[vertex_iterator] = shaders_wrapper;
+        shader_parameters_data_wrapper[*vertex_iterator] = shaders_wrapper;
     }
 }

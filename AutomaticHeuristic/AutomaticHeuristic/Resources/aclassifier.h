@@ -7,6 +7,7 @@
 #include "simulationdata.h"
 #include "Ashader.h"
 #include "mydefwrapper.h"
+#include <memory>
 #include <OpenMesh/Tools/Subdivider/Adaptive/Composite/RuleInterfaceT.hh>
 #include <OpenMesh/Tools/Subdivider/Adaptive/Composite/CompositeT.hh>
 //typedef OpenMesh::TriMesh_ArrayKernelT<OpenMesh::Subdivider::Adaptive::CompositeTraits>  MyMesh;

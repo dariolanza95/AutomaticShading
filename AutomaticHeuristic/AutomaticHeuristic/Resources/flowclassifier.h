@@ -14,12 +14,12 @@
 #include "flowshader.h"
 #include <./../Noise/FastNoise/FastNoise.h>
 #include "subdividerandinterpolator.h"
-#include <OpenMesh/Tools/Subdivider/Adaptive/Composite/RulesT.hh>
+//#include <OpenMesh/Tools/Subdivider/Adaptive/Composite/RulesT.hh>
 #include <pointcloud.h>
 #include <unordered_set>
 #include <list>
 #include <random>
-#include "myrules.h"
+//#include "myrules.h"
 #include <hash_set>
 #include <pcl/point_cloud.h>
 #include <pcl/cloud_iterator.h>

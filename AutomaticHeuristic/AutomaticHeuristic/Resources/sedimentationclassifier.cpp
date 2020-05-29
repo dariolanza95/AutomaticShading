@@ -233,10 +233,13 @@ map<MyMesh::VertexHandle,sedimentationData> SedimentationClassifier::SelectSedim
     map<MyMesh::VertexHandle,sedimentationData> selected_vertices;
     MyMesh::VertexIter vertex_iterator = _mesh.vertices_begin();
     MyMesh::VertexIter vertex_iterator_end = _mesh.vertices_end();
-    simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,SimulationData*>(_mesh, "simulation_data");
+   simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,std::shared_ptr<SimulationData>>(_mesh, "simulation_data");
+
+//    simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,std::shared_ptr<SimulationData>>(_mesh, "mazulanzas");
 
     for(;vertex_iterator != vertex_iterator_end;++vertex_iterator){
-        SimulationData* sd  = simulation_data_wrapper[*vertex_iterator];
+        //SimulationData* sd ;
+        std::shared_ptr<SimulationData> sd = simulation_data_wrapper[*vertex_iterator];
            std::vector<float> sediment_history;
            sd->getData(SimulationDataEnum::sedimentation_history,sediment_history);
            glm::vec3 initial_sedimentation_point;
@@ -384,7 +387,7 @@ void SedimentationClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_p
 
 
 
-/*
+
     auto selected_vertices = SelectSedimentationPoints();
     for(auto entry : selected_vertices) {
         MyMesh::Point point = _mesh.point(entry.first);
@@ -407,10 +410,10 @@ void SedimentationClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_p
 
     AssignSedimentationParameters(selected_vertices);*/
    // AverageData();
- /*  AssignSedimentationParameters2(selected_vertices);
+   AssignSedimentationParameters2(selected_vertices);
     list_of_points = list_of_sedimentation_points;
     list_of_data = list_of_shaders;
-    details = 0.5;*/
+    details = 0.5;
 }
 
 

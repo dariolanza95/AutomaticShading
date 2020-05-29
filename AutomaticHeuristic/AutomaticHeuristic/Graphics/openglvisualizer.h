@@ -34,7 +34,7 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
-
+#include <memory>
 #include <glm/gtx/string_cast.hpp>
 
 #ifdef Success

@@ -4,14 +4,14 @@
 #include <string>
 #include <string.h>
 
-
+enum class WarningLevelEnum{Error,Warning,Info};
 class ExceptionClass : public std::exception
 {
 protected:
     std::string error_message;
-
+    WarningLevelEnum warning_level;
 public:
-    ExceptionClass(const std::string& error_message);
+    ExceptionClass(const std::string& error_message,WarningLevelEnum warning_level = WarningLevelEnum::Info);
 
 //    ~Exception() throw(){}
 

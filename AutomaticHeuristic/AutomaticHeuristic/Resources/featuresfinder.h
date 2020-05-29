@@ -30,7 +30,7 @@ public:
     pcl::PointCloud<pcl::PointXYZL>::Ptr  const getPointClouds();
     FeaturesFinder(MyMesh& mesh);
     vector<VertexEditTag> GetVertexEditTags();
-    MyMesh Find(std::vector<AShader* > &list_of_used_shaders);
+    MyMesh& Find(std::vector<AShader* > &list_of_used_shaders);
 };
 
 #endif // FEATURESFINDER_H

@@ -341,7 +341,7 @@ SubdividerAndInterpolator<MeshType,RealType>::split_edge( MeshType& _m, const Ed
   // new vertex
   vh                = _m.new_vertex( zero );
   _m.set_point( vh, _m.property( ep_pos_, _eh ) );
- Point pos = _m.point(vh);
+ //Point pos = _m.point(vh);
 
  //copy data from previous vertex
   auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_m, "shader_parameters");
@@ -453,7 +453,6 @@ SubdividerAndInterpolator<MeshType,RealType>::compute_midpoint( MeshType& _m, co
       else{
       temp_pos=(_m.property(fp_pos_, _m.face_handle(opp_heh)));
       temp_v = glm::vec3(temp_pos[0],temp_pos[1],temp_pos[2]);
-      centroid;
       if(glm::any(glm::isnan(temp_v))  ){
           pos *= static_cast<RealType>(0.5);
       }

@@ -169,9 +169,9 @@
 	    <string name="timersNote" description="Note:">Sum of component times may exceed total in multi-threaded renders.</string>
 	    <stats name="timers" kind="timers">
 		<timer name="totaltime" description="Total time">
-		    <elapsed>2.826209</elapsed>
-		    <user>2.184976</user>
-		    <system>0.417980</system>
+		    <elapsed>3.585775</elapsed>
+		    <user>2.953360</user>
+		    <system>0.425276</system>
 		</timer>
 		<timer name="allProceduralTimers" description="All procedurals">
 		    <elapsed>0.000000</elapsed>
@@ -194,29 +194,29 @@
 		    <elapsed>0</elapsed>
 		</timer>
 		<timer name="ribInitTimer" description="Initial rib parsing and setup">
-		    <elapsed>0.272482</elapsed>
-		    <user>0.071290</user>
-		    <system>0.132073</system>
+		    <elapsed>0.218812</elapsed>
+		    <user>0.067126</user>
+		    <system>0.090405</system>
 		</timer>
 	    </stats>
 	</stats>
 	<stats name="memory" description="Memory usage summary" kind="section">
 	    <stats name="systemMem" description="System memory">
 		<memory name="heapMemory" description="Total heap memory">
-		    <peak>1584746496</peak>
-		    <current>1584746496</current>
+		    <peak>1730134016</peak>
+		    <current>1730134016</current>
 		</memory>
 		<memory name="peakResidentSize" description="Peak resident size">
-		    <peak>650858496</peak>
-		    <current>650858496</current>
+		    <peak>800104448</peak>
+		    <current>800104448</current>
 		</memory>
 		<int name="pageFaults">0</int>
-		<int name="pageReclaims">166209</int>
+		<int name="pageReclaims">213000</int>
 	    </stats>
 	    <stats name="subsystems" kind="memstats">
 		<memory name="geometryMem" description="Geometry Memory">
-		    <peak>208905956</peak>
-		    <current>208902788</current>
+		    <peak>344279492</peak>
+		    <current>344276516</current>
 		</memory>
 		<memory name="implicitPluginMemory" description="Implicit and Volume plugin Memory">
 		    <peak>0</peak>
@@ -302,8 +302,8 @@
 		</memory>
 	    </stats>
 	    <memory name="subsystemMem" description="Subsystem memory total">
-		<peak>608244841</peak>
-		<current>595875617</current>
+		<peak>743618377</peak>
+		<current>731249345</current>
 	    </memory>
 	</stats>
 	<stats name="geometry" description="Geometry stats" kind="section">
@@ -336,16 +336,16 @@
 		<current>0</current>
 	    </memory>
 	    <range name="gprimCount" description="GPrim count">
-		<current>242423</current>
-		<total>274230</total>
+		<current>315845</current>
+		<total>384362</total>
 		<min>0</min>
-		<max>242424</max>
+		<max>315845</max>
 		<average>1</average>
-		<count>274230</count>
+		<count>384362</count>
 	    </range>
 	    <memory name="gprimMem" description="GPrim memory">
-		<peak>37770660</peak>
-		<current>37770516</current>
+		<peak>48343284</peak>
+		<current>48343284</current>
 	    </memory>
 	    <memory name="instanceMem" description="Instance memory">
 		<peak>768</peak>
@@ -356,38 +356,38 @@
 		<current>0</current>
 	    </memory>
 	    <memory name="gopDynamicMem" description="Dynamic GOP memory">
-		<peak>11636352</peak>
-		<current>11636304</current>
+		<peak>15160560</peak>
+		<current>15160560</current>
 	    </memory>
 	    <memory name="stitchMem" description="Crack reduction memory">
-		<peak>7700480</peak>
-		<current>7700480</current>
+		<peak>16465920</peak>
+		<current>16465920</current>
 	    </memory>
 	    <range name="vvCount" description="Vertex vector count">
-		<current>7</current>
-		<total>7</total>
+		<current>13</current>
+		<total>13</total>
 		<min>0</min>
-		<max>7</max>
+		<max>13</max>
 		<average>1</average>
-		<count>7</count>
+		<count>13</count>
 	    </range>
 	    <memory name="vvMem" description="Vertex vector memory">
-		<peak>6480000</peak>
-		<current>6480000</current>
+		<peak>12960000</peak>
+		<current>12960000</current>
 	    </memory>
 	    <memory name="vvBVHMem" description="Vertex vector BVH memory">
 		<peak>0</peak>
 		<current>0</current>
 	    </memory>
 	    <memory name="vvOverheadMem" description="Vertex vector overhead memory">
-		<peak>784</peak>
-		<current>784</current>
+		<peak>1456</peak>
+		<current>1456</current>
 	    </memory>
 	    <stats name="implicitSurfacePlugins" description="Stats for each Implicit and Volume plugin" kind="implicitplugins">
 	    </stats>
 	    <memory name="catmarkMem" description="Catmull-Clark subdivision memory">
-		<peak>145296384</peak>
-		<current>145296384</current>
+		<peak>251326976</peak>
+		<current>251326976</current>
 	    </memory>
 	    <memory name="loopMem" description="Loop subdivision memory">
 		<peak>0</peak>
@@ -772,9 +772,9 @@
 	</stats>
 	<stats name="system" description="System stats" kind="section">
 	    <timer name="totaltime" description="Total time">
-		<elapsed>2.826209</elapsed>
-		<user>2.184976</user>
-		<system>0.417980</system>
+		<elapsed>3.585775</elapsed>
+		<user>2.953360</user>
+		<system>0.425276</system>
 	    </timer>
 	    <set name="fileLog" description="Files accessed">
 		<member>.///MaskReader</member>
@@ -819,7 +819,7 @@
 	    <string name="linkTime">linked Wed Jan 22 20:14:24 2020 PST @2036321</string>
 	    <string name="build">build linuxRHEL7_x86-64_gcc63icc190_external_release</string>
 	    <string name="licenseDigest">  @  @|10=jT42knY9d|29J?f9B:=b05:;V84=:VE76@e248Nf31|2C?IS1E8Ke19;MPD77JY28GLPB78JW65|86&lt;AYBD&lt;&gt;PDE;JY5BIIY96&lt;;c4E:LU85</string>
-	    <string name="timestamp">Fri May 29 12:30:41 CEST 2020</string>
+	    <string name="timestamp">Fri May 29 16:20:47 CEST 2020</string>
 	    <int name="threads">8</int>
 	    <int name="xRes">300</int>
 	    <int name="yRes">200</int>
@@ -1184,7 +1184,7 @@
 		    <int name="NumAutomataBuilds" description="Number of times automata was built">1</int>
 		    <stats name="SingleLobe" description="Automata with support for only single-lobe" kind="LPEAutomata">
 			<timer name="Build" description="Total time spent building automata">
-			    <elapsed>0.000085</elapsed>
+			    <elapsed>0.000104</elapsed>
 			</timer>
 			<memory name="Memory" description="Memory used for automata">
 			    <peak>692</peak>
@@ -1206,7 +1206,7 @@
 			<count>4</count>
 		    </memory>
 		    <timer name="creationTime" description="creationTime">
-			<elapsed>0.000560</elapsed>
+			<elapsed>0.000417</elapsed>
 		    </timer>
 		</stats>
 		<stats name="Pattern" description="Time and memory used by Pattern">
@@ -1217,7 +1217,7 @@
 			<count>6</count>
 		    </memory>
 		    <timer name="creationTime" description="creationTime">
-			<elapsed>0.000050</elapsed>
+			<elapsed>0.000035</elapsed>
 		    </timer>
 		</stats>
 		<stats name="Other" description="Time and memory used by other RixShadingPlugin">
@@ -1228,7 +1228,7 @@
 			<count>2</count>
 		    </memory>
 		    <timer name="creationTime" description="creationTime">
-			<elapsed>0.000279</elapsed>
+			<elapsed>0.000253</elapsed>
 		    </timer>
 		</stats>
 	    </stats>

@@ -443,12 +443,13 @@ void OpenGlVisualizer::ShowSelectedFaces()
 void OpenGlVisualizer::ShowSimulationDataInput()
 {
   std::cout<<"showing simulation input data"<<std::endl;
-  auto simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,SimulationData*>(_mesh, "simulation_data");
+  auto simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,std::shared_ptr<SimulationData>>(_mesh, "simulation_data");
   int i = 0;
   for (auto& vertex_handle : _mesh.vertices())
   {
       MyMesh::Point point = _mesh.point(vertex_handle);
-      SimulationData* sd = simulation_data_wrapper[vertex_handle];
+      //SimulationData* sd
+      std::shared_ptr<SimulationData> sd = simulation_data_wrapper[vertex_handle];
 
       _terrain(i) = point[2];
       //clear the previous data
