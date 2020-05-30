@@ -7,10 +7,11 @@
 #include <exception>
 #include <glm/vec3.hpp>
 #include <vector>
+#include <memory>
 #include "../Graphics/exceptionclass.h"
 
 
-enum class SimulationDataEnum{vegetation,river,sed_level,hardness,flow_normal,initial_sedimentation_point,sedimentation_history,actual_point};
+enum class SimulationDataEnum{vegetation,river,sed_level,hardness,flow_normal,initial_sedimentation_point,material_stack_height, sedimentation_history,actual_point};
 
 class SimulationData
 {
@@ -21,6 +22,7 @@ class SimulationData
             {"initial_sedimentation_point", SimulationDataEnum::initial_sedimentation_point},
             {"actual_point",SimulationDataEnum::actual_point},
             {"sed_level",SimulationDataEnum::sed_level},
+            {"material_stacks_height",SimulationDataEnum::material_stack_height},
             };
 
         std::map<SimulationDataEnum,float> map_of_floats;
@@ -35,7 +37,7 @@ class SimulationData
         SimulationData( std::map<SimulationDataEnum,float> map_of_floats,
                                         std::map<SimulationDataEnum,glm::vec3> map_of_vectors,
                                         std::map<SimulationDataEnum,std::vector<float>> map_of_lists);
-        SimulationData* Interpolate(SimulationData* sd1,float t);
+        std::shared_ptr<SimulationData> Interpolate(std::shared_ptr<SimulationData> sd1, float t);
         void getData(SimulationDataEnum data_enum, float& data);
         void getData(SimulationDataEnum data_enum, glm::vec3& data);
         void getData(SimulationDataEnum data_enum, std::vector<float>& data);

@@ -13,7 +13,7 @@ bool isANumber(const string str,float& converted)
         return true;
 }
 
-SimulationData* SimulationData::Interpolate(SimulationData* sd1,float t){
+std::shared_ptr<SimulationData> SimulationData::Interpolate(std::shared_ptr<SimulationData> sd1,float t){
     std::map<SimulationDataEnum,float> new_map_of_floats;
     std::map<SimulationDataEnum,glm::vec3> new_map_of_vectors;
     std::map<SimulationDataEnum,std::vector<float>> new_map_of_lists;
@@ -111,7 +111,7 @@ SimulationData* SimulationData::Interpolate(SimulationData* sd1,float t){
         }
     }
 
-    return new SimulationData(new_map_of_floats,new_map_of_vectors,new_map_of_lists);
+    return std::shared_ptr<SimulationData>(new SimulationData(new_map_of_floats,new_map_of_vectors,new_map_of_lists));
 
 }
 void SimulationData::readLine(const string line )

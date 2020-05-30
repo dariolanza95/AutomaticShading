@@ -475,19 +475,20 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
                     //if(dist[2] > 0){
 
                     (*datafile)<< " sediment_value l "<< local_sediments_history.size()-1<< " ";
-                    for(int entry:local_sediments_history){
-                           if(entry != 0){
+                    for(uint i = 1 ;i<local_sediments_history.size();i++){
+                        float entry = local_sediments_history[i];
+                        if(entry != 0){
                              (*datafile)<< entry<< " ";
                            }
                     }uint i = 0;
                     point = initial_sedimentation_points(y,x)[0];
-                   for(glm::vec3 entry:initial_sedimentation_points(y,x))
+                    (*datafile)<< " material_stacks_height l "<<local_sediments_history.size()-1<<" ";
+                   for(uint i = 1 ;i<initial_sedimentation_points(y,x).size();i++)
                    {
-                       glm::vec3 point = entry;
-                       (*datafile)<< " initial_sedimentation_point v " << point[0]<< " "<< point[1]<< " "<<point[2]<< " " <<" index "<<i;
-                       i++;
+                       glm::vec3 entry = initial_sedimentation_points(y,x)[i];
+                       (*datafile)<<  entry[2] - point[2] << " ";
                    }
-
+                    (*datafile)<< z - point[2]<<" ";
                     (*datafile)<< " initial_sedimentation_point v " << point[0]<< " "<< point[1]<< " "<<point[2]<< " " ;
                     (*datafile)<<" actual_point v "<< y << " "<< x << " " <<   z ;
                     (*datafile)<< " sed_level "<<_simulation.sedimented_terrain(y,x);

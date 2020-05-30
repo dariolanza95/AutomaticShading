@@ -6,6 +6,7 @@
 #include <fstream>
 #include <string.h>
 #include <stdlib.h>
+#include <memory>
 #include "subdividerandinterpolator.h"
 
 /* ========================================================================= *
@@ -265,7 +266,7 @@ SubdividerAndInterpolator<MeshType,RealType>::split_face( MeshType& _m, const Fa
   HalfedgeHandle hh = _m.next_halfedge_handle(hend);
 
   auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_m, "shader_parameters");
-  auto sim_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,SimulationData*> (_m,"simulation_data");
+  auto sim_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,std::shared_ptr<SimulationData>> (_m,"simulation_data");
 
 
 
@@ -276,16 +277,14 @@ SubdividerAndInterpolator<MeshType,RealType>::split_face( MeshType& _m, const Fa
 
      shader_parameters_data_wrapper[vh] = new_shader_param;
 
-     SimulationData* sim_data= sim_data_wrapper[t_vh1];
-    /* SimulationData* new_sim_data= new SimulationData(*sim_data);
-   sim_data_wrapper[vh] = new_sim_data;
-*/
+     std::shared_ptr<SimulationData> sim_data= sim_data_wrapper[t_vh1];
+
 float min_dist = INFINITY;
   HalfedgeHandle hold = _m.new_edge(_m.to_vertex_handle(hend), vh);
-SimulationData* new_sim_data;
+std::shared_ptr<SimulationData> new_sim_data;
   _m.set_next_halfedge_handle(hend, hold);
   _m.set_face_handle(hold, _fh);
-SimulationData* tmp_sim[valence];
+std::shared_ptr<SimulationData> tmp_sim[valence];
   hold = _m.opposite_halfedge_handle(hold);
 
   for(size_t i = 1; i < valence; i++)
@@ -313,6 +312,9 @@ SimulationData* tmp_sim[valence];
     hold = _m.opposite_halfedge_handle(hnew);
   }
   new_sim_data = tmp_sim[1]->Interpolate(tmp_sim[2],0.5);
+//   new_sim_data= new SimulationData(*sim_data);
+sim_data_wrapper[vh] = new_sim_data;
+
   sim_data_wrapper[vh] = new_sim_data;
   _m.set_next_halfedge_handle(hold, hh);
   _m.set_next_halfedge_handle(hh, hend);
@@ -351,14 +353,14 @@ SubdividerAndInterpolator<MeshType,RealType>::split_edge( MeshType& _m, const Ed
   //AShader* sp = new FlowShader(50);
   //shader_param_v_1->AddShaderParameters(sp);
           //(ShadersWrapper::interpolate(shader_param_v_1,shader_param_v_2,0));
-  auto sim_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,SimulationData*> (_m,"simulation_data");
+  auto sim_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,std::shared_ptr<SimulationData>> (_m,"simulation_data");
 //  auto OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , SimulationData*>::type, MyMesh> simulation_data_wrapper;
 
 
-  SimulationData* sim_data= sim_data_wrapper[vh1];
-  SimulationData* sim_data_2= sim_data_wrapper[vh2];
+  std::shared_ptr<SimulationData> sim_data= sim_data_wrapper[vh1];
+  std::shared_ptr<SimulationData> sim_data_2= sim_data_wrapper[vh2];
   //SimulationData* new_sim_data= new SimulationData(*sim_data);
-SimulationData* new_sim_data= sim_data->Interpolate(sim_data_2,0.5);
+std::shared_ptr<SimulationData> new_sim_data= sim_data->Interpolate(sim_data_2,0.5);
 //sim_data->setData(SimulationDataEnum::hardness,glm::vec3(50,0,0));
 //  if(new_shader_param->_list.empty())
 //      new_shader_param = new ShaderParameters();

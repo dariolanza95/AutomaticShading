@@ -642,8 +642,8 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
 
 
 
-                int K = 5;
-                float maxdist = 10;
+                int K = 15;
+                float maxdist = 5;
 
                 point[0] = pp.x;//thiscell.x;
                 point[1] = pp.y;//thiscell.y;
