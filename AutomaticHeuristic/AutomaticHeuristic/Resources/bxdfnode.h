@@ -2,7 +2,7 @@
 #define BXDFNODE_H
 
 
-#include "ribnode.h"
+#include "RibNode.h"
 #include "ribconstant.h"
 #include "sstream"
 class BXDFNode : public RIBNode

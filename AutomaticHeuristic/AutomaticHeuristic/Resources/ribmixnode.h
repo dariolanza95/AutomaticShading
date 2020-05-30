@@ -1,7 +1,7 @@
 #ifndef RIBMIXNODE_H
 #define RIBMIXNODE_H
 
-#include "ribnode.h"
+#include "RibNode.h"
 #include "ribshadernode.h"
 #include "ribconstant.h"
 #include <sstream>

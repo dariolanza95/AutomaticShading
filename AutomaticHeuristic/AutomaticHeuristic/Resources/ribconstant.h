@@ -5,7 +5,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
-#include "ribnode.h"
+#include "RibNode.h"
 class RIBConstant : public RIBNode
 {
     glm::vec3 color;

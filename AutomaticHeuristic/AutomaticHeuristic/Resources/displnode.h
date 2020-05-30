@@ -1,7 +1,7 @@
 #ifndef DISPLNODE_H
 #define DISPLNODE_H
 
-#include "ribnode.h"
+#include "RibNode.h"
 #include "ribconstant.h"
 #include "bxdfnode.h"
 class DisplNode : public RIBNode

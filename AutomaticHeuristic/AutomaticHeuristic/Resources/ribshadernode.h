@@ -3,7 +3,7 @@
 #include <string>
 #include <sstream>
 #include "Ashader.h"
-#include "ribnode.h"
+#include "RibNode.h"
 class RIBShaderNode : public RIBNode
 {
     std::string _node_name;

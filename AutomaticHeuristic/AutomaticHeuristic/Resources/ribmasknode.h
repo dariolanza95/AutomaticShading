@@ -2,7 +2,7 @@
 #define RIBMASKNODE_H
 
 #include "Ashader.h"
-#include "ribnode.h"
+#include "RibNode.h"
 #include "sstream"
 class RIBMaskNode : public RIBNode
 {

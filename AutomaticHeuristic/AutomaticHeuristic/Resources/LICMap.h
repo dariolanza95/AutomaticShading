@@ -11,13 +11,13 @@
 #include <vector>
 #include <pcl/cloud_iterator.h>
 #include <OpenMesh/Tools/Subdivider/Uniform/CatmullClarkT.hh>
-#include <./../Noise/FastNoise/FastNoise.h>
+#include <External/FastNoise/FastNoise.h>
 #include <glm/vec3.hpp>
 #include <glm/glm.hpp>
 
 #include "subdividerandinterpolator.h"
 #include "./mydefwrapper.h"
-//typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
+
 
 
 

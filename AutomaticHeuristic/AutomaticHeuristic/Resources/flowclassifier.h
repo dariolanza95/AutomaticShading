@@ -12,7 +12,7 @@
 #include <glm/glm.hpp>
 #include <math.h>
 #include "flowshader.h"
-#include <./../Noise/FastNoise/FastNoise.h>
+#include <External/FastNoise/FastNoise.h>
 #include "subdividerandinterpolator.h"
 //#include <OpenMesh/Tools/Subdivider/Adaptive/Composite/RulesT.hh>
 #include <pointcloud.h>
