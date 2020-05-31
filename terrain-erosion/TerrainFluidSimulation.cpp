@@ -206,7 +206,7 @@ void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
             int temp_sed = _simulation.tmp_sediment_material(y,x);
             std::vector<int>& local_sedimentation_history = sedimentation_history(y,x);
             //if(_simulation.sedimented_terrain(y,x)>0){
-            float treshold = 3.0f;
+            float treshold = 1.0f;
             float hysteresis = 0.5f;
     bool sedimentation = false;
     bool removal = false;

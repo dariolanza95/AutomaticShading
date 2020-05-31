@@ -317,7 +317,8 @@ void SedimentationClassifier::ComputeSedimentationParametersForVertex(glm::vec3 
 //        for(uint i = 1 ;i<sedimenation_data.sediment_history.size()-1;i++){
             for(uint i = 0 ;i<sedimenation_data.sediment_history.size();i++){
             //new_sedimentation_point=  initial_point + normalized_distance_vector * step_length * (float )i ;
-            new_sedimentation_point=  initial_point + normalized_distance_vector * sedimenation_data.material_stack_width[i] * (float )i ;
+            new_sedimentation_point=  initial_point;
+            new_sedimentation_point[2] += sedimenation_data.material_stack_width[i] ;//* (float )i ;
 
             intermediate_points.push_back(new_sedimentation_point);
             if(actual_point[2]-initial_point[2]<0)

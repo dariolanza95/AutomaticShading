@@ -163,7 +163,7 @@ void FluidSimulation::makeRain(double dt,ulong time)
     std::uniform_int_distribution<ushort> rndIntY(1,water.width()-2);
 
     int sediment_material = 1;
-            int scaler = 2;
+            int scaler = 5;
     if(time%(50*scaler)>scaler*10){
      //   std::cout<<"new mat"<<std::endl;
         sediment_material = 2;
@@ -1215,7 +1215,7 @@ void FluidSimulation::update(ulong time, double dt, bool rain, bool flood,bool w
     if (rain )
         makeRain(dt,time);
 
-    if (flood || time>160)
+    if (flood || time>260)
        makeRiver(dt,time);// makeFlood(dt);
     if(wind)
         makeWind(dt);
