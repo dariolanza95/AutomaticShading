@@ -153,7 +153,7 @@ int x = tokens.size();
                       else{
                           stringstream err("Symbol not present ");
                           ss<<str;
-                          throw ExceptionClass(err.str());
+                          throw ExceptionClass(err.str(),WarningLevelEnum::Warning);
                       }
                   }
 
@@ -270,7 +270,7 @@ try{
          readLine(str);
     }
     catch(ExceptionClass exc){
-        std::cout<<exc.what()<<std::endl;
+        exc.what();
     }
 }
 

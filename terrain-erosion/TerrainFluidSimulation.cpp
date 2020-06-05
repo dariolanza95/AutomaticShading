@@ -189,7 +189,7 @@ void TerrainFluidSimulation::cameraMovement(double dt)
 }
 
 float TerrainFluidSimulation::getSedimentHistory(int y, int x) {
-    return sedimentation_history(glm::clamp(y,0,(int) sedimentation_history.height()-1),glm::clamp(x,0,(int) sedimentation_history.width()-1)).back();
+    return (float)sedimentation_history(glm::clamp(y,0,(int) sedimentation_history.height()-1),glm::clamp(x,0,(int) sedimentation_history.width()-1)).back();
 }
 
 float TerrainFluidSimulation::getSedimentHistorySize(int y, int x) {
@@ -197,7 +197,13 @@ float TerrainFluidSimulation::getSedimentHistorySize(int y, int x) {
 }
 
 void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
-    for (uint y=0; y<_simulation.water.height(); y++)
+     float treshold = 2.0f;
+
+     float hysteresis = 0.0f;
+     float gaussian_blur_coefficients[9] = { 1.0f, 2.0f, 1.0f,
+                                             2.0f, 4.0f, 2.0f,
+                                             1.0f, 2.0f, 1.0f};
+     for (uint y=0; y<_simulation.water.height(); y++)
     {
         for (uint x=0; x<_simulation.water.width(); x++)
         {
@@ -206,8 +212,7 @@ void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
             int temp_sed = _simulation.tmp_sediment_material(y,x);
             std::vector<int>& local_sedimentation_history = sedimentation_history(y,x);
             //if(_simulation.sedimented_terrain(y,x)>0){
-            float treshold = 1.0f;
-            float hysteresis = 0.5f;
+
     bool sedimentation = false;
     bool removal = false;
 
@@ -238,6 +243,7 @@ void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
                         if(  new_sedimentation_point[2] > old_sedimentation_point[2] + treshold+hysteresis)    {
                         //std::cout<<"happens"<<std::endl;
                             if(local_sedimentation_history.back() != temp_sed){
+                                //new_sedimentation_point[2] -= treshold;
                                 initial_sedimentation_points(y,x).push_back(new_sedimentation_point);
                                 sedimentation_history(y,x).push_back(temp_sed);
                                 sedimentation = true;
@@ -250,16 +256,15 @@ void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
               //  local_sedimentation_history = sedimentation_history(y,x);
                 if(initial_sedimentation_points(y,x).size()>=1 )   {
                         glm::vec3 sed_point = initial_sedimentation_points(y,x).back();
-                        if(_simulation.terrain(y,x) + treshold - hysteresis < sed_point[2]  ){
+                        if(_simulation.terrain(y,x) + treshold + hysteresis < sed_point[2]  ){
                             if(initial_sedimentation_points(y,x).size()==1){
-                                if( _simulation.terrain(y,x) > -9.5 && initial_sedimentation_points(y,x).back()[1]<0)    {
-                                std::cout<<"init point "<< initial_sedimentation_points(y,x).back()[1]<<" vs "<<_simulation.terrain(y,x) <<std::endl;
-                                }
-                                   //std::cout<<"happens"<<std::endl;
+
                                 initial_sedimentation_points(y,x).pop_back();
                                 initial_sedimentation_points(y,x).push_back(glm::vec3(y,x,_simulation.terrain(y,x)));
+                                tmp_sedimentation_history(y,x) = sedimentation_history(y,x).back();
                             }else{
                                 initial_sedimentation_points(y,x).pop_back();
+                                tmp_sedimentation_history(y,x) = sedimentation_history(y,x).back();
                                 sedimentation_history(y,x).pop_back();
                             }
                             removal = true;
@@ -269,68 +274,73 @@ void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
 
          //   }
 
-                                sed_color(y,x) = sedimentation_history(y,x).back();
-                                if(sedimentation_history(y,x).back()!=0 && _simulation.tmp_sediment_material(y,x)==0)
-                                _simulation.tmp_sediment_material(y,x) = sedimentation_history(y,x).back();
+sed_color(y,x) =sedimentation_history(y,x).back();
+//sed_color(y,x) = 0.0f;
                                 if(sedimentation && removal){
                                     std::cout <<" sedimentation and erosion at saame time?"<<std::endl;
                                 }
+                                float g = 0;
+                                float val = 0;
+                                float total_size = 0;
+                                int f = 0;
+                                for(int j =  y-1;j<y+1;j++){
+                                 for(int i = x-1;i<x+1;i++){
+
+                                      float tmp_val = getSedimentHistory(j,i);
+                                      float dist = _simulation.terrain(y,x) - _simulation.terrain(i,j);
+                                      if(tmp_val!=0 && dist<treshold+hysteresis ){
+                                          val += gaussian_blur_coefficients[f]* tmp_val;//getSedimentHistorySize(j,i);
+                                          g+=gaussian_blur_coefficients[f];
+                                         //val+=tmp_val;
+                                         //g++;
+                                      }
+                                      f++;
+                                    }
+                                }
+                               if(val!=0  )    {
+
+                                   val = roundf(val/((float) g));
+
+                                   tmp_sedimentation_history(y,x) = roundf(val);
+                               //    std::cout<<"new val is "<<val<<std::endl;
+                               }
+                               else  {
+                                   tmp_sedimentation_history(y,x) = 0;
+                               }
         }
     }
 
 
-    float gaussian_blur_coefficients[9] = { 1, 2, 1,
-                                            2, 4, 2,
-                                            1, 2, 1};
+
 
 //#if defined(__APPLE__) || defined(__MACH__)
 //    dispatch_apply(terrain.width(), gcdq, ^(size_t x)
 //#else
 //    #pragma omp parallel for
-/*
-   for (uint y=0; y<_simulation.water.height(); y++)
+
+  /* for (uint y=0; y<_simulation.water.height(); y++)
 //#endif
     {
        for (uint x=0; x<_simulation.water.width(); x++){
-           float g = 0;
-           float val = 0;
-           float total_size = 0;
-           for(int j =  y-2;j<y+2;j++){
-            for(int i = x-2;i<x+2;i++){
 
-                 float tmp_val = getSedimentHistory(y,x);
-                 if(tmp_val!=0){
-                     total_size += getSedimentHistorySize(y,x);
-                     val += tmp_val;
-                     g++;
-                 }
-               }
-           }
-          if(val!=0)    {
-              total_size = roundf(total_size/(float) g);
-              val = val/(float) g;
-              tmp_sedimentation_history(y,x) = val;
-          }
-          else  {
-              tmp_sedimentation_history(y,x) = 0;
-          }
        }
-    }
+    }*/
+     /*
    for (uint y=0; y<_simulation.water.height(); y++)
 //#endif
     {
        for (uint x=0; x<_simulation.water.width(); x++){
-float total_size;
-           for(int j =  y-2;j<y+2;j++){
-            for(int i = x-2;i<x+2;i++){
-                 total_size = 0;
-                 float tmp_val = getSedimentHistory(y,x);
-                 if(tmp_val!=0 && (i != x && y != j)){
-                     total_size += getSedimentHistorySize(y,x);
-                 }
-               }
-           }
-
+           //float ex_val = sedimentation_history(y,x).back();
+           //int new_val = 0;
+           ////new_val = tmp_sedimentation_history(y,x);
+           //if(new_val!=0){
+           //    sedimentation_history(y,x).pop_back();
+           //     sedimentation_history(y,x).push_back(new_val);
+           //
+           //}
+            sed_color(y,x) =sedimentation_history(y,x).back();// sedimentation_history(y,x).back();
+            //if(sedimentation_history(y,x).back()!=0 && _simulation.tmp_sediment_material(y,x)==0)
+            //_simulation.tmp_sediment_material(y,x) = sedimentation_history(y,x).back();
        }
    }*/
 }

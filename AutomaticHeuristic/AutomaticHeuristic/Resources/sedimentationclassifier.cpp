@@ -24,7 +24,7 @@ void SedimentationClassifier::AverageData(){
         new_point.z = actual_point[2];
     int id = 0;
   pcl::PointXYZLNormal temp_point;
-        int K = 3;//or 27
+        int K = 30;//or 27
         std::vector<int> pointIdxNKNSearch(K);
         std::vector<SedimentationShader*> sedimentation_materials_list(K);
         std::vector<float> dists_list(K);
@@ -152,10 +152,10 @@ void SedimentationClassifier::AssignSedimentationParameters(map<MyMesh::VertexHa
         new_point.y = actual_point[1];
         new_point.z = actual_point[2];
     int id = 0;
-  pcl::PointXYZLNormal temp_point;
+        pcl::PointXYZLNormal temp_point;
         int K = 10;//or 27
         std::vector<int> pointIdxNKNSearch(K);
-        std::vector<SedimentationShader*> sedimentation_materials_list(K);
+      //  std::vector<SedimentationShader*> sedimentation_materials_list(K);
         std::vector<float> dists_list(K);
         std::vector<float> ids_list(K);
         float total_dist=0;
@@ -170,23 +170,40 @@ void SedimentationClassifier::AssignSedimentationParameters(map<MyMesh::VertexHa
             uint min_index = 0;
             float min_energy = INFINITY;
             float dist ;
+            for(uint j = 0;j<pointNKNSquaredDistance.size();j++){
+                    total_dist+= (pointNKNSquaredDistance[j]);
+            }
+        float normalization = 0;
+            for(uint j = 0;j<pointNKNSquaredDistance.size();j++){
+                    pointNKNSquaredDistance[j] = 1- (pointNKNSquaredDistance[j]/total_dist);
+                    normalization+= (pointNKNSquaredDistance[j]);
+            }
+total_dist = normalization;
             std::vector<float> list = shad2->getListOfIntermediateSedimentationMaterials();
-          //  for(uint i = index - 1 ; i <index+1;i++){
-          //      if(i< 0 || i >= list.size()){
-          //          continue;
-          //      }
+            for(int i = index - 1 ; i <index+1;i++){
+                if(i< 0 || i >= list.size()){
+                    continue;
+                }
                 system_energy = 0;
-                for(uint j = 1;j< pointIdxNKNSearch.size();j++){
+                for(uint j = 0;j< pointIdxNKNSearch.size();j++){
                     SedimentationShader* shad = (SedimentationShader*)  list_of_shaders[pointIdxNKNSearch[j]];
-                    //system_energy += shad->utilityFunct(pp,list[i]);
-                    ids_list[j] = shad->getClosestPointMatId(pp,dist);
-                    dists_list[j] = dist;
-                    //dists_list[j] =1/dist;
-                    if(dist == 0){
-                        id = j;
-                        break;
-                    }
-                    total_dist += 1/dist;
+
+                    //float weight = 1/(K-1);
+                   float weight = pointNKNSquaredDistance[j]/total_dist;
+
+//                    if(j!=0){
+//                    weight = pointNKNSquaredDistance[j]/total_dist;
+//                    //    weight = ((total_dist- pointNKNSquaredDistance[j])/total_dist);
+//                    }
+                    //float weight = 1;//-1/pointNKNSquaredDistance[j];
+                    system_energy += shad->utilityFunct(pp,list[i])*weight;
+                    //ids_list[j] = shad->getClosestPointMatId(pp,dist);
+                    //dists_list[j] = dist;
+                    //if(dist == 0){
+                    //    id = j;
+                    //    break;
+                    //}
+//                    total_dist += 1/dist;
                     //    dist = std::max(0.0001f,dist);
                 //    total_dist += 1/dist;
 
@@ -195,30 +212,28 @@ void SedimentationClassifier::AssignSedimentationParameters(map<MyMesh::VertexHa
                 }
                 if(system_energy<min_energy){
                     min_energy = system_energy;
-                    min_index = index;
+                    min_index = i;
                 }
-          //  }
+            }
             /*if(pointIdxNKNSearch.size()>=2){
                 id = sedimentation_materials_list[0]->GetMaterialId( *sedimentation_materials_list[1],glm::vec3(actual_point[0],actual_point[1],actual_point[2]));
 
             }*/
-if(dist!=0){
-    //total_dist = 1/total_dist;
-    float min_dist = INFINITY;
-    for(uint j = 1;j<pointIdxNKNSearch.size();j++){
-        if(dists_list[j]< min_dist){
-            min_dist = dists_list[j];
-            total = ids_list[j];
-        }
-        //float temp = (1-(ids_list[j]*dists_list[j]/total_dist));
-        /* float temp = (dists_list[j]*ids_list[j])/total_dist;
-                total += temp;*/
-    }
-    id = (total);
-}
+//if(dist!=0){
+//    //total_dist = 1/total_dist;
+//    float min_dist = INFINITY;
+//    for(uint j = 1;j<pointIdxNKNSearch.size();j++){
+//        if(dists_list[j]< min_dist){
+//            min_dist = dists_list[j];
+//            total = ids_list[j];
+//        }
+//    }
+//    id = (total);
+//}
+id = list[min_index];
 
             //id = total/(float )pointIdxNKNSearch.size();
-            AShader* shad  = new SedimentationShader(_id,1.0f,roundf(id));
+            AShader* shad  = new SedimentationShader(_id,1.0f,/*roundf*/(id));
             /*     AShader* shad = new SedimentationShader(*shdr);*/
             temporary_list_of_shaders.push_back(shad);
 
@@ -351,6 +366,67 @@ set<MyMesh::FaceHandle> SedimentationClassifier::GetSetOfFaces(map<MyMesh::Verte
     return selected_faces;
 }
 
+void SedimentationClassifier::AverageOutputData(){
+    CreatePointCloud();
+     for(uint i = 0;i<list_of_sedimentation_points.size();i++){
+         glm::vec3 const entry = list_of_sedimentation_points[i];
+         pcl::PointXYZLNormal new_point;
+         int K = 15;//or 27
+         new_point.x = entry[0];
+         new_point.y = entry[1];
+         new_point.z = entry[2];
+         std::vector<int> pointIdxNKNSearch(K);
+       //  std::vector<SedimentationShader*> sedimentation_materials_list(K);
+         std::vector<float> dists_list(K);
+         std::vector<float> ids_list(K);
+         float total_dist=0;
+         float total= 0;
+        float avg = 0;
+        std::map<int,float> list_of_used_materials;
+         std::vector<float> pointNKNSquaredDistance(K);
+         if ( kdtree_input.nearestKSearch (new_point, K, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 ){
+             for(uint j = 0;j<pointIdxNKNSearch.size();j++){
+                 SedimentationShader* sd =  (SedimentationShader*) list_of_shaders[pointIdxNKNSearch[j]];
+                 float val = sd->GetMaterialId();
+               //  avg += val;
+                 if(list_of_used_materials.empty()) {
+
+                     list_of_used_materials.insert(std::make_pair(val,0));
+
+                 }else{
+                     if(list_of_used_materials.count(val)>0)
+                     {
+                         list_of_used_materials[val]++;
+                     }else{
+                         list_of_used_materials.insert(std::make_pair(val,0));
+                     }
+
+                 }
+             }
+             float max = -INFINITY;
+             float final_id = -1;
+             for(std::pair<int,float>entry:list_of_used_materials){
+                if(entry.second>max){
+                    max = entry.second;
+                    final_id = entry.first;
+                }
+             }
+
+            // float mean = avg/(float)pointIdxNKNSearch.size();
+           /*  float min_dist = INFINITY;
+             float final_id = -1;
+             for(std::pair<int,float>entry:list_of_used_materials){
+                 float dist =std::abs(entry.second-mean);
+                 if(dist<min_dist){
+                     min_dist = dist;
+                    final_id = entry.first;
+                 }
+             }*/
+            list_of_shaders[pointIdxNKNSearch[0]] = new SedimentationShader(_id,1.0f,final_id);
+        }
+    }
+}
+
 void SedimentationClassifier::CreatePointCloud(){
 
     pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud1 ( new pcl::PointCloud<pcl::PointXYZLNormal>);
@@ -383,9 +459,9 @@ void SedimentationClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_p
         ComputeSedimentationParametersForVertex(actual_point,entry.second);
         //delete entry.second;
     }
- /* CreatePointCloud();
+  CreatePointCloud();
 
-     int _subdiv_levels = 2;
+     int _subdiv_levels = 0;
      for(int i=0;i<_subdiv_levels;i++){
          auto set_of_faces = GetSetOfFaces(selected_vertices);
          SubdividerAndInterpolator<MyMesh> catmull(set_of_faces);
@@ -396,9 +472,10 @@ void SedimentationClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_p
 
     }
 
-    AssignSedimentationParameters(selected_vertices);*/
+    AssignSedimentationParameters(selected_vertices);
+   // AverageOutputData();
    // AverageData();
-   AssignSedimentationParameters2(selected_vertices);
+  //AssignSedimentationParameters2(selected_vertices);
     list_of_points = list_of_sedimentation_points;
     list_of_data = list_of_shaders;
     details = 0.5;

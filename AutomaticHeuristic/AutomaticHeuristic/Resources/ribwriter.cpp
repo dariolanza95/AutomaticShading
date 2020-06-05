@@ -170,7 +170,7 @@ void RIBWriter::RotateAlongX(glm::mat4x4 & mat,float angle)
 
 string RIBWriter::WriteTransformationMatrix()
 {
-    stringstream ss;
+    stringstream ss;/*
     ss<<" Transform [ ";
     glm::mat4x4 viewMatrix = _cam.ViewMatrix();
     viewMatrix = _cam.RIBMatrix();
@@ -195,7 +195,7 @@ string RIBWriter::WriteTransformationMatrix()
     }
     ss<<" ]"<<std::endl;
 
-
+*/
 
     //ss << "Rotate "<< -1*_cam.rotX<<" 1 0 0"<<std::endl;
     //ss << "Rotate "<< _cam.rotY<<" 0 1 0"<<std::endl;
@@ -213,6 +213,9 @@ string RIBWriter::WriteTransformationMatrix()
    // ss<<" Transform [  0.998441 -3.72529e-09 -0.0558192 0 -0.0555465 -0.0986873 -0.993523 0 -0.00551111 0.995074 -0.0985334 0 -148.504 0 388.701 1 ]"<<std::endl;
   //  ss<<"Transform [  0.995919 0.000103932 0.0902541 0 0.0853934 -0.324781 -0.941873 0 0.0292195 0.945736 -0.323464 0 -140.859 46.2262 378.789 1 ]"<<std::endl;
     //ss<<" Transform [  1 0 0 0 -0 -0.0836014 -0.996427 0 0 0.996427 -0.0836014 0 -149.833 23.9523 293.692 1 ]"<<std::endl;
+  //  ss<< " Transform [  0.996296 1.11759e-08 0.0859931 0 0.0859742 0.0209919 -0.996037 0 -0.00180183 0.999741 0.0209143 0 -122.256 -25.8181 317.678 1 ]"<<std::endl;
+  //  ss<<"  Transform [  1 0 0 0 0 0.159969 -0.987046 0 0 0.987046 0.159969 0 -149.168 -56.5756 265.938 1 ]"<<std::endl;
+ss<<" Transform [  1 0 0 0 -0 -0.0104214 -0.999906 0 0 0.999906 -0.0104214 0 -141.527 1.71687 296.649 1 ]"<<std::endl;
     return ss.str();
 }
 
@@ -297,7 +300,7 @@ void RIBWriter::WriteInialization(){
     string_to_write<<"Option \"ribparse\" \"string varsubst\" [\"\"]"<<std::endl;
     string_to_write<<"Option \"ribparse\" \"string varsubst\" [\"$\"]"<<std::endl;
     string_to_write<<"Option \"Ri\" \"int Frame\" [1] \"float PixelVariance\" [0.00999999978] \"string PixelFilterName\" [\"gaussian\"] "<<std::endl;
-    string_to_write<<"\"float[2] PixelFilterWidth\" [2 2] \"int[2] FormatResolution\" [300 200] \"float FormatPixelAspectRatio\" [1.5] \"float[2] Clipping\" [0.100000001 10000] \"float[4] ScreenWindow\" [-1 1 -0.5625 0.5625]  "<<std::endl;
+    string_to_write<<"\"float[2] PixelFilterWidth\" [2 2] \"int[2] FormatResolution\" [600 400] \"float FormatPixelAspectRatio\" [1.5] \"float[2] Clipping\" [0.100000001 10000] \"float[4] ScreenWindow\" [-1 1 -0.5625 0.5625]  "<<std::endl;
 //    string_to_write<<"\"float[4] CropWindow\" [0.0 0.5 0.5 1.0]"<<std::endl;
     string_to_write<<" \"float[2] Shutter\" [0 0]"<<std::endl;
     string_to_write<<"Option \"bucket\" \"string order\" [\"circle\"]"<<std::endl;

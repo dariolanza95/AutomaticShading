@@ -874,12 +874,12 @@ res = RixSmoothStep(0,1 ,res );
     third_col.g = 0.13*1.5*0.3;
     third_col.b = 0.09*1.5*0.3;
 
-        resultRGB[n].r = resultRGB[n].b = resultRGB[n].g = res;
-        //resultRGB[n]=      RixLerpRGB( main_col,second_col,res);
+        //resultRGB[n].r = resultRGB[n].b = resultRGB[n].g = res;
+        resultRGB[n]=      RixLerpRGB( main_col,second_col,res);
         //RtColorRGB temp_color = RixLerpRGB( main_col,second_col,res);
        // resultRGB[n] = RixLerpRGB( temp_color,third_col,dda);
     //    float fbm = Fbm(pp*1.3,4,0.3);
-          resultF[n] = 0;// res+ 0.5*fbm;//0.5;//(res);// + displ;
+          resultF[n] = res;//+ 0.5*fbm;//0.5;//(res);// + displ;
           //resultF[n] = 0;//  displ;
 
 

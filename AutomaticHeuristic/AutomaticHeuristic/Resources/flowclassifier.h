@@ -37,7 +37,7 @@ class FlowClassifier : public AClassifier
     pcl::KdTreeFLANN<pcl::PointXYZLNormal> kdtree_input;
     pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud_input;
 
-    OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , SimulationData*>::type, MyMesh> simulation_data_wrapper;
+    OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , std::shared_ptr<SimulationData>>::type, MyMesh> simulation_data_wrapper;
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , FlowShader*>::type, MyMesh> flow_shader_temp_propery;
     void ContrastEnhancement(map<MyMesh::VertexHandle,AShader*>& map, std::vector<int> Pdf, int z);
     map<MyMesh::VertexHandle,FlowShader*> ComputeShaderParameters(map<MyMesh::VertexHandle,glm::vec3>  flow_vertices);

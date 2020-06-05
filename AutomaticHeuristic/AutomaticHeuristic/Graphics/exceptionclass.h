@@ -3,7 +3,7 @@
 #include <exception>
 #include <string>
 #include <string.h>
-
+#include <iostream>
 enum class WarningLevelEnum{Error,Warning,Info};
 class ExceptionClass : public std::exception
 {
@@ -17,7 +17,9 @@ public:
 
     virtual const char* what() const throw()
     {
-        return error_message.c_str();
+        if( warning_level == WarningLevelEnum::Error)
+            std::cout<<error_message.c_str();
+
     }
 };
 

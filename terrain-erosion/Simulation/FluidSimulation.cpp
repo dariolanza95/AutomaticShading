@@ -1212,7 +1212,7 @@ void FluidSimulation::update(ulong time, double dt, bool rain, bool flood,bool w
   //     rain = true;
 
     // 1. Add water to the system
-    if (rain )
+    if (rain &&  time<250 )
         makeRain(dt,time);
 
     if (flood || time>260)

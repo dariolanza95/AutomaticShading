@@ -31,6 +31,7 @@ class SedimentationClassifier : public AClassifier
 
     pcl::KdTreeFLANN<pcl::PointXYZLNormal> kdtree_input;
     pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud_input;
+    void AverageOutputData();
     void AssignSedimentationParameters(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
     void AssignSedimentationParameters2(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
 void AverageData();

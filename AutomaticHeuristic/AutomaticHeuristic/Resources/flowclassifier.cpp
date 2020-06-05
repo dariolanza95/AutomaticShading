@@ -4,7 +4,7 @@ using namespace  OpenMesh;
 #define MULTCONSTANT 1000000
 FlowClassifier::FlowClassifier(MyMesh &mesh) : AClassifier(mesh),_shader_parameter_size(3)
 {
-    simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,SimulationData*>(_mesh, "simulation_data");
+    simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,std::shared_ptr<SimulationData>>(_mesh, "simulation_data");
      _shader = new FlowShader(_id);
 }
 
@@ -171,7 +171,7 @@ void FlowClassifier::selectFrontier(map<MyMesh::VertexHandle,FlowShader*>& selec
          //if(glm::any(glm::isnan())){
          //    std::cout<<"position is NAN"<<std::endl;
          //}
-         SimulationData* sd = simulation_data_wrapper[*vertex_iterator];
+         std::shared_ptr<SimulationData> sd = simulation_data_wrapper[*vertex_iterator];
 
          //normalize it!
          glm::vec3 sim_data_normal;
@@ -258,7 +258,7 @@ void FlowClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_points,std
 
     std::cout<<"vertices "<< _mesh.n_vertices()<<std::endl;
     map<MyMesh::VertexHandle,glm::vec3> flow_vertices;
-    int _subdiv_levels = 1;
+    int _subdiv_levels = 2;
     for(int i=0;i<_subdiv_levels;i++){
 
 
@@ -579,7 +579,7 @@ map<MyMesh::VertexHandle,AShader*> FlowClassifier:: LIC(map<MyMesh::VertexHandle
     float box_length = longest_dimension/4;
     float step_size = 0.15/*0.26*/;/*0.5*/;//scale;
     float frequency = 1200/*200*/;//longest_dimension/2;//scale*2;
-    box_length = step_size;//20;/*150*/;
+    box_length = 20;/*150*/;
     FastNoise noise;
     std::map<MyMesh::VertexHandle,AShader*> output_map;
    std::map<MyMesh::VertexHandle,AShader*> intermediate_map;

@@ -48,7 +48,7 @@ public:
 
     PxrTexture();
     virtual ~PxrTexture();
-
+    virtual float Lerp(float val1,float val2,float t);
     virtual int Init(RixContext &, RtUString const pluginpath) override;
     virtual RixSCParamInfo const *GetParamTable() override;
     virtual void Synchronize(
@@ -129,6 +129,9 @@ PxrTexture::PxrTexture()
 
 PxrTexture::~PxrTexture()
 {
+}
+float PxrTexture::Lerp(float val1, float val2, float t){
+    return val1*(1-t) + val2*t;
 }
 
 int
@@ -276,6 +279,8 @@ PxrTexture::ComputeOutputParams(RixShadingContext const *sctx,
     *outputs = o;
     *noutputs = 1;
 
+    float const *incident_ray_radius;
+    float *sRR;
 
     RtFloat *resultF = NULL;
     resultF = pool.AllocForPattern<RtFloat>(sctx->numPts);
@@ -303,6 +308,9 @@ PxrTexture::ComputeOutputParams(RixShadingContext const *sctx,
         sctx->Transform(RixShadingContext::k_AsPoints,
                         Rix::k_current, Rix::k_object, sP, NULL);
 
+        sctx->GetBuiltinVar(RixShadingContext::k_incidentRayRadius, &incident_ray_radius);
+       sRR = pool.AllocForPattern<float>(sctx->numPts);
+       memcpy(sRR, incident_ray_radius, sizeof(float)*sctx->numPts);
 
 
     /*
@@ -394,8 +402,8 @@ PxrTexture::ComputeOutputParams(RixShadingContext const *sctx,
         PtcGetPointCloudInfo(inptc, "datasize", &datasize);
         data = (float *) malloc(datasize * sizeof(float));
 
-int K =  3;       //50;
-float maxdist = 4; //3;
+int K =  1;       //50;
+float maxdist = 2; //3;
 
     // looping through the different output ids
     for (unsigned i=0; i<sctx->numPts; i++)
@@ -407,11 +415,98 @@ float maxdist = 4; //3;
 
         int Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, K, data);
         float val = 0;
+        float cell_scale = 1;//sRR[i];
         if(Readres==1)
         {
            val= data[0];
-         //  std::cout<<val<<std::endl;
-            }
+           RtPoint3 pp = sP[i];
+           RtPoint3 max,min;
+           if(val>0.0001){
+
+
+
+
+            //do some trilinear filtering
+               //RtPoint3 thiscell = RtPoint3 (cell_scale* (floorf(pp.x/cell_scale ) + 0.5f),
+               //                              cell_scale* (floorf(pp.y/cell_scale ) + 0.5f),
+               //                              cell_scale* (floorf(pp.z/cell_scale ) + 0.5f));
+               RtPoint3 thiscell = RtPoint3 (cell_scale* (floorf(pp.x/cell_scale ) ),
+                                             cell_scale* (floorf(pp.y/cell_scale ) ),
+                                             cell_scale* (floorf(pp.z/cell_scale ) ));
+               if(thiscell.x<pp.x){
+                   min.x = thiscell.x;
+                   max.x = thiscell.x+1*cell_scale;
+               }else{
+                   max.x = thiscell.x;
+                   min.x = thiscell.x-1*cell_scale;
+               }
+               if(thiscell.y<pp.y){
+                   min.y = thiscell.y;
+                   max.y = thiscell.y+1*cell_scale;
+               }else{
+                   max.y = thiscell.y;
+                   min.y = thiscell.y-1*cell_scale;
+               }
+               if(thiscell.z<pp.z){
+                   min.z = thiscell.z;
+                   max.z = thiscell.z+1*cell_scale;
+               }else{
+                   max.z = thiscell.z;
+                   min.z = thiscell.z-1*cell_scale;
+               }
+            //   std::cout<<cell_scale<<std::endl;
+                RtPoint3 Xdir(cell_scale,0,0);
+                RtPoint3 Ydir(0,cell_scale,0);
+                RtPoint3 Zdir(0,0,cell_scale);
+               float fractX = pp.x-min.x;
+               float fractY = pp.y-min.y;
+               float fractZ = pp.z-min.z;
+               float values[8];
+               RtPoint3 interp_points[8];
+               interp_points[0] = min;
+               interp_points[1] = min + Xdir;
+               interp_points[2] = min + Ydir;
+               interp_points[3] = min + Ydir + Xdir;
+               interp_points[4] = min + Zdir;
+               interp_points[5] = min + Zdir + Xdir ;
+               interp_points[6] = min + Zdir + Ydir;
+               interp_points[7] = min + Zdir + Ydir + Xdir;
+            bool skip = false;
+               for(int j= 0;j<8;j++){
+
+                   point[0] = interp_points[j][0];
+                   point[1] = interp_points[j][1];
+                   point[2] = interp_points[j][2];
+           //    std::cout<<"point "<<point[0]<<std::endl;}
+                Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist*2, K, data);
+                if(Readres==1){
+                    values[j] = data[0];
+
+                }
+                    else {
+                    values[j] = 0;
+/*                         resultF[i] = val;
+                        skip = true;
+                         break;*/
+                    }
+
+               }
+               if(skip){
+                   continue;
+               }
+                   float X0 =     RixMix(values[0], values[1], fractX);
+                   float X1 =     RixMix(values[2], values[3], fractX);
+                   float X2 =     RixMix(values[4], values[5], fractX);
+                   float X3 =     RixMix(values[6], values[7], fractX);
+float Y0 =           RixMix(X0,X1, fractY);
+float Y1 =           RixMix(X2,X3, fractY);
+float Z = RixMix(Y0,Y1, fractZ);
+//std::cout<<"X0 "<<X0<<std::endl;
+//std::cout<<fractX<<" "<<fractY<<" "<<fractZ <<std::endl;
+val = Z;
+           }
+        }
+
         /*else{
             Readres = PtcGetNearestPointsData (inptc, point, normal,1.5, K, data);
             if(Readres==1)

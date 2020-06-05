@@ -16,8 +16,8 @@ class SedimentationShader : public AShader
     std::vector<glm::vec3> list_of_intermediate_sedimentation_points;
     std::vector<float> list_of_intermediate_sedimentation_materials;
 public:
-    uint getClosestPointIndex(glm::vec3 actual_point);
-
+    int getClosestPointIndex(glm::vec3 actual_point);
+    float GetMaterialId();
     SedimentationShader(int id, float confidence,float material_id);
     SedimentationShader(int id);
     SedimentationShader(int id,float confidence,std::vector<glm::vec3> list_of_intermediate_sedimentation_points,std::vector<float> list_of_intermediate_sedimentation_materials);

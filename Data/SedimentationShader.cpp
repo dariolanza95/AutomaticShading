@@ -535,84 +535,77 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
     RtPoint3 f1cell, f2cell;
     for (int n = 0; n < sctx->numPts; ++n)
     {
-        float f1,f2,f3,f4,d;
+         RtPoint3 pp =  sP[n];
+    /*    float f1,f2,f3,f4,d;
         float nois = m_sFuncs->Noise(scaler*sP[n]/scale);
         nois = 0;
-         RtPoint3 pp =  sP[n];
+
          RtPoint3 testpoint = pp;
          RtPoint3 thiscell = RtPoint3 (cell_scale* (floorf(pp.x/cell_scale ) + 0.5f),
                                        cell_scale* (floorf(pp.y/cell_scale ) + 0.5f),
                                        cell_scale* (floorf(pp.z/cell_scale ) + 0.5f));
 
 
-        /* f1 = f2 = f3= f4=1000.0f;
-        for (int i = -1;  i <= 1;  i += 1)
-        {
-            for (int j = -1;  j <= 1;  j += 1)
-            {
-                for (int k = -1;  k <= 1;  k += 1)
-                {
+         f1 = f2 = 1000.0f;
+         for (int i = -1;  i <= 1;  i += 1)
+         {
+             for (int j = -1;  j <= 1;  j += 1)
+             {
+                 for (int k = -1;  k <= 1;  k += 1)
+                 {
+                     RtPoint3 testcell = thiscell + RtVector3(i,j,k);
+                     RtPoint3 pos = testcell + jitter[n] *
+                                    (RtVector3(m_sFuncs->CellNoise(testcell)) - 0.5f);
+                     RtVector3 offset = pos - pp;
+                     float dist;
+                     switch (distancemetric)
+                     {
+                         case k_euclidean:
+                             dist = sqrtf(Dot(offset, offset));
+                             break;
+                         case k_euclideanSquared:
+                             dist = Dot(offset, offset);
+                             break;
+                         case k_manhattan:
+                             dist =  fabsf(offset.x) +
+                                     fabsf(offset.y) +
+                                     fabsf(offset.z);
+                             break;
+                         case k_chebyshev:
+                             offset.x = fabsf(offset.x);
+                             offset.y = fabsf(offset.y);
+                             offset.z = fabsf(offset.z);
+                             d = (offset.x>offset.y)? offset.x:offset.y;
+                             dist = (offset.z>d)? offset.z:d;
+                             break;
+                         case k_minkowski:
+                             dist = powf(powf(fabsf(offset.x), minkowskiExp)+
+                                         powf(fabsf(offset.y), minkowskiExp)+
+                                         powf(fabsf(offset.z), minkowskiExp),
+                                         1.0f/minkowskiExp);
+                             break;
+                         default:
+                             dist = Dot(offset, offset);
+                             break;
+                     }
+
+                     if (dist < f1)
+                     {
+                         f2 = f1;
+                         f1 = dist;
+                         f2cell = f1cell;
+                         f1cell = pos;
+                     }
+                     else if (dist < f2)
+                     {
+                         f2 = dist;
+                         f2cell = pos;
+                     }
+                 }
+             }
+         }
 
 
-                    RtPoint3 testcell = thiscell + RtVector3(cell_scale*i,cell_scale*j,cell_scale*k);
-                    RtPoint3 pos = testcell + jitter[n]* cell_scale*(RtVector3(m_sFuncs->CellNoise(testcell)) - 0.5f);
-                    RtVector3 offset = pos - pp;//*Fbm(pp,3,0.5);
-                    float dist;
-                    switch (distancemetric)
-                    {
-                        case k_euclidean:
-                            dist = sqrtf(Dot(offset, offset));
-                            break;
-                        case k_euclideanSquared:
-                            dist = Dot(offset, offset);
-                            break;
-                        case k_manhattan:
-                            dist =  fabsf(offset.x) +
-                                    fabsf(offset.y) +
-                                    fabsf(offset.z);
-                            break;
-                        case k_chebyshev:
-                            offset.x = fabsf(offset.x);
-                            offset.y = fabsf(offset.y);
-                            offset.z = fabsf(offset.z);
-                            d = (offset.x>offset.y)? offset.x:offset.y;
-                            dist = (offset.z>d)? offset.z:d;
-                            break;
-                        case k_minkowski:
-                            dist = powf(powf(fabsf(offset.x), minkowskiExp)+
-                                        powf(fabsf(offset.y), minkowskiExp)+
-                                        powf(fabsf(offset.z), minkowskiExp),
-                                        1.0f/minkowskiExp);
-                            break;
-                        default:
-                            dist = Dot(offset, offset);
-                            break;
-                    }
-
-
-                    if (dist < f1)
-                    {
-                        f4 = f3;
-                        f3 = f2;
-                        f2 = f1;
-                        f1 = dist;
-                        f2cell = f1cell;
-                        f1cell = pos;
-                    }
-                    else
-                        if (dist < f2)
-                        {
-                            f2 = dist;
-                            f2cell = pos;
-                        }
-
-
-                }
-            }
-        }
-        */
-        resultF[n] = 1;
-        float offset = 0;
         /*if (shape == k_thin)
         {
             f1 = sqrtf(f1);
@@ -640,11 +633,14 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
             resultF[n]= 1.f - resultF[n];
         }*/
 
+        resultF[n] = 1;
+       float offset = 0;
 
-
-                int K = 15;
+                int K = 1;
                 float maxdist = 5;
-
+               // point[0]= f1cell.x;
+               // point[1]= f1cell.y;
+               // point[2]= f1cell.z;
                 point[0] = pp.x;//thiscell.x;
                 point[1] = pp.y;//thiscell.y;
                 point[2] = pp.z;//thiscell.z;

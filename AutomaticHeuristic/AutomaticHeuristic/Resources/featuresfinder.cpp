@@ -41,7 +41,7 @@ MyMesh&  FeaturesFinder::Find(std::vector<AShader*>& list_of_used_shaders)
      std::vector<AShader*> temp_list_of_shader;
      float details;
 
-     /*AClassifier *fc = new FlowClassifier(_mesh);
+     AClassifier *fc = new FlowClassifier(_mesh);
       fc->ClassifyVertices(temp_list_of_points,temp_list_of_shader,details);
      //if(selected_faces.size()>0)
      {
@@ -49,7 +49,7 @@ MyMesh&  FeaturesFinder::Find(std::vector<AShader*>& list_of_used_shaders)
          AShader* shad = fc->GetShader();
         list_of_used_shaders.push_back(shad);
         selected_faces.clear();
-     }*/
+     }
 
      AClassifier *sc = new SedimentationClassifier(_mesh);
       sc->ClassifyVertices(temp_list_of_points,temp_list_of_shader,details);
