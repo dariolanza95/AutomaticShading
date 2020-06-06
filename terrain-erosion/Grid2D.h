@@ -115,6 +115,28 @@ public:
 
     }
 
+    static void MakeGridIndicesClockWiseOrder( std::vector<uint>& outIndices, uint w, uint h)
+    {
+        outIndices.clear();
+        outIndices.reserve((w-1)*(h-1)*6);
+        for (uint y=0; y<h-1; y++)
+        {
+            for (uint x=0; x<w-1; x++)
+            {
+                uint p00 = y*w+x;
+                uint p10 = p00 + 1;
+                uint p01 = p00 + w;
+                uint p11 = p10 + w;
+
+                // add the two faces
+                outIndices.push_back(p00); outIndices.push_back(p10); outIndices.push_back(p11);
+                outIndices.push_back(p00); outIndices.push_back(p11); outIndices.push_back(p01);
+            }
+        }
+
+    }
+
+
 };
 
 #endif // GRID2D_H

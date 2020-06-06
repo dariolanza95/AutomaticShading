@@ -30,8 +30,13 @@ uniform int uGridSize;
 in vec2     inGridCoord;
 in float    inTerrainHeight;
 in float    inWaterHeight;
+in float    inAirHeight;
 in float    inSediment;
-in float    inSimData;
+in float    inSedimentedTerrain;
+in float    inSedimentedTerrainColor;
+
+//in float    inSimData;
+//in float    inSimData_2;
 in vec3     inNormal;
 
 in float    inDebugXVelocity;
@@ -44,13 +49,15 @@ in float    inDebugAdvection;
 out vec2  vGridCoord;
 out float vTerrainHeight;
 out float vWaterHeight;
+out float vAirHeight;
 out vec4  vFragPos;
 out vec4  vNormal;
-
+out float  vSedimentedTerrainColor;
+out float vSedimentedTerrain;
 out vec3  vColor;
 out float vSediment;
-out float vSimData;
-
+//out float vSimData;
+//out float vSimData_2;
 // Main
 /////////////////////////////////////////////////
 
@@ -62,16 +69,18 @@ void main(void)
     // pass on some values
     vGridCoord = inGridCoord;
     vSediment = inSediment;
-    vSimData = inSimData;
+  //  vSimData = inSimData;
+  //  vSimData_2 = inSimData_2;
     // surface normal
     vec4 N = vec4(normalize(inNormal),1);
     N = vec4(N.x,N.z,-N.y,1);
     vNormal = uViewMatrixNormal*N ;
-    
+    vSedimentedTerrainColor = inSedimentedTerrainColor;
     // terrain height values
     vTerrainHeight = inTerrainHeight+inWaterHeight;
     vWaterHeight = inWaterHeight;
-
+    vAirHeight = inAirHeight;
+    vSedimentedTerrain = inSedimentedTerrain;
     // framgment position in camera space
     vFragPos = vec4(p.x*uGridSize,vTerrainHeight,p.y*uGridSize,1);
     vFragPos.xyz *= 0.01;

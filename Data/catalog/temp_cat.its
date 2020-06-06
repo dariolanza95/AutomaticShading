@@ -1,0 +1,103 @@
+it_Session {-vers 2} {
+  # saved on: 18:37:17 10/05/2020 2020
+  # for: pandora
+  # by: it 23.1 (@2036321 Jan 22 2020)
+  CatalogList {} {
+    Catalog {-name Catalog1} {
+      Viewspec {} {
+        channelView c
+        colorSpace Automatic
+        colorTransform sRGB
+        correctionMode 0
+        pan {-69.427895 78.598221}
+        zoomFactor 1.790112
+      }
+      SequenceInfo {} {
+        frameRange {1 0}
+        currentFrame 1
+      }
+      ImageList {} {
+        ImageElement {-handle e0 -isSequence 0 -filename ../try03.exr} {
+          statusMsg {600x400 4 channel 32bit float}
+          notes {}
+          dspyParams {}
+          useCustomView 0
+        }
+        ImageElement {-handle e1 -isSequence 0 -filename ../try03.exr} {
+          statusMsg {600x400 4 channel 32bit float}
+          notes {}
+          dspyParams {}
+          useCustomView 0
+        }
+        ImageElement {-handle e2 -isSequence 0 -filename ../try03.exr} {
+          statusMsg {600x400 4 channel 32bit float}
+          notes {freq 200}
+          dspyParams {}
+          useCustomView 0
+        }
+        ImageElement {-handle e3 -isSequence 0 -filename ../try03.exr} {
+          statusMsg {600x400 4 channel 32bit float}
+          notes {freq 400}
+          dspyParams {}
+          useCustomView 0
+        }
+        ImageElement {-handle e5 -isSequence 0 -filename ../res07_grayscale.exr} {
+          statusMsg {600x400 4 channel 32bit float}
+          notes {}
+          dspyParams {}
+          useCustomView 0
+        }
+        ImageElement {-handle e6 -isSequence 0 -filename ../try03.exr} {
+          statusMsg {600x400 4 channel 32bit float}
+          notes {}
+          dspyParams {}
+          useCustomView 0
+        }
+        ImageElement {-handle e7 -isSequence 0 -filename ../try03.exr} {
+          statusMsg {600x400 4 channel 32bit float}
+          notes {}
+          dspyParams {}
+          useCustomView 0
+        }
+        ImageElement {-handle e8 -isSequence 0 -filename ../res07_color.exr} {
+          statusMsg {600x400 4 channel 32bit float}
+          notes {}
+          dspyParams {}
+          useCustomView 0
+        }
+        ImageElement {-handle e9 -isSequence 0 -filename ../try03.exr} {
+          statusMsg {600x400 4 channel 32bit float}
+          notes {}
+          dspyParams {}
+          useCustomView 0
+        }
+        ImageElement {-handle e10 -isSequence 0 -filename ../try03.exr} {
+          statusMsg {600x400 4 channel 32bit float}
+          notes {}
+          dspyParams {}
+          useCustomView 0
+        }
+        ImageElement {-handle e11 -isSequence 0 -filename ../try03.exr} {
+          statusMsg {600x400 4 channel 32bit float}
+          notes {}
+          dspyParams {}
+          useCustomView 0
+        }
+        ImageElement {-handle e13 -isSequence 0 -filename temp.exr} {
+          statusMsg {600x400 4 channel 32bit float}
+          notes {freq 800 
+step size 0.26}
+          dspyParams {}
+          useCustomView 0
+        }
+        ImageElement {-handle e14 -isSequence 0 -filename ../try03_saved51.exr} {
+          statusMsg {600x400 4 channel 32bit float}
+          notes {step_size = 0.1
+freq 800}
+          dspyParams {}
+          useCustomView 0
+        }
+      }
+    }
+  }
+}

@@ -4,8 +4,9 @@
 #include <assert.h>
 #include <math.h>
 #include <glm/vec3.hpp>
+#include <strstream>
 using namespace std;
-
+/*
 class RiverClassifierTester
 {
 public:
@@ -13,7 +14,7 @@ public:
     void Test();
 protected:
 
-    RiverClassifier* rc;
+    //RiverClassifier* rc;
     MyMesh mesh;
     void TestSelectBySlope();
     void AttachMockUpSimulationDataToAllVertices();
@@ -30,5 +31,5 @@ protected:
 
     void TestSelectFrontier();
 };
-
+*/
 #endif // RIVERCLASSIFIERTESTER_H

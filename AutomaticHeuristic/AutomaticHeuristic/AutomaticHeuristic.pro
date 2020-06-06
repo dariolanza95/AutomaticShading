@@ -14,9 +14,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES += *.cpp \
-    defaultdataloader.cpp \
-    Graphics/openglvisualizer.cpp \
+SOURCES += Graphics/openglvisualizer.cpp \
     Graphics/mesh.cpp \
     Graphics/IndexBuffer.cpp \
     Graphics/Shader.cpp \
@@ -25,41 +23,62 @@ SOURCES += *.cpp \
     Graphics/GLWrapper.cpp \
     Graphics/Exception.cpp \
     Graphics/Camera.cpp \
-    Resources/defaultdataloader.cpp \
-    defaultdataloader.cpp \
     Graphics/PerlinNoise.cpp \
-    Resources/ribnode.cpp \
     Resources/aclassifier.cpp \
     Resources/featuresfinder.cpp \
     Resources/flowclassifier.cpp \
     Resources/main.cpp \
     Resources/simulationdata.cpp \
-    Resources/ShaderParameters.cpp \
     Resources/riverclassifiertester.cpp \
     Resources/screeclassifier.cpp \
     Resources/riverclassifier.cpp \
-    Resources/ribwriter.cpp
+    Resources/ribwriter.cpp \
+    Resources/VertexEditTag.cpp \
+    Resources/FieldThreeDWriter.cpp \
+    Resources/PointCloudWriter.cpp \
+    Resources/pointcloudwritertester.cpp \
+    Resources/materialclassifier.cpp \
+    Resources/LICMap.cpp \
+    External/FastNoise/FastNoise.cpp \
+    Graphics/exceptionclass.cpp \
+    Resources/shaderparameter.cpp \
+    Resources/ShaderWrapper.cpp \
+    Resources/Ashader.cpp \
+    Resources/flowshader.cpp \
+    Resources/materialshader.cpp \
+    Resources/utils.cpp \
+    Resources/ribconstant.cpp \
+    Resources/RibShaderNode.cpp \
+    Resources/ribmasknode.cpp \
+    Resources/ribmixnode.cpp \
+    Resources/ribaddnode.cpp \
+    Resources/bxdfnode.cpp \
+    Resources/riblight.cpp \
+    Resources/displnode.cpp \
+    Resources/sedimentationclassifier.cpp \
+    Resources/sedimentationshader.cpp \
+    Resources/RibNode.cpp
 
 
 
-INCLUDEPATH +="/home/pandora/OpenMesh-8.0/src/"
+OpenMeshDirectory = $$(OPENMESHTREE)
 
-win32:CONFIG(release, debug|release): LIBS += -L/home/pandora/OpenMesh-8.0/build/Build/lib/release/ -lOpenMeshCore
-else:win32:CONFIG(debug, debug|release): LIBS += -L/home/pandora/OpenMesh-8.0/build/Build/lib/debug/ -lOpenMeshCore
-else:unix: LIBS += -L/home/pandora/OpenMesh-8.0/build/Build/lib/ -lOpenMeshCore
+INCLUDEPATH +=$${OpenMeshDirectory}/src
 
-INCLUDEPATH += /home/pandora/OpenMesh-8.0/build/Build
-DEPENDPATH += /home/pandora/OpenMesh-8.0/build/Build
+win32:CONFIG(release, debug|release):    LIBS += -L$${OpenMeshDirectory}/build/Build/lib/ -lOpenMeshCore.so
+else:win32:CONFIG(debug, debug|release): LIBS += -L$${OpenMeshDirectory}/build/Build/lib/ -lOpenMeshCore.so
+else:unix: LIBS += -L$${OpenMeshDirectory}/build/Build/lib/ -lOpenMeshCore
 
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += /home/pandora/OpenMesh-8.0/build/Build/lib/release/libOpenMeshCore.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += /home/pandora/OpenMesh-8.0/build/Build/lib/debug/libOpenMeshCore.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += /home/pandora/OpenMesh-8.0/build/Build/lib/release/OpenMeshCore.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += /home/pandora/OpenMesh-8.0/build/Build/lib/debug/OpenMeshCore.lib
-else:unix: PRE_TARGETDEPS += /home/pandora/OpenMesh-8.0/build/Build/lib/libOpenMeshCore.a
+INCLUDEPATH += $$OPENMESHTREE/build/Build
+DEPENDPATH +=  $$OPENMESHTREE/build/Build
 
-HEADERS += *.h\
-    defaultdataloader.h \
-    Graphics/openglvisualizer.h \
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS +=     $${OpenMeshDirectory}/build/Build/lib/libOpenMeshCore.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS +=  $${OpenMeshDirectory}/build/Build/lib/libOpenMeshCore.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $${OpenMeshDirectory}/build/Build/lib/OpenMeshCore.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS +=   $${OpenMeshDirectory}/build/Build/lib/OpenMeshCore.lib
+else:unix: PRE_TARGETDEPS += $${OpenMeshDirectory}/build/Build/lib/libOpenMeshCore.a
+
+HEADERS += Graphics/openglvisualizer.h \
     Graphics/IndexBuffer.h \
     Graphics/Shader.h \
     Graphics/VertexBuffer.h \
@@ -68,13 +87,9 @@ HEADERS += *.h\
     Graphics/Grid2D.h \
     Graphics/Exception.h \
     Graphics/Camera.h \
-    Resources/defaultdataloader.h \
-    defaultdataloader.h \
     Graphics/PerlinNoise.h \
     Graphics/platform_includes.h \
-    Resources/ribnode.h \
     Resources/aclassifier.h \
-    Resources/ShaderParameters.h \
     Resources/featuresfinder.h \
     Resources/flowclassifier.h \
     Resources/dataloader.h \
@@ -82,7 +97,36 @@ HEADERS += *.h\
     Resources/riverclassifier.h \
     Resources/riverclassifiertester.h \
     Resources/screeclassifier.h \
-    Resources/simulationdata.h
+    Resources/simulationdata.h \
+    Resources/VertexEditTag.h \
+    Resources/FieldThreeDWriter.h \
+    Resources/PointCloudWriter.h \
+    Resources/pointcloudwritertester.h \
+    Resources/materialclassifier.h \
+    Resources/LICMap.h \
+    External/FastNoise/FastNoise.h \
+    Resources/subdividerandinterpolator.h \
+    Resources/subdividerandinterpolator_impl.h \
+    Graphics/exceptionclass.h \
+    Resources/shaderparameter.h \
+    Resources/ShaderWrapper.h \
+    Resources/Ashader.h \
+    Resources/flowshader.h \
+    Resources/materialshader.h \
+    Resources/utils.h \
+    Resources/ribconstant.h \
+    Resources/ribshadernode.h \
+    Resources/ribmasknode.h \
+    Resources/ribmixnode.h \
+    Resources/ribaddnode.h \
+    Resources/bxdfnode.h \
+    Resources/riblight.h \
+    Resources/displnode.h \
+    Resources/mydefwrapper.h \
+    Resources/myrules.h \
+    Resources/sedimentationclassifier.h \
+    Resources/sedimentationshader.h \
+    Resources/RibNode.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system
@@ -90,27 +134,60 @@ unix|win32: LIBS += -lglfw
 unix: CONFIG += link_pkgconfig
 unix: PKGCONFIG += glfw3
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/release/ -lglfw
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/debug/ -lglfw
-else:unix: LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/ -lglfw
+win32:CONFIG(release, debug|release): LIBS +=    -L/usr/lib/x86_64-linux-gnu/release/ -lglfw
+else:win32:CONFIG(debug, debug|release): LIBS += -L/usr/lib/x86_64-linux-gnu/debug/ -lglfw
+else:unix: LIBS += -L/usr/lib/x86_64-linux-gnu/ -lglfw
 
-INCLUDEPATH += $$PWD/../../../../../../usr/lib/x86_64-linux-gnu
-DEPENDPATH += $$PWD/../../../../../../usr/lib/x86_64-linux-gnu
+INCLUDEPATH += /usr/lib/x86_64-linux-gnu
+DEPENDPATH  += /usr/lib/x86_64-linux-gnu
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/release/ -lGLEW
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/debug/ -lGLEW
-else:unix: LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/ -lGLEW
+win32:CONFIG(release, debug|release): LIBS +=    -L/usr/lib/x86_64-linux-gnu/release/ -lGLEW
+else:win32:CONFIG(debug, debug|release): LIBS += -L/usr/lib/x86_64-linux-gnu/debug/ -lGLEW
+else:unix: LIBS += -L/usr/lib/x86_64-linux-gnu/ -lGLEW
 
-INCLUDEPATH += $$PWD/../../../../../../usr/lib/x86_64-linux-gnu
-DEPENDPATH += $$PWD/../../../../../../usr/lib/x86_64-linux-gnu
+INCLUDEPATH += /usr/lib/x86_64-linux-gnu
+DEPENDPATH +=  /usr/lib/x86_64-linux-gnu
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/release/ -lGL
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/debug/ -lGL
-else:unix: LIBS += -L$$PWD/../../../../../../usr/lib/x86_64-linux-gnu/ -lGL
+win32:CONFIG(release, debug|release):    LIBS += -L/usr/lib/x86_64-linux-gnu/release/ -lGL
+else:win32:CONFIG(debug, debug|release): LIBS += -L/usr/lib/x86_64-linux-gnu/debug/ -lGL
+else:unix: LIBS += -L/usr/lib/x86_64-linux-gnu/ -lGL
 
-INCLUDEPATH += $$PWD/../../../../../../usr/lib/x86_64-linux-gnu
-DEPENDPATH += $$PWD/../../../../../../usr/lib/x86_64-linux-gnu
+INCLUDEPATH += /usr/lib/x86_64-linux-gnu
+INCLUDEPATH += /opt/pixar/RenderManProServer-23.1/include/
+INCLUDEPATH += /opt/pixar/RenderManProServer-23.1/lib/
+DEPENDPATH +=  /usr/lib/x86_64-linux-gnu
 
 DISTFILES += \
     Resources/lambert_f.glsl \
     Resources/lambert_v.glsl
+
+unix|win32: LIBS += -lField3D
+
+
+INCLUDEPATH += "/usr/lib/x86_64-linux-gnu"
+LIBS += -L"/usr/include/hdf5/serial"
+
+
+unix|win32: LIBS += -lhdf5_hl_cpp
+
+unix: PKGCONFIG += hdf5
+
+unix|win32: LIBS += -lprman
+
+win32:CONFIG(release, debug|release): LIBS +=    -L/opt/pixar/RenderManProServer-23.1/lib/release/ -lprman
+else:win32:CONFIG(debug, debug|release): LIBS += -L/opt/pixar/RenderManProServer-23.1/lib/debug/ -lprman
+else:unix: LIBS += -L/opt/pixar/RenderManProServer-23.1/lib/ -lprman
+
+INCLUDEPATH += /opt/pixar/RenderManProServer-23.1/include
+DEPENDPATH +=  /opt/pixar/RenderManProServer-23.1/include
+
+QMAKE_CFLAGS_RELEASE += -fopenmp
+QMAKE_CFLAGS_DEBUG += -fopenmp
+    QMAKE_CXXFLAGS += -fopenmp
+    QMAKE_LFLAGS += -fopenmp
+
+
+
+unix: CONFIG += link_pkgconfig
+unix: PKGCONFIG += pcl_kdtree-1.8
+

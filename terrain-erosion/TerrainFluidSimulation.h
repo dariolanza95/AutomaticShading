@@ -55,51 +55,70 @@ protected:
     void checkInput();
 
     /// Advances physics by timestep dt (in milliseconds).
-    void updatePhysics(double dt);
+    void updatePhysics(double dt, ulong time);
 
     /// Renders the simulation
-    void render();
+    void render(ulong time);
 
     void cameraMovement(double dt);
 
     void init();
 
-    //Save the simulated terrain and the data collected during the simulation
+    ///Save the simulated terrain and the data collected during the simulation
     void ExportSimulation();
 
-    // Export the simulated terrain to an obj file
+    /// Export the simulated terrain to an obj file
     void SaveTerrain( std::fstream *objfile);
 
-    //Save data collected during the simulation to an external file
+    ///Save data collected during the simulation to an external file
     void SaveSimulationData(std::fstream *datafile);
 
-    //computer IndexBuffer and VertexBuffer for the arrow used to debug
+    ///computer IndexBuffer and VertexBuffer for the arrow used to debug
     void ArrowData( Grid2D<vec4>& arrowCoords, std::vector<uint>& arrowIndices,glm::vec3 startingPoint,glm::vec3 normal);
 
-    //render the debug tool
+    ///render the debug tool
     void RenderDebugTool();
+
+    ///update the sedimentation history with the data calculated from the last simulation step
+    void updateSedimentationHistory(ulong time);
+
+    ///Avoid accesses out of the matrix
+    float getSedimentHistory(int y, int x);
+
+    float getSedimentHistorySize(int y, int x);
+    std::vector<int> CreateMockUpData(int y,int x,int num_levels,int num_materials);
 
 protected:
     bool _finished;
     bool _inPause;
     bool _rain;
+    bool _air;
     bool _flood;
     bool _debug_mode = false;
+    bool _hardness_mode = false;
     glm::vec2 _rainPos;
    // std::vector<uint> gridIndices;
     SimulationState _simulationState;
     Simulation::FluidSimulation _simulation;
-
-
+    Grid2D<float> sed_color;
+    Grid2D<std::vector<int>> sedimentation_history;
+    Grid2D<int> tmp_sedimentation_history;
+    Grid2D<float> sedimentated_terrain;
+    Grid2D<std::vector<glm::vec3>> initial_sedimentation_points;
     Graphics::ShaderManager             _shaderManager;
     Graphics::VertexBuffer<float>       _terrainHeightBuffer;
     Graphics::VertexBuffer<float>       _waterHeightBuffer;
+    Graphics::VertexBuffer<float>       _airHeightBuffer;
     Graphics::VertexBuffer<glm::vec2>   _gridCoordBuffer;
     Graphics::VertexBuffer<glm::vec4>   _arrowCoordBuffer;
     Graphics::IndexBuffer               _arrowIndexBuffer;
     Graphics::IndexBuffer               _gridIndexBuffer;
     Graphics::VertexBuffer<float>       _sedimentBuffer;
+    Graphics::VertexBuffer<float>       _sedimentedTerrainBuffer;
+    Graphics::VertexBuffer<float>       _sedimentedTerrainColorBuffer;
     Graphics::VertexBuffer<float>       _simDataBuffer;
+    Graphics::VertexBuffer<float>       _simDataBuffer_2;
+
     Graphics::VertexBuffer<glm::vec3>   _normalBuffer;
 
 

@@ -158,6 +158,14 @@ namespace GL
     template<>
     uint TypeInfo<float>::TexFormat = GL_RED;
 
+    //glm PointXYZ
+    template<>
+    GLuint TypeInfo<pcl::PointXYZ>::ElementType = GL_FLOAT;
+    template<>
+    uint TypeInfo<pcl::PointXYZ>::ElementCount = 3;
+    template<>
+    uint TypeInfo<pcl::PointXYZ>::TexFormat = GL_RGB;
+
     // Internal Texture Format
     ////////////////////////////////////////////////////////////////////////////////////
 

@@ -2,7 +2,7 @@
 #include <unordered_set>
 #include <list>
 
-
+/*
 class selectRiverFrontierFunctorClass
 {
     public:
@@ -12,7 +12,9 @@ class selectRiverFrontierFunctorClass
             int operator() (MyMesh::VertexHandle vertex_handle) {
             auto simulation_data_wrapper = getOrMakeProperty<VertexHandle,SimulationData*>(_mesh, "simulation_data");
             SimulationData* sd  = simulation_data_wrapper[vertex_handle];
-            if(boost::any_cast<float>(sd->_map.at("rivers"))<=0.0f)
+            float river;
+            sd->getData(SimulationDataEnum::river,river);
+            if(river<=0.0f)
                 return 1;
             else
                 return 0;
@@ -26,6 +28,7 @@ class selectRiverFrontierFunctorClass
 
 class splitInGroupsFunctorClass
 {
+
     public:
     ShaderParameters* getValue(MyMesh::VertexHandle vertex_handle) {
         if(_map.count(vertex_handle) == 1 )
@@ -34,11 +37,11 @@ class splitInGroupsFunctorClass
         }
         else
         {
-            return  new ShaderParameters();
+            return  new ShaderParameters(_id);
         }
 
     }
-    splitInGroupsFunctorClass(map<MyMesh::VertexHandle,ShaderParameters*> map): _map(map){}
+    splitInGroupsFunctorClass(map<MyMesh::VertexHandle,ShaderParameters*> map,int id): _map(map),_id(id){}
             int operator() (MyMesh::VertexHandle vertex_handle) {
             if(_map.count(vertex_handle) == 1 )
                 return 1;
@@ -47,6 +50,7 @@ class splitInGroupsFunctorClass
             }
     private:
             map<MyMesh::VertexHandle,ShaderParameters*> _map;
+            int _id;
 
 };
 
@@ -72,9 +76,8 @@ _max_height = max;
 }
 
 
-    RiverClassifier::RiverClassifier(MyMesh mesh,float slope,float treshold,float border_width,float max_height,float min_height):AClassifier()
+    RiverClassifier::RiverClassifier(MyMesh mesh,float slope,float treshold,float border_width,float max_height,float min_height):AClassifier(mesh)
     {
-        _mesh = mesh;
         _slope = slope;
         _treshold = treshold;
         _border_width = border_width;
@@ -86,7 +89,7 @@ _max_height = max;
 
 
 
-    map<MyMesh::VertexHandle,ShaderParameters*> RiverClassifier::ClassifyVertices()
+    map<MyMesh::VertexHandle,AShader> RiverClassifier::ClassifyVertices()
     {
         map<MyMesh::VertexHandle,float> river_vertices = SelectRiverVertices();
         FindMeshExtremes();
@@ -122,11 +125,12 @@ _max_height = max;
               {
                   auto simulation_data_wrapper = getOrMakeProperty<VertexHandle,SimulationData*>(_mesh, "simulation_data");
                   SimulationData* sd = simulation_data_wrapper[*vertex_vertex_iterator];
-                  river = boost::any_cast<float>(sd->_map.at("rivers"));
+                  float river;
+                  sd->getData(SimulationDataEnum::river,river);
                   if( river == 0)
                   {
                       //insert in the map the actual vertex
-                      frontier.insert(make_pair(vertex_handle,boost::any_cast<float>(simulation_data_wrapper[*vertex_vertex_iterator]->_map.at("rivers"))));
+                      frontier.insert(make_pair(vertex_handle,river));
                       break;
                   }
               }
@@ -141,9 +145,11 @@ _max_height = max;
           for(vertex_iterator=_mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
          {
              SimulationData* sd = simulation_data_wrapper[*vertex_iterator];
-             if(boost::any_cast<float>(sd->_map.at("rivers"))>0.0f)
+             float river;
+             sd->getData(SimulationDataEnum::river,river);
+             if(river>0.0f)
              {
-                 river_vertices.insert(make_pair(*vertex_iterator,boost::any_cast<float>(sd->_map.at("rivers"))));
+                 river_vertices.insert(make_pair(*vertex_iterator,river));
              }
          }
      return river_vertices;
@@ -262,8 +268,9 @@ vector<map<MyMesh::VertexHandle, ShaderParameters *>> RiverClassifier::FindLocal
             //min = (min /(_max_height-_min_height))*2;
             for(auto &entry : single_group)
             {
-                ShaderParameters* shader_parameters = new ShaderParameters(_id,_shader_parameter_size);
-                shader_parameters->setValue(0,min);
+                ShaderParameters* shader_parameters = new ShaderParameters(_id);
+                shader_parameters->AddParameter(ShaderParametersEnum::river,min);
+                //shader_parameters->setValue(0,min);
                 entry.second = shader_parameters;
             }
              vector_of_groups[i] = single_group;
@@ -286,7 +293,7 @@ vector<map<MyMesh::VertexHandle, ShaderParameters *>> RiverClassifier::FindLocal
             {
             map<MyMesh::VertexHandle,ShaderParameters*> initial_point;
             initial_point.insert(entry);
-            splitInGroupsFunctorClass functor(points_to_be_grouped);
+            splitInGroupsFunctorClass functor(points_to_be_grouped,_id);
             map<MyMesh::VertexHandle,ShaderParameters*> group = BFS(1000,initial_point,functor);
             for(auto group_element : group)
             {
@@ -301,7 +308,7 @@ vector<map<MyMesh::VertexHandle, ShaderParameters *>> RiverClassifier::FindLocal
     }
 
 
-    map<MyMesh::VertexHandle,ShaderParameters*> RiverClassifier::SelectFacesBySlope(map<MyMesh::VertexHandle,float> rivers_boundaries)
+    map<MyMesh::VertexHandle,AShader*> RiverClassifier::SelectFacesBySlope(map<MyMesh::VertexHandle,float> rivers_boundaries)
     {
         //along the river boundaries (i.e. the rivers frontier with some treshold)
         //We select those faces which are still rather steep.
@@ -317,7 +324,7 @@ vector<map<MyMesh::VertexHandle, ShaderParameters *>> RiverClassifier::FindLocal
             MyMesh::VertexHandle vertex_handle = entry.first;
             for( vertex_face_circulator = _mesh.vf_iter(vertex_handle);vertex_face_circulator.is_valid();++vertex_face_circulator)
             {
-                    MyMesh::Normal mynormal = -1*_mesh.normal(*vertex_face_circulator);
+                    MyMesh::Normal mynormal = _mesh.normal(*vertex_face_circulator);
 
                     float dot_result = dot(mynormal,up_direction);
                     float resulting_angle_in_radians = acos(dot_result);
@@ -327,12 +334,10 @@ vector<map<MyMesh::VertexHandle, ShaderParameters *>> RiverClassifier::FindLocal
                     {
                         MyMesh::Point point = _mesh.point(vertex_handle);
                         ShaderParameters* shader_parameters = new ShaderParameters(_id,10);
-                        //roundf should work
-                        shader_parameters->setValue(0,bins*floorf(point[2]/bins));//setValue(0, bins*roundf(point[2]/bins));
+                        shader_parameters->AddParameter(ShaderParametersEnum::river,bins*floorf(point[2]/bins));
                         selected_faces.insert(pair<MyMesh::VertexHandle,ShaderParameters*>(vertex_handle,shader_parameters));
                     }
             }
         }
         return selected_faces;
-    }
-
+    }*/

@@ -4,20 +4,33 @@
 #include "screeclassifier.h"
 #include "riverclassifier.h"
 #include "flowclassifier.h"
+#include "materialclassifier.h"
+#include "VertexEditTag.h"
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
-
-typedef OpenMesh::TriMesh_ArrayKernelT<>  MyMesh;
-
-class FeaturesFinder
+#include <pcl/point_cloud.h>
+#include <pcl/cloud_iterator.h>
+#include "sedimentationclassifier.h"
+#include <pcl/kdtree/kdtree_flann.h>
+#include <math.h>
+class  FeaturesFinder
 {
-    MyMesh _mesh;
-    void UpdateSimulationData(map<MyMesh::VertexHandle,ShaderParameters*> selected_vertices);
-    void InitializerSimulationData();
 
+    pcl::KdTreeFLANN<pcl::PointXYZL> kdtree;
+    pcl::PointCloud<pcl::PointXYZL>::Ptr point_cloud;
+    std::vector<std::shared_ptr<ShadersWrapper>>   list_of_shaders_wrappers;
+    MyMesh _mesh;
+  //  void UpdateSimulationData(map<MyMesh::VertexHandle,AShader*> selected_vertices);
+    void UpdateSimulationData(std::vector<glm::vec3> list_of_points, std::vector<AShader*> list_of_data,float density);
+
+    void InitializerSimulationData();
+    vector<VertexEditTag> _vertex_edit_tags;
 public:
+    std::vector<std::shared_ptr<ShadersWrapper>>  getListOfShadersWrapper();
+    pcl::PointCloud<pcl::PointXYZL>::Ptr  const getPointClouds();
     FeaturesFinder(MyMesh mesh);
-    MyMesh Find();
+    vector<VertexEditTag> GetVertexEditTags();
+    void Find(std::vector<AShader* > &list_of_used_shaders);
 };
 
 #endif // FEATURESFINDER_H

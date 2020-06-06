@@ -3,20 +3,46 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include <iterator>
-#include <vector>
 #include <map>
 #include <exception>
-#include <boost/any.hpp>
 #include <glm/vec3.hpp>
-using namespace std;
+#include <vector>
+#include <memory>
+#include "../Graphics/exceptionclass.h"
+
+
+enum class SimulationDataEnum{vegetation,river,sed_level,hardness,flow_normal,initial_sedimentation_point,material_stack_height, sedimentation_history,actual_point};
+
 class SimulationData
 {
-    public:
-        map<string,boost::any> _map;
-        SimulationData(map<string,boost::any> map);
+        std::map<std::string, SimulationDataEnum> SimulationDataEnummap = {
+            {"flow_normal", SimulationDataEnum::flow_normal},
+            {"hardness", SimulationDataEnum::hardness},
+            {"sediment_value", SimulationDataEnum::sedimentation_history},
+            {"initial_sedimentation_point", SimulationDataEnum::initial_sedimentation_point},
+            {"actual_point",SimulationDataEnum::actual_point},
+            {"sed_level",SimulationDataEnum::sed_level},
+            {"material_stacks_height",SimulationDataEnum::material_stack_height},
+            };
 
-        SimulationData(vector<string> nameVariables, const string& str);
+        std::map<SimulationDataEnum,float> map_of_floats;
+        std::map<SimulationDataEnum,glm::vec3> map_of_vectors;
+        std::map<SimulationDataEnum,std::vector<float>> map_of_lists;
+        void readLine(const std::string line );
+
+    public:
+        SimulationData(const std::string str);
+        SimulationData();
+        ~SimulationData();
+        SimulationData( std::map<SimulationDataEnum,float> map_of_floats,
+                                        std::map<SimulationDataEnum,glm::vec3> map_of_vectors,
+                                        std::map<SimulationDataEnum,std::vector<float>> map_of_lists);
+        std::shared_ptr<SimulationData> Interpolate(std::shared_ptr<SimulationData> sd1, float t);
+        void getData(SimulationDataEnum data_enum, float& data);
+        void getData(SimulationDataEnum data_enum, glm::vec3& data);
+        void getData(SimulationDataEnum data_enum, std::vector<float>& data);
+        //SimulationData* operator /(SimulationData* sd);
+        //SimulationData* operator +(SimulationData* sd);
 
 };
 #endif // SIMULATIONDATA_H

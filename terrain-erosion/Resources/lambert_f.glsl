@@ -20,17 +20,22 @@ uniform mat4 uViewMatrix;         // View Matrix
 // Other uniforms
 /////////////////////////////////////////////////
 
+uniform bool uHardnessMode;
 uniform vec4 uColor; // Material Color
-
+uniform vec4 usedimentedTerrainColor;
 // Input from Vertex Shader
 /////////////////////////////////////////////////
 
 in vec2  vGridCoord;
 in float vTerrainHeight;
 in float vWaterHeight;
+in float vAirHeight;
 in float vSediment;
-in float vSimData;
+in float vSedimentedTerrain;
+//in float vSimData;
+//in float vSimData_2;
 
+in float vSedimentedTerrainColor;
 in vec3  vP; // shading position in camera space
 in vec3  vN; // shading normal in camera space
 in vec4  vFragPos;
@@ -59,23 +64,81 @@ void main(void)
     vec4 waterColor = vec4(0,0.3,0.9,1);
 //    vec4 terrainColor = vec4(0.8,0.8,0.8,1);
     vec4 terrainColor =  vec4(17.0/255.0,132.0/255.0,5.0/255.0,1);
-    vec4 sedimentColor = vec4(194.0/255.0,141.0/255.0,76.0/255.0,1);
-    vec4 simDataColor =  vec4(190.0/255.0,70.0/255.0,103.0/255.0,1);
-    float factor = clamp((min(vWaterHeight,6.0)/6.0), 0.0, 1.0);
-    factor = 1-pow((1-factor),4);
- 
-    fColor = (factor*waterColor+(1.0-factor)*terrainColor)*light;
 
-    float temp = 0.1;
-    if(vSimData >1)
+    float factor = clamp((min(vWaterHeight,6.0)/6.0), 0.0, 1.0);
+    float factor_air = clamp((min(vAirHeight,6.0)/6.0), 0.0, 1.0);
+    factor = 1-pow((1-factor),4);
+
+    factor_air = 1-pow((1-factor_air),4);
+
+    fColor = (factor*waterColor+(1.0-factor)*terrainColor)*light;
+    if(vAirHeight>0){
+        vec4 fColor_air = (factor_air*waterColor+(1.0-factor_air)*terrainColor)*light;
+         fColor = fColor_air;
+
+    }
+   // vec4 hardnessColor =  vec4(0,0,0,1);
+   // vec4 simDataColor =  vec4(0,0,0,1);
+    vec4 sedimentColor = vec4(194.0/255.0,141.0/255.0,76.0/255.0,1);
+    vec4 sedimentedTerrainColor;
+    if(vSedimentedTerrainColor == 0 || vSedimentedTerrainColor>5)
+        sedimentedTerrainColor = vec4(0.3,0.3,0.3,1);
+    else{
+        if(vSedimentedTerrainColor == 1)
+            sedimentedTerrainColor = vec4(1,0,1,1);
+        else{
+            if(vSedimentedTerrainColor == 2)
+                sedimentedTerrainColor = vec4(1,0,0,1);
+            else{
+                if(vSedimentedTerrainColor == 3)
+                    sedimentedTerrainColor = vec4(0,1,1,1);
+                else{
+                    if(vSedimentedTerrainColor == 4)
+                        sedimentedTerrainColor = vec4(1,1,0,1);
+                    else{
+                        if(vSedimentedTerrainColor == 5)
+                            sedimentedTerrainColor = vec4(0,0,1,1);
+
+                    }
+                }
+            }
+        }
+    }
+    float temp = 1;
+
+    if(uHardnessMode)
     {
-        temp = 1;
+        //temp = vSimData;
     }
     else
         temp = 0;
-    fColor = mix(fColor,vec4(0,1,0,1),vSediment);
-    fColor = mix(fColor,sedimentColor,vSediment);
-    fColor = mix(fColor,simDataColor,temp);
+
+    float temp2 = 1;
+    float temp3 = 0;
+    if(uHardnessMode)
+    {
+     //   temp2 = vSimData_2;
+        temp3 = vSedimentedTerrain;
+      //  temp3 = max(0,temp3);
+        if(temp3> 0)
+            temp3 = 1;
+
+    }
+    else{
+        temp2 = 0;
+        temp3 = 0;
+    }
+
+  //  fColor = mix(fColor,vec4(0,1,0,1),vSediment);
+    if(!uHardnessMode){
+        fColor = mix(fColor,sedimentColor,vSediment);
+    }
+    else{
+
+        fColor = mix(vec4(1,1,1,1),sedimentedTerrainColor,temp3);
+    }
+   // fColor = mix(fColor,hardnessColor,temp);
+   // fColor = mix(fColor,simDataColor,temp2);
     float gamma = 2.2;
     fColor.rgb = pow(fColor.rgb,vec3(1,1,1)/gamma);
 }

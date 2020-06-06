@@ -48,6 +48,7 @@ int main(int argc, char** argv)
     ////////////////////////////////////////////////////////////////////////
     try
     {
+
         TCLAP::CmdLine cmd("Terrain Eroision & Fluid Simulation.", ' ', "0.9");
         TCLAP::ValueArg<uint> dimArg("d","dim","Size of the terrain. Default: 300.",false,300,"uint");
         cmd.add(dimArg);

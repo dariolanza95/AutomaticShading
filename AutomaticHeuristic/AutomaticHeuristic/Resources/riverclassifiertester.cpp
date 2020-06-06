@@ -1,5 +1,5 @@
 #include "riverclassifiertester.h"
-
+/*
 class selectRiverFrontierFunctorClass
 {
     public:
@@ -9,8 +9,12 @@ class selectRiverFrontierFunctorClass
             auto simulation_data_wrapper = getOrMakeProperty<VertexHandle,SimulationData*>(_mesh, "simulation_data");
             SimulationData* sd  = simulation_data_wrapper[vertex_handle];
 
-            glm::vec3 vec = boost::any_cast<glm::vec3>(sd->_map.at("flowNormals"));
-            if(boost::any_cast<float>(sd->_map.at("rivers"))<=0.0f)
+            glm::vec3 vec;
+            sd->getData(SimulationDataEnum::flow_normal,vec);
+            float river;
+
+            sd->getData(SimulationDataEnum::river,river);
+            if(river<=0.0f)
                 return 1;
             else
                 return 0;
@@ -26,10 +30,8 @@ void RiverClassifierTester::AttachMockUpSimulationDataToAllVertices()
     //Attach to all the vertices some simulation data (>0)
     for (auto& vertex_handle : mesh.vertices())
     {
-        map<string,boost::any> _map;
-        _map.insert(make_pair("vegetations",0.0f));
-        _map.insert(make_pair("rivers",1.0f));
-        SimulationData *sd =new SimulationData(_map);
+        string line = {"river 1.0f vegetation 1.0f" };
+        SimulationData *sd =new SimulationData( line);
         assert(sd!=nullptr);
         simulation_data[vertex_handle] = sd;
     }
@@ -47,17 +49,17 @@ void RiverClassifierTester::AttachMockUpSimulationToABox(int width,int height,fl
     {
         x = i%width;
         y = floor(i/width);
-        map<string,boost::any> _map;
+        stringstream line;
         if(x >= centerX - box_width && x <= centerX+ box_width && y>= centerY - box_height && y <= centerY+box_height)
         {
                 inserted++;
-                _map.insert(make_pair("rivers",1.0f));
+                line<<" river 1.0f" ;
         }
         else
         {
-              _map.insert(make_pair("rivers",0.0f));
+            line<<" river 0.0f" ;
         }
-        SimulationData* sd = new SimulationData(_map);
+        SimulationData* sd = new SimulationData(line.str());
         simulation_data[vertex_handle] = sd;
          i++;
     }
@@ -75,19 +77,19 @@ void RiverClassifierTester::attachMockUpSimulationDataToCorners(int width,int he
     int i = 0;
     for (auto& vertex_handle : mesh.vertices())
     {
-        map<string,boost::any> _map;
-        _map.insert(make_pair("vegetations",0.0f));
+        stringstream line("vegetations 0.0f ");
+
         if(i == 0 || i == width-1 || i== (width-1)*(height) || i == (height)*(width)-1)
         {
-            _map.insert(make_pair("rivers",1.0f));
+            line<<" rivers 1.0f";
         }
         else
         {  
-            _map.insert(make_pair("rivers",0.0f));
+            line<<" rivers 1.0f";
         }
 
         i++;
-        SimulationData *sd =new SimulationData(_map);
+        SimulationData *sd =new SimulationData(line.str());
         assert(sd!=nullptr);
         simulation_data[vertex_handle] = sd;
     }
@@ -486,3 +488,4 @@ for(vertex_iterator=mesh.vertices_begin();vertex_iterator != vertex_iterator_end
  cout<<"MAX is "<< max<<" but min is "<< min <<endl;
 
 }
+*/

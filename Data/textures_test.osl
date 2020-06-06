@@ -1,0 +1,41 @@
+
+shader
+textures_test
+(
+	 point Pobj = 0 
+         [[
+         int lockgeom = 0
+         ]], output float resultF = 0,
+output color resultRGB = color(0,0,0)
+)
+{    
+	point pp = Pobj;
+	resultF = texture3d("/home/pandora/thesis/AutomaticShading/Data/testFile.f3d",pp);
+	printf("value resultF %g",resultF);   	
+	//resultF = resultF / 20;
+	if(resultF > 1)
+	{
+	resultRGB = color(1,0,0);
+	}
+	else
+	{
+		if(resultF <= 0 )
+		{
+		resultRGB = color(0,1,0);					
+		}
+		else
+		{
+		if(resultF == 1 )
+			resultRGB = color(0,0,1);
+		else {
+			resultRGB = color(1,1,0);	
+	}	
+}
+	}	
+string path = "/home/pandora/thesis/AutomaticShading/Data/test_file.f3d";
+color col = texture3d(path,pp);
+
+//resultRGB = col;
+
+
+}
