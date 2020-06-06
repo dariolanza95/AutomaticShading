@@ -35,6 +35,7 @@ class SedimentationClassifier : public AClassifier
     void AssignSedimentationParameters(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
     void AssignSedimentationParameters2(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
 void AverageData();
+
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , std::shared_ptr<SimulationData>>::type, MyMesh> simulation_data_wrapper;
     map<MyMesh::VertexHandle, sedimentationData> SelectSedimentationPoints();
     std::vector<AShader*> list_of_shaders;
@@ -43,7 +44,7 @@ void AverageData();
     void CreatePointCloud();
     void ComputeSedimentationParametersForVertex(glm::vec3 actual_point,sedimentationData& sedimenation_data);
 public:
-    SedimentationClassifier(MyMesh &mesh);
+    SedimentationClassifier(MyMesh mesh);
     void ClassifyVertices(std::vector<glm::vec3>& list_of_points,
                                                    std::vector<AShader*>& list_of_data,
                                                    float& details);

@@ -16,7 +16,7 @@
 #include "FieldThreeDWriter.h"
 #include "PointCloudWriter.h"
 #include <memory>
-//#define VISUALIZE
+#define VISUALIZE
 
 #include "LICMap.h"
 // --------------------OpenMesh----------------------------
@@ -490,10 +490,7 @@ void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &me
     //vector<string> variablenames = {"vegetation","rivers","hardness","normalFlow"};
 
     ifstream inputfile(simulation_data_file);
-    //vector<unique_ptr<SuperObject>> v ;
-    //v.push_back( make_unique<Object>( ... ) ) ;
-    std::shared_ptr<SimulationData> bolla;
-    auto simulation_data = getOrMakeProperty<VertexHandle,std::shared_ptr<SimulationData>>(mesh, "simulation_data");
+        auto simulation_data = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,std::shared_ptr<SimulationData>>(mesh, "simulation_data");
     for (auto& vertex_handle : mesh.vertices())
     {
         getline(inputfile,line);
@@ -537,10 +534,7 @@ string obj_file = "../../Data/input.obj";
 
   MyMesh mesh;
   LoadMesh(obj_file,data_file,mesh);
-  MyMesh mesh2;//(mesh);
-  LoadMesh(obj_file,data_file,mesh2);
-  //mesh2 = mesh;
-  FeaturesFinder features_finder(mesh2);
+  FeaturesFinder features_finder(mesh);
   std::vector<AShader*> list_of_used_shaders;
   features_finder.Find(list_of_used_shaders);
   GLFWwindow* window = OpenGLInit();
@@ -574,7 +568,7 @@ string obj_file = "../../Data/input.obj";
     {
         std::cout<<"i "<<i<<std::endl;
         //filename<<i++;
-        PointCloudWriter pcw(mesh2,shader,subdivs,path,&features_finder, true);
+        PointCloudWriter pcw(mesh,shader,subdivs,path,&features_finder, true);
         pcw.Write();
     //    pcw.Read();
     }
@@ -582,7 +576,7 @@ string obj_file = "../../Data/input.obj";
    for(AShader* shader : list_of_used_shaders )
    {
        std::cout<<"i "<<i<<std::endl;
-       PointCloudWriter pcw(mesh2,shader,subdivs,path,&features_finder,false);
+       PointCloudWriter pcw(mesh,shader,subdivs,path,&features_finder,false);
        pcw.Write();
    }
     std::cout<<"Bye bye"<<std::endl;

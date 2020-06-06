@@ -421,7 +421,7 @@ float maxdist = 2; //3;
            val= data[0];
            RtPoint3 pp = sP[i];
            RtPoint3 max,min;
-           if(val>0.0001){
+           if(val>0.0001 && false){
 
 
 

@@ -275,7 +275,7 @@ try{
 }
 
 SimulationData::~SimulationData(){
-  // std::cout<<"Call dtor"<<std::endl;
+   std::cout<<"Call dtor"<<std::endl;
     // for(pair<SimulationDataEnum,std::vector<float>>  entry : map_of_lists){
    //     entry.second.~vector();
    // }

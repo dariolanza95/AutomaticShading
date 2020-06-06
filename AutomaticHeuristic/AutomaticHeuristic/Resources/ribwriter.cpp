@@ -515,9 +515,6 @@ void RIBWriter::WriteShadersList()
 
         rib_mask = new RIBMaskNode(shader);
         if(i==0){
-//            second_col.r = ;
-//            second_col.g = ;
-//            second_col.b = ;
             rib_shader1 = new RIBConstant(glm::vec3(((float)186)/256,((float)151)/256,((float)90)/256));
         }else   {
             rib_shader1 = rib_mix;

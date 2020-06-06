@@ -265,17 +265,17 @@ SubdividerAndInterpolator<MeshType,RealType>::split_face( MeshType& _m, const Fa
   HalfedgeHandle hend = _m.halfedge_handle(_fh);
   HalfedgeHandle hh = _m.next_halfedge_handle(hend);
 
-  auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_m, "shader_parameters");
+//  auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_m, "shader_parameters");
   auto sim_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,std::shared_ptr<SimulationData>> (_m,"simulation_data");
 
 
 
   VertexHandle  t_vh1( _m.to_vertex_handle(hend));
   //for now just  a simple NN interpolation should work
-  ShadersWrapper* shader_param = shader_parameters_data_wrapper[t_vh1];
-  ShadersWrapper* new_shader_param = new ShadersWrapper(*shader_param);
+  //ShadersWrapper* shader_param = shader_parameters_data_wrapper[t_vh1];
+  //ShadersWrapper* new_shader_param = new ShadersWrapper(*shader_param);
 
-     shader_parameters_data_wrapper[vh] = new_shader_param;
+     //shader_parameters_data_wrapper[vh] = new_shader_param;
 
      std::shared_ptr<SimulationData> sim_data= sim_data_wrapper[t_vh1];
 
@@ -346,10 +346,10 @@ SubdividerAndInterpolator<MeshType,RealType>::split_edge( MeshType& _m, const Ed
  //Point pos = _m.point(vh);
 
  //copy data from previous vertex
-  auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_m, "shader_parameters");
-  ShadersWrapper* shader_param_v_1 = shader_parameters_data_wrapper[vh1];
-  ShadersWrapper* shader_param_v_2 = shader_parameters_data_wrapper[vh2];
-  ShadersWrapper* new_shader_param = new ShadersWrapper(*shader_param_v_1);
+  //auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_m, "shader_parameters");
+  //ShadersWrapper* shader_param_v_1 = shader_parameters_data_wrapper[vh1];
+  //ShadersWrapper* shader_param_v_2 = shader_parameters_data_wrapper[vh2];
+  //ShadersWrapper* new_shader_param = new ShadersWrapper(*shader_param_v_1);
   //AShader* sp = new FlowShader(50);
   //shader_param_v_1->AddShaderParameters(sp);
           //(ShadersWrapper::interpolate(shader_param_v_1,shader_param_v_2,0));
@@ -364,7 +364,7 @@ std::shared_ptr<SimulationData> new_sim_data= sim_data->Interpolate(sim_data_2,0
 //sim_data->setData(SimulationDataEnum::hardness,glm::vec3(50,0,0));
 //  if(new_shader_param->_list.empty())
 //      new_shader_param = new ShaderParameters();
-  shader_parameters_data_wrapper[vh] = new_shader_param;
+  //shader_parameters_data_wrapper[vh] = new_shader_param;
  // _set_of_vertices.insert(vh);
   sim_data_wrapper[vh] = new_sim_data;
 

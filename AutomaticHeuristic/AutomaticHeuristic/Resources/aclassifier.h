@@ -20,7 +20,7 @@ class AClassifier
 protected:
 
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , SimulationData*>::type, MyMesh> simulation_data_wrapper;
-    MyMesh& _mesh;
+    MyMesh _mesh;
     static int _id;
     template <typename FuncType>
     map<typename MyMesh::VertexHandle,AShader*> SelectClassVertices(FuncType functor);
@@ -31,7 +31,7 @@ public:
 //    virtual map<MyMesh::VertexHandle,AShader*> ClassifyVertices() = 0;
     AShader* GetShader();
     int GetId();
-    AClassifier(MyMesh& mesh);
+    AClassifier(MyMesh mesh);
 };
 template <typename FuncType>
 map<typename MyMesh::VertexHandle,AShader*> AClassifier::SelectClassVertices(FuncType functor)

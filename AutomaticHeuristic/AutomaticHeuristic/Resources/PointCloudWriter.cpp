@@ -3,7 +3,7 @@
 
 void PointCloudWriter::Write()
 {
-    auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
+    //auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
     float point[3], normal[3];
     float radius = 0.0f;
     MyMesh::Point mesh_point;
@@ -19,13 +19,13 @@ void PointCloudWriter::Write()
     bool found = 0;
     vertex_handle=_mesh.vertices_begin();
      pcl::PointCloud<pcl::PointXYZL>::Ptr const point_cloud =_features_finder->getPointClouds();
-std::vector<ShadersWrapper*> list_of_shader_wrapper = _features_finder->getListOfShadersWrapper();
+std::vector<std::shared_ptr<ShadersWrapper>> list_of_shader_wrapper = _features_finder->getListOfShadersWrapper();
 int iterations = list_of_shader_wrapper.size();
 //for(_mesh.vertices_begin();vertex_handle!= vertex_iterator_end;++vertex_handle)
 for(size_t j = 0;j<iterations;j++){
 //std::cout<<"i "<<i << " over "<<  point_cloud->points.size()<<std::endl;
 //        ShadersWrapper* const shader_wrapper = shader_parameters_data_wrapper[vertex_handle];
-ShadersWrapper* const shader_wrapper  = list_of_shader_wrapper[j];
+std::shared_ptr<ShadersWrapper> shader_wrapper  = list_of_shader_wrapper[j];
         std::vector<AShader*> list;
         shader_wrapper->GetListOfShaders(list);
         for(AShader* sp : list)

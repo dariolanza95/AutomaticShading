@@ -52,7 +52,7 @@ class FlowClassifier : public AClassifier
     //void RefineShaderParameters(MyMesh::VertexHandle vertex,ShaderParameters *shader_parameters);
 public:
     VertexEditTag GetVertexEditTag();
-    FlowClassifier(MyMesh& mesh);
+    FlowClassifier(MyMesh mesh);
     AShader* GetShader();
     //map<MyMesh::VertexHandle,AShader*> ClassifyVertices();
     void ClassifyVertices(std::vector<glm::vec3>& list_of_points,std::vector<AShader*>& list_of_data,float& details);

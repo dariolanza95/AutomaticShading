@@ -2,7 +2,7 @@
 
 
 
-SedimentationClassifier::SedimentationClassifier(MyMesh& mesh) : AClassifier(mesh)
+SedimentationClassifier::SedimentationClassifier(MyMesh mesh) : AClassifier(mesh)
 {_shader = new SedimentationShader(_id); }
 
 
@@ -251,8 +251,9 @@ map<MyMesh::VertexHandle,sedimentationData> SedimentationClassifier::SelectSedim
    simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,std::shared_ptr<SimulationData>>(_mesh, "simulation_data");
 
 //    simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,std::shared_ptr<SimulationData>>(_mesh, "mazulanzas");
-
+int i = 0;
     for(;vertex_iterator != vertex_iterator_end;++vertex_iterator){
+
         //SimulationData* sd ;
         std::shared_ptr<SimulationData> sd = simulation_data_wrapper[*vertex_iterator];
            std::vector<float> sediment_history;
@@ -459,7 +460,7 @@ void SedimentationClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_p
         ComputeSedimentationParametersForVertex(actual_point,entry.second);
         //delete entry.second;
     }
-  CreatePointCloud();
+ /* CreatePointCloud();
 
      int _subdiv_levels = 0;
      for(int i=0;i<_subdiv_levels;i++){
@@ -472,10 +473,10 @@ void SedimentationClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_p
 
     }
 
-    AssignSedimentationParameters(selected_vertices);
+    AssignSedimentationParameters(selected_vertices);*/
    // AverageOutputData();
    // AverageData();
-  //AssignSedimentationParameters2(selected_vertices);
+  AssignSedimentationParameters2(selected_vertices);
     list_of_points = list_of_sedimentation_points;
     list_of_data = list_of_shaders;
     details = 0.5;

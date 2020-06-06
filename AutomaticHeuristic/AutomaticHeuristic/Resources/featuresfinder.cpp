@@ -1,6 +1,6 @@
 #include "featuresfinder.h"
 
-FeaturesFinder::FeaturesFinder(MyMesh &mesh): _mesh(mesh){
+FeaturesFinder::FeaturesFinder(MyMesh mesh): _mesh(mesh){
     pcl::PointCloud<pcl::PointXYZL>::Ptr cloud1 ( new pcl::PointCloud<pcl::PointXYZL>);
 point_cloud = cloud1;
     point_cloud->width = 1;
@@ -12,12 +12,12 @@ pcl::PointCloud<pcl::PointXYZL>::Ptr  const FeaturesFinder::getPointClouds(){
     return point_cloud ;
 }
 
-const std::vector<ShadersWrapper*>  FeaturesFinder::getListOfShadersWrapper(){
+std::vector<std::shared_ptr<ShadersWrapper>> FeaturesFinder::getListOfShadersWrapper(){
     return list_of_shaders_wrappers;
 }
 
 
-MyMesh&  FeaturesFinder::Find(std::vector<AShader*>& list_of_used_shaders)
+void  FeaturesFinder::Find(std::vector<AShader*>& list_of_used_shaders)
 {
 
 
@@ -57,6 +57,8 @@ MyMesh&  FeaturesFinder::Find(std::vector<AShader*>& list_of_used_shaders)
       AShader* shad = sc->GetShader();
      list_of_used_shaders.push_back(shad);
      selected_faces.clear();
+     delete sc;
+
       /*
      UpdateSimulationData(selected_faces);
      AClassifier *mt = new MaterialClassifier(_mesh);
@@ -73,7 +75,7 @@ MyMesh&  FeaturesFinder::Find(std::vector<AShader*>& list_of_used_shaders)
 */
      //RiverClassifierTester rct;
      //rct.Test();
-    return _mesh;
+  //  return _mesh;
 }
 
 
@@ -100,7 +102,7 @@ void FeaturesFinder::UpdateSimulationData(std::vector<glm::vec3> list_of_points,
             newPoint.y = actual_point[1];
             newPoint.z = actual_point[2];
             point_cloud->push_back(newPoint);
-            ShadersWrapper* sw = new ShadersWrapper();
+            std::shared_ptr<ShadersWrapper> sw(std::shared_ptr<ShadersWrapper>(new ShadersWrapper()));
             sw->AddShaderParameters(list_of_data[i]);
             list_of_shaders_wrappers.push_back(sw);
         }
@@ -108,7 +110,13 @@ void FeaturesFinder::UpdateSimulationData(std::vector<glm::vec3> list_of_points,
         if(point_cloud->points.size()>0)
             kdtree.setInputCloud(point_cloud);
     }else   {
+
+        pcl::PointCloud<pcl::PointXYZL>::Ptr cloud1 ( new pcl::PointCloud<pcl::PointXYZL>);
+        cloud1->points.resize (list_of_points.size());
+
+
         for(size_t i = 0;i<list_of_points.size();i++){
+            std::cout<<" i  over "<<list_of_points.size()<<std::endl;
             glm::vec3 actual_point= list_of_points[i];
             pcl::PointXYZL searchPoint;
             searchPoint.x = actual_point[0];
@@ -124,14 +132,20 @@ void FeaturesFinder::UpdateSimulationData(std::vector<glm::vec3> list_of_points,
                     list_of_shaders_wrappers[idx]->AddShaderParameters(list_of_data[i]);
                 }
                 else{
-                    point_cloud->points.push_back(searchPoint);
-                    ShadersWrapper* sw = new ShadersWrapper();
+                    cloud1->points.push_back(searchPoint);
+                    std::shared_ptr<ShadersWrapper> sw(std::shared_ptr<ShadersWrapper>(new ShadersWrapper()));
                     sw->AddShaderParameters(list_of_data[i]);
                     list_of_shaders_wrappers.push_back(sw);
-                    kdtree.setInputCloud(point_cloud);
                 }
             }
         }
+        for(size_t i = 0;i<list_of_points.size();i++){
+            pcl::PointXYZL searchPoint =  cloud1->points[i];
+            point_cloud->points.push_back(searchPoint);
+        }
+
+        kdtree.setInputCloud(point_cloud);
+
     }
 }
 
@@ -156,13 +170,13 @@ void FeaturesFinder::UpdateSimulationData(map<MyMesh::VertexHandle,AShader*> sel
 */
 void FeaturesFinder::InitializerSimulationData()
 {
-auto shader_parameters_data_wrapper= getOrMakeProperty<VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
-
-    MyMesh::VertexIter vertex_iterator;
-    MyMesh::VertexIter vertex_iterator_end(_mesh.vertices_end());
-    for(vertex_iterator = _mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
-    {
-        ShadersWrapper* shaders_wrapper= new ShadersWrapper();
-        shader_parameters_data_wrapper[*vertex_iterator] = shaders_wrapper;
-    }
+//auto shader_parameters_data_wrapper= getOrMakeProperty<VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
+//
+//    MyMesh::VertexIter vertex_iterator;
+//    MyMesh::VertexIter vertex_iterator_end(_mesh.vertices_end());
+//    for(vertex_iterator = _mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
+//    {
+//        ShadersWrapper* shaders_wrapper= new ShadersWrapper();
+//        shader_parameters_data_wrapper[*vertex_iterator] = shaders_wrapper;
+//    }
 }
