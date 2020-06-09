@@ -180,13 +180,15 @@ void FluidSimulation::makeRain(double dt,ulong time)
         //std::cout<<"new mat 5"<<std::endl;
         sediment_material = 5;
     }
-    if(time>50*scaler)
-        sediment_material = 5;
+    if(time>250)
+        sediment_material = 0;
 
     for (uint i=0; i<100; i++)
     {
         uint x = rndIntX(rnd);
         uint y = rndIntY(rnd);
+//        uint x = rndInt(rnd);
+//        uint y = rndInt(rnd);
 
 //        water(y,x) += 1;
         water(y-1, x-1)  += 1.0/16.0;
@@ -339,10 +341,10 @@ float avg_material = 0;
         float diff = ex_t - tmpsed;
         terrain(i) = tmpsed;
         sedimented_terrain(i) -= diff;
-        if(tmp_sediment_material(i) == 0 )     {
-             tmp_sediment_material(i) = tmp_sediment_material_2(i);
-             sedimented_material(i) = tmp_sediment_material_2(i);
-        }
+        //if(tmp_sediment_material(i) == 0 )     {
+        //     tmp_sediment_material(i) = tmp_sediment_material_2(i);
+        //     sedimented_material(i) = tmp_sediment_material_2(i);
+        //}
     }
 
 #if defined(__APPLE__) || defined(__MACH__)
@@ -1010,6 +1012,8 @@ void FluidSimulation::simulateErosion(double dt,ulong time)
                 sediment(y,x) += d;
               //  if(water(y,x)>0.01)
                     sedimented_terrain(y,x) -= d;
+                  //if(tmp_sediment_material(y,x)!=0)
+                  //  tmp_sediment_material(y,x) = 0;
 //                    sedimented_material(y,x) = 0;
                 //tmp_sediment_material(y,x) = sediment_material;
                 //sedimented_terrain(y,x) -= sediment_material;
@@ -1096,7 +1100,7 @@ return kc;
 
 
 
-void FluidSimulation::simulateSedimentTransportation(double dt)
+void FluidSimulation::simulateSedimentTransportation(double dt,ulong time)
 {
     // semi-lagrangian advection
 #if defined(__APPLE__) || defined(__MACH__)
@@ -1134,7 +1138,8 @@ void FluidSimulation::simulateSedimentTransportation(double dt)
 
             float newVal = mix( mix(sediment(y0,x0),sediment(y0,x1),fX), mix(sediment(y1,x0),sediment(y1,x1),fX), fY);
             float newValMat = mix( mix(tmp_sediment_material(y0,x0),tmp_sediment_material(y0,x1),fX), mix(tmp_sediment_material(y1,x0),tmp_sediment_material(y1,x1),fX), fY);
-
+            if(time>250)
+                newValMat = 0;
             tmpSediment(y,x) = newVal;
             tmp_sediment_material_2(y,x) = roundf(newValMat);
 
@@ -1212,7 +1217,7 @@ void FluidSimulation::update(ulong time, double dt, bool rain, bool flood,bool w
   //     rain = true;
 
     // 1. Add water to the system
-    if (rain &&  time<250 )
+    if ( rain && time<250 )
         makeRain(dt,time);
 
     if (flood || time>260)
@@ -1228,7 +1233,7 @@ void FluidSimulation::update(ulong time, double dt, bool rain, bool flood,bool w
     // 3. Simulate Errosion-deposition
     simulateErosion(dt,time);
     // 4. Advection of suspended sediment
-    simulateSedimentTransportation(dt);
+    simulateSedimentTransportation(dt,time);
     // 5. Simulate Evaporation
     simulateEvaporation(dt);
 

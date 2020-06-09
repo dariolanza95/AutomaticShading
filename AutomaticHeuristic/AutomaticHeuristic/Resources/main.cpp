@@ -16,7 +16,7 @@
 #include "FieldThreeDWriter.h"
 #include "PointCloudWriter.h"
 #include <memory>
-#define VISUALIZE
+//#define VISUALIZE
 
 #include "LICMap.h"
 // --------------------OpenMesh----------------------------
@@ -344,13 +344,13 @@ void window_close_callback(GLFWwindow* window)
     return window;
 }
 
-void UpdateSimulationData(MyMesh& mesh, map<MyMesh::VertexHandle,AShader*> selected_vertices,int shaderID)
+void UpdateSimulationData(MyMesh& mesh, map<MyMesh::VertexHandle,std::shared_ptr<AShader>> selected_vertices,int shaderID)
 {
     auto shader_parameters_property = getOrMakeProperty<VertexHandle, ShadersWrapper*>(mesh, "shader_parameters");
     for (auto const& x : selected_vertices)
     {
         MyMesh::VertexHandle vertex_handle = x.first;
-        AShader* shader_parameter = x.second;
+        std::shared_ptr<AShader> shader_parameter = x.second;
 
         ShadersWrapper* wrapper = shader_parameters_property[vertex_handle] ;
         wrapper->AddShaderParameters(shader_parameter);
@@ -535,7 +535,7 @@ string obj_file = "../../Data/input.obj";
   MyMesh mesh;
   LoadMesh(obj_file,data_file,mesh);
   FeaturesFinder features_finder(mesh);
-  std::vector<AShader*> list_of_used_shaders;
+  std::vector<std::shared_ptr<AShader>> list_of_used_shaders;
   features_finder.Find(list_of_used_shaders);
   GLFWwindow* window = OpenGLInit();
   OpenGlVisualizer visualizer(window, 300, 300,mesh,obj_file);
@@ -564,23 +564,20 @@ string obj_file = "../../Data/input.obj";
    int i = 0;
     string path("../../Data/");
 
-   for(AShader* shader : list_of_used_shaders )
+   std::cout<<"wrinting mask point cloud"<<std::endl;
+   for(std::shared_ptr<AShader> shader : list_of_used_shaders )
     {
-        std::cout<<"i "<<i<<std::endl;
-        //filename<<i++;
-        PointCloudWriter pcw(mesh,shader,subdivs,path,&features_finder, true);
+        PointCloudWriter pcw(mesh,shader,subdivs,path,features_finder, true);
         pcw.Write();
-    //    pcw.Read();
     }
-
-   for(AShader* shader : list_of_used_shaders )
+    std::cout<<"wrinting shader point cloud"<<std::endl;
+   for(std::shared_ptr<AShader> shader : list_of_used_shaders )
    {
-       std::cout<<"i "<<i<<std::endl;
-       PointCloudWriter pcw(mesh,shader,subdivs,path,&features_finder,false);
+       PointCloudWriter pcw(mesh,shader,subdivs,path,features_finder,false);
        pcw.Write();
    }
-    std::cout<<"Bye bye"<<std::endl;
 
+    std::cout<<"Bye bye"<<std::endl;
     char *args_prman[]={"./myscript",NULL};
     execvp (args_prman[0],args_prman);
     return 0;

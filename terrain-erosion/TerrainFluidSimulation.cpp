@@ -197,7 +197,7 @@ float TerrainFluidSimulation::getSedimentHistorySize(int y, int x) {
 }
 
 void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
-     float treshold = 2.0f;
+     float treshold = 0.4f;
 
      float hysteresis = 0.0f;
      float gaussian_blur_coefficients[9] = { 1.0f, 2.0f, 1.0f,
@@ -210,6 +210,7 @@ void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
 
             //int temp_sed = _simulation.sedimented_material(y,x);
             int temp_sed = _simulation.tmp_sediment_material(y,x);
+
             std::vector<int>& local_sedimentation_history = sedimentation_history(y,x);
             //if(_simulation.sedimented_terrain(y,x)>0){
 
@@ -219,41 +220,42 @@ void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
               //  if(local_sedimentation_history.back() != temp_sed && temp_sed!=0 )
               //  {
                     glm::vec3 new_sedimentation_point(y,x,_simulation.terrain(y,x));
-                    glm::vec3 old_sedimentation_point = initial_sedimentation_points(y,x).back();
+                  //  glm::vec3 old_sedimentation_point = initial_sedimentation_points(y,x).back();
 
-                    if(local_sedimentation_history.size() == 1 ){
-
-                        if(new_sedimentation_point[2] <initial_sedimentation_points(y,x)[0][2]){
-                            initial_sedimentation_points(y,x)[0] = new_sedimentation_point;
-                        }else{
-                           // if(  new_sedimentation_point[2] > -9.5)    {
-                           //    std::cout<<"happens"<<std::endl;
-                           // }
-                            if(temp_sed!=0){
-
-                                initial_sedimentation_points(y,x).push_back(new_sedimentation_point);
-                                sedimentation_history(y,x).push_back(temp_sed);
-                                sedimentation_history(y,x).push_back(temp_sed);
-                            }
-
-                        }
-                        sedimentation = true;
-                        //}
+                    if(local_sedimentation_history.size() == 1 && temp_sed!=0){
+                        initial_sedimentation_points(y,x).push_back(new_sedimentation_point);
+                        sedimentation_history(y,x).push_back(temp_sed);
+                        sedimentation_history(y,x).push_back(temp_sed);
+                        sedimentation = true;                      
                     }else{
-                        if(  new_sedimentation_point[2] > old_sedimentation_point[2] + treshold+hysteresis)    {
-                        //std::cout<<"happens"<<std::endl;
+                        if(  new_sedimentation_point[2] > initial_sedimentation_points(y,x).back()[2] + treshold && temp_sed!=0)    {
                             if(local_sedimentation_history.back() != temp_sed){
-                                //new_sedimentation_point[2] -= treshold;
                                 initial_sedimentation_points(y,x).push_back(new_sedimentation_point);
                                 sedimentation_history(y,x).push_back(temp_sed);
                                 sedimentation = true;
                             }
 
+                        }else{
+                            /*if(new_sedimentation_point[2] > initial_sedimentation_points(y,x).back()[2]+treshold/2){
+                                int l = local_sedimentation_history.size();
+
+                                if(l>2){
+                                    if(local_sedimentation_history[l-2]==temp_sed){ //revese the last sedimentation, was some noise
+                                        for(int f = 0;f<l;f++){
+                                            std::cout<< local_sedimentation_history[f]<<" ";
+                                        }
+                                        std::cout<<std::endl;
+
+                                        initial_sedimentation_points(y,x).pop_back();
+                                       sedimentation_history(y,x).pop_back();
+
+                                    }
+                                }
+
+                            }*/
                         }
                     }
-                //  if(_simulation.sedimented_terrain>0){
-             //   }
-              //  local_sedimentation_history = sedimentation_history(y,x);
+
                 if(initial_sedimentation_points(y,x).size()>=1 )   {
                         glm::vec3 sed_point = initial_sedimentation_points(y,x).back();
                         if(_simulation.terrain(y,x) + treshold + hysteresis < sed_point[2]  ){
@@ -261,10 +263,10 @@ void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
 
                                 initial_sedimentation_points(y,x).pop_back();
                                 initial_sedimentation_points(y,x).push_back(glm::vec3(y,x,_simulation.terrain(y,x)));
-                                tmp_sedimentation_history(y,x) = sedimentation_history(y,x).back();
+                               // tmp_sedimentation_history(y,x) = sedimentation_history(y,x).back();
                             }else{
                                 initial_sedimentation_points(y,x).pop_back();
-                                tmp_sedimentation_history(y,x) = sedimentation_history(y,x).back();
+                                //tmp_sedimentation_history(y,x) = sedimentation_history(y,x).back();
                                 sedimentation_history(y,x).pop_back();
                             }
                             removal = true;
@@ -282,7 +284,7 @@ sed_color(y,x) =sedimentation_history(y,x).back();
                                 float g = 0;
                                 float val = 0;
                                 float total_size = 0;
-                                int f = 0;
+                                int f = 0;/*
                                 for(int j =  y-1;j<y+1;j++){
                                  for(int i = x-1;i<x+1;i++){
 
@@ -306,7 +308,7 @@ sed_color(y,x) =sedimentation_history(y,x).back();
                                }
                                else  {
                                    tmp_sedimentation_history(y,x) = 0;
-                               }
+                               }*/
         }
     }
 
@@ -436,6 +438,17 @@ float GetTerrainCapacity(float x,float y,float z ,float frequency,float _stratif
 return kc;
 }
 
+void TerrainFluidSimulation::SmoothData(std::vector<int>& local_sediments_history,std::vector<glm::vec3>& local_sediments_points){
+float treshold = 0.4;
+    for(int i= 1;i<local_sediments_history.size()-2;i++){
+        glm::vec3 actual_point = local_sediments_points[i];
+        glm::vec3 next_point = local_sediments_points[i+1];
+        if(next_point[2] - actual_point[2]< treshold+0.3 && local_sediments_history[i]==local_sediments_history[i+2]){
+            local_sediments_history.erase(local_sediments_history.begin()+i,local_sediments_history.begin()+i+2);
+            local_sediments_points.erase(local_sediments_points.begin()+i,local_sediments_points.begin()+i+2);
+        }
+    }
+}
 
 void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
 {
@@ -470,6 +483,7 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
             (*datafile )<<" flow_normal v "<< flowNormal[0]  << " "<< flowNormal[1]<< " "<< flowNormal[2];
             glm::vec3 point = initial_sedimentation_points(y,x)[0];
             std::vector<int> local_sediments_history = sedimentation_history(y,x) ;
+            std::vector<glm::vec3> local_sediments_points = initial_sedimentation_points(y,x);
             if(useMockUpData){
                 std::vector<int> mock_up =  CreateMockUpData(y,x,num_sedimentation_levels,num_materials);
                 (*datafile)<< " sediment_value l "<< mock_up.size()<< " ";
@@ -483,7 +497,7 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
                     glm::vec3 actual_point(y,x,_simulation.terrain(x,y));
                     //glm::vec3 dist = actual_point-point;
                     //if(dist[2] > 0){
-
+                    SmoothData(local_sediments_history,local_sediments_points);
                     (*datafile)<< " sediment_value l "<< local_sediments_history.size()-1<< " ";
                     for(uint i = 1 ;i<local_sediments_history.size();i++){
                         float entry = local_sediments_history[i];

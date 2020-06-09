@@ -16,8 +16,8 @@ std::vector<std::shared_ptr<ShadersWrapper>> FeaturesFinder::getListOfShadersWra
     return list_of_shaders_wrappers;
 }
 
-
-void  FeaturesFinder::Find(std::vector<AShader*>& list_of_used_shaders)
+FeaturesFinder::~FeaturesFinder(){}
+void  FeaturesFinder::Find(std::vector<std::shared_ptr<AShader>>& list_of_used_shaders)
 {
 
 
@@ -25,7 +25,7 @@ void  FeaturesFinder::Find(std::vector<AShader*>& list_of_used_shaders)
     //angle of repose is usually between 33-37 degreee depending on the rock type
     float angle = 10;
     float treshold = 3;
-     map<MyMesh::VertexHandle,AShader*> selected_faces;
+     map<MyMesh::VertexHandle,std::shared_ptr<AShader>> selected_faces;
      InitializerSimulationData();
 
 
@@ -38,29 +38,30 @@ void  FeaturesFinder::Find(std::vector<AShader*>& list_of_used_shaders)
      //selected_faces = rc->ClassifyVertices();
      //UpdateSimulationData(selected_faces);
      std::vector<glm::vec3> temp_list_of_points;
-     std::vector<AShader*> temp_list_of_shader;
+     std::vector<std::shared_ptr<AShader>> temp_list_of_shader;
      float details;
-
+/*
      AClassifier *fc = new FlowClassifier(_mesh);
       fc->ClassifyVertices(temp_list_of_points,temp_list_of_shader,details);
      //if(selected_faces.size()>0)
      {
          UpdateSimulationData(temp_list_of_points,temp_list_of_shader,details);
-         AShader* shad = fc->GetShader();
-        list_of_used_shaders.push_back(shad);
-        selected_faces.clear();
+         std::shared_ptr<AShader> shad = fc->GetShader();
+         list_of_used_shaders.push_back(shad);
+         selected_faces.clear();
      }
+    delete fc;*/
 
-     AClassifier *sc = new SedimentationClassifier(_mesh);
+      AClassifier *sc = new SedimentationClassifier(_mesh);
       sc->ClassifyVertices(temp_list_of_points,temp_list_of_shader,details);
       UpdateSimulationData(temp_list_of_points,temp_list_of_shader,details);
-      AShader* shad = sc->GetShader();
+      std::shared_ptr<AShader> shad = sc->GetShader();
      list_of_used_shaders.push_back(shad);
      selected_faces.clear();
      delete sc;
 
-      /*
-     UpdateSimulationData(selected_faces);
+
+     /*UpdateSimulationData(selected_faces);
      AClassifier *mt = new MaterialClassifier(_mesh);
 
      selected_faces = mt->ClassifyVertices();
@@ -69,7 +70,7 @@ void  FeaturesFinder::Find(std::vector<AShader*>& list_of_used_shaders)
      {
          UpdateSimulationData(selected_faces);
          selected_faces.clear();
-         //AShader* shad = mt->GetShader();
+         //std::shared_ptr<AShader> shad = mt->GetShader();
         //list_of_used_shaders.push_back(shad);
      }
 */
@@ -84,7 +85,7 @@ vector<VertexEditTag> FeaturesFinder::GetVertexEditTags()
     return _vertex_edit_tags;
 }
 
-void FeaturesFinder::UpdateSimulationData(std::vector<glm::vec3> list_of_points, std::vector<AShader*> list_of_data,float density){
+void FeaturesFinder::UpdateSimulationData(std::vector<glm::vec3> list_of_points, std::vector<std::shared_ptr<AShader>> list_of_data,float density){
 
     int previous_width = point_cloud->width;
     if(list_of_points.size() != list_of_data.size()){
@@ -116,7 +117,7 @@ void FeaturesFinder::UpdateSimulationData(std::vector<glm::vec3> list_of_points,
 
 
         for(size_t i = 0;i<list_of_points.size();i++){
-            std::cout<<" i  over "<<list_of_points.size()<<std::endl;
+            std::cout<<" i "<<i<<" over "<<list_of_points.size()<<std::endl;
             glm::vec3 actual_point= list_of_points[i];
             pcl::PointXYZL searchPoint;
             searchPoint.x = actual_point[0];
@@ -151,7 +152,7 @@ void FeaturesFinder::UpdateSimulationData(std::vector<glm::vec3> list_of_points,
 
 
 /*
-void FeaturesFinder::UpdateSimulationData(map<MyMesh::VertexHandle,AShader*> selected_vertices)
+void FeaturesFinder::UpdateSimulationData(map<MyMesh::VertexHandle,std::shared_ptr<AShader>> selected_vertices)
 {
     std::cout<<"UpdateSimData"<<std::endl;
     auto shader_parameters_property = getOrMakeProperty<VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
@@ -160,7 +161,7 @@ void FeaturesFinder::UpdateSimulationData(map<MyMesh::VertexHandle,AShader*> sel
         if(vertex_handle.idx() == 90010){
             std::cout<<"breakpoint"<<std::endl;
         }
-        AShader* shader = x.second;
+        std::shared_ptr<AShader> shader = x.second;
         ShadersWrapper* shaders_wrapper = shader_parameters_property[vertex_handle];
         shaders_wrapper->AddShaderParameters(shader);
         //        shader_parameters_property[vertex_handle] = shader_parameter;

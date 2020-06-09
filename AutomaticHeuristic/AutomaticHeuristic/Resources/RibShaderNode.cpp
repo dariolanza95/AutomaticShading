@@ -5,7 +5,7 @@ int RIBShaderNode::_unique_id = 0;
 /*RIBShaderNode::RIBShaderNode(string name, string color_output_name):_node_name(name),_color_output_name(color_output_name)
 {_id = _unique_id++;}
 */
-RIBShaderNode::RIBShaderNode(AShader* shader):_shader(shader){
+RIBShaderNode::RIBShaderNode(std::shared_ptr<AShader> shader):_shader(shader){
     _id = _unique_id++;
     _color_output_name = "";
     _displace_output_name = "";

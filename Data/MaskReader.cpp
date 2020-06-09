@@ -415,13 +415,13 @@ float maxdist = 2; //3;
 
         int Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, K, data);
         float val = 0;
-        float cell_scale = 1;//sRR[i];
+        float cell_scale = 0.1;//sRR[i];
         if(Readres==1)
         {
            val= data[0];
            RtPoint3 pp = sP[i];
            RtPoint3 max,min;
-           if(val>0.0001 && false){
+           if(val>0.001 && false){
 
 
 
@@ -458,9 +458,9 @@ float maxdist = 2; //3;
                 RtPoint3 Xdir(cell_scale,0,0);
                 RtPoint3 Ydir(0,cell_scale,0);
                 RtPoint3 Zdir(0,0,cell_scale);
-               float fractX = pp.x-min.x;
-               float fractY = pp.y-min.y;
-               float fractZ = pp.z-min.z;
+               float fractX = (pp.x-min.x)/cell_scale;
+               float fractY = (pp.y-min.y)/cell_scale;
+               float fractZ = (pp.z-min.z)/cell_scale;
                float values[8];
                RtPoint3 interp_points[8];
                interp_points[0] = min;
@@ -478,7 +478,7 @@ float maxdist = 2; //3;
                    point[1] = interp_points[j][1];
                    point[2] = interp_points[j][2];
            //    std::cout<<"point "<<point[0]<<std::endl;}
-                Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist*2, K, data);
+                Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, K, data);
                 if(Readres==1){
                     values[j] = data[0];
 

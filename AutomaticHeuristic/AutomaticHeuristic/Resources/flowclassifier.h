@@ -28,7 +28,7 @@ class FlowClassifier : public AClassifier
 {
     VertexEditTag _vertex_edit_tag;
     int _shader_parameter_size;
-    map<MyMesh::VertexHandle,AShader*> LIC(map<MyMesh::VertexHandle,FlowShader*>const map,float scale,glm::vec3 min_bb,glm::vec3 max_bb);
+    map<MyMesh::VertexHandle,std::shared_ptr<AShader>> LIC(map<MyMesh::VertexHandle,std::shared_ptr<FlowShader>>const map,float scale,glm::vec3 min_bb,glm::vec3 max_bb);
     template <typename T,typename FuncType>
     map<MyMesh::VertexHandle,T> BFS(int max_depth,map<MyMesh::VertexHandle,T> frontier_map,FuncType pred);
 
@@ -38,14 +38,14 @@ class FlowClassifier : public AClassifier
     pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud_input;
 
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , std::shared_ptr<SimulationData>>::type, MyMesh> simulation_data_wrapper;
-    OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , FlowShader*>::type, MyMesh> flow_shader_temp_propery;
-    void ContrastEnhancement(map<MyMesh::VertexHandle,AShader*>& map, std::vector<int> Pdf, int z);
-    map<MyMesh::VertexHandle,FlowShader*> ComputeShaderParameters(map<MyMesh::VertexHandle,glm::vec3>  flow_vertices);
-    void selectFrontier(map<MyMesh::VertexHandle,FlowShader*>& selected_vertices);
+    OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , std::shared_ptr<FlowShader>>::type, MyMesh> flow_shader_temp_propery;
+    void ContrastEnhancement(map<MyMesh::VertexHandle, std::shared_ptr<AShader>>& map, std::vector<int> Pdf, int z);
+    map<MyMesh::VertexHandle,std::shared_ptr<FlowShader>> ComputeShaderParameters(map<MyMesh::VertexHandle,glm::vec3>  flow_vertices);
+    void selectFrontier(map<MyMesh::VertexHandle,std::shared_ptr<FlowShader>>& selected_vertices);
 
     //void ComputeShaderParameters(map<MyMesh::VertexHandle,glm::vec3>  flow_vertices);
     map<MyMesh::VertexHandle,glm::vec3> selectFlowVertices(glm::vec3& min_bb,glm::vec3& max_bb);
-    void TemporaryUpdate(map<MyMesh::VertexHandle,FlowShader*> selected_vertices);
+    void TemporaryUpdate(map<MyMesh::VertexHandle,std::shared_ptr<FlowShader>> selected_vertices);
 
     //map<MyMesh::VertexHandle,ShaderParameters*> DebugFunction(map<MyMesh::VertexHandle,glm::vec3>  flow_vertices);
     //void LIC2(float box_length,float frequency,float step_size,MyMesh mesh);
@@ -53,9 +53,9 @@ class FlowClassifier : public AClassifier
 public:
     VertexEditTag GetVertexEditTag();
     FlowClassifier(MyMesh mesh);
-    AShader* GetShader();
-    //map<MyMesh::VertexHandle,AShader*> ClassifyVertices();
-    void ClassifyVertices(std::vector<glm::vec3>& list_of_points,std::vector<AShader*>& list_of_data,float& details);
+    std::shared_ptr<AShader> GetShader();
+    //map<MyMesh::VertexHandle,std::shared_ptr<AShader>> ClassifyVertices();
+    void ClassifyVertices(std::vector<glm::vec3>& list_of_points,std::vector<std::shared_ptr<AShader>>& list_of_data,float& details);
 
 };
 

@@ -3,32 +3,24 @@
 
 void PointCloudWriter::Write()
 {
-    //auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
     float point[3], normal[3];
     float radius = 0.0f;
-    MyMesh::Point mesh_point;
     if(_writing_a_shader_mask){
         allocated_data.resize(1);
     }else{
         _shader->allocateData(allocated_data);
     }
-    std::cout<<_mesh.n_vertices()<<std::endl;
-    std::cout<<"n vertices "<<_mesh.n_vertices()<<std::endl;
-    MyMesh::VertexIter vertex_handle;
-    MyMesh::VertexIter vertex_iterator_end(_mesh.vertices_end());
+     MyMesh::VertexIter vertex_handle;
     bool found = 0;
     vertex_handle=_mesh.vertices_begin();
-     pcl::PointCloud<pcl::PointXYZL>::Ptr const point_cloud =_features_finder->getPointClouds();
-std::vector<std::shared_ptr<ShadersWrapper>> list_of_shader_wrapper = _features_finder->getListOfShadersWrapper();
-int iterations = list_of_shader_wrapper.size();
-//for(_mesh.vertices_begin();vertex_handle!= vertex_iterator_end;++vertex_handle)
+     pcl::PointCloud<pcl::PointXYZL>::Ptr const point_cloud =_features_finder.getPointClouds();
+std::vector<std::shared_ptr<ShadersWrapper>> list_of_shader_wrapper = _features_finder.getListOfShadersWrapper();
+size_t iterations = list_of_shader_wrapper.size();
 for(size_t j = 0;j<iterations;j++){
-//std::cout<<"i "<<i << " over "<<  point_cloud->points.size()<<std::endl;
-//        ShadersWrapper* const shader_wrapper = shader_parameters_data_wrapper[vertex_handle];
-std::shared_ptr<ShadersWrapper> shader_wrapper  = list_of_shader_wrapper[j];
-        std::vector<AShader*> list;
+    std::shared_ptr<ShadersWrapper> shader_wrapper  = list_of_shader_wrapper[j];
+        std::vector<std::shared_ptr<AShader>> list;
         shader_wrapper->GetListOfShaders(list);
-        for(AShader* sp : list)
+        for(std::shared_ptr<AShader> sp : list)
         {
             if(sp==nullptr)
                 continue;
@@ -117,7 +109,7 @@ void PointCloudWriter::Read()
 }
 
 
-char* PointCloudWriter::CreateMaskFile(AShader* shader, std::vector<char*>& var_types, std::vector<char*>& var_names, int& num_variables)
+char* PointCloudWriter::CreateMaskFile(std::shared_ptr<AShader> shader, std::vector<char*>& var_types, std::vector<char*>& var_names, int& num_variables)
 {
     char* _file_name;
     std::string output_file_name;
@@ -132,7 +124,7 @@ char* PointCloudWriter::CreateMaskFile(AShader* shader, std::vector<char*>& var_
     return _file_name;
 }
 
-PointCloudWriter::PointCloudWriter(MyMesh mesh,AShader* shader,int subdiv_levels,std::string output_path,FeaturesFinder* features_finder, bool mask=true):
+PointCloudWriter::PointCloudWriter(MyMesh mesh, std::shared_ptr<AShader> shader, int subdiv_levels, std::string output_path, FeaturesFinder features_finder, bool mask=true):
     _mesh(mesh),
     _shader(shader),
     _subdiv_levels(subdiv_levels),

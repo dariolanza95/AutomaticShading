@@ -5,7 +5,7 @@
 //RIBWriter::RIBWriter(MyMesh mesh, string out_name_file, Camera camera, vector<VertexEditTag> list_of_vertices_change, vector<AShader *> list_of_used_shaders):_mesh(mesh),
 //    _rib_file(out_name_file),_cam(camera),_vertex_edit_tag(list_of_vertices_change),list_of_used_shaders(list_of_used_shaders)
 //{}
-RIBWriter::RIBWriter(MyMesh mesh,string out_name_file,string shaders_path,string plugins_path,string output_name_image,Camera camera,vector<AShader*> list_of_used_shaders):
+RIBWriter::RIBWriter(MyMesh mesh,string out_name_file,string shaders_path,string plugins_path,string output_name_image,Camera camera,vector<std::shared_ptr<AShader>> list_of_used_shaders):
     _mesh(mesh),
 _rib_file(out_name_file),
   _shaders_path(shaders_path),
@@ -215,7 +215,10 @@ string RIBWriter::WriteTransformationMatrix()
     //ss<<" Transform [  1 0 0 0 -0 -0.0836014 -0.996427 0 0 0.996427 -0.0836014 0 -149.833 23.9523 293.692 1 ]"<<std::endl;
   //  ss<< " Transform [  0.996296 1.11759e-08 0.0859931 0 0.0859742 0.0209919 -0.996037 0 -0.00180183 0.999741 0.0209143 0 -122.256 -25.8181 317.678 1 ]"<<std::endl;
   //  ss<<"  Transform [  1 0 0 0 0 0.159969 -0.987046 0 0 0.987046 0.159969 0 -149.168 -56.5756 265.938 1 ]"<<std::endl;
-ss<<" Transform [  1 0 0 0 -0 -0.0104214 -0.999906 0 0 0.999906 -0.0104214 0 -141.527 1.71687 296.649 1 ]"<<std::endl;
+//ss<<" Transform [  1 0 0 0 -0 -0.0104214 -0.999906 0 0 0.999906 -0.0104214 0 -141.527 1.71687 296.649 1 ]"<<std::endl;
+ // ss<<" Transform [  1 0 0 0 -0 -0.112574 -0.993599 0 0 0.993599 -0.112574 0 -149.168 7.9066 249.287 1 ]"<<std::endl;
+  ss<<" Transform [  1 0 0 0 -0 -0.0928982 -0.995632 0 0 0.995632 -0.0928982 0 -83.0555 -23.9474 357.319 1 ]"<<std::endl;
+
     return ss.str();
 }
 
@@ -463,7 +466,7 @@ void RIBWriter::WriteDisplacementLogic(){
     RIBNode* rib_result;
     RIBNode* rib_mix;
     int i = 0;
-    for(AShader* shader : _list_of_used_shaders){
+    for(std::shared_ptr<AShader> shader : _list_of_used_shaders){
         BlendMode displ_blend_mode = shader->GetDisplBlendMode();
         if(i==0){
             rib_shader1 = new RIBConstant(glm::vec3( 0.0f, 0.0f, 0.0f));
@@ -509,7 +512,7 @@ void RIBWriter::WriteShadersList()
     RIBNode* rib_mix = nullptr;
     RIBNode* rib_displ = nullptr;
     RIBNode* previous_rib_displ;
-    for(AShader* shader : _list_of_used_shaders){
+    for(std::shared_ptr<AShader> shader : _list_of_used_shaders){
 
         BlendMode displ_blend_mode = shader->GetDisplBlendMode();
 

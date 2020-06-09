@@ -308,7 +308,7 @@ vector<map<MyMesh::VertexHandle, ShaderParameters *>> RiverClassifier::FindLocal
     }
 
 
-    map<MyMesh::VertexHandle,AShader*> RiverClassifier::SelectFacesBySlope(map<MyMesh::VertexHandle,float> rivers_boundaries)
+    map<MyMesh::VertexHandle,std::shared_ptr<AShader>> RiverClassifier::SelectFacesBySlope(map<MyMesh::VertexHandle,float> rivers_boundaries)
     {
         //along the river boundaries (i.e. the rivers frontier with some treshold)
         //We select those faces which are still rather steep.

@@ -107,6 +107,8 @@
 template <typename MeshType, typename RealType = float>
 class SubdividerAndInterpolator: public OpenMesh::Subdivider::Uniform::SubdividerT< MeshType, RealType >
 {
+
+
 public:
 
   typedef typename MeshType::FaceHandle             FaceHandle;
@@ -130,6 +132,9 @@ public:
   std::set<typename MeshType::VertexHandle> _set_of_vertices;
   std::set<typename MeshType::FaceHandle>   _set_of_faces;
   std::set<typename MeshType::EdgeHandle>   _set_of_edges;
+
+  std::map<VertexHandle,std::shared_ptr<SimulationData>> temporary_map;
+
   /// Constructor
   SubdividerAndInterpolator( std::set<typename MeshType::FaceHandle> set_of_faces ) : parent_t(),_set_of_faces(set_of_faces) {
 
@@ -187,6 +192,7 @@ private:
   OpenMesh::EPropHandleT< Point > ep_pos_; // new edge pts
   OpenMesh::FPropHandleT< Point > fp_pos_; // new face pts
   OpenMesh::EPropHandleT<double> creaseWeights_;// crease weights
+
 
 };
 

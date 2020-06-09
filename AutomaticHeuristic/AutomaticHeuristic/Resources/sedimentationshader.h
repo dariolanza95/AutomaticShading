@@ -3,7 +3,7 @@
 #ifndef GLM_ENABLE_EXPERIMENTAL
 #define GLM_ENABLE_EXPERIMENTAL
 #endif
-#include "Ashader.h"
+#include "AShader.h"
 #include "utils.h"
 #include <sstream>
 #include <glm/gtx/closest_point.hpp>

@@ -63,7 +63,7 @@
 #include <glm/glm.hpp>
 
 #include "flowshader.h"
-#include "Ashader.h"
+#include "AShader.h"
 //== NAMESPACES ===============================================================
 
 //namespace OpenMesh   { // BEGIN_NS_OPENMESH
@@ -76,6 +76,7 @@ template <typename MeshType, typename RealType>
 bool
 SubdividerAndInterpolator< MeshType, RealType > ::prepare(MeshType &_m)
 {
+
   _m.add_property( vp_pos_ );
   _m.add_property( ep_pos_ );
   _m.add_property( fp_pos_ );
@@ -87,12 +88,16 @@ SubdividerAndInterpolator< MeshType, RealType > ::prepare(MeshType &_m)
 
   typename MeshType::FaceVertexIter face_vertex_circulator;
   typename MeshType::FaceEdgeIter face_edge_circulator;
+  OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<OpenMesh::VertexHandle , std::shared_ptr<SimulationData>>::type, MeshType> simulation_data_wrapper;
+  simulation_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,std::shared_ptr<SimulationData>> (_m,"simulation_data");
 
       for(FaceHandle fh : _set_of_faces){
         int val = 0;
           face_vertex_circulator = _m.fv_iter(fh);
         for( ;face_vertex_circulator.is_valid(); ++face_vertex_circulator){
-           _set_of_vertices.insert(face_vertex_circulator);
+           _set_of_vertices.insert(*face_vertex_circulator);
+            std::shared_ptr<SimulationData> temp = simulation_data_wrapper[face_vertex_circulator];
+           temporary_map.insert(std::make_pair(*face_vertex_circulator,temp));
         }
         face_edge_circulator = _m.fe_iter(fh);
         for( ;face_edge_circulator.is_valid(); ++face_edge_circulator){ 
@@ -123,7 +128,21 @@ SubdividerAndInterpolator<MeshType,RealType>::cleanup( MeshType& _m  )
   _m.remove_property( ep_pos_ );
   _m.remove_property( fp_pos_ );
   _m.remove_property( creaseWeights_ );
-  return true;
+
+{
+      OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<OpenMesh::VertexHandle , std::shared_ptr<SimulationData>>::type, MeshType> simulation_data_wrapper;
+    simulation_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,std::shared_ptr<SimulationData>> (_m,"simulation_data");
+    simulation_data_wrapper.retain(false);
+
+    simulation_data_wrapper.~PropertyManager();
+  }
+  OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<OpenMesh::VertexHandle , std::shared_ptr<SimulationData>>::type, MeshType> simulation_data_wrapper;
+  simulation_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,std::shared_ptr<SimulationData>> (_m,"simulation_data");
+  for(std::pair<OpenMesh::VertexHandle,std::shared_ptr<SimulationData>> entry: temporary_map){
+
+      simulation_data_wrapper[entry.first] = entry.second;
+  }
+return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -264,20 +283,26 @@ SubdividerAndInterpolator<MeshType,RealType>::split_face( MeshType& _m, const Fa
 
   HalfedgeHandle hend = _m.halfedge_handle(_fh);
   HalfedgeHandle hh = _m.next_halfedge_handle(hend);
-
-//  auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(_m, "shader_parameters");
+std::shared_ptr<SimulationData> sim_data;
   auto sim_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,std::shared_ptr<SimulationData>> (_m,"simulation_data");
-
-
-
   VertexHandle  t_vh1( _m.to_vertex_handle(hend));
+
+      if(temporary_map.count(t_vh1)>0){
+           sim_data = temporary_map[t_vh1];
+      }else {
+           sim_data= sim_data_wrapper[t_vh1];
+          temporary_map.insert(std::make_pair(t_vh1,sim_data));
+      }
+
+
+
+
   //for now just  a simple NN interpolation should work
   //ShadersWrapper* shader_param = shader_parameters_data_wrapper[t_vh1];
   //ShadersWrapper* new_shader_param = new ShadersWrapper(*shader_param);
 
      //shader_parameters_data_wrapper[vh] = new_shader_param;
 
-     std::shared_ptr<SimulationData> sim_data= sim_data_wrapper[t_vh1];
 
 float min_dist = INFINITY;
   HalfedgeHandle hold = _m.new_edge(_m.to_vertex_handle(hend), vh);
@@ -308,14 +333,23 @@ std::shared_ptr<SimulationData> tmp_sim[valence];
     _m.set_next_halfedge_handle(hh, hnext);
     hh = _m.next_halfedge_handle(hnext);
     _m.set_next_halfedge_handle(hnext, hnew);
- tmp_sim[i] =  sim_data_wrapper[_m.to_vertex_handle(hnext)];
+    if(temporary_map.count(_m.to_vertex_handle(hnext))>0){
+       tmp_sim[i] = temporary_map[_m.to_vertex_handle(hnext)];
+    }else{
+        tmp_sim[i] =  sim_data_wrapper[_m.to_vertex_handle(hnext)];
+
+        temporary_map.insert(std::make_pair(_m.to_vertex_handle(hnext),sim_data_wrapper[_m.to_vertex_handle(hnext)]));
+    }
+
     hold = _m.opposite_halfedge_handle(hnew);
   }
   new_sim_data = tmp_sim[1]->Interpolate(tmp_sim[2],0.5);
-//   new_sim_data= new SimulationData(*sim_data);
-sim_data_wrapper[vh] = new_sim_data;
+     temporary_map.insert(std::make_pair(vh,new_sim_data));
 
-  sim_data_wrapper[vh] = new_sim_data;
+  //   new_sim_data= new SimulationData(*sim_data);
+  //sim_data_wrapper[vh] = new_sim_data;
+
+  //sim_data_wrapper[vh] = new_sim_data;
   _m.set_next_halfedge_handle(hold, hh);
   _m.set_next_halfedge_handle(hh, hend);
   hh = _m.next_halfedge_handle(hend);
@@ -350,15 +384,30 @@ SubdividerAndInterpolator<MeshType,RealType>::split_edge( MeshType& _m, const Ed
   //ShadersWrapper* shader_param_v_1 = shader_parameters_data_wrapper[vh1];
   //ShadersWrapper* shader_param_v_2 = shader_parameters_data_wrapper[vh2];
   //ShadersWrapper* new_shader_param = new ShadersWrapper(*shader_param_v_1);
-  //AShader* sp = new FlowShader(50);
+  //std::shared_ptr<AShader> sp = new FlowShader(50);
   //shader_param_v_1->AddShaderParameters(sp);
           //(ShadersWrapper::interpolate(shader_param_v_1,shader_param_v_2,0));
   auto sim_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,std::shared_ptr<SimulationData>> (_m,"simulation_data");
 //  auto OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , SimulationData*>::type, MyMesh> simulation_data_wrapper;
 
 
-  std::shared_ptr<SimulationData> sim_data= sim_data_wrapper[vh1];
-  std::shared_ptr<SimulationData> sim_data_2= sim_data_wrapper[vh2];
+  std::shared_ptr<SimulationData> sim_data;
+  if(temporary_map.count(vh1)>0){
+     sim_data = temporary_map[vh1];
+  }else{
+      sim_data =  sim_data_wrapper[vh1];
+      temporary_map.insert(std::make_pair(vh1,sim_data));
+  }
+
+  std::shared_ptr<SimulationData> sim_data_2;
+  if(temporary_map.count(vh2)>0){
+     sim_data_2 = temporary_map[vh2];
+  }else{
+      sim_data_2 =  sim_data_wrapper[vh2];
+    temporary_map.insert(std::make_pair(vh2,sim_data_2));
+  }
+
+  //= sim_data_wrapper[vh2];
   //SimulationData* new_sim_data= new SimulationData(*sim_data);
 std::shared_ptr<SimulationData> new_sim_data= sim_data->Interpolate(sim_data_2,0.5);
 //sim_data->setData(SimulationDataEnum::hardness,glm::vec3(50,0,0));
@@ -366,7 +415,8 @@ std::shared_ptr<SimulationData> new_sim_data= sim_data->Interpolate(sim_data_2,0
 //      new_shader_param = new ShaderParameters();
   //shader_parameters_data_wrapper[vh] = new_shader_param;
  // _set_of_vertices.insert(vh);
-  sim_data_wrapper[vh] = new_sim_data;
+ temporary_map.insert(std::make_pair(vh,new_sim_data));
+  //sim_data_wrapper[vh] = new_sim_data;
 
   // Re-link mesh entities
   if (_m.is_boundary(_eh))
@@ -427,6 +477,10 @@ SubdividerAndInterpolator<MeshType,RealType>::compute_midpoint( MeshType& _m, co
 
   pos +=  _m.point( _m.to_vertex_handle( opp_heh));
 
+  Point temp = pos;
+  if(temp[0]>100000 || temp[0]<-100000 || temp[1]>100000 || temp[1]<-100000 || temp[2]>100000 || temp[2]<-100000) {
+      std::cout<<"wrong at the start"<<std::endl;
+  }
 
   // boundary edge: just average vertex positions
   // this yields the [1/2 1/2] mask
@@ -446,32 +500,47 @@ SubdividerAndInterpolator<MeshType,RealType>::compute_midpoint( MeshType& _m, co
 
       //pos += _m.property(fp_pos_, _m.face_handle(heh));
       // pos += _m.property(fp_pos_, _m.face_handle(opp_heh));
-      temp_pos=(_m.property(fp_pos_, _m.face_handle(heh)));
+      temp_pos = (_m.property(fp_pos_, _m.face_handle(heh)));
+      bool inserted = false;
+      if(_set_of_faces.count(_m.face_handle(heh))>0){
+          inserted = true;
+      }else{
+          inserted = false;
+      }
+
+
+
       temp_v = glm::vec3(temp_pos[0],temp_pos[1],temp_pos[2]);
       Point centroid;
-      if(glm::any(glm::isnan(temp_v))  ){
+      if(glm::any(glm::isnan(temp_v) ) || !inserted  ){
           pos *= static_cast<RealType>(0.5);
       }
       else{
       temp_pos=(_m.property(fp_pos_, _m.face_handle(opp_heh)));
       temp_v = glm::vec3(temp_pos[0],temp_pos[1],temp_pos[2]);
-      if(glm::any(glm::isnan(temp_v))  ){
+      if(_set_of_faces.count(_m.face_handle(opp_heh))>0){
+          inserted = true;
+      }else{
+          inserted = false;
+      }
+      if(glm::any(glm::isnan(temp_v)) || !inserted)  {
           pos *= static_cast<RealType>(0.5);
       }
       else{
             pos += _m.property(fp_pos_, _m.face_handle(heh));
             pos += _m.property(fp_pos_, _m.face_handle(opp_heh));
-           pos *= static_cast<RealType>(0.25);
+            pos *= static_cast<RealType>(0.25);
       }
 
     }
   }
-
+  temp = pos;
+  if(temp[0]>100000 || temp[0]<-100000 || temp[1]>100000 || temp[1]<-100000 || temp[2]>100000 || temp[2]<-100000) {
+      std::cout<<"errur"<<std::endl;
+  }
   _m.property( ep_pos_, _eh ) = pos;
   glm::vec3 f (pos[0],pos[1],pos[2]);
-  if(glm::any(glm::isnan(f))){
-      std::cout<<"ERR here in midpoint_2"<<std::endl;
-  }
+
 
 }
 

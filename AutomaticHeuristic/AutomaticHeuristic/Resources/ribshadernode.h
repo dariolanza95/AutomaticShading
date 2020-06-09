@@ -2,19 +2,20 @@
 #define RIBSHADERNODE_H
 #include <string>
 #include <sstream>
-#include "Ashader.h"
+#include "AShader.h"
 #include "RibNode.h"
+#include <memory>
 class RIBShaderNode : public RIBNode
 {
     std::string _node_name;
     std::string _color_output_name;
     std::string _displace_output_name;
     std::string _float_output_name;
-    AShader* _shader;
+    std::shared_ptr<AShader> _shader;
     int _id;
     static int _unique_id;
 public:
-    RIBShaderNode(AShader* shader);
+    RIBShaderNode(std::shared_ptr<AShader> shader);
     std::string GetName();
     std::string WriteNode();
     std::string GetDispl();

@@ -3,7 +3,7 @@
 #include <glm/vec3.hpp>
 #include <map>
 #include <boost/any.hpp>
-#include "Ashader.h"
+#include "AShader.h"
 enum class ShaderParametersEnum{empty,flow_normal,hardness,river,LIC};
 enum class BlendingMode{Add,Mix,Overlap};
 /*

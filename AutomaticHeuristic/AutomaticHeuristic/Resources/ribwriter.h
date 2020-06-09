@@ -33,7 +33,7 @@ class RIBWriter
     BXDFNode* _bxdf_node;
     DisplNode* _displ_node;
     vector<VertexEditTag> _vertex_edit_tag;
-    vector<AShader*> _list_of_used_shaders;
+    vector<std::shared_ptr<AShader>> _list_of_used_shaders;
 
     string _plugins_path;
     string _shaders_path;
@@ -56,7 +56,7 @@ class RIBWriter
     void WriteBXDF(RIBNode* node);
     void WriteInialization();
 public:
-    RIBWriter(MyMesh mesh,string out_name_file,string shaders_path,string plugins_path,string output_name_image,Camera _cam,vector<AShader*> list_of_used_shaders);
+    RIBWriter(MyMesh mesh,string out_name_file,string shaders_path,string plugins_path,string output_name_image,Camera _cam,vector<std::shared_ptr<AShader>> list_of_used_shaders);
     void Write();
     void WriteArchive();
     void InsertVertices();

@@ -56,8 +56,8 @@ std::shared_ptr<SimulationData> SimulationData::Interpolate(std::shared_ptr<Simu
         }
     }
 
-    for(pair<SimulationDataEnum,std::vector<float>> entry: map_of_lists){
-        if(sd1->map_of_floats.count(entry.first)){
+    /*for(pair<SimulationDataEnum,std::vector<float>> entry: map_of_lists){
+        if(sd1->map_of_lists.count(entry.first)){
             std::vector<float> first_list = entry.second;
             std::vector<float> second_list =sd1->map_of_lists.at(entry.first);
             std::vector<float> new_list;
@@ -101,8 +101,9 @@ std::shared_ptr<SimulationData> SimulationData::Interpolate(std::shared_ptr<Simu
         }else{
             new_map_of_lists.insert(entry);
         }
-    }
-
+    }*/
+    new_map_of_lists = map_of_lists;
+/*
     for(pair<SimulationDataEnum,std::vector<float>> entry: sd1->map_of_lists){
         if(new_map_of_lists.count(entry.first)){
             continue;
@@ -110,7 +111,7 @@ std::shared_ptr<SimulationData> SimulationData::Interpolate(std::shared_ptr<Simu
             new_map_of_lists.insert(entry);
         }
     }
-
+*/
     return std::shared_ptr<SimulationData>(new SimulationData(new_map_of_floats,new_map_of_vectors,new_map_of_lists));
 
 }
@@ -203,22 +204,8 @@ int x = tokens.size();
                                 }
                             }
                             waiting_for_a_number = false;
-                            /*if(list.size()<13){
-                                list.clear();
-                                list.push_back(1);
-                                list.push_back(2);
-                            }
-                           /* list.clear();
-                            list.push_back(1);
-                            list.push_back(2);
-                            list.push_back(3);
-                            list.push_back(4);
-                            list.push_back(5);
-                            list.push_back(6);/*
-                            list.push_back(1);
-                            list.push_back(2);
-                            list.push_back(3);*/
-                            list.resize(40);
+
+                            list.resize(20);
                             map_of_lists.insert(pair<SimulationDataEnum,std::vector<float>> (data_name,list));
 
                         }else{
@@ -275,7 +262,7 @@ try{
 }
 
 SimulationData::~SimulationData(){
-   std::cout<<"Call dtor"<<std::endl;
+   std::cout<<"Sim data called dtor"<<std::endl;
     // for(pair<SimulationDataEnum,std::vector<float>>  entry : map_of_lists){
    //     entry.second.~vector();
    // }

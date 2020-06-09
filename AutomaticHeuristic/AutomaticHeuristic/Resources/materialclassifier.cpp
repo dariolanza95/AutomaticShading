@@ -1,13 +1,13 @@
 #include "materialclassifier.h"
 
-
+/*
 class SelectMaterialVerticesFunctorClass
 {
     public:
-    AShader* getValue(SimulationData* sd) {
+    std::shared_ptr<AShader> getValue(SimulationData* sd) {
         float hardness;
         sd->getData(SimulationDataEnum::hardness,hardness);
-        AShader* shader_parameter = new MaterialShader(_id,1.0f,hardness);
+        std::shared_ptr<AShader> shader_parameter = new MaterialShader(_id,1.0f,hardness);
         return shader_parameter;
     }
     SelectMaterialVerticesFunctorClass(){}
@@ -35,11 +35,11 @@ MaterialClassifier::MaterialClassifier(MyMesh& mesh) : AClassifier(mesh)
 {
     _shader = new MaterialShader(_id);
 }
-map<MyMesh::VertexHandle,AShader*> MaterialClassifier::ClassifyVertices()
+map<MyMesh::VertexHandle,std::shared_ptr<AShader>> MaterialClassifier::ClassifyVertices()
 {
 
     SelectMaterialVerticesFunctorClass functor(_mesh,_id);
    return SelectClassVertices(functor);
 
 }
-
+*/

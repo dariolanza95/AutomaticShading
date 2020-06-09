@@ -88,6 +88,8 @@ protected:
     float getSedimentHistorySize(int y, int x);
     std::vector<int> CreateMockUpData(int y,int x,int num_levels,int num_materials);
 
+    void SmoothData(std::vector<int>& local_sediments_history,std::vector<glm::vec3>& local_sediments_points);
+
 protected:
     bool _finished;
     bool _inPause;

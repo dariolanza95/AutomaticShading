@@ -22,22 +22,22 @@
 
 class PointCloudWriter
 {
-    FeaturesFinder* _features_finder;
+    FeaturesFinder _features_finder;
     int _num_shader_parameters;
     PtcPointCloud _output_file;
     std::string _output_file_name;
     MyMesh _mesh;
-    AShader* _shader;
+    std::shared_ptr<AShader> _shader;
     bool _writing_a_shader_mask;
     int _subdiv_levels;
     std::vector<float > allocated_data;
     std::string _output_path;
-    char* CreateMaskFile(AShader* shader,std::vector<char*>& var_types,std::vector<char*>& var_names,int& num_variables);
+    char* CreateMaskFile(std::shared_ptr<AShader> shader,std::vector<char*>& var_types,std::vector<char*>& var_names,int& num_variables);
 
 public:
     void Write();
     void Read();
-    PointCloudWriter(MyMesh mesh, AShader* shader, int _subdiv_levels, std::string output_path,FeaturesFinder* features_finder,bool mask);
+    PointCloudWriter(MyMesh mesh, std::shared_ptr<AShader> shader, int _subdiv_levels, std::string output_path,FeaturesFinder features_finder,bool mask);
 };
 
 #endif // POINTCLOUDWRITER_H

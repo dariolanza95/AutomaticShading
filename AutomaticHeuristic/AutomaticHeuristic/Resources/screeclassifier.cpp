@@ -10,11 +10,11 @@ ScreeClassifier::ScreeClassifier(MyMesh mesh,float repose_angle,float treshold) 
     _repose_angle(repose_angle),
     _treshold(treshold)
    {}
-map<MyMesh::VertexHandle,AShader*> ScreeClassifier::ClassifyVertices()
+map<MyMesh::VertexHandle,std::shared_ptr<AShader>> ScreeClassifier::ClassifyVertices()
 {
         MyMesh::Normal up_direction = Vec3f(0,0,1);
         MyMesh::FaceIter face_iterator,face_iterator_end(_mesh.faces_end());
-        map<MyMesh::VertexHandle,AShader*> selected_faces ;
+        map<MyMesh::VertexHandle,std::shared_ptr<AShader>> selected_faces ;
 
         for(face_iterator=_mesh.faces_begin();face_iterator != face_iterator_end;++face_iterator)
         {
@@ -33,8 +33,8 @@ map<MyMesh::VertexHandle,AShader*> ScreeClassifier::ClassifyVertices()
                 for( face_vertex_iter;face_vertex_iter.is_valid();++face_vertex_iter)
                 {
                 //ShaderParameters* shader_parameter = new ShaderParameters(_id,10);
-              //  AShader* shader = new RiverShader();
-                  //selected_faces.insert(pair<MyMesh::VertexHandle,AShader*>(*face_vertex_iter,shader));
+              //  std::shared_ptr<AShader> shader = new RiverShader();
+                  //selected_faces.insert(pair<MyMesh::VertexHandle,std::shared_ptr<AShader>>(*face_vertex_iter,shader));
                 }
             }
         }

@@ -119,8 +119,8 @@ void main(void)
     {
      //   temp2 = vSimData_2;
         temp3 = vSedimentedTerrain;
-      //  temp3 = max(0,temp3);
-        if(temp3> 0)
+        temp3 = max(0,temp3);
+        if(temp3>= 0)
             temp3 = 1;
 
     }

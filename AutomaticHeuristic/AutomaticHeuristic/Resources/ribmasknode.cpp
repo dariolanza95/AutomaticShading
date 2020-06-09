@@ -3,7 +3,7 @@
 using namespace std;
 
 int RIBMaskNode::_unique_id = 0;
-RIBMaskNode::RIBMaskNode(AShader* shader) : _shader(shader)
+RIBMaskNode::RIBMaskNode(std::shared_ptr<AShader> shader) : _shader(shader)
 {
     _id = _unique_id++;
 }

@@ -74,7 +74,7 @@ public:
     void update(ulong time, double dt, bool makeRain=true, bool flood=false, bool wind=false);
     void simulateFlow(double dt);
     void simulateErosion(double dt, ulong time);
-    void simulateSedimentTransportation(double dt);
+    void simulateSedimentTransportation(double dt, ulong time);
     void simulateEvaporation(double dt);
     float sampleTerrain(int x,int y );
     void makeRain(double dt,ulong time);

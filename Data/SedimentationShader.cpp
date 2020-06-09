@@ -632,7 +632,8 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
         {
             resultF[n]= 1.f - resultF[n];
         }*/
-
+std::map<int,int> used_id;
+         //std::<int> used_id;
         resultF[n] = 1;
        float offset = 0;
 
@@ -647,14 +648,108 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
                 int Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, K, data);
                 float val = 0;
 
+
                 if(Readres==1)
                 {
+                   val= data[0];
+                  // RtPoint3 pp = sP[n];
+                   RtPoint3 max,min;
+                   {
 
-                    val = data[0];
-                }
+                         RtPoint3 thiscell = RtPoint3 (cell_scale* (floorf(pp.x/cell_scale ) ),
+                                                     cell_scale* (floorf(pp.y/cell_scale ) ),
+                                                     cell_scale* (floorf(pp.z/cell_scale ) ));
+                       if(thiscell.x<pp.x){
+                           min.x = thiscell.x;
+                           max.x = thiscell.x+1*cell_scale;
+                       }else{
+                           max.x = thiscell.x;
+                           min.x = thiscell.x-1*cell_scale;
+                       }
+                       if(thiscell.y<pp.y){
+                           min.y = thiscell.y;
+                           max.y = thiscell.y+1*cell_scale;
+                       }else{
+                           max.y = thiscell.y;
+                           min.y = thiscell.y-1*cell_scale;
+                       }
+                       if(thiscell.z<pp.z){
+                           min.z = thiscell.z;
+                           max.z = thiscell.z+1*cell_scale;
+                       }else{
+                           max.z = thiscell.z;
+                           min.z = thiscell.z-1*cell_scale;
+                       }
+                    //   std::cout<<cell_scale<<std::endl;
+                        RtPoint3 Xdir(cell_scale,0,0);
+                        RtPoint3 Ydir(0,cell_scale,0);
+                        RtPoint3 Zdir(0,0,cell_scale);
+                       float fractX = (pp.x-min.x)/cell_scale;
+                       float fractY = (pp.y-min.y)/cell_scale;
+                       float fractZ = (pp.z-min.z)/cell_scale;
+                       float values[4];
+                       RtPoint3 interp_points[4];
+                       interp_points[0] = min;
+                       interp_points[1] = min + Xdir;
+                       interp_points[2] = min + Ydir;
+                       interp_points[3] = min + Ydir + Xdir;
+                      // interp_points[4] = min + Zdir;
+                      // interp_points[5] = min + Zdir + Xdir ;
+                      // interp_points[6] = min + Zdir + Ydir;
+                      // interp_points[7] = min + Zdir + Ydir + Xdir;
+                    bool skip = false;
+                       for(int j= 0;j<4;j++){
+
+                           point[0] = interp_points[j][0];
+                           point[1] = interp_points[j][1];
+                           point[2] = interp_points[j][2];
+                   //    std::cout<<"point "<<point[0]<<std::endl;}
+                        Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist/2, K, data);
+                        if(Readres==1){
+                            values[j] = data[0];
+                        }else{
+                            values[j] = 0;
+                        }
+
+
+                       }
+                       for(int j = 0;j<4;j++){
+                           int temp = values[j];
+                           if(used_id.count(temp)>0){
+                               used_id[temp]++;
+                           }else{
+                               used_id.insert(std::make_pair(temp,1));
+                           }
+                       }
+                       int max = 0;
+                       int final_id = 0;
+                       for(auto const entry:used_id){
+                           if(entry.second>0){
+                               max = entry.second;
+                               final_id = entry.first;
+                           }
+                       }
+                       val = final_id;
 /*
-                float delta = 0.01;
+                           float X0 =     RixMix(values[0], values[1], fractX);
+                           float X1 =     RixMix(values[2], values[3], fractX);
+                           float X2 =     RixMix(values[4], values[5], fractX);
+                           float X3 =     RixMix(values[6], values[7], fractX);
+        float Y0 =           RixMix(X0,X1, fractY);
+        float Y1 =           RixMix(X2,X3, fractY);
+        float Z = RixMix(Y0,Y1, fractZ);
+        //std::cout<<"X0 "<<X0<<std::endl;
+        //std::cout<<fractX<<" "<<fractY<<" "<<fractZ <<std::endl;
+        val = Z;*/
+                  }
+                }
 
+
+
+
+/*
+                float delta = 1;
+                maxdist = delta*0.5;
                 point[0] = pp.x + delta;//thiscell.x;
                 point[1] = pp.y;//thiscell.y;
                 point[2] = pp.z;//thiscell.z;

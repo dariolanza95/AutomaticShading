@@ -18,14 +18,14 @@ return sw1;
 */
 
 
-void ShadersWrapper::GetListOfShaders(std::vector<AShader*>& list)
+void ShadersWrapper::GetListOfShaders(std::vector<std::shared_ptr<AShader>>& list)
 {
 
     //better to sort them
     list = list_of_shaders;
 }
 
-void ShadersWrapper::AddShaderParameters(AShader* sp )
+void ShadersWrapper::AddShaderParameters(std::shared_ptr<AShader> sp )
 {
     list_of_shaders.push_back(sp);
 }

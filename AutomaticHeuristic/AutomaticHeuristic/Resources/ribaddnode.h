@@ -4,7 +4,7 @@
 #include "RibNode.h"
 #include "ribconstant.h"
 #include <sstream>
-#include "Ashader.h"
+#include "AShader.h"
 
 class RIBAddNode:public RIBNode
 {

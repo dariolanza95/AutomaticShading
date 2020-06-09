@@ -1,7 +1,7 @@
 #ifndef FLOWSHADER_H
 #define FLOWSHADER_H
 
-#include "Ashader.h"
+#include "AShader.h"
 #include "simulationdata.h"
 #include <OpenMesh/Core/Utils/PropertyManager.hh>
 #include <OpenMesh/Core/Mesh/PolyConnectivity.hh>
