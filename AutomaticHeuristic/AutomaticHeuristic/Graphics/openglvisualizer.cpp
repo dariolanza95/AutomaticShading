@@ -443,25 +443,25 @@ void OpenGlVisualizer::ShowSelectedFaces()
 void OpenGlVisualizer::ShowSimulationDataInput()
 {
   std::cout<<"showing simulation input data"<<std::endl;
-  auto simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,std::shared_ptr<SimulationData>>(_mesh, "simulation_data");
+//  auto simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,std::shared_ptr<SimulationData>>(_mesh, "simulation_data");
   int i = 0;
   for (auto& vertex_handle : _mesh.vertices())
   {
       MyMesh::Point point = _mesh.point(vertex_handle);
       //SimulationData* sd
-      std::shared_ptr<SimulationData> sd = simulation_data_wrapper[vertex_handle];
+      std::shared_ptr<SimulationData> sd;// = simulation_data_wrapper[vertex_handle];
 
       _terrain(i) = point[2];
       //clear the previous data
       _water(i) = 0;
       _simData(i) = 0;
       _suspendedSediment(i) = 0;
-      float river;
-      sd->getData(SimulationDataEnum::river,river);
+      float river = 0.3;
+      //sd->getData(SimulationDataEnum::river,river);
       _water(i)=  glm::clamp( river,0.f,1.f );
       if(river == 0){
-          float val = -1;
-          sd->getData(SimulationDataEnum::vegetation,val);
+          float val = 0.1;
+          //sd->getData(SimulationDataEnum::vegetation,val);
           glm::clamp(val,0.f,1.f);
         }//_simData(i)= glm::clamp(sd->g map_of_floats[SimulationDataEnum::vegetation];,0.f,1.f);
 

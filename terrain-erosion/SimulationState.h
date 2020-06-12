@@ -25,6 +25,8 @@ class SimulationState
 public:
     Grid2D<float> water;
     Grid2D<float> air;
+    Grid2D<ulong> air_total_pressure;
+    Grid2D<ulong> air_counter;
     Grid2D<float> terrain;
     Grid2D<float> suspendedSediment;
     Grid2D<float> vegetation;
@@ -43,6 +45,8 @@ public:
     SimulationState(uint w, uint h,glm::vec2 WindDirection = glm::vec2(0,1))
         :   water(w,h),
             air(w,h),
+            air_total_pressure(w,h),
+            air_counter(w,h),
             terrain(w,h),
             suspendedSediment(w,h),
             sedimented_terrain(w,h),
@@ -60,7 +64,7 @@ public:
         //createPerlinTerrain();
      //  createRiverTerrain();
        //createSteepTerrain();
-      // createSeaTerrain();
+       //createSeaTerrain();
         createSedimentationTerrain();
         int l = 20;
         int mw = 20;
@@ -84,6 +88,8 @@ void createSeaTerrain(){
         {
             water(y,x) = 0.0f;
             air(y,x) = 0.0f;
+            air_counter(y,x)=0;
+            air_total_pressure(y,x) = 0;
             suspendedSediment(y,x) = 0.0f;
             vegetation(y,x) = 0.0f;
             simData(y,x) = 0.0f;
@@ -135,6 +141,8 @@ void createSeaTerrain(){
             {
                 water(y,x) = 0.0f;
                 air(y,x) = 0.0f;
+                air_counter(y,x)=0;
+                air_total_pressure(y,x) = 0;
                 suspendedSediment(y,x) = 0.0f;
                 vegetation(y,x) = 0.0f;
                 simData(y,x) = 0.0f;
@@ -181,6 +189,8 @@ void createSeaTerrain(){
             {
                 water(y,x) = 0.0f;
                 air(y,x) = 0.0f;
+                air_counter(y,x)=0;
+                air_total_pressure(y,x) = 0;
                 suspendedSediment(y,x) = 0.0f;
                 vegetation(y,x) = 0.0f;
                 simData(y,x) = 0.0f;
@@ -229,6 +239,8 @@ void createSeaTerrain(){
             {
                 water(y,x) = 0.0f;
                 air(y,x) = 0.0f;
+                air_counter(y,x)=0;
+                air_total_pressure(y,x) = 0;
                 //flowNormal(y,x) = 0.0f;
                 float h = 0.0f; float f = 0.05f;
                 h += perlin.Sample(y*f,x*f)*1; f /= 2;

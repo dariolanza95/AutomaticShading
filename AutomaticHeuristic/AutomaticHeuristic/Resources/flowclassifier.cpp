@@ -4,9 +4,9 @@ using namespace  OpenMesh;
 #define MULTCONSTANT 1000000
 
 
-FlowClassifier::FlowClassifier(MyMesh mesh) : AClassifier(mesh),_shader_parameter_size(3)
+FlowClassifier::FlowClassifier(MyMesh mesh,SimulationDataMap simulation_data_map) : AClassifier(mesh),_shader_parameter_size(3),simulation_data_map(simulation_data_map)
 {
-simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,std::shared_ptr<SimulationData>>(_mesh, "simulation_data");
+//simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,std::shared_ptr<SimulationData>>(_mesh, "simulation_data");
      _shader = std::shared_ptr<AShader>(new FlowShader(_id));
 }
 
@@ -153,7 +153,8 @@ void FlowClassifier::selectFrontier(map<MyMesh::VertexHandle,std::shared_ptr<Flo
  VertexEditTag FlowClassifier::GetVertexEditTag()
  {
      return _vertex_edit_tag;
- }map<MyMesh::VertexHandle,glm::vec3> FlowClassifier::selectFlowVertices(glm::vec3& min_bb,glm::vec3& max_bb)
+ }
+ map<MyMesh::VertexHandle,glm::vec3> FlowClassifier::selectFlowVertices(glm::vec3& min_bb,glm::vec3& max_bb)
  {
 
 
@@ -166,9 +167,9 @@ void FlowClassifier::selectFrontier(map<MyMesh::VertexHandle,std::shared_ptr<Flo
      map<MyMesh::VertexHandle,glm::vec3> flow_vertices;
      for(vertex_iterator=_mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
      {
-    std::shared_ptr<SimulationData> sd = simulation_data_wrapper[*vertex_iterator];
-    if(sd==nullptr)
-        continue;
+    std::shared_ptr<SimulationData> sd;// = simulation_data_wrapper[*vertex_iterator];
+    if(simulation_data_map.count(*vertex_iterator)>0){
+        sd = simulation_data_map.at(*vertex_iterator);
          glm::vec3 sim_data_normal;
          sd->getData(SimulationDataEnum::flow_normal,sim_data_normal);
          sim_data_normal = glm::normalize(sim_data_normal);
@@ -203,7 +204,7 @@ void FlowClassifier::selectFrontier(map<MyMesh::VertexHandle,std::shared_ptr<Flo
                  }
              }
              flow_vertices.insert(make_pair(*vertex_iterator,sim_data_normal));
-
+        }
      }
      return flow_vertices;
  }
@@ -225,7 +226,7 @@ void FlowClassifier::selectFrontier(map<MyMesh::VertexHandle,std::shared_ptr<Flo
 
  std::shared_ptr<AShader> FlowClassifier::GetShader(){return _shader;}
 
-void FlowClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_points,std::vector<std::shared_ptr<AShader>>& list_of_data,float& details)
+void FlowClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_points, std::vector<std::shared_ptr<AShader>>& list_of_data, float& details)
 {
 
     map<MyMesh::VertexHandle,std::shared_ptr<AShader>> selected_vertices;
@@ -234,7 +235,7 @@ void FlowClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_points,std
     glm::vec3 max_bb;
 
    map<MyMesh::VertexHandle,glm::vec3> flow_vertices;
-    int _subdiv_levels = 1;
+    int _subdiv_levels = 2;
     for(int i=0;i<_subdiv_levels;i++){
 
         auto temp_flow_vertices = selectFlowVertices(min_bb,max_bb);
@@ -271,12 +272,13 @@ void FlowClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_points,std
                         set_of_faces.insert(*vertex_face_circulator);
                   }
         }
-
-        SubdividerAndInterpolator<MyMesh> catmull(set_of_faces);
+        //std::cout<<"ERR no subdiv is applied"<<std::endl;//dilit dis
+        SubdividerAndInterpolator<MyMesh> catmull(set_of_faces,simulation_data_map
+                                                  );
             catmull.attach(_mesh);
             catmull(1);
             catmull.detach();
-simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,std::shared_ptr<SimulationData>>(_mesh, "simulation_data");
+//simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,std::shared_ptr<SimulationData>>(_mesh, "simulation_data");
 
     }
 

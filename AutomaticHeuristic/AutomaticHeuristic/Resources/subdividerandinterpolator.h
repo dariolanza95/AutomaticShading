@@ -8,6 +8,7 @@
 #include <OpenMesh/Core/Utils/vector_traits.hh>
 #include <OpenMesh/Core/Utils/PropertyManager.hh>
 #include  "simulationdata.h"
+#include "mydefwrapper.h"
 #include <OpenMesh/Tools/Subdivider/Uniform/SubdividerT.hh>
 #include <set>
 #if defined(OM_CC_MIPS)
@@ -131,12 +132,13 @@ public:
 
   std::set<typename MeshType::VertexHandle> _set_of_vertices;
   std::set<typename MeshType::FaceHandle>   _set_of_faces;
+  SimulationDataMap& _simulation_data_map;
   std::set<typename MeshType::EdgeHandle>   _set_of_edges;
 
   std::map<VertexHandle,std::shared_ptr<SimulationData>> temporary_map;
 
   /// Constructor
-  SubdividerAndInterpolator( std::set<typename MeshType::FaceHandle> set_of_faces ) : parent_t(),_set_of_faces(set_of_faces) {
+  SubdividerAndInterpolator( std::set<typename MeshType::FaceHandle> set_of_faces,SimulationDataMap& simulation_data_map ) : parent_t(),_set_of_faces(set_of_faces),_simulation_data_map(simulation_data_map) {
 
   }
 

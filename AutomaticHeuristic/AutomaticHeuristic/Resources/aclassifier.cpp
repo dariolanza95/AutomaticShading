@@ -10,5 +10,3 @@ AClassifier::AClassifier(MyMesh mesh) : _mesh(mesh)
 int AClassifier::GetId(){return _id;}
 AClassifier::~AClassifier(){}
 std::shared_ptr<AShader> AClassifier::GetShader(){return _shader;}
-//template <typename T,typename FuncType>
-//map<MyMesh::VertexHandle,T> BFS(int max_depth,map<MyMesh::VertexHandle,T> frontier_map,FuncType pred);

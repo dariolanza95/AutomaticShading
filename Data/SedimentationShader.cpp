@@ -536,7 +536,7 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
     for (int n = 0; n < sctx->numPts; ++n)
     {
          RtPoint3 pp =  sP[n];
-    /*    float f1,f2,f3,f4,d;
+/*        float f1,f2,f3,f4,d;
         float nois = m_sFuncs->Noise(scaler*sP[n]/scale);
         nois = 0;
 
@@ -639,9 +639,9 @@ std::map<int,int> used_id;
 
                 int K = 1;
                 float maxdist = 5;
-               // point[0]= f1cell.x;
-               // point[1]= f1cell.y;
-               // point[2]= f1cell.z;
+               //point[0]= f1cell.x;
+               //point[1]= f1cell.y;
+               //point[2]= f1cell.z;
                 point[0] = pp.x;//thiscell.x;
                 point[1] = pp.y;//thiscell.y;
                 point[2] = pp.z;//thiscell.z;
@@ -653,7 +653,7 @@ std::map<int,int> used_id;
                 {
                    val= data[0];
                   // RtPoint3 pp = sP[n];
-                   RtPoint3 max,min;
+                   /*RtPoint3 max,min;
                    {
 
                          RtPoint3 thiscell = RtPoint3 (cell_scale* (floorf(pp.x/cell_scale ) ),
@@ -729,7 +729,7 @@ std::map<int,int> used_id;
                                final_id = entry.first;
                            }
                        }
-                       val = final_id;
+                       val = final_id;*/
 /*
                            float X0 =     RixMix(values[0], values[1], fractX);
                            float X1 =     RixMix(values[2], values[3], fractX);
@@ -741,7 +741,7 @@ std::map<int,int> used_id;
         //std::cout<<"X0 "<<X0<<std::endl;
         //std::cout<<fractX<<" "<<fractY<<" "<<fractZ <<std::endl;
         val = Z;*/
-                  }
+            //      }
                 }
 
 

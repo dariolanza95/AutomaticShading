@@ -16,7 +16,7 @@
 #include "Grid2D.h"
 #include "Math/PerlinNoise.h"
 #include "SimulationState.h"
-
+#include <map>
 using namespace glm;
 
 
@@ -34,6 +34,8 @@ public:
     SimulationState& state;
     Grid2D<float>& water;
     Grid2D<float>& air;
+    Grid2D<ulong>& air_total_pressure;
+    Grid2D<ulong>& air_num_samples;
     Grid2D<float>& terrain;
     Grid2D<float>& sediment;
     Grid2D<float> counter_from_last_time_water_passed;
@@ -78,7 +80,7 @@ public:
     void simulateEvaporation(double dt);
     float sampleTerrain(int x,int y );
     void makeRain(double dt,ulong time);
-    void makeFlood(double dt);
+    void makeFlood(double dt, ulong time);
     void makeWind(double dt);
     void makeRiver(double dt, ulong time);
     void simulateWind(double dt);
@@ -99,6 +101,7 @@ public:
 
     float getSedimentMaterial(int y, int x);
 
+    void EraseAll();
 
     inline float getRFlux_air(int y, int x);
     inline float getLFlux_air(int y, int x);

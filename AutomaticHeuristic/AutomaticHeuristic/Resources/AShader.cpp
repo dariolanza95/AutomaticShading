@@ -9,6 +9,9 @@ AShader::AShader(int id,float confidence = 0.0f, BlendMode displ_blend_mode):_id
 
 BlendMode AShader::GetDisplBlendMode(){return _displ_blend_mode;}
 
+AShader::~AShader(){}
+
+
 float AShader::GetConfidence(){return _confidence;}
 void AShader::SetConfidence(float new_confidence){_confidence= new_confidence;}
 int AShader::GetId(){return _id;}

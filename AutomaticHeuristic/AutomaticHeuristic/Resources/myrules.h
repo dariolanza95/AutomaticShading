@@ -89,8 +89,8 @@ void myVV<M>::raise(typename M::VertexHandle& _vh, state_t _target_state)
     typename M::Point  position(0.0, 0.0, 0.0);
     typename M::Scalar valence(0.0);
 
-    auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(Base::mesh_, "shader_parameters");
-    auto sim_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,SimulationData*> (Base::mesh_,"simulation_data");
+   // auto shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShadersWrapper*>(Base::mesh_, "shader_parameters");
+   // auto sim_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,SimulationData*> (Base::mesh_,"simulation_data");
     SimulationData* sw = sim_data_wrapper[_vh];
 
     for (vv_it = Base::mesh_.vv_iter(_vh); vv_it.is_valid(); ++vv_it) {

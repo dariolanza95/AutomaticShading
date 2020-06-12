@@ -31,7 +31,7 @@ void MaterialShader::allocateData(std::vector<float> &data){
 
 void MaterialShader::getSerializedTypes(std::vector<char*>& types,std::vector<char*>& var_names,int& num_variables)
 {
-
+    std::cout<<"Evvov, you shouldnt be heve!!!"<<std::endl;
     types.resize(1);
     types[0] = AutomaticShaders::Utils::fromStringToChar("float");
 

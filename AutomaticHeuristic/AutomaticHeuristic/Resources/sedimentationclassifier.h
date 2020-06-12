@@ -17,20 +17,14 @@
 #include <pcl/kdtree/kdtree_flann.h>
 #include "subdividerandinterpolator.h"
 #include "AShader.h"
-struct sedimentationData{
-    std::vector<float> sediment_history;
-    glm::vec3 initial_position;
-    std::vector<float> material_stack_width;
-    sedimentationData(glm::vec3 initial_position,std::vector<float> sediment_history,std::vector<float> material_stack_width): sediment_history(sediment_history)
-      ,initial_position(initial_position),material_stack_width(material_stack_width){}
-
-};
+#include "sedimentationdata.h"
 
 class SedimentationClassifier : public AClassifier
 {
+    SimulationDataMap simulation_data_map;
     pcl::KdTreeFLANN<pcl::PointXYZLNormal> kdtree_input;
     pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud_input;
-    void AverageOutputData();
+    void AverageOutputData(float treshold);
     void AssignSedimentationParameters(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
     void AssignSedimentationParameters2(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
 void AverageData();
@@ -44,7 +38,7 @@ void AverageData();
     void ComputeSedimentationParametersForVertex(glm::vec3 actual_point,sedimentationData& sedimenation_data);
 public:
      ~SedimentationClassifier();
-    SedimentationClassifier(MyMesh mesh);
+    SedimentationClassifier(MyMesh mesh,SimulationDataMap simulation_data_map);
      std::shared_ptr<AShader> GetShader();
     void ClassifyVertices(std::vector<glm::vec3>& list_of_points,
                                                    std::vector<std::shared_ptr<AShader>>& list_of_data,

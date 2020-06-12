@@ -38,6 +38,7 @@ class FlowClassifier : public AClassifier
     pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud_input;
 
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , std::shared_ptr<SimulationData>>::type, MyMesh> simulation_data_wrapper;
+    SimulationDataMap simulation_data_map;
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , std::shared_ptr<FlowShader>>::type, MyMesh> flow_shader_temp_propery;
     void ContrastEnhancement(map<MyMesh::VertexHandle, std::shared_ptr<AShader>>& map, std::vector<int> Pdf, int z);
     map<MyMesh::VertexHandle,std::shared_ptr<FlowShader>> ComputeShaderParameters(map<MyMesh::VertexHandle,glm::vec3>  flow_vertices);
@@ -52,7 +53,7 @@ class FlowClassifier : public AClassifier
     //void RefineShaderParameters(MyMesh::VertexHandle vertex,ShaderParameters *shader_parameters);
 public:
     VertexEditTag GetVertexEditTag();
-    FlowClassifier(MyMesh mesh);
+    FlowClassifier(MyMesh mesh, SimulationDataMap simulation_data_map);
     std::shared_ptr<AShader> GetShader();
     //map<MyMesh::VertexHandle,std::shared_ptr<AShader>> ClassifyVertices();
     void ClassifyVertices(std::vector<glm::vec3>& list_of_points,std::vector<std::shared_ptr<AShader>>& list_of_data,float& details);

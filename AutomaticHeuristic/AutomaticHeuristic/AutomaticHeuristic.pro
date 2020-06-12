@@ -57,7 +57,10 @@ SOURCES += Graphics/openglvisualizer.cpp \
     Resources/sedimentationclassifier.cpp \
     Resources/sedimentationshader.cpp \
     Resources/RibNode.cpp \
-    Resources/AShader.cpp
+    Resources/AShader.cpp \
+    Resources/airpressureclassifier.cpp \
+    Resources/airpressureshader.cpp \
+    Resources/sedimentationdata.cpp
 
 
 
@@ -126,7 +129,10 @@ HEADERS += Graphics/openglvisualizer.h \
     Resources/sedimentationclassifier.h \
     Resources/sedimentationshader.h \
     Resources/RibNode.h \
-    Resources/AShader.h
+    Resources/AShader.h \
+    Resources/airpressureclassifier.h \
+    Resources/airpressureshader.h \
+    Resources/sedimentationdata.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system

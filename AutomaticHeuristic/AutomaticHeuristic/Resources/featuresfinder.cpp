@@ -1,6 +1,7 @@
 #include "featuresfinder.h"
 
-FeaturesFinder::FeaturesFinder(MyMesh mesh): _mesh(mesh){
+FeaturesFinder::FeaturesFinder(MyMesh mesh, SimulationDataMap simulation_data_map): _mesh(mesh),
+    simulation_data_map(simulation_data_map){
     pcl::PointCloud<pcl::PointXYZL>::Ptr cloud1 ( new pcl::PointCloud<pcl::PointXYZL>);
 point_cloud = cloud1;
     point_cloud->width = 1;
@@ -41,7 +42,7 @@ void  FeaturesFinder::Find(std::vector<std::shared_ptr<AShader>>& list_of_used_s
      std::vector<std::shared_ptr<AShader>> temp_list_of_shader;
      float details;
 /*
-     AClassifier *fc = new FlowClassifier(_mesh);
+     AClassifier *fc = new FlowClassifier(_mesh,simulation_data_map);
       fc->ClassifyVertices(temp_list_of_points,temp_list_of_shader,details);
      //if(selected_faces.size()>0)
      {
@@ -52,7 +53,7 @@ void  FeaturesFinder::Find(std::vector<std::shared_ptr<AShader>>& list_of_used_s
      }
     delete fc;*/
 
-      AClassifier *sc = new SedimentationClassifier(_mesh);
+      AClassifier *sc = new SedimentationClassifier(_mesh,simulation_data_map);
       sc->ClassifyVertices(temp_list_of_points,temp_list_of_shader,details);
       UpdateSimulationData(temp_list_of_points,temp_list_of_shader,details);
       std::shared_ptr<AShader> shad = sc->GetShader();
@@ -173,11 +174,16 @@ void FeaturesFinder::InitializerSimulationData()
 {
 //auto shader_parameters_data_wrapper= getOrMakeProperty<VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
 //
-//    MyMesh::VertexIter vertex_iterator;
-//    MyMesh::VertexIter vertex_iterator_end(_mesh.vertices_end());
-//    for(vertex_iterator = _mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
-//    {
+    MyMesh::VertexIter vertex_iterator;
+    MyMesh::VertexIter vertex_iterator_end(_mesh.vertices_end());
+    for(vertex_iterator = _mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
+    {
+        if(simulation_data_map.count(*vertex_iterator)<=0){
+
+            simulation_data_map.insert(make_pair(*vertex_iterator,std::shared_ptr<SimulationData>(new SimulationData())));
+//                    [*vertex_iterator] = new SimulationData();
+        }
 //        ShadersWrapper* shaders_wrapper= new ShadersWrapper();
 //        shader_parameters_data_wrapper[*vertex_iterator] = shaders_wrapper;
-//    }
+    }
 }

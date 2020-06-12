@@ -88,16 +88,16 @@ SubdividerAndInterpolator< MeshType, RealType > ::prepare(MeshType &_m)
 
   typename MeshType::FaceVertexIter face_vertex_circulator;
   typename MeshType::FaceEdgeIter face_edge_circulator;
-  OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<OpenMesh::VertexHandle , std::shared_ptr<SimulationData>>::type, MeshType> simulation_data_wrapper;
-  simulation_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,std::shared_ptr<SimulationData>> (_m,"simulation_data");
+  //OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<OpenMesh::VertexHandle , std::shared_ptr<SimulationData>>::type, MeshType> simulation_data_wrapper;
+  //simulation_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,std::shared_ptr<SimulationData>> (_m,"simulation_data");
 
       for(FaceHandle fh : _set_of_faces){
         int val = 0;
           face_vertex_circulator = _m.fv_iter(fh);
         for( ;face_vertex_circulator.is_valid(); ++face_vertex_circulator){
            _set_of_vertices.insert(*face_vertex_circulator);
-            std::shared_ptr<SimulationData> temp = simulation_data_wrapper[face_vertex_circulator];
-           temporary_map.insert(std::make_pair(*face_vertex_circulator,temp));
+//            std::shared_ptr<SimulationData> temp = simulation_data_wrapper[face_vertex_circulator];
+//           temporary_map.insert(std::make_pair(*face_vertex_circulator,temp));
         }
         face_edge_circulator = _m.fe_iter(fh);
         for( ;face_edge_circulator.is_valid(); ++face_edge_circulator){ 
@@ -129,7 +129,7 @@ SubdividerAndInterpolator<MeshType,RealType>::cleanup( MeshType& _m  )
   _m.remove_property( fp_pos_ );
   _m.remove_property( creaseWeights_ );
 
-{
+  /*{
       OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<OpenMesh::VertexHandle , std::shared_ptr<SimulationData>>::type, MeshType> simulation_data_wrapper;
     simulation_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,std::shared_ptr<SimulationData>> (_m,"simulation_data");
     simulation_data_wrapper.retain(false);
@@ -141,7 +141,7 @@ SubdividerAndInterpolator<MeshType,RealType>::cleanup( MeshType& _m  )
   for(std::pair<OpenMesh::VertexHandle,std::shared_ptr<SimulationData>> entry: temporary_map){
 
       simulation_data_wrapper[entry.first] = entry.second;
-  }
+  }*/
 return true;
 }
 
@@ -256,6 +256,7 @@ std::cout<<"Subdivision"<<std::endl;
   }
 
   _m.update_normals();
+
   return true;
 }
 
@@ -284,18 +285,23 @@ SubdividerAndInterpolator<MeshType,RealType>::split_face( MeshType& _m, const Fa
   HalfedgeHandle hend = _m.halfedge_handle(_fh);
   HalfedgeHandle hh = _m.next_halfedge_handle(hend);
 std::shared_ptr<SimulationData> sim_data;
-  auto sim_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,std::shared_ptr<SimulationData>> (_m,"simulation_data");
+//  auto sim_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,std::shared_ptr<SimulationData>> (_m,"simulation_data");
   VertexHandle  t_vh1( _m.to_vertex_handle(hend));
 
-      if(temporary_map.count(t_vh1)>0){
-           sim_data = temporary_map[t_vh1];
+//      if(temporary_map.count(t_vh1)>0){
+//           sim_data = temporary_map[t_vh1];
+//      }else {
+//           sim_data= sim_data_wrapper[t_vh1];
+//          temporary_map.insert(std::make_pair(t_vh1,sim_data));
+//      }
+
+     /* if(_simulation_data_map.count(t_vh1)>0){
+           sim_data = _simulation_data_map[t_vh1];
       }else {
            sim_data= sim_data_wrapper[t_vh1];
-          temporary_map.insert(std::make_pair(t_vh1,sim_data));
+          _simulation_data_map.insert(std::make_pair(t_vh1,sim_data));
       }
-
-
-
+*/
 
   //for now just  a simple NN interpolation should work
   //ShadersWrapper* shader_param = shader_parameters_data_wrapper[t_vh1];
@@ -333,19 +339,22 @@ std::shared_ptr<SimulationData> tmp_sim[valence];
     _m.set_next_halfedge_handle(hh, hnext);
     hh = _m.next_halfedge_handle(hnext);
     _m.set_next_halfedge_handle(hnext, hnew);
-    if(temporary_map.count(_m.to_vertex_handle(hnext))>0){
-       tmp_sim[i] = temporary_map[_m.to_vertex_handle(hnext)];
+    if(_simulation_data_map.count(_m.to_vertex_handle(hnext))>0){
+       tmp_sim[i] = _simulation_data_map[_m.to_vertex_handle(hnext)];
     }else{
-        tmp_sim[i] =  sim_data_wrapper[_m.to_vertex_handle(hnext)];
-
-        temporary_map.insert(std::make_pair(_m.to_vertex_handle(hnext),sim_data_wrapper[_m.to_vertex_handle(hnext)]));
+        std::cout<<"Shouldnt happen"<<std::endl;
+        continue;
+        //tmp_sim[i] =  sim_data_wrapper[_m.to_vertex_handle(hnext)];
+        //
+        //_simulation_data_map.insert(std::make_pair(_m.to_vertex_handle(hnext),sim_data_wrapper[_m.to_vertex_handle(hnext)]));
     }
 
     hold = _m.opposite_halfedge_handle(hnew);
   }
-  new_sim_data = tmp_sim[1]->Interpolate(tmp_sim[2],0.5);
-     temporary_map.insert(std::make_pair(vh,new_sim_data));
 
+  new_sim_data = tmp_sim[1]->Interpolate(tmp_sim[2],0.5);
+//     temporary_map.insert(std::make_pair(vh,new_sim_data));
+    _simulation_data_map.insert(std::make_pair(vh,new_sim_data));
   //   new_sim_data= new SimulationData(*sim_data);
   //sim_data_wrapper[vh] = new_sim_data;
 
@@ -387,12 +396,12 @@ SubdividerAndInterpolator<MeshType,RealType>::split_edge( MeshType& _m, const Ed
   //std::shared_ptr<AShader> sp = new FlowShader(50);
   //shader_param_v_1->AddShaderParameters(sp);
           //(ShadersWrapper::interpolate(shader_param_v_1,shader_param_v_2,0));
-  auto sim_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,std::shared_ptr<SimulationData>> (_m,"simulation_data");
+  //auto sim_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle,std::shared_ptr<SimulationData>> (_m,"simulation_data");
 //  auto OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , SimulationData*>::type, MyMesh> simulation_data_wrapper;
 
 
   std::shared_ptr<SimulationData> sim_data;
-  if(temporary_map.count(vh1)>0){
+ /* if(temporary_map.count(vh1)>0){
      sim_data = temporary_map[vh1];
   }else{
       sim_data =  sim_data_wrapper[vh1];
@@ -405,8 +414,18 @@ SubdividerAndInterpolator<MeshType,RealType>::split_edge( MeshType& _m, const Ed
   }else{
       sim_data_2 =  sim_data_wrapper[vh2];
     temporary_map.insert(std::make_pair(vh2,sim_data_2));
+  }*/
+  if(_simulation_data_map.count(vh1)>0){
+       sim_data = _simulation_data_map[vh1];
+  }else{
+      std::cout<<"Error vh not contained in the sim_data_map"<<std::endl;
   }
-
+  std::shared_ptr<SimulationData> sim_data_2;
+  if(_simulation_data_map.count(vh2)>0){
+       sim_data_2 = _simulation_data_map[vh2];
+  }else{
+      std::cout<<"Error vh not contained in the sim_data_map"<<std::endl;
+  }
   //= sim_data_wrapper[vh2];
   //SimulationData* new_sim_data= new SimulationData(*sim_data);
 std::shared_ptr<SimulationData> new_sim_data= sim_data->Interpolate(sim_data_2,0.5);
@@ -415,8 +434,9 @@ std::shared_ptr<SimulationData> new_sim_data= sim_data->Interpolate(sim_data_2,0
 //      new_shader_param = new ShaderParameters();
   //shader_parameters_data_wrapper[vh] = new_shader_param;
  // _set_of_vertices.insert(vh);
- temporary_map.insert(std::make_pair(vh,new_sim_data));
-  //sim_data_wrapper[vh] = new_sim_data;
+// temporary_map.insert(std::make_pair(vh,new_sim_data));
+ _simulation_data_map.insert(std::make_pair(vh,new_sim_data));
+ //sim_data_wrapper[vh] = new_sim_data;
 
   // Re-link mesh entities
   if (_m.is_boundary(_eh))

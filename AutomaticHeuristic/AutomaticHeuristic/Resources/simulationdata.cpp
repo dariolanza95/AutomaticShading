@@ -102,6 +102,13 @@ std::shared_ptr<SimulationData> SimulationData::Interpolate(std::shared_ptr<Simu
             new_map_of_lists.insert(entry);
         }
     }*/
+    for(auto entry :map_of_lists){
+        if(entry.second.size()!=20){
+            std::cout<<"possible error"<<std::endl;
+        }
+    }
+
+
     new_map_of_lists = map_of_lists;
 /*
     for(pair<SimulationDataEnum,std::vector<float>> entry: sd1->map_of_lists){
@@ -262,10 +269,8 @@ try{
 }
 
 SimulationData::~SimulationData(){
-   std::cout<<"Sim data called dtor"<<std::endl;
-    // for(pair<SimulationDataEnum,std::vector<float>>  entry : map_of_lists){
-   //     entry.second.~vector();
-   // }
+  // std::cout<<"Sim data called dtor"<<std::endl;
+
 }
 /*SimulationData SimulationData:: operator+( SimulationData sd) {
         SimulationData res;

@@ -16,6 +16,8 @@ class AShader
 public:
     AShader();
     AShader(int id);
+    virtual ~AShader();
+
    // AShader(int _id,BlendMode displ_blend_mode = BlendMode::Overlay);
     AShader(int _id,float _confidence,BlendMode displ_blend_mode = BlendMode::Overlay );
     float GetConfidence();

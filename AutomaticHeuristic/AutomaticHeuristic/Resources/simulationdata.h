@@ -11,12 +11,13 @@
 #include "../Graphics/exceptionclass.h"
 
 
-enum class SimulationDataEnum{vegetation,river,sed_level,hardness,flow_normal,initial_sedimentation_point,material_stack_height, sedimentation_history,actual_point};
+enum class SimulationDataEnum{air_pressure,vegetation,river,sed_level,hardness,flow_normal,initial_sedimentation_point,material_stack_height, sedimentation_history,actual_point};
 
 class SimulationData
 {
         std::map<std::string, SimulationDataEnum> SimulationDataEnummap = {
             {"flow_normal", SimulationDataEnum::flow_normal},
+            {"pressure",SimulationDataEnum::air_pressure},
             {"hardness", SimulationDataEnum::hardness},
             {"sediment_value", SimulationDataEnum::sedimentation_history},
             {"initial_sedimentation_point", SimulationDataEnum::initial_sedimentation_point},

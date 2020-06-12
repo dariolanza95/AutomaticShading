@@ -197,7 +197,7 @@ float TerrainFluidSimulation::getSedimentHistorySize(int y, int x) {
 }
 
 void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
-     float treshold = 0.4f;
+     float treshold = 0.01f;
 
      float hysteresis = 0.0f;
      float gaussian_blur_coefficients[9] = { 1.0f, 2.0f, 1.0f,
@@ -266,7 +266,7 @@ void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
                                // tmp_sedimentation_history(y,x) = sedimentation_history(y,x).back();
                             }else{
                                 initial_sedimentation_points(y,x).pop_back();
-                                //tmp_sedimentation_history(y,x) = sedimentation_history(y,x).back();
+//                                tmp_sedimentation_history(y,x) = sedimentation_history(y,x).back();
                                 sedimentation_history(y,x).pop_back();
                             }
                             removal = true;
@@ -275,7 +275,7 @@ void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
 
 
          //   }
-
+//_simulation.tmp_sediment_material(y,x) = sedimentation_history(y,x).back();
 sed_color(y,x) =sedimentation_history(y,x).back();
 //sed_color(y,x) = 0.0f;
                                 if(sedimentation && removal){
@@ -439,15 +439,67 @@ return kc;
 }
 
 void TerrainFluidSimulation::SmoothData(std::vector<int>& local_sediments_history,std::vector<glm::vec3>& local_sediments_points){
-float treshold = 0.4;
-    for(int i= 1;i<local_sediments_history.size()-2;i++){
-        glm::vec3 actual_point = local_sediments_points[i];
-        glm::vec3 next_point = local_sediments_points[i+1];
-        if(next_point[2] - actual_point[2]< treshold+0.3 && local_sediments_history[i]==local_sediments_history[i+2]){
+float treshold = 0.1;
+std::vector<glm::vec3>::iterator it_points = local_sediments_points.begin();
+for(std::vector<int>::iterator it = local_sediments_history.begin(); it != local_sediments_history.end(); ++it,++it_points){
+    //if(local_sediments_history[i]==local_sediments_history[i+2]){
+std::vector<int>::iterator two_index_ahead = it+2;
+if(two_index_ahead < local_sediments_history.end())
+    if(*it==*two_index_ahead){
+        std::vector<int>::iterator three_index_ahead = two_index_ahead+1;
+        if(three_index_ahead<local_sediments_history.end())
+        //if(*(it+3)<local_sediments_history.size()-1)
+        {
+                //if(  local_sediments_history[i+1]==local_sediments_history[i+3]){
+            if(*three_index_ahead == *(it+1)){
+//                    float widht_first_stack =  local_sediments_points[i+1][2] - local_sediments_points[i][2];
+//                    float widht_second_stack = local_sediments_points[i+2][2] - local_sediments_points[i+1][2];
+
+                        float widht_first_stack =  (*(it_points+1))[2] - (*(it_points))[2];
+                        float widht_second_stack = (*(it_points+2))[2] - (*(it_points+1))[2];
+
+                    if(widht_first_stack<widht_second_stack){
+                        //    local_sediments_history.erase(local_sediments_history.begin()+i+1,local_sediments_history.begin()+i+2);
+                        //    local_sediments_points.erase(local_sediments_points.begin()+i+1  ,local_sediments_points.begin()+i+2);
+                        local_sediments_history.erase((it+1),two_index_ahead);
+                        local_sediments_points.erase((it_points+1)  ,(it_points+2));
+                    }else{
+                            //local_sediments_history.erase(local_sediments_history.begin()+i+2,local_sediments_history.begin()+i+3);
+                            //local_sediments_points.erase(local_sediments_points.begin()+i+2  ,local_sediments_points.begin()+i+3);
+                        local_sediments_history.erase((two_index_ahead),three_index_ahead);
+                        local_sediments_points.erase((it_points+2)  ,(it_points+3));
+                    }
+
+                }else{
+                    //local_sediments_history.erase(local_sediments_history.begin()+i+1,local_sediments_history.begin()+i+2);
+                    //local_sediments_points.erase(local_sediments_points.begin()+i+1  ,local_sediments_points.begin()+i+2);
+                    local_sediments_history.erase((it+1),two_index_ahead);
+                    local_sediments_points.erase((it_points+1)  ,(it_points+2));
+                }
+            }
+            else{
+                local_sediments_history.erase((it+1),two_index_ahead);
+                local_sediments_points.erase((it_points+1)  ,(it_points+2));
+            }
+        }
+
+
+     /*   if(next_point[2] - actual_point[2]< treshold+0.1 && local_sediments_history[i]==local_sediments_history[i+2]){
             local_sediments_history.erase(local_sediments_history.begin()+i,local_sediments_history.begin()+i+2);
             local_sediments_points.erase(local_sediments_points.begin()+i,local_sediments_points.begin()+i+2);
+        }*/
+    }
+it_points = local_sediments_points.begin();
+for(std::vector<int>::iterator it = local_sediments_history.begin(); it != local_sediments_history.end(); ++it,++it_points){
+    std::vector<int>::iterator next_index = it+1;
+    if(next_index<local_sediments_history.end()){
+        if(*it == *next_index){
+            local_sediments_history.erase(it);
+            local_sediments_points.erase(it_points);
         }
     }
+}
+
 }
 
 void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
@@ -478,8 +530,7 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
                 flowNormal = _simulation.flowNormal(y,x);//_simulation.count(x,y));
                 flowNormal = normalize(flowNormal);
             }
-          //  if(x==95 && y == 132)
-          //      (*datafile)<< "special data ";
+
             (*datafile )<<" flow_normal v "<< flowNormal[0]  << " "<< flowNormal[1]<< " "<< flowNormal[2];
             glm::vec3 point = initial_sedimentation_points(y,x)[0];
             std::vector<int> local_sediments_history = sedimentation_history(y,x) ;
@@ -505,11 +556,11 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
                              (*datafile)<< entry<< " ";
                            }
                     }uint i = 0;
-                    point = initial_sedimentation_points(y,x)[0];
+                    point = local_sediments_points[0];
                     (*datafile)<< " material_stacks_height l "<<local_sediments_history.size()-1<<" ";
-                   for(uint i = 1 ;i<initial_sedimentation_points(y,x).size();i++)
+                   for(uint i = 1 ;i<local_sediments_points.size();i++)
                    {
-                       glm::vec3 entry = initial_sedimentation_points(y,x)[i];
+                       glm::vec3 entry = local_sediments_points[i];
                        (*datafile)<<  entry[2] - point[2] << " ";
                    }
                     (*datafile)<< z - point[2]<<" ";
@@ -517,7 +568,8 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
                     (*datafile)<<" actual_point v "<< y << " "<< x << " " <<   z ;
                     (*datafile)<< " sed_level "<<_simulation.sedimented_terrain(y,x);
                     (*datafile)<< " diff "<< z-point[2];
-       //}
+                   float pressure = ((float)_simulation.air_total_pressure(y,x)) /(float)_simulation.air_num_samples(y,x);
+                     (*datafile)<<" pressure "<<pressure;
                 }
             }
 

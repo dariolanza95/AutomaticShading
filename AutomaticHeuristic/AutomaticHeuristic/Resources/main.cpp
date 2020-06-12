@@ -16,7 +16,7 @@
 #include "FieldThreeDWriter.h"
 #include "PointCloudWriter.h"
 #include <memory>
-//#define VISUALIZE
+#define VISUALIZE
 
 #include "LICMap.h"
 // --------------------OpenMesh----------------------------
@@ -346,7 +346,7 @@ void window_close_callback(GLFWwindow* window)
 
 void UpdateSimulationData(MyMesh& mesh, map<MyMesh::VertexHandle,std::shared_ptr<AShader>> selected_vertices,int shaderID)
 {
-    auto shader_parameters_property = getOrMakeProperty<VertexHandle, ShadersWrapper*>(mesh, "shader_parameters");
+ /*   auto shader_parameters_property = getOrMakeProperty<VertexHandle, ShadersWrapper*>(mesh, "shader_parameters");
     for (auto const& x : selected_vertices)
     {
         MyMesh::VertexHandle vertex_handle = x.first;
@@ -356,10 +356,10 @@ void UpdateSimulationData(MyMesh& mesh, map<MyMesh::VertexHandle,std::shared_ptr
         wrapper->AddShaderParameters(shader_parameter);
         //shader_parameters_property[vertex_handle] = shader_parameter;
 
-    }
+    }*/
 }
 void InitializerSimulationData(MyMesh& mesh)
-{
+{/*
 auto shader_parameters_data_wrapper= getOrMakeProperty<VertexHandle, ShadersWrapper*>(mesh, "shader_parameters");
 
 
@@ -369,7 +369,7 @@ auto shader_parameters_data_wrapper= getOrMakeProperty<VertexHandle, ShadersWrap
     {
             ShadersWrapper* shaders_wrapper= new ShadersWrapper();
             shader_parameters_data_wrapper[vertex_iterator] = shaders_wrapper;
-    }
+    }*/
 }
 
 
@@ -483,14 +483,15 @@ void LoadGeometryData(string mesh_file,MyMesh& mesh)
 
 
 
-void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &mesh)
+void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &mesh,SimulationDataMap& simulation_data_map)
 {
     string line;
     int counter=0;
     //vector<string> variablenames = {"vegetation","rivers","hardness","normalFlow"};
 
     ifstream inputfile(simulation_data_file);
-        auto simulation_data = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,std::shared_ptr<SimulationData>>(mesh, "simulation_data");
+    SimulationDataMap simulation_data_map_tmp;
+    //    auto simulation_data = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,std::shared_ptr<SimulationData>>(mesh, "simulation_data");
     for (auto& vertex_handle : mesh.vertices())
     {
         getline(inputfile,line);
@@ -503,7 +504,8 @@ void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &me
         try
         {
             std::shared_ptr<SimulationData> sd_uniq(new SimulationData(line));
-            simulation_data[vertex_handle] = sd_uniq;
+            simulation_data_map_tmp.insert(std::make_pair(vertex_handle,sd_uniq));
+       //     simulation_data[vertex_handle] = sd_uniq;
 
 //            SimulationData *sd =new SimulationData(line);
 //            simulation_data[vertex_handle] = sd;
@@ -515,12 +517,13 @@ void AttachDataFromSimulationToEachVertex(string simulation_data_file,MyMesh &me
             exit(EXIT_FAILURE);
         }
     }
+    simulation_data_map = simulation_data_map_tmp;
 }
 
-void LoadMesh(string obj_file,string data_file,MyMesh& mesh)
+void LoadMesh(string obj_file,string data_file,MyMesh& mesh,SimulationDataMap& simulation_data_map)
 {
     LoadGeometryData(obj_file,mesh);
-    AttachDataFromSimulationToEachVertex(data_file,mesh);
+    AttachDataFromSimulationToEachVertex(data_file,mesh,simulation_data_map);
 
 }
 int main(int argc, char **argv)
@@ -533,8 +536,9 @@ string obj_file = "../../Data/input.obj";
 
 
   MyMesh mesh;
-  LoadMesh(obj_file,data_file,mesh);
-  FeaturesFinder features_finder(mesh);
+  SimulationDataMap simulation_data_map;
+  LoadMesh(obj_file,data_file,mesh,simulation_data_map);
+  FeaturesFinder features_finder(mesh,simulation_data_map);
   std::vector<std::shared_ptr<AShader>> list_of_used_shaders;
   features_finder.Find(list_of_used_shaders);
   GLFWwindow* window = OpenGLInit();
@@ -569,13 +573,16 @@ string obj_file = "../../Data/input.obj";
     {
         PointCloudWriter pcw(mesh,shader,subdivs,path,features_finder, true);
         pcw.Write();
+        std::cout<<"shader cloud"<<std::endl;
+        PointCloudWriter pcw1(mesh,shader,subdivs,path,features_finder,false);
+        pcw1.Write();
     }
-    std::cout<<"wrinting shader point cloud"<<std::endl;
+    /*std::cout<<"wrinting shader point cloud"<<std::endl;
    for(std::shared_ptr<AShader> shader : list_of_used_shaders )
    {
        PointCloudWriter pcw(mesh,shader,subdivs,path,features_finder,false);
        pcw.Write();
-   }
+   }*/
 
     std::cout<<"Bye bye"<<std::endl;
     char *args_prman[]={"./myscript",NULL};

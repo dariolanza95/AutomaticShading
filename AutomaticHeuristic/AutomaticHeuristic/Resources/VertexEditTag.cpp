@@ -30,6 +30,7 @@ string VertexEditTag::GetAttributesToBeChanged()
     stringstream result(" [");
     for(uint i = 0; i< indices_to_be_changed.size();i++)
     {
+        std::cout<<"BIG ERROR"<<std::endl;
         result << " \"set\" ";
         result << "\"shader_parameter_"<<indices_to_be_changed[i]<<"\"";
         result << " \"value\"";
