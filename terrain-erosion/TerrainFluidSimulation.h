@@ -90,6 +90,7 @@ protected:
 
     void SmoothData(std::vector<int>& local_sediments_history,std::vector<glm::vec3>& local_sediments_points);
 
+    void AveragePositionSedimentationPoints(int y,int x);
 protected:
     bool _finished;
     bool _inPause;

@@ -195,8 +195,8 @@ string RIBWriter::WriteTransformationMatrix()
     }
     ss<<" ]"<<std::endl;
 
-*/
 
+*/
     //ss << "Rotate "<< -1*_cam.rotX<<" 1 0 0"<<std::endl;
     //ss << "Rotate "<< _cam.rotY<<" 0 1 0"<<std::endl;
     //ss << "Rotate "<< _cam.rotZ<<" 0 0 1"<<std::endl;
@@ -217,8 +217,8 @@ string RIBWriter::WriteTransformationMatrix()
   //  ss<<"  Transform [  1 0 0 0 0 0.159969 -0.987046 0 0 0.987046 0.159969 0 -149.168 -56.5756 265.938 1 ]"<<std::endl;
 //ss<<" Transform [  1 0 0 0 -0 -0.0104214 -0.999906 0 0 0.999906 -0.0104214 0 -141.527 1.71687 296.649 1 ]"<<std::endl;
  // ss<<" Transform [  1 0 0 0 -0 -0.112574 -0.993599 0 0 0.993599 -0.112574 0 -149.168 7.9066 249.287 1 ]"<<std::endl;
-  ss<<" Transform [  1 0 0 0 -0 -0.0928982 -0.995632 0 0 0.995632 -0.0928982 0 -83.0555 -23.9474 357.319 1 ]"<<std::endl;
-
+ // ss<<" Transform [  1 0 0 0 -0 -0.0928982 -0.995632 0 0 0.995632 -0.0928982 0 -83.0555 -23.9474 357.319 1 ]"<<std::endl;
+ss<<" Transform [  1 0 0 0 -0 -0.0580986 -0.998269 0 0 0.998269 -0.0580986 0 -150.165 11.0433 303.321 1 ]"<<std::endl;
     return ss.str();
 }
 

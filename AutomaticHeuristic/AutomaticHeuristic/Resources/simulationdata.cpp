@@ -102,11 +102,7 @@ std::shared_ptr<SimulationData> SimulationData::Interpolate(std::shared_ptr<Simu
             new_map_of_lists.insert(entry);
         }
     }*/
-    for(auto entry :map_of_lists){
-        if(entry.second.size()!=20){
-            std::cout<<"possible error"<<std::endl;
-        }
-    }
+
 
 
     new_map_of_lists = map_of_lists;

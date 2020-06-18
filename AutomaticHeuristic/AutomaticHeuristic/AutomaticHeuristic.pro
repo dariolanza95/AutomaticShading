@@ -132,7 +132,10 @@ HEADERS += Graphics/openglvisualizer.h \
     Resources/AShader.h \
     Resources/airpressureclassifier.h \
     Resources/airpressureshader.h \
-    Resources/sedimentationdata.h
+    Resources/sedimentationdata.h \
+    External/tps/gauss-elim.h \
+    External/tps/linalg3d.h \
+    External/tps/ludecomposition.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system
@@ -197,3 +200,16 @@ QMAKE_CFLAGS_DEBUG += -fopenmp
 unix: CONFIG += link_pkgconfig
 unix: PKGCONFIG += pcl_kdtree-1.8
 
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../mathtoolbox/mathtoolbox/build/release/ -lmathtoolbox
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../mathtoolbox/mathtoolbox/build/debug/ -lmathtoolbox
+else:unix: LIBS += -L$$PWD/../../../../mathtoolbox/mathtoolbox/build/ -lmathtoolbox
+
+INCLUDEPATH += $$PWD/../../../../mathtoolbox/mathtoolbox/build
+DEPENDPATH += $$PWD/../../../../mathtoolbox/mathtoolbox/build
+
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../../../mathtoolbox/mathtoolbox/build/release/libmathtoolbox.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../../../mathtoolbox/mathtoolbox/build/debug/libmathtoolbox.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../../../mathtoolbox/mathtoolbox/build/release/mathtoolbox.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../../../mathtoolbox/mathtoolbox/build/debug/mathtoolbox.lib
+else:unix: PRE_TARGETDEPS += $$PWD/../../../../mathtoolbox/mathtoolbox/build/libmathtoolbox.a

@@ -638,7 +638,7 @@ std::map<int,int> used_id;
        float offset = 0;
 
                 int K = 1;
-                float maxdist = 5;
+                float maxdist = .25;
                //point[0]= f1cell.x;
                //point[1]= f1cell.y;
                //point[2]= f1cell.z;
@@ -842,8 +842,10 @@ std::map<int,int> used_id;
 //res = details;
 
 res = RixSmoothStep(0,1 ,res );
-
-
+float mock_scale = 0.1;
+int round_z = roundf(pp.z);
+//int index = (round_z)%5;
+//index++;
 
 //float blend = RixSmoothStep(0,1 ,res );
 
