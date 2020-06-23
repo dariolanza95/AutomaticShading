@@ -7,10 +7,11 @@
 class sedimentationData
 {
 public:
-    std::vector<float> sediment_history;
-    glm::vec3 initial_position;
+    std::vector<int> sediment_history;
+    std::vector<int> material_stack_id;
     std::vector<float> material_stack_width;
-    sedimentationData(glm::vec3 initial_position,std::vector<float> sediment_history,std::vector<float> material_stack_width);
+    glm::vec3 initial_position;
+    sedimentationData(glm::vec3 initial_position,std::vector<int> sediment_history,std::vector<float> material_stack_width,std::vector<int> stack_id);
     ~sedimentationData();
 };
 

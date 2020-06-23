@@ -30,7 +30,7 @@ class SedimentationClassifier : public AClassifier
     SimulationDataMap simulation_data_map;
     pcl::KdTreeFLANN<pcl::PointXYZLNormal> kdtree_input;
     pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud_input;
-    void AverageOutputData(float treshold, float detail_scale);
+    void AverageOutputData(float treshold, float detail_scale, int K);
     float CalculateTPS(std::vector<glm::vec3> control_points);
     void TPSFirstApprach(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
     void TPSSecondApproach(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
@@ -43,7 +43,7 @@ void AssignSedimentationParameters(map<MyMesh::VertexHandle,sedimentationData> s
     void AssignSedimentationParameters3(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
     float RBFInterp(glm::vec3 actual_point,std::vector<glm::vec3> selected_points,std::vector<float> list_of_materials);
     void AverageData();
-    float RBFInterp2(glm::vec3 actual_point, std::vector<glm::vec3> selected_points);
+    double RBFInterp2(glm::vec3 actual_point, std::vector<glm::vec3> selected_points);
 
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , std::shared_ptr<SimulationData>>::type, MyMesh> simulation_data_wrapper;
     map<MyMesh::VertexHandle, sedimentationData> SelectSedimentationPoints();

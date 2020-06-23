@@ -16,7 +16,7 @@
 #include "FieldThreeDWriter.h"
 #include "PointCloudWriter.h"
 #include <memory>
-//#define VISUALIZE
+#define VISUALIZE
 
 #include "LICMap.h"
 // --------------------OpenMesh----------------------------

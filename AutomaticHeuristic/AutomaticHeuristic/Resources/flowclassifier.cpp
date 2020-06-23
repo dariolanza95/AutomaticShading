@@ -629,13 +629,7 @@ n = n<0? 0 : n;
                               flow_vector[0] = new_point.normal_x;
                               flow_vector[1] = new_point.normal_y;
                               flow_vector[2] = new_point.normal_z;
-
-
                           }
-
-
-
-
 
              }
      }

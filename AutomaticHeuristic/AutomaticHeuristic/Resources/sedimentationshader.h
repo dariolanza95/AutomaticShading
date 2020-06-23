@@ -13,14 +13,18 @@
 class SedimentationShader : public AShader
 {
     float material_id;
-    float second_id;
+    float stack_id;
     std::vector<glm::vec3> list_of_intermediate_sedimentation_points;
     std::vector<float> list_of_intermediate_sedimentation_materials;
+    std::vector<int> list_of_intermediate_stack_ids;
     glm::vec3 ProjectAlongStackDirection(glm::vec3 actual_point, float &projection);
 
 public:
+    bool GetLineId2(int material_id,glm::vec3 actual_point,int &stack_id,glm::vec3 &min_point,glm::vec3 &max_point);
+
     bool GetLineId(int id,glm::vec3 actual_point,glm::vec3 &min_point,glm::vec3 &max_point);
-    float GetMaterialSecondId();
+    float GetStackId();
+    bool GetLineSedimentationStackId(int id,glm::vec3 actual_point,int &stack_id);
 
     ~SedimentationShader();
     bool getClosestPointWithSameId(glm::vec3 actual_point,int id,glm::vec3& closest_point);
@@ -29,9 +33,10 @@ public:
     int getClosestPointIndex(glm::vec3 actual_point);
     float GetMaterialId();
     SedimentationShader(int id, float confidence,float material_id);
-    SedimentationShader(int id, float confidence,float material_id,float second_id);
+    SedimentationShader(int id, float confidence,float material_id,float stack_id);
     SedimentationShader(int id);
-    SedimentationShader(int id,float confidence,std::vector<glm::vec3> list_of_intermediate_sedimentation_points,std::vector<float> list_of_intermediate_sedimentation_materials);
+    SedimentationShader(int id,float confidence,std::vector<glm::vec3> list_of_intermediate_sedimentation_points,std::vector<float> list_of_intermediate_sedimentation_materials,
+                        std::vector<int> list_of_intermediate_stack_ids);
     float utilityFunct(glm::vec3 actual_point, float id, float &weight);
     std::vector<glm::vec3> getListOfIntermediateSedimentationPoints();
     std::vector<float> getListOfIntermediateSedimentationMaterials();

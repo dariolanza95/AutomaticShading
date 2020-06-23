@@ -473,21 +473,21 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
         hardness_colors[1].g = 0;//0.12;
         hardness_colors[1].b = 1;//0.08;
 
-        hardness_colors[2].r = 0;//0.16;
-        hardness_colors[2].g = 1;//0.1;
+        hardness_colors[2].r = 1;//0.16;
+        hardness_colors[2].g = 0;//0.1;
         hardness_colors[2].b = 0;//0.07;
 
-        hardness_colors[3].r = 1;//0.16;
+        hardness_colors[3].r = 0;//0.16;
         hardness_colors[3].g = 1;//0.1;
         hardness_colors[3].b = 1;//0.07;
 
         hardness_colors[4].r = 1;//0.16;
-        hardness_colors[4].g = 0;//0.1;
+        hardness_colors[4].g = 1;//0.1;
         hardness_colors[4].b = 0;//0.07;
 
-        hardness_colors[5].r = 1;//0.16;
-        hardness_colors[5].g = 1;//0.1;
-        hardness_colors[5].b = 0;//0.07;
+        hardness_colors[5].r = 0;//0.16;
+        hardness_colors[5].g = 0;//0.1;
+        hardness_colors[5].b = 1;//0.07;
 
         hardness_colors[6].r = 0;//0.16;
         hardness_colors[6].g = 0;//0.1;
@@ -536,6 +536,7 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
     for (int n = 0; n < sctx->numPts; ++n)
     {
          RtPoint3 pp =  sP[n];
+
 /*        float f1,f2,f3,f4,d;
         float nois = m_sFuncs->Noise(scaler*sP[n]/scale);
         nois = 0;
@@ -638,7 +639,7 @@ std::map<int,int> used_id;
        float offset = 0;
 
                 int K = 1;
-                float maxdist = .25;
+                float maxdist = 1.25;
                //point[0]= f1cell.x;
                //point[1]= f1cell.y;
                //point[2]= f1cell.z;
@@ -842,9 +843,25 @@ std::map<int,int> used_id;
 //res = details;
 
 res = RixSmoothStep(0,1 ,res );
-float mock_scale = 0.1;
+/*float mock_scale = 0.1;
 int round_z = roundf(pp.z);
-//int index = (round_z)%5;
+int round_x = roundf(pp.x);
+float a = -0.1;
+float b = -1.0f;
+float val_1 = pp.y*a+b;
+float index =0;
+if(val_1<=pp.z)
+    index = 1;
+else{
+    a= -0.3;
+    b=1.5;
+    val_1 = pp.y*a+b;
+    if(val_1<=pp.z)
+        index = 2;
+    else
+        index = 3;
+}*/
+
 //index++;
 
 //float blend = RixSmoothStep(0,1 ,res );
@@ -879,7 +896,16 @@ int round_z = roundf(pp.z);
 */
 
 RtColorRGB  col,col1,col2 ;
-int index1 = roundf(val);/*
+int index1 = roundf(val);
+
+//offset = std::sin(pp[1]);
+//int z_height =ceilf(pp[2]+offset);
+//index1 = z_height%3;
+//index1 = index1 % 3;
+//if(index1==0)
+//    index1 = 3;
+
+/*
 int index2 = roundf(dx_val);
 int index3 = roundf(dx_minus_val);
 int index4 = roundf(dy_val);
@@ -915,8 +941,8 @@ float displ =0 ;
                        // resultF[n] = 0 ;
             displ = 0;
             col.r = 1;
-            col.g = 0;
-            col.b = 0;
+            col.g = 0.5;
+            col.b = 0.5;
         }
 /*
         if (randomScale[n] != 0.f &&  index1!=index2)

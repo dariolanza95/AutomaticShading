@@ -3,12 +3,15 @@
 SedimentationShader::SedimentationShader(int id, float confidence,float material_id) : AShader(id,confidence),material_id(material_id)
 {}
 
-SedimentationShader::SedimentationShader(int id, float confidence,float material_id,float second_id) : AShader(id,confidence),material_id(material_id),second_id(second_id)
+SedimentationShader::SedimentationShader(int id, float confidence,float material_id,float second_id) : AShader(id,confidence),material_id(material_id),stack_id(second_id)
 {
 
 }
-SedimentationShader::SedimentationShader(int id,float confidence,std::vector<glm::vec3> list_of_intermediate_sedimentation_points,std::vector<float> list_of_intermediate_sedimentation_materials):
-    AShader(id,confidence),material_id(material_id),list_of_intermediate_sedimentation_points(list_of_intermediate_sedimentation_points),list_of_intermediate_sedimentation_materials(list_of_intermediate_sedimentation_materials)
+SedimentationShader::SedimentationShader(int id, float confidence, std::vector<glm::vec3> list_of_intermediate_sedimentation_points, std::vector<float> list_of_intermediate_sedimentation_materials, std::vector<int> list_of_intermediate_material_ids):
+    AShader(id,confidence),material_id(material_id),
+    list_of_intermediate_sedimentation_points(list_of_intermediate_sedimentation_points),
+    list_of_intermediate_sedimentation_materials(list_of_intermediate_sedimentation_materials),
+    list_of_intermediate_stack_ids(list_of_intermediate_material_ids)
 {}
 
 
@@ -17,7 +20,62 @@ void SedimentationShader::allocateData(std::vector<float> &data){
     data.resize(1);
 }
 
-bool SedimentationShader::GetLineId(int id,glm::vec3 actual_point,glm::vec3 &min_point,glm::vec3 &max_point){
+bool SedimentationShader::GetLineSedimentationStackId(int id,glm::vec3 actual_point,int &stack_id){
+    float min_dist = INFINITY;
+    bool found = false;
+    glm::vec3 min_point;
+    if(list_of_intermediate_stack_ids.size()!=list_of_intermediate_sedimentation_points.size()){
+        std::cout<<"list sizes dont match"<<std::endl;
+    }
+    if(actual_point[0]==0 && actual_point[1] == 212)
+        std::cout<<"poi"<<std::endl;
+
+    for(int i=0;i<list_of_intermediate_stack_ids.size();i++){
+          if(list_of_intermediate_sedimentation_materials[i]==id){
+              float dist = dot(actual_point-list_of_intermediate_sedimentation_points[i],actual_point-list_of_intermediate_sedimentation_points[i]);
+              if(dist<min_dist){
+                  min_dist = dist;
+                  found = true;
+                  min_point = list_of_intermediate_sedimentation_points[i];
+                  stack_id =list_of_intermediate_stack_ids[i];
+              }
+          }
+      }
+    return found;
+}
+
+
+bool SedimentationShader::GetLineId2(int material_id,glm::vec3 actual_point,int &stack_id,glm::vec3 &min_point,glm::vec3 &max_point){
+    float min_dist = INFINITY;
+    bool found = false;
+    if(list_of_intermediate_stack_ids.size()!=list_of_intermediate_sedimentation_points.size()){
+        std::cout<<"list sizes dont match"<<std::endl;
+    }
+    if(actual_point[0]==0 && actual_point[1] == 212)
+        std::cout<<"poi"<<std::endl;
+
+    for(int i=0;i<list_of_intermediate_stack_ids.size();i++){
+          if(list_of_intermediate_sedimentation_materials[i]==material_id){
+              float dist = dot(actual_point-list_of_intermediate_sedimentation_points[i],actual_point-list_of_intermediate_sedimentation_points[i]);
+              if(dist<min_dist){
+                  min_dist = dist;
+                  found = true;
+                  min_point = list_of_intermediate_sedimentation_points[i];
+                  if(i<list_of_intermediate_stack_ids.size()-1)
+                    max_point = list_of_intermediate_sedimentation_points[i+1];
+                  else{
+                      max_point = min_point;
+                      max_point[2]+=1;
+                  }
+                  stack_id =list_of_intermediate_stack_ids[i];
+              }
+          }
+      }
+    return found;
+}
+
+
+bool SedimentationShader::GetLineId(int stack_id,glm::vec3 actual_point,glm::vec3 &min_point,glm::vec3 &max_point){
     float min_dist = INFINITY;
     bool found = false;
     if(list_of_intermediate_sedimentation_materials.size()!=list_of_intermediate_sedimentation_points.size()){
@@ -26,13 +84,13 @@ bool SedimentationShader::GetLineId(int id,glm::vec3 actual_point,glm::vec3 &min
     if(actual_point[0]==0 && actual_point[1] == 212)
         std::cout<<"poi"<<std::endl;
     for(int i=0;i<list_of_intermediate_sedimentation_materials.size();i++){
-          if(list_of_intermediate_sedimentation_materials[i]==id){
+          if(list_of_intermediate_stack_ids[i]==stack_id){
               float dist = dot(actual_point-list_of_intermediate_sedimentation_points[i],actual_point-list_of_intermediate_sedimentation_points[i]);
               if(dist<min_dist){
                   min_dist = dist;
                   found = true;
                   min_point = list_of_intermediate_sedimentation_points[i];
-                  if(i<list_of_intermediate_sedimentation_materials.size()-1)
+                  if(i<list_of_intermediate_stack_ids.size()-1)
                     max_point = list_of_intermediate_sedimentation_points[i+1];
                   else{
                       max_point = min_point;
@@ -308,8 +366,10 @@ float SedimentationShader::GetMaterialId(){
     return material_id;
 }
 
-float SedimentationShader::GetMaterialSecondId(){
-    return second_id;
+
+
+float SedimentationShader::GetStackId(){
+    return stack_id;
 }
 float SedimentationShader::GetMaterialId(SedimentationShader sd1,glm::vec3 actual_point){
     float treshold = 0.1;

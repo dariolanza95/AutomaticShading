@@ -403,7 +403,7 @@ PxrTexture::ComputeOutputParams(RixShadingContext const *sctx,
         data = (float *) malloc(datasize * sizeof(float));
 
 int K =  1;       //50;
-float maxdist = .25; //3;
+float maxdist = 1.25; //3;
 
     // looping through the different output ids
     for (unsigned i=0; i<sctx->numPts; i++)
