@@ -8,34 +8,30 @@ textures_test
          ]], output float resultF = 0,
 output color resultRGB = color(0,0,0)
 )
-{    
+{
+    
 	point pp = Pobj;
-	resultF = texture3d("/home/pandora/thesis/AutomaticShading/Data/testFile.f3d",pp);
-	printf("value resultF %g",resultF);   	
-	//resultF = resultF / 20;
-	if(resultF > 1)
-	{
-	resultRGB = color(1,0,0);
-	}
+
+color materials[6];
+materials[0] = color(0,0,0);
+materials[1] = color(1,1,0);
+materials[2] = color(0,1,0);
+materials[3] = color(0,1,1);
+materials[4] = color(0,0,1);
+materials[5] = color(0,1,0);
+float val = 0;
+normal Nn = normal(0,0,0);
+color rez;
+rez = texture3d("blaf",pp,"blur",0.5);
+val = rez[0];
+
+resultF = val;
+int index = (int) val;
+	if(resultF>=0 && resultF<6)
+		resultRGB = materials[index];
 	else
-	{
-		if(resultF <= 0 )
-		{
-		resultRGB = color(0,1,0);					
-		}
-		else
-		{
-		if(resultF == 1 )
-			resultRGB = color(0,0,1);
-		else {
-			resultRGB = color(1,1,0);	
-	}	
-}
-	}	
-string path = "/home/pandora/thesis/AutomaticShading/Data/test_file.f3d";
-color col = texture3d(path,pp);
+		resultRGB = color(1,1,1);	
 
-//resultRGB = col;
-
-
+//float n = noise(pp);
+//resultRGB = color(n);
 }

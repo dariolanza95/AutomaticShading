@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include "FluidSimulation.h"
-
+#include <algorithm>
 #include <random>
 typedef std::mt19937 RANDOM;  // the Mersenne Twister with a popular choice of parameters
 
@@ -1035,6 +1035,7 @@ void FluidSimulation::simulateErosion(double dt,ulong time)
                 water(y,x)    += d;
                 sediment(y,x) += d;
               //  if(water(y,x)>0.01)
+              //  tmp_sediment_material(y,x) = sedimented_material(y,x);
                     sedimented_terrain(y,x) -= d;
                   //if(tmp_sediment_material(y,x)!=0)
                   //  tmp_sediment_material(y,x) = 0;
@@ -1052,7 +1053,7 @@ void FluidSimulation::simulateErosion(double dt,ulong time)
                 water(y,x)    += d;
                 sediment(y,x) += d;
                sedimented_terrain(y,x) -= d;//
-               sedimented_material(y,x) = tmp_sediment_material(y,x);
+              // sedimented_material(y,x) = tmp_sediment_material(y,x);
           //     tmp_sediment_material(y,x) = 0;
                //    if( sedimented_terrain_color(y,x) == black_col)
 
@@ -1126,10 +1127,16 @@ float FluidSimulation::GetTerrainCapacity(float x,float y,float z ,float frequen
 return kc;
 }
 
+bool sortByVal(const pair<int, float> &a,
+               const pair<int, float> &b)
+{
+    return (a.second < b.second);
+}
 
 
 void FluidSimulation::simulateSedimentTransportation(double dt,ulong time)
 {
+    std::uniform_int_distribution<int> rndFloat(0,INT_MAX);
     // semi-lagrangian advection
 #if defined(__APPLE__) || defined(__MACH__)
     dispatch_apply(sediment.height(), gcdq, ^(size_t y)
@@ -1165,31 +1172,53 @@ void FluidSimulation::simulateSedimentTransportation(double dt,ulong time)
             y1 = clamp(y1,0,int(sediment.height()-1));
 
             float newVal = mix( mix(sediment(y0,x0),sediment(y0,x1),fX), mix(sediment(y1,x0),sediment(y1,x1),fX), fY);
-            float material_1 = tmp_sediment_material(y0,x0);
-            float material_2 = tmp_sediment_material(y0,x1);
-            float material_3 = tmp_sediment_material(y1,x0);
-            float material_4 = tmp_sediment_material(y1,x1);
-            std::map<float,float> map_of_materials;
+            int material_1 = (int)tmp_sediment_material(y0,x0);
+            int material_2 = (int)tmp_sediment_material(y0,x1);
+            int material_3 = (int)tmp_sediment_material(y1,x0);
+            int material_4 = (int)tmp_sediment_material(y1,x1);
+            std::map<int,float> map_of_materials;
+            int target_id = 3;
+            bool mat_4 = false;
             float sediment_quantity;
-            sediment_quantity = x0*x0+y0*y0;
-            sediment_quantity = 1;
+
+          //  sediment_quantity = x0*x0+y0*y0;
+            sediment_quantity = fX*fX+fY*fY;
+
+          //  if(sedimented_terrain(y0,x0)<0)
+          //      sediment_quantity *= 1;
+          //  else
+          //      sediment_quantity *= 0;
             map_of_materials.insert(std::make_pair(material_1,sediment_quantity));
-            sediment_quantity = (1-x0)*(1-x0)+y0*y0;
-            sediment_quantity = 1;
+           // sediment_quantity = (1-x0)*(1-x0)+y0*y0;
+             sediment_quantity = (1-fX)*(1-fX)+fY*fY;
+            //if(sedimented_terrain(y0,x1)<0)
+            //    sediment_quantity *= 1;
+            //else
+            //    sediment_quantity *= 0;
+
             if(map_of_materials.count(material_2)>0){
                 map_of_materials[material_2]+=sediment_quantity;
             }else{
                 map_of_materials.insert(make_pair(material_2,sediment_quantity));
             }
-            sediment_quantity = x0*x0+(1-y0)*(1-y0);
-            sediment_quantity = 1;
+
+       //     sediment_quantity = x0*x0+(1-y0)*(1-y0);
+            sediment_quantity = fX*fX+(1-fY)*(1-fY);
+           // if(sedimented_terrain(y1,x0)<0)
+           //     sediment_quantity *= 1;
+           // else
+           //     sediment_quantity *= 0;
             if(map_of_materials.count(material_3)>0){
                 map_of_materials[material_3]+=sediment_quantity;
             }else{
                 map_of_materials.insert(make_pair(material_3,sediment_quantity));
             }
-            sediment_quantity = (1-x0)*(1-x0)+(1-y0)*(1-y0);
-            sediment_quantity = 1;
+//            sediment_quantity = (1-x0)*(1-x0)+(1-y0)*(1-y0);
+            sediment_quantity = (1-fX)*(1-fX)+(1-fY)*(1-fY);
+         //  if(sedimented_terrain(y1,x1)<0)
+         //      sediment_quantity *= 1;
+         //  else
+         //      sediment_quantity *= 0;
             if(map_of_materials.count(material_4)>0){
                 map_of_materials[material_4]+=sediment_quantity;
             }else{
@@ -1197,13 +1226,70 @@ void FluidSimulation::simulateSedimentTransportation(double dt,ulong time)
             }
             float newValMat = 0;
             float max = -INFINITY;
+            float total = 0;
+            bool roi =false;
 
-            for(auto const entry: map_of_materials){
-                if(entry.second>=max ){
+          //  if(x<sediment.height()*2/3+5 && x>sediment.height()*2/3-5){
+          //      roi = true;
+          //  }
+
+            for(std::pair<int,float> entry: map_of_materials){
+                total+= entry.second;
+                if(mat_4 && roi){
+                    std::cout<<" id "<<entry.first<<" quantity"<<entry.second<<std::endl;
+                }
+
+               // if(entry.second<0 || entry.second>1)
+               //     std::cout<<"entry "<<entry.second<<std::endl;
+                if(entry.second>max ){
                     max = entry.second;
                     newValMat = entry.first;
                 }
             }
+            if(mat_4 && roi){
+                std::cout<<" end "<<std::endl;
+            }
+
+       //total = -1;
+            if(total>0)    {
+            float new_total = 0;
+            std::vector<std::pair<int,float>> list_of_probabilities;
+             map<int, float> :: iterator it_map;
+            for (it_map=map_of_materials.begin(); it_map!=map_of_materials.end(); it_map++)
+            {
+
+                float new_val = it_map->second;
+                new_val = new_val/(float)total;
+                new_total += new_val;
+              list_of_probabilities.push_back(make_pair(it_map->first,new_val ));
+            }
+            std::sort(list_of_probabilities.begin(), list_of_probabilities.end(), sortByVal);
+            total = 0;
+            for(auto& entry:list_of_probabilities){
+              entry.second += total;
+              total = entry.second;
+            }
+    int newValMat2= 0;
+    new_total = 0;
+    total = 0;
+            float sample = (float) rndFloat(rnd)/(float)INT_MAX;
+            glm::clamp(sample,0.0f,1.0f);
+            for(auto const entry:list_of_probabilities){
+                if(sample< entry.second){
+               newValMat2 = entry.first;
+                    break;
+                }
+           }
+           if(newValMat2==0){
+               newValMat2 =  list_of_probabilities.back().second;
+           }
+           newValMat= newValMat2;
+           }
+            if(uV == 0 || vV==0)
+                newValMat = -1;
+
+            //else
+         /*    //   std::cout<<"total is "<<total<<std::endl;
             float val = 0;
             if(material_1>0){
                 val = material_1;
@@ -1220,18 +1306,21 @@ void FluidSimulation::simulateSedimentTransportation(double dt,ulong time)
             if(material_4>0){
                 val = material_4;
                 material_4 = 1;
-            }
+            }*/
 
-           newValMat = mix( mix(material_1,material_2,fX), mix(material_3,material_4,fX), fY);
+           newValMat = mix( mix((float)material_1,(float)material_2,fX), mix((float)material_3,(float)material_4,fX), fY);
 
-//           newValMat = mix( mix(tmp_sediment_material(y0,x0),tmp_sediment_material(y0,x1),fX), mix(tmp_sediment_material(y1,x0),tmp_sediment_material(y1,x1),fX), fY);
-    newValMat = roundf(newValMat)*val;
-           if(time>250)
-                newValMat = 0;
+         //  newValMat = mix( mix(tmp_sediment_material(y0,x0),tmp_sediment_material(y0,x1),fX), mix(tmp_sediment_material(y1,x0),tmp_sediment_material(y1,x1),fX), fY);
+    //newValMat = roundf(newValMat)*val;
+        //   if(time>250)
+        //        newValMat = 0;
             tmpSediment(y,x) = newVal;
-            tmp_sediment_material_2(y,x) = roundf(newValMat);
+            if(newValMat!=-1)
+                tmp_sediment_material_2(y,x) = roundf(newValMat);
+            else
+                tmp_sediment_material_2(y,x) = tmp_sediment_material(y,x);
 
-        }
+    }
     }
 #if defined(__APPLE__) || defined(__MACH__)
     );
@@ -1245,8 +1334,9 @@ void FluidSimulation::simulateSedimentTransportation(double dt,ulong time)
     for (uint i=0; i<sediment.size(); ++i)
 #endif
     {
-        sediment(i) = tmpSediment(i);
+    // if(tmpSediment(i)- sediment(i)>0.001)
         tmp_sediment_material(i) = tmp_sediment_material_2(i);
+        sediment(i) = tmpSediment(i);
         /*if(tmpSediment(i)==0){
             sedimented_material(i) == 0;
         }*/
@@ -1327,6 +1417,8 @@ void FluidSimulation::update(ulong time, double dt, bool rain, bool flood,bool w
     //if ( rain && time<250 )
     //time%10<5 && time<250
     ulong time_x = 100;
+//    if(rain)
+//        makeRain(dt,time);
     if( time<time_x+1){
         if(time%20<15)
             makeRain(dt,time);
@@ -1342,6 +1434,8 @@ void FluidSimulation::update(ulong time, double dt, bool rain, bool flood,bool w
         //makeFlood(dt,time);
 //    if (flood || time>260)
 //       makeRiver(dt,time);// makeFlood(dt);
+    if (flood )
+           makeRiver(dt,time);// makeFlood(dt);
     if(wind)
         makeWind(dt);
     // 2. Simulate Flow

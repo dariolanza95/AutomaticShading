@@ -3,61 +3,88 @@ OpenShadingLanguage 1.00
 # options: 
 shader textures_test
 param	point	Pobj	0 0 0		%meta{int,lockgeom,0}  %read{0,0} %write{2147483647,-1} %derivs
-oparam	float	resultF	0		%read{2,9} %write{1,1}
-oparam	color	resultRGB	0 0 0		%read{2147483647,-1} %write{5,12}
-local	point	pp	%read{1,14} %write{0,0} %derivs
-local	string	path	%read{14,14} %write{13,13}
-local	color	col	%read{2147483647,-1} %write{14,14}
-const	string	$const1	"/home/pandora/thesis/AutomaticShading/Data/testFile.f3d"		%read{1,1} %write{2147483647,-1}
-const	string	$const2	"value resultF %g"		%read{2,2} %write{2147483647,-1}
-const	int	$const3	1		%read{3,9} %write{2147483647,-1}
-temp	int	$tmp1	%read{4,4} %write{3,3}
-const	color	$const4	1 0 0		%read{5,5} %write{2147483647,-1}
-const	int	$const5	0		%read{6,6} %write{2147483647,-1}
-temp	int	$tmp2	%read{7,7} %write{6,6}
-const	color	$const6	0 1 0		%read{8,8} %write{2147483647,-1}
-temp	int	$tmp3	%read{10,10} %write{9,9}
-const	color	$const7	0 0 1		%read{11,11} %write{2147483647,-1}
-const	color	$const8	1 1 0		%read{12,12} %write{2147483647,-1}
-const	string	$const9	"/home/pandora/thesis/AutomaticShading/Data/test_file.f3d"		%read{13,13} %write{2147483647,-1}
+oparam	float	resultF	0		%read{13,16} %write{11,11}
+oparam	color	resultRGB	0 0 0		%read{2147483647,-1} %write{20,21}
+local	point	pp	%read{9,9} %write{0,0} %derivs
+local	color[6]	materials	%read{20,20} %write{1,6}
+local	float	val	%read{11,12} %write{7,10}
+local	normal	Nn	%read{2147483647,-1} %write{8,8}
+local	color	rez	%read{10,10} %write{9,9}
+local	int	index	%read{20,20} %write{12,12}
+const	color	$const1	0 0 0		%read{1,1} %write{2147483647,-1}
+const	int	$const2	0		%read{1,17} %write{2147483647,-1}
+const	color	$const3	1 1 0		%read{2,2} %write{2147483647,-1}
+const	int	$const4	1		%read{2,2} %write{2147483647,-1}
+const	color	$const5	0 1 0		%read{3,6} %write{2147483647,-1}
+const	int	$const6	2		%read{3,3} %write{2147483647,-1}
+const	color	$const7	0 1 1		%read{4,4} %write{2147483647,-1}
+const	int	$const8	3		%read{4,4} %write{2147483647,-1}
+const	color	$const9	0 0 1		%read{5,5} %write{2147483647,-1}
+const	int	$const10	4		%read{5,5} %write{2147483647,-1}
+const	int	$const11	5		%read{6,6} %write{2147483647,-1}
+const	normal	$const12	0 0 0		%read{8,8} %write{2147483647,-1}
+const	string	$const13	"blaf"		%read{9,9} %write{2147483647,-1}
+const	string	$const14	"blur"		%read{9,9} %write{2147483647,-1}
+const	float	$const15	0.5		%read{9,9} %write{2147483647,-1}
+temp	int	$tmp7	%read{14,14} %write{13,13}
+temp	int	$tmp8	%read{15,19} %write{14,18}
+const	int	$const16	6		%read{16,16} %write{2147483647,-1}
+temp	int	$tmp9	%read{17,17} %write{16,16}
+temp	int	$tmp10	%read{18,18} %write{17,17}
+const	color	$const17	1 1 1		%read{21,21} %write{2147483647,-1}
 code ___main___
-# textures_test.osl:12
-# 	point pp = Pobj;
-	assign		pp Pobj 	%filename{"textures_test.osl"} %line{12} %argrw{"wr"}
 # textures_test.osl:13
-# 	resultF = texture3d("/home/pandora/thesis/AutomaticShading/Data/testFile.f3d",pp);
-	texture3d	resultF $const1 pp 	%line{13} %argrw{"wrr"} %argderivs{2}
-# textures_test.osl:14
-# 	printf("value resultF %g",resultF);   	
-	printf		$const2 resultF 	%line{14} %argrw{"rr"}
+# 	point pp = Pobj;
+	assign		pp Pobj 	%filename{"textures_test.osl"} %line{13} %argrw{"wr"}
 # textures_test.osl:16
-# 	if(resultF > 1)
-	gt		$tmp1 resultF $const3 	%line{16} %argrw{"wrr"}
-	if		$tmp1 6 13 	%argrw{"r"}
+# materials[0] = color(0,0,0);
+	aassign		materials $const2 $const1 	%line{16} %argrw{"wrr"}
+# textures_test.osl:17
+# materials[1] = color(1,1,0);
+	aassign		materials $const4 $const3 	%line{17} %argrw{"wrr"}
 # textures_test.osl:18
-# 	resultRGB = color(1,0,0);
-	assign		resultRGB $const4 	%line{18} %argrw{"wr"}
+# materials[2] = color(0,1,0);
+	aassign		materials $const6 $const5 	%line{18} %argrw{"wrr"}
+# textures_test.osl:19
+# materials[3] = color(0,1,1);
+	aassign		materials $const8 $const7 	%line{19} %argrw{"wrr"}
+# textures_test.osl:20
+# materials[4] = color(0,0,1);
+	aassign		materials $const10 $const9 	%line{20} %argrw{"wrr"}
+# textures_test.osl:21
+# materials[5] = color(0,1,0);
+	aassign		materials $const11 $const5 	%line{21} %argrw{"wrr"}
 # textures_test.osl:22
-# 		if(resultF <= 0 )
-	le		$tmp2 resultF $const5 	%line{22} %argrw{"wrr"}
-	if		$tmp2 9 13 	%argrw{"r"}
-# textures_test.osl:24
-# 		resultRGB = color(0,1,0);					
-	assign		resultRGB $const6 	%line{24} %argrw{"wr"}
+# float val = 0;
+	assign		val $const2 	%line{22} %argrw{"wr"}
+# textures_test.osl:23
+# normal Nn = normal(0,0,0);
+	assign		Nn $const12 	%line{23} %argrw{"wr"}
+# textures_test.osl:25
+# rez = texture3d("blaf",pp,"blur",0.5);
+	texture3d	rez $const13 pp $const14 $const15 	%line{25} %argrw{"wrrrr"} %argderivs{2}
+# textures_test.osl:26
+# val = rez[0];
+	compref		val rez $const2 	%line{26} %argrw{"wrr"}
 # textures_test.osl:28
-# 		if(resultF == 1 )
-	eq		$tmp3 resultF $const3 	%line{28} %argrw{"wrr"}
-	if		$tmp3 12 13 	%argrw{"r"}
+# resultF = val;
+	assign		resultF val 	%line{28} %argrw{"wr"}
 # textures_test.osl:29
-# 			resultRGB = color(0,0,1);
-	assign		resultRGB $const7 	%line{29} %argrw{"wr"}
+# int index = (int) val;
+	assign		index val 	%line{29} %argrw{"wr"}
+# textures_test.osl:30
+# 	if(resultF>=0 && resultF<6)
+	ge		$tmp7 resultF $const2 	%line{30} %argrw{"wrr"}
+	neq		$tmp8 $tmp7 $const2 	%argrw{"wrr"}
+	if		$tmp8 19 19 	%argrw{"r"}
+	lt		$tmp9 resultF $const16 	%argrw{"wrr"}
+	neq		$tmp10 $tmp9 $const2 	%argrw{"wrr"}
+	assign		$tmp8 $tmp10 	%argrw{"wr"}
+	if		$tmp8 21 22 	%argrw{"r"}
 # textures_test.osl:31
-# 			resultRGB = color(1,1,0);	
-	assign		resultRGB $const8 	%line{31} %argrw{"wr"}
-# textures_test.osl:35
-# string path = "/home/pandora/thesis/AutomaticShading/Data/test_file.f3d";
-	assign		path $const9 	%line{35} %argrw{"wr"}
-# textures_test.osl:36
-# color col = texture3d(path,pp);
-	texture3d	col path pp 	%line{36} %argrw{"wrr"} %argderivs{2}
+# 		resultRGB = materials[index];
+	aref		resultRGB materials index 	%line{31} %argrw{"wrr"}
+# textures_test.osl:33
+# 		resultRGB = color(1,1,1);	
+	assign		resultRGB $const17 	%line{33} %argrw{"wr"}
 	end

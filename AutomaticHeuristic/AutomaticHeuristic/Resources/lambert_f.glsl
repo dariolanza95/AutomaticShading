@@ -25,7 +25,7 @@ uniform vec4 uColor; // Material Color
 // Input from Vertex Shader
 /////////////////////////////////////////////////
 
-in vec2  vGridCoord;
+//in vec2  vGridCoord;
 in float vTerrainHeight;
 in float vWaterHeight;
 in float vSediment;

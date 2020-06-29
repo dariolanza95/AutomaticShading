@@ -14,10 +14,18 @@ SedimentationShader::SedimentationShader(int id, float confidence, std::vector<g
     list_of_intermediate_stack_ids(list_of_intermediate_material_ids)
 {}
 
+SedimentationShader::SedimentationShader(int id, float confidence, std::vector<glm::vec3> list_of_intermediate_sedimentation_points, std::vector<glm::vec3> list_of_normals,std::vector<float> list_of_intermediate_sedimentation_materials, std::vector<int> list_of_intermediate_material_ids):
+    AShader(id,confidence),material_id(material_id),
+    list_of_normals(list_of_normals),
+    list_of_intermediate_sedimentation_points(list_of_intermediate_sedimentation_points),
+    list_of_intermediate_sedimentation_materials(list_of_intermediate_sedimentation_materials),
+    list_of_intermediate_stack_ids(list_of_intermediate_material_ids)
+{}
+
 
 SedimentationShader::SedimentationShader(int id): AShader(id){}
 void SedimentationShader::allocateData(std::vector<float> &data){
-    data.resize(1);
+    data.resize(2);
 }
 
 bool SedimentationShader::GetLineSedimentationStackId(int id,glm::vec3 actual_point,int &stack_id){
@@ -131,6 +139,9 @@ bool SedimentationShader::getClosestPointWithSameId(glm::vec3 actual_point,int i
 }
 
 std::vector<glm::vec3> SedimentationShader::getListOfIntermediateSedimentationPoints() {return list_of_intermediate_sedimentation_points;}
+
+std::vector<glm::vec3> SedimentationShader::getListOfNormals() {return list_of_normals;}
+
 
 SedimentationShader::~SedimentationShader(){}
 
@@ -406,7 +417,9 @@ float SedimentationShader::GetMaterialId(SedimentationShader sd1,glm::vec3 actua
 
 
 void SedimentationShader::getSerializedData(std::vector<float>& data){
-    data[0] = material_id;
+    data[0] = 2;
+    data[1] = material_id;
+
 }
 std::string SedimentationShader::getShaderName(){
     return "SedimentationShader";
@@ -418,16 +431,16 @@ void SedimentationShader::getCloudPathName(std::string& path){
 }
 void SedimentationShader::getSerializedTypes(std::vector<char*>& types,std::vector<char*>& var_names,int& num_variables)
 {
-    types.resize(1);
-    var_names.resize(1);
-    num_variables = 1;
-    for(int i = 0;i<1;i++){
+    num_variables = 2;
+    types.resize(num_variables);
+    var_names.resize(num_variables);
+    for(int i = 0;i<num_variables;i++)  {
         types[i] = AutomaticShaders::Utils::fromStringToChar("float");
     }
 
     std::stringstream strm;
-    for(int i = 0;i<1;i++){
-        strm<<"shader_parameter_"<<i;
+    for(int i = 0;i<num_variables;i++){
+        strm<<"parameter"<<i;
         var_names[i] = AutomaticShaders::Utils::fromStringToChar(strm.str());
         strm.str("");
     }

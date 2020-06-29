@@ -13,9 +13,14 @@ pcl::PointCloud<pcl::PointXYZL>::Ptr  const FeaturesFinder::getPointClouds(){
     return point_cloud ;
 }
 
+std::vector<glm::vec3> FeaturesFinder::getList_of_Normals(){
+    return list_of_normals;
+}
+
 std::vector<std::shared_ptr<ShadersWrapper>> FeaturesFinder::getListOfShadersWrapper(){
     return list_of_shaders_wrappers;
 }
+
 
 FeaturesFinder::~FeaturesFinder(){}
 void  FeaturesFinder::Find(std::vector<std::shared_ptr<AShader>>& list_of_used_shaders)
@@ -55,11 +60,15 @@ void  FeaturesFinder::Find(std::vector<std::shared_ptr<AShader>>& list_of_used_s
 
       AClassifier *sc = new SedimentationClassifier(_mesh,simulation_data_map);
       sc->ClassifyVertices(temp_list_of_points,temp_list_of_shader,details);
+  //  std::shared_ptr<SedimentationClassifier>  sc1 = std::static_pointer_cast<SedimentationClassifier> (sc);
+    SedimentationClassifier* sc1 = (SedimentationClassifier*) sc;
+      list_of_normals = sc1->list_of_normals;
       UpdateSimulationData(temp_list_of_points,temp_list_of_shader,details);
       std::shared_ptr<AShader> shad = sc->GetShader();
      list_of_used_shaders.push_back(shad);
      selected_faces.clear();
      delete sc;
+     //delete sc1;
 
 
      /*UpdateSimulationData(selected_faces);

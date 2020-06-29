@@ -213,3 +213,16 @@ else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../../..
 else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../../../mathtoolbox/mathtoolbox/build/release/mathtoolbox.lib
 else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../../../mathtoolbox/mathtoolbox/build/debug/mathtoolbox.lib
 else:unix: PRE_TARGETDEPS += $$PWD/../../../../mathtoolbox/mathtoolbox/build/libmathtoolbox.a
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../OpenMesh-8.0/build/Build/lib/release/ -lOpenMeshCore
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../OpenMesh-8.0/build/Build/lib/debug/ -lOpenMeshCore
+else:unix: LIBS += -L$$PWD/../../../../OpenMesh-8.0/build/Build/lib/ -lOpenMeshCore
+
+INCLUDEPATH += $$PWD/../../../../OpenMesh-8.0/build/Build
+DEPENDPATH += $$PWD/../../../../OpenMesh-8.0/build/Build
+
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../../../OpenMesh-8.0/build/Build/lib/release/libOpenMeshCore.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../../../OpenMesh-8.0/build/Build/lib/debug/libOpenMeshCore.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../../../OpenMesh-8.0/build/Build/lib/release/OpenMeshCore.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../../../OpenMesh-8.0/build/Build/lib/debug/OpenMeshCore.lib
+else:unix: PRE_TARGETDEPS += $$PWD/../../../../OpenMesh-8.0/build/Build/lib/libOpenMeshCore.a

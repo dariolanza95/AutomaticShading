@@ -36,11 +36,16 @@ class SedimentationClassifier : public AClassifier
     void TPSSecondApproach(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
 std::vector<int> SelectNeighbours(glm::vec3 actual_point);
     map<MyMesh::VertexHandle,sedimentationData> SelectPointsForAdaptiveSubdivision(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
-void ComputeMockUpData(glm::vec3 actual_point,float size,int num_materials);
-void ComputeMockUpData_2(glm::vec3 actual_point,float size,int num_materials);
+void ComputeMockUpData(glm::vec3 actual_point,glm::vec3 normal,float size,int num_materials);
+void ComputeMockUpData_2(glm::vec3 actual_point,glm::vec3 normal,float size,int num_materials);
+void ComputeMockUpData_3(glm::vec3 actual_point,glm::vec3 normal,float size,int num_materials);
+
 void AssignSedimentationParameters(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
     void AssignSedimentationParameters2(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
     void AssignSedimentationParameters3(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
+    void AssignSedimentationParameter4(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
+    void AssignSedimentationParameter5(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
+
     float RBFInterp(glm::vec3 actual_point,std::vector<glm::vec3> selected_points,std::vector<float> list_of_materials);
     void AverageData();
     double RBFInterp2(glm::vec3 actual_point, std::vector<glm::vec3> selected_points);
@@ -49,11 +54,12 @@ void AssignSedimentationParameters(map<MyMesh::VertexHandle,sedimentationData> s
     map<MyMesh::VertexHandle, sedimentationData> SelectSedimentationPoints();
     std::vector<std::shared_ptr<AShader>> list_of_shaders;
     std::vector<glm::vec3> list_of_sedimentation_points;
+
     set<MyMesh::FaceHandle> GetSetOfFaces(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
     void CreatePointCloud();
-    void ComputeSedimentationParametersForVertex(glm::vec3 actual_point,sedimentationData& sedimenation_data);
+    void ComputeSedimentationParametersForVertex(glm::vec3 actual_point, glm::vec3 normal, sedimentationData& sedimenation_data);
 public:
-
+std::vector<glm::vec3> list_of_normals;
      ~SedimentationClassifier();
     SedimentationClassifier(MyMesh mesh,SimulationDataMap simulation_data_map);
      std::shared_ptr<AShader> GetShader();

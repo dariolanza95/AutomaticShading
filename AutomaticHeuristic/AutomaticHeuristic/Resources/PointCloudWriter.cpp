@@ -1,10 +1,67 @@
 #include "PointCloudWriter.h"
 
 
+void PointCloudWriter::WriteSpecialData()
+{
+    float point[3], normal[3];
+    float radius = 2.5f;
+    if(_writing_a_shader_mask){
+        allocated_data.resize(1);
+    }else{
+        _shader->allocateData(allocated_data);
+    }
+     MyMesh::VertexIter vertex_handle;
+    bool found = 0;
+    vertex_handle=_mesh.vertices_begin();
+     pcl::PointCloud<pcl::PointXYZL>::Ptr const point_cloud =_features_finder.getPointClouds();
+std::vector<std::shared_ptr<ShadersWrapper>> list_of_shader_wrapper = _features_finder.getListOfShadersWrapper();
+std::vector<glm::vec3> list_of_normals = _features_finder.list_of_normals;
+size_t iterations = list_of_shader_wrapper.size();
+for(size_t j = 0;j<iterations;j++){
+    std::shared_ptr<ShadersWrapper> shader_wrapper  = list_of_shader_wrapper[j];
+        std::vector<std::shared_ptr<AShader>> list;
+        shader_wrapper->GetListOfShaders(list);
+        int index = 0;
+        int i = 0;
+        for(std::shared_ptr<AShader> sp : list)
+        {
+            if(sp==nullptr)
+                continue;
+            if(sp->GetId()==_shader->GetId())   {
+                index = i;
+               found = true;
+                if(_writing_a_shader_mask)  {
+                    float conf = sp->GetConfidence();
+                    allocated_data[0] = conf;
+                }else   {
+                    sp->getSerializedData(allocated_data);
+                }
+            }
+            i++;
+        }
+        if(found){
+            std::shared_ptr<SedimentationShader> sd =  std::static_pointer_cast<SedimentationShader>(list[index]);
+            sd->getListOfNormals();
+            point[0] = point_cloud->points[j].x;
+            point[1] = point_cloud->points[j].y;
+            point[2] = point_cloud->points[j].z;
+            normal[0] = list_of_normals[j][0];
+            normal[1] = list_of_normals[j][1];
+            normal[2] = list_of_normals[j][2];
+//            normal[0] = normal[1] = normal[2] = 0;
+            PtcWriteDataPoint(_output_file, point, normal, radius,&allocated_data[0] );
+            found = false;
+        }
+    }
+
+    PtcClosePointCloudFile(_output_file);
+}
+
+
 void PointCloudWriter::Write()
 {
     float point[3], normal[3];
-    float radius = 0.0f;
+    float radius = 0.1f;
     if(_writing_a_shader_mask){
         allocated_data.resize(1);
     }else{

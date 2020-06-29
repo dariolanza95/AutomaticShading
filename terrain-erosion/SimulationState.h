@@ -61,7 +61,7 @@ public:
             //flowNormal(w,h)
     {
 
-        //createPerlinTerrain();
+    //    createPerlinTerrain();
      //  createRiverTerrain();
        //createSteepTerrain();
        //createSeaTerrain();
@@ -187,15 +187,7 @@ void createSeaTerrain(){
         {
             for (uint x=0; x<water.width(); x++)
             {
-                water(y,x) = 0.0f;
-                air(y,x) = 0.0f;
-                air_counter(y,x)=0;
-                air_total_pressure(y,x) = 0;
-                suspendedSediment(y,x) = 0.0f;
-                vegetation(y,x) = 0.0f;
-                simData(y,x) = 0.0f;
-                 simData_2(y,x) = 0.0f;
-                rivers(y,x) = 0.0f;
+
                 if (x < (water.height()*1/3))
                 {
                     if (y > (water.height()/2))
@@ -209,9 +201,18 @@ void createSeaTerrain(){
                     }
                     float temp= (-x+water.height()*1/3) * tan(M_PI*angle2/180);
                    //temp = 0;
+                   // terrain (y,x) = temp;
                     terrain (y,x) = std::max(terrain(y,x),temp);
-                    //terrain (y,x) = std::min(terrain(y,x),50);
-
+                    //terrain (y,x) = std::min(terrain(y,x),temp);
+                    water(y,x) = 0.0f;
+                    air(y,x) = 0.0f;
+                    air_counter(y,x)=0;
+                    air_total_pressure(y,x) = 0;
+                    suspendedSediment(y,x) = 0.0f;
+                    vegetation(y,x) = 0.0f;
+                    simData(y,x) = 0.0f;
+                     simData_2(y,x) = 0.0f;
+                    rivers(y,x) = 0.0f;
                     sedimented_terrain(y,x) = 0;
                     sedimented_material(y,x)= 0;
                     sedimented_terrain_color(y,x) = glm::vec4(0,0,0,1);
@@ -220,8 +221,25 @@ void createSeaTerrain(){
                 }
                 else
                 {
+
+                    if((x < (water.height()*2/3))){
+                        if (y > (water.height()/2))
+                        {
+                            terrain(y,x) =offset+ (y-water.height()/2) * tan(M_PI*angle1/180);
+                                                }
+                        else
+                        {
+                            terrain(y,x) = offset+ (-y+water.height()/2) * tan(M_PI*angle1/180);
+                            //terrain(y,x) = std::max(terrain(y,x),0.2f*(-y+water.height()/2));
+                        }
+                        float temp= (-x+water.height()*2/3) * tan(M_PI*angle2/180);
+                        terrain (y,x) = std::min(terrain(y,x), temp);
+
+                }else
+                    {
+                            terrain(y,x) = 0;
+                }
                    // terrain(y,x) = -10;
-                     terrain(y,x) = 0;
                 }
 
             }
@@ -231,16 +249,17 @@ void createSeaTerrain(){
 
     void createPerlinTerrain()
     {
+        glm::normalize(windDirection);
         PerlinNoise perlin;
         float max = 0;
         for (uint y=0; y<water.height(); y++)
         {
             for (uint x=0; x<water.width(); x++)
             {
-                water(y,x) = 0.0f;
+              /*  water(y,x) = 0.0f;
                 air(y,x) = 0.0f;
                 air_counter(y,x)=0;
-                air_total_pressure(y,x) = 0;
+                air_total_pressure(y,x) = 0;*/
                 //flowNormal(y,x) = 0.0f;
                 float h = 0.0f; float f = 0.05f;
                 h += perlin.Sample(y*f,x*f)*1; f /= 2;
@@ -249,11 +268,25 @@ void createSeaTerrain(){
                 h += perlin.Sample(y*f,x*f)*8; f /= 2;
                 max = h>max ? h:max;
                 terrain(y,x) = h*4*1.3;
-                suspendedSediment(y,x) = 0.0f;// 0.1*terrain(y,x);
+                /*suspendedSediment(y,x) = 0.0f;// 0.1*terrain(y,x);
                 vegetation(y,x) = 0.0f;
                 simData(y,x) = 0.0f;
                 simData_2(y,x) = 0.0f;
+                rivers(y,x) = 0.0f;*/
+
+                water(y,x) = 0.0f;
+                air(y,x) = 0.0f;
+                air_counter(y,x)=0;
+                air_total_pressure(y,x) = 0;
+                suspendedSediment(y,x) = 0.0f;
+                vegetation(y,x) = 0.0f;
+                simData(y,x) = 0.0f;
+                 simData_2(y,x) = 0.0f;
                 rivers(y,x) = 0.0f;
+                sedimented_terrain(y,x) = 0;
+                sedimented_material(y,x)= 0;
+                sedimented_terrain_color(y,x) = glm::vec4(0,0,0,1);
+                temp_sedimented_material(y,x) = 0;
 
             }
         }

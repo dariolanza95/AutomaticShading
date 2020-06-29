@@ -20,6 +20,7 @@ class  FeaturesFinder
     pcl::PointCloud<pcl::PointXYZL>::Ptr point_cloud;
     std::vector<std::shared_ptr<ShadersWrapper>>   list_of_shaders_wrappers;
     MyMesh _mesh;
+
     SimulationDataMap simulation_data_map;
   //  void UpdateSimulationData(map<MyMesh::VertexHandle,std::shared_ptr<AShader>> selected_vertices);
     void UpdateSimulationData(std::vector<glm::vec3> list_of_points, std::vector<std::shared_ptr<AShader>> list_of_data,float density);
@@ -27,6 +28,9 @@ class  FeaturesFinder
     void InitializerSimulationData();
     vector<VertexEditTag> _vertex_edit_tags;
 public:
+    std::vector<glm::vec3>   list_of_normals;
+    std::vector<glm::vec3> getList_of_Normals();
+    std::vector<std::shared_ptr<ShadersWrapper>> getNormals();
     ~FeaturesFinder();
     std::vector<std::shared_ptr<ShadersWrapper>>  getListOfShadersWrapper();
     pcl::PointCloud<pcl::PointXYZL>::Ptr  const getPointClouds();

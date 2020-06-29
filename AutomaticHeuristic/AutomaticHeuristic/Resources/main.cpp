@@ -554,6 +554,7 @@ string obj_file = "../../Data/input.obj";
 
   RIBWriter writer(mesh,"../../Data/mountainsceneTemplateOutput.rib",shaders_path,plugins_path,output_name_image ,visualizer.GetCamera(),list_of_used_shaders);
   writer.Write();
+
   //WriteOnRibFile(mesh);
   // Call initIO() to initialize standard I/O methods and load plugins
 
@@ -575,7 +576,8 @@ string obj_file = "../../Data/input.obj";
         pcw.Write();
         std::cout<<"shader cloud"<<std::endl;
         PointCloudWriter pcw1(mesh,shader,subdivs,path,features_finder,false);
-        pcw1.Write();
+        //pcw1.Write();
+        pcw1.WriteSpecialData();
     }
     /*std::cout<<"wrinting shader point cloud"<<std::endl;
    for(std::shared_ptr<AShader> shader : list_of_used_shaders )

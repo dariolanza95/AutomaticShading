@@ -35,6 +35,7 @@ class PointCloudWriter
     char* CreateMaskFile(std::shared_ptr<AShader> shader,std::vector<char*>& var_types,std::vector<char*>& var_names,int& num_variables);
 
 public:
+    void WriteSpecialData();
     void Write();
     void Read();
     PointCloudWriter(MyMesh mesh, std::shared_ptr<AShader> shader, int _subdiv_levels, std::string output_path,FeaturesFinder features_finder,bool mask);

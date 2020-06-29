@@ -39,7 +39,7 @@ in float    inDebugAdvection;
 // Output
 /////////////////////////////////////////////////
 
-out vec3  vGridCoord;
+//out vec3  vGridCoord;
 out vec4  vFragPos;
 out vec4  vNormal;
 
@@ -57,7 +57,7 @@ void main(void)
     vec3 p = inGridCoord;
 
     // pass on some values
-    vGridCoord = inGridCoord;
+//    vGridCoord = inGridCoord;
     vSediment = inSediment;
     vSimData = inSimData;
     // surface normal
