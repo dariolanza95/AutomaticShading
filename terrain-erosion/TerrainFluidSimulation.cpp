@@ -196,10 +196,22 @@ float TerrainFluidSimulation::getSedimentHistorySize(int y, int x) {
     return sedimentation_history(glm::clamp(y,0,(int) sedimentation_history.height()-1),glm::clamp(x,0,(int) sedimentation_history.width()-1)).size();
 }
 
-void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
-     float treshold = 1.0f;
+void TerrainFluidSimulation::updatePositions(){
+std::cout<<"uppi"<<std::endl;
+    for (uint y=0; y<_simulation.water.height(); y++)
+   {
+       for (uint x=0; x<_simulation.water.width(); x++)
+       {
+     AveragePositionSedimentationPoints(y,x);
+    }
+   }
+       }
 
-     float hysteresis = 0.0f;     
+void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
+     float treshold = 0.0f;
+     int counter_treshold = 0;
+
+//     float hysteresis = 0.0f;
      int stack_id;
 
      stack_id = floorf(time/20);
@@ -217,7 +229,6 @@ void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
 
     bool sedimentation = false;
     bool removal = false;
-
               //  if(local_sedimentation_history.back() != temp_sed && temp_sed!=0 )
               //  {
                     glm::vec3 new_sedimentation_point(y,x,_simulation.terrain(y,x));
@@ -231,40 +242,38 @@ void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
                         sedimentation_stack_id(y,x).push_back(stack_id);
                         sedimentation = true;                      
                     }else{
+
                         if(  new_sedimentation_point[2] > initial_sedimentation_points(y,x).back()[2] + treshold && temp_sed!=0)    {
-                            if(local_sedimentation_history.back() != temp_sed){
+                            if(local_sedimentation_history.back() != temp_sed ){
+                                if(sed_counter(y,x).second == temp_sed){
+                                    sed_counter(y,x).first++;
+                                }else{
+                                    sed_counter(y,x).second = temp_sed;
+                                    sed_counter(y,x).first = 1;
+                                }
+                            if(sed_counter(y,x).first>=counter_treshold){
                                 initial_sedimentation_points(y,x).push_back(new_sedimentation_point);
                                 sedimentation_history(y,x).push_back(temp_sed);
                                 sedimentation_stack_id(y,x).push_back(stack_id);
                                 sedimentation = true;
-                            }
-
-                        }else{
-                            /*if(new_sedimentation_point[2] > initial_sedimentation_points(y,x).back()[2]+treshold/2){
-                                int l = local_sedimentation_history.size();
-
-                                if(l>2){
-                                    if(local_sedimentation_history[l-2]==temp_sed){ //revese the last sedimentation, was some noise
-                                        for(int f = 0;f<l;f++){
-                                            std::cout<< local_sedimentation_history[f]<<" ";
-                                        }
-                                        std::cout<<std::endl;
-
-                                        initial_sedimentation_points(y,x).pop_back();
-                                       sedimentation_history(y,x).pop_back();
-
-                                    }
+                                sed_counter(y,x).first = 0;
+                                sed_counter(y,x).second = 0;
                                 }
-
-                            }*/
+                            }
+                            else{
+                                sed_counter(y,x).first--;
+                            }
+                        }else{
+                            sed_counter(y,x).first--;
                         }
+
                     }
-treshold = 0.1f;
+                //treshold = 4.0f;
                 if(initial_sedimentation_points(y,x).size()>=1 )   {
                         glm::vec3 sed_point = initial_sedimentation_points(y,x).back();
                         float h = _simulation.terrain(y,x);
                         if(h + treshold   < sed_point[2]  )    {
-                            if(initial_sedimentation_points(y,x).size()==2){
+                            if(initial_sedimentation_points(y,x).size()==1){
                                 initial_sedimentation_points(y,x).pop_back();
                                 initial_sedimentation_points(y,x).push_back(glm::vec3(y,x,_simulation.terrain(y,x)));
                                // tmp_sedimentation_history(y,x) = sedimentation_history(y,x).back();
@@ -288,45 +297,22 @@ treshold = 0.1f;
                                //tmp_sedimentation_history(y,x) = sedimentation_history(y,x).back();
                             }
                             removal = true;
+                            sed_counter(y,x).first = 0;
+                            sed_counter(y,x).second = 0;
                         }
                 }
 
+        if(sed_counter(y,x).first<0)    {
+                         sed_counter(y,x).first = 0;
+                         sed_counter(y,x).second = 0;
+        }
+        //_simulation.tmp_sediment_material(y,x) = sedimentation_history(y,x).back();
+        sed_color(y,x) =sedimentation_history(y,x).back();
+        //sed_color(y,x) =_simulation.tmp_sediment_material(y,x);
+        if(sedimentation && removal){
+            std::cout <<" sedimentation and erosion at saame time?"<<std::endl;
+        }
 
-         //   }
-//_simulation.tmp_sediment_material(y,x) = sedimentation_history(y,x).back();
-sed_color(y,x) =sedimentation_history(y,x).back();
-//sed_color(y,x) = 0.0f;
-                                if(sedimentation && removal){
-                                    std::cout <<" sedimentation and erosion at saame time?"<<std::endl;
-                                }
-                                float g = 0;
-                                float val = 0;
-                                float total_size = 0;
-                                int f = 0;/*
-                                for(int j =  y-1;j<y+1;j++){
-                                 for(int i = x-1;i<x+1;i++){
-
-                                      float tmp_val = getSedimentHistory(j,i);
-                                      float dist = _simulation.terrain(y,x) - _simulation.terrain(i,j);
-                                      if(tmp_val!=0 && dist<treshold+hysteresis ){
-                                          val += gaussian_blur_coefficients[f]* tmp_val;//getSedimentHistorySize(j,i);
-                                          g+=gaussian_blur_coefficients[f];
-                                         //val+=tmp_val;
-                                         //g++;
-                                      }
-                                      f++;
-                                    }
-                                }
-                               if(val!=0  )    {
-
-                                   val = roundf(val/((float) g));
-
-                                   tmp_sedimentation_history(y,x) = roundf(val);
-                               //    std::cout<<"new val is "<<val<<std::endl;
-                               }
-                               else  {
-                                   tmp_sedimentation_history(y,x) = 0;
-                               }*/
         }
     }
 
@@ -339,7 +325,8 @@ void TerrainFluidSimulation::updatePhysics(double dt,ulong time)
     _simulation.update(time,dt,_rain,_flood,_air);
 
     updateSedimentationHistory(time);
-
+    //if(time%10<3)
+    //    updatePositions();
     // Copy data to GPU
     _terrainHeightBuffer.SetData(_simulationState.terrain);
     _waterHeightBuffer.SetData(_simulationState.water);
@@ -427,51 +414,89 @@ return kc;
 void TerrainFluidSimulation::AveragePositionSedimentationPoints(int y,int x){
     //std::vector<glm::vec3> actual_point = initial_sedimentation_points(y,x);
     uint l = initial_sedimentation_points(y,x).size();
-    if(l>1)
-        l--;
-    l = 6;
+    std::vector<float> averaged_heights;
+ //   if(l>1)
+ //       l--;
+  //  l = 6;
+    float z = _simulation.terrain(y,x);
+    int radius = 1;
     for(uint k = 0;k<l;k++){
+
+        float target_height;
+        if(k<l-1)
+            target_height = initial_sedimentation_points(y,x)[k+1][2];
+        else
+            target_height = z;
         int counter = 0;
         float total_height = 0;
         int target_material_id = sedimentation_history(y,x)[k];
         if(k<initial_sedimentation_points(y,x).size()){
-            for(int i= y-1;i<y+1;i++){
-                for(int j= x-1;j<x+1;j++){
+            for(int i= y-radius;i<y+radius;i++){
+                for(int j= x-radius;j<x+radius;j++){
                     j = glm::clamp(j,0,(int) sedimentation_history.height()-1);
                     i = glm::clamp(i,0,(int) sedimentation_history.height()-1);
                     std::vector<glm::vec3> temp_list_of_points = initial_sedimentation_points(i,j);
                     if(temp_list_of_points.size()==0)
                         continue;
                     std::vector<int> temp_list_of_materials = sedimentation_history(i,j);
+                    bool found = false;
+                    float min_dist = INFINITY;
+                    int index = 0;
+                    float closest_height;
+                    for(int f = 0;f<temp_list_of_materials.size();f++){
+                        float height = temp_list_of_points[f][2];
+                        float dist = std::abs(height-target_height);
+                        if(dist<min_dist){
+                            min_dist = dist;
+                            closest_height = height;
+                            index = f;
+                        }
+                        if(temp_list_of_materials[f]==target_material_id  ){
+                            glm::vec3 pos(y,x,0) ;
+                            found = true;
+                            if(f<temp_list_of_points.size()-1)
+                            {
+                                pos= temp_list_of_points[f+1];
+
+                            }else{
+                                pos[2] = _simulation.terrain(i,j);
+                            }
+                            total_height+=pos[2];
+                            counter++;
+                        }
+
+                    }
+                    if(std::abs(_simulation.terrain(i,j)-target_height)<min_dist){
+                            closest_height = _simulation.terrain(i,j);
+
+                }
+
+                    if(!found){
+                        total_height+= closest_height;
+                         counter++;
+                    }
+                    /*
                     if(k<temp_list_of_materials.size()){
                         if(temp_list_of_materials[k]==target_material_id){
                             glm::vec3 pos = temp_list_of_points[k];
                             total_height+=pos[2];
                             counter++;
                         }
-                        /*else{
-                            if(k<temp_list_of_materials.size()-1){
-                                if(temp_list_of_materials[k+1] == target_material_id){
-                                    total_height+=temp_list_of_points[k+1][2];
-                                    counter++;
-                                }
-                            }
-                            if(k!=0){
-                                if(temp_list_of_materials[k-1] == target_material_id){
-                                    total_height+=temp_list_of_points[k-1][2];
-                                    counter++;
-                                }
-                            }
-                        }*/
-                    }
+
+                    }*/
                 }
             }
         }
       if(counter!=0){
-            float avg = total_height / (float) counter;
-            std::cout<<"avg h "<< avg<<std::endl;
-            initial_sedimentation_points(y,x)[k][2] = avg;
-        }
+            float avg = (float) total_height / (float) counter;
+           // std::cout<<"avg h "<< avg<<std::endl;
+            if(k<l-1)
+                averaged_heights.push_back(avg);
+//                initial_sedimentation_points(y,x)[k+1][2] = avg;
+
+      }else{
+          averaged_heights.push_back(-INFINITY);
+      }
     }
 }
 
@@ -576,6 +601,7 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
             temp++;
             //(*datafile )<< _simulationState.simData(x,y);
             //(*datafile )<<" "<< _simulationState.vegetation(x,y);
+            AveragePositionSedimentationPoints(y,x);
             float z = _simulation.terrain(y,x);
             (*datafile)<< "hardness "<< GetTerrainCapacity(x,y,z,_simulation.noise_sediment_frequency,_simulation._stratified_layer_width);
 
@@ -589,6 +615,7 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
             }
 
             (*datafile )<<" flow_normal v "<< flowNormal[0]  << " "<< flowNormal[1]<< " "<< flowNormal[2];
+
             glm::vec3 point = initial_sedimentation_points(y,x)[0];
             std::vector<int> local_sediments_history = sedimentation_history(y,x) ;
             std::vector<glm::vec3> local_sediments_points = initial_sedimentation_points(y,x);
@@ -606,8 +633,8 @@ void TerrainFluidSimulation:: SaveSimulationData(std::fstream *datafile)
                     //glm::vec3 dist = actual_point-point;
                     //if(dist[2] > 0){
                     point = initial_sedimentation_points(y,x)[1];
-                    SmoothData(local_sediments_history,local_stack_id,local_sediments_points);
-             //       AveragePositionSedimentationPoints(y,x);
+             //       SmoothData(local_sediments_history,local_stack_id,local_sediments_points);
+
                     (*datafile)<< " sediment_value l "<< local_sediments_history.size()-1<< " ";
                     for(uint i = 1 ;i<local_sediments_history.size();i++){
                         float entry = local_sediments_history[i];
@@ -995,6 +1022,7 @@ void TerrainFluidSimulation::init()
 sedimentation_history = Grid2D<std::vector<int>>(_simulation.water.width(),_simulation.water.height());
 sedimentation_stack_id = Grid2D<std::vector<int>>(_simulation.water.width(),_simulation.water.height());
 tmp_sedimentation_history = Grid2D<int>(_simulation.water.width(),_simulation.water.height());
+sed_counter = Grid2D<std::pair<int,int>>(_simulation.water.width(),_simulation.water.height());
 sed_color = Grid2D<float>(_simulation.water.width(),_simulation.water.height());
 initial_sedimentation_points = Grid2D<std::vector<glm::vec3>>(_simulation.water.width(),_simulation.water.height());
     for (uint y=0; y<_simulation.water.height(); y++)
@@ -1018,6 +1046,7 @@ initial_sedimentation_points = Grid2D<std::vector<glm::vec3>>(_simulation.water.
 
             }else*/
             {
+                sed_counter(y,x) = std::make_pair(0,0);
                 tmp_sedimentation_history(y,x) = 0;
                 sedimentation_history(y,x) = v;
                 sedimentation_stack_id(y,x) = v;

@@ -10,32 +10,29 @@ output color resultRGB = color(0,0,0)
 )
 {    
 	point pp = Pobj;
-	resultF = texture3d("/home/pandora/thesis/AutomaticShading/Data/testFile.f3d",pp);
-	printf("value resultF %g",resultF);   	
-	//resultF = resultF / 20;
-	if(resultF > 1)
+      
+       color hardness_colors[8];
+	
+hardness_colors[0] = color(0,0,0);
+hardness_colors[1] = color(1,0,1);
+hardness_colors[2] = color(1,0,0);
+hardness_colors[3] = color(0,1,1);
+hardness_colors[4] = color(1,1,0);
+hardness_colors[5] = color(0,0,1);
+hardness_colors[6] = color(0,1,0);
+hardness_colors[7] = color(1,1,1);
+	
+
+ 
+	color res  = texture3d("brickmap",pp);
+	float val = res[0];
+	resultF = val;
+	if(val<0 || val>8)
 	{
-	resultRGB = color(1,0,0);
+		resultRGB = color(0,0,0);
+	}else{
+		int index = (int) round(val);
+		resultRGB = hardness_colors[index];
 	}
-	else
-	{
-		if(resultF <= 0 )
-		{
-		resultRGB = color(0,1,0);					
-		}
-		else
-		{
-		if(resultF == 1 )
-			resultRGB = color(0,0,1);
-		else {
-			resultRGB = color(1,1,0);	
-	}	
-}
-	}	
-string path = "/home/pandora/thesis/AutomaticShading/Data/test_file.f3d";
-color col = texture3d(path,pp);
-
-//resultRGB = col;
-
 
 }

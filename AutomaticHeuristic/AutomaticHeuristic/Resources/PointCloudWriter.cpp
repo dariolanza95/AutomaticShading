@@ -4,7 +4,7 @@
 void PointCloudWriter::Write()
 {
     float point[3], normal[3];
-    float radius = 0.0f;
+    float radius = 0.1f;
     if(_writing_a_shader_mask){
         allocated_data.resize(1);
     }else{

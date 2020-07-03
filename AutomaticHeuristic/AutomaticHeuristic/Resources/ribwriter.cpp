@@ -380,7 +380,6 @@ void RIBWriter:: Write()
              RIBLight light(0.3f);
              _rib_file<<light.Write();
              _rib_file<<"WorldEnd"<<std::endl;
-          //   CopyFinalPart(myfile);
              std::cout<<"write ended bb"<< std::endl;
 }
 

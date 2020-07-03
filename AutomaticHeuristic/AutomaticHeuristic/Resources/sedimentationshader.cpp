@@ -140,8 +140,12 @@ uint SedimentationShader::findClosestPointInList(glm::vec3 actual_point,float& d
     uint index = -1;
     for(int i=0;i<list_of_intermediate_sedimentation_points.size();i++){
         glm::vec3 point = list_of_intermediate_sedimentation_points[i];
-        float temp_dist = dot(actual_point-point,actual_point-point);
-        if(temp_dist<min_dist){
+        //float temp_dist = dot(actual_point-point,actual_point-point);
+        float temp_dist = actual_point[2]-point[2];
+//        if(temp_dist<min_dist)
+        if(std::abs(temp_dist)<min_dist && temp_dist<0)
+
+        {
             min_dist = temp_dist;
             index = i;
         }
@@ -153,17 +157,17 @@ uint SedimentationShader::findClosestPointInList(glm::vec3 actual_point,float& d
         return 0;
     }
 
-    glm::vec3 initial_point = list_of_intermediate_sedimentation_points.front();
-    float distance_actual_point = sqrtf(dot(projected_actual_point-initial_point,projected_actual_point-initial_point));
-    float distance_closest_point = sqrtf(dot(list_of_intermediate_sedimentation_points[index]-initial_point,list_of_intermediate_sedimentation_points[index]-initial_point));
+    //glm::vec3 initial_point = list_of_intermediate_sedimentation_points.front();
+    //float distance_actual_point = sqrtf(dot(projected_actual_point-initial_point,projected_actual_point-initial_point));
+    //float distance_closest_point = sqrtf(dot(list_of_intermediate_sedimentation_points[index]-initial_point,list_of_intermediate_sedimentation_points[index]-initial_point));
     /*if(distance_actual_point<distance_closest_point && index>0){
            index -= 1;
        }*/
 
 
-     if(distance_actual_point>distance_closest_point && index<list_of_intermediate_sedimentation_points.size()-1){
-        index += 1;
-    }
+//     if(distance_actual_point>distance_closest_point && index<list_of_intermediate_sedimentation_points.size()-1){
+//        index += 1;
+//    }
     dist = min_dist;
     return index;
 }

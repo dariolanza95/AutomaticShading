@@ -913,7 +913,7 @@ int index5 = roundf(dy_minus_val);*/
 //col = hardness_colors[index1];
 
 float displ =0 ;
-        if(index1>=0)
+        if(index1>=0 && index1<hardness_levels)
         {
         //    std::cout<<"sedimentation"<<std::endl;
             col = hardness_colors[index1];

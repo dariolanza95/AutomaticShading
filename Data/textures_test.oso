@@ -3,61 +3,96 @@ OpenShadingLanguage 1.00
 # options: 
 shader textures_test
 param	point	Pobj	0 0 0		%meta{int,lockgeom,0}  %read{0,0} %write{2147483647,-1} %derivs
-oparam	float	resultF	0		%read{2,9} %write{1,1}
-oparam	color	resultRGB	0 0 0		%read{2147483647,-1} %write{5,12}
-local	point	pp	%read{1,14} %write{0,0} %derivs
-local	string	path	%read{14,14} %write{13,13}
-local	color	col	%read{2147483647,-1} %write{14,14}
-const	string	$const1	"/home/pandora/thesis/AutomaticShading/Data/testFile.f3d"		%read{1,1} %write{2147483647,-1}
-const	string	$const2	"value resultF %g"		%read{2,2} %write{2147483647,-1}
-const	int	$const3	1		%read{3,9} %write{2147483647,-1}
-temp	int	$tmp1	%read{4,4} %write{3,3}
-const	color	$const4	1 0 0		%read{5,5} %write{2147483647,-1}
-const	int	$const5	0		%read{6,6} %write{2147483647,-1}
-temp	int	$tmp2	%read{7,7} %write{6,6}
-const	color	$const6	0 1 0		%read{8,8} %write{2147483647,-1}
-temp	int	$tmp3	%read{10,10} %write{9,9}
-const	color	$const7	0 0 1		%read{11,11} %write{2147483647,-1}
-const	color	$const8	1 1 0		%read{12,12} %write{2147483647,-1}
-const	string	$const9	"/home/pandora/thesis/AutomaticShading/Data/test_file.f3d"		%read{13,13} %write{2147483647,-1}
+oparam	float	resultF	0		%read{2147483647,-1} %write{12,12}
+oparam	color	resultRGB	0 0 0		%read{2147483647,-1} %write{20,23}
+local	point	pp	%read{10,10} %write{0,0} %derivs
+local	int	hardness_levels	%read{2147483647,-1} %write{1,1}
+local	color[8]	hardness_colors	%read{23,23} %write{2,9}
+local	color	res	%read{11,11} %write{10,10}
+local	float	val	%read{12,21} %write{11,11}
+local	int	___325_index	%read{23,23} %write{22,22}
+const	int	$const1	8		%read{1,16} %write{2147483647,-1}
+const	color	$const2	0 0 0		%read{2,20} %write{2147483647,-1}
+const	int	$const3	0		%read{2,17} %write{2147483647,-1}
+const	color	$const4	1 0 1		%read{3,3} %write{2147483647,-1}
+const	int	$const5	1		%read{3,3} %write{2147483647,-1}
+const	color	$const6	1 0 0		%read{4,4} %write{2147483647,-1}
+const	int	$const7	2		%read{4,4} %write{2147483647,-1}
+const	color	$const8	0 1 1		%read{5,5} %write{2147483647,-1}
+const	int	$const9	3		%read{5,5} %write{2147483647,-1}
+const	color	$const10	1 1 0		%read{6,6} %write{2147483647,-1}
+const	int	$const11	4		%read{6,6} %write{2147483647,-1}
+const	color	$const12	0 0 1		%read{7,7} %write{2147483647,-1}
+const	int	$const13	5		%read{7,7} %write{2147483647,-1}
+const	color	$const14	0 1 0		%read{8,8} %write{2147483647,-1}
+const	int	$const15	6		%read{8,8} %write{2147483647,-1}
+const	color	$const16	1 1 1		%read{9,9} %write{2147483647,-1}
+const	int	$const17	7		%read{9,9} %write{2147483647,-1}
+const	string	$const18	"blaf"		%read{10,10} %write{2147483647,-1}
+const	string	$const19	"lerp"		%read{10,10} %write{2147483647,-1}
+const	float	$const20	0		%read{10,10} %write{2147483647,-1}
+temp	int	$tmp9	%read{14,14} %write{13,13}
+temp	int	$tmp10	%read{15,19} %write{14,18}
+temp	int	$tmp11	%read{17,17} %write{16,16}
+temp	int	$tmp12	%read{18,18} %write{17,17}
+temp	float	$tmp13	%read{22,22} %write{21,21}
 code ___main___
 # textures_test.osl:12
 # 	point pp = Pobj;
 	assign		pp Pobj 	%filename{"textures_test.osl"} %line{12} %argrw{"wr"}
 # textures_test.osl:13
-# 	resultF = texture3d("/home/pandora/thesis/AutomaticShading/Data/testFile.f3d",pp);
-	texture3d	resultF $const1 pp 	%line{13} %argrw{"wrr"} %argderivs{2}
-# textures_test.osl:14
-# 	printf("value resultF %g",resultF);   	
-	printf		$const2 resultF 	%line{14} %argrw{"rr"}
+#       int hardness_levels = 8;
+	assign		hardness_levels $const1 	%line{13} %argrw{"wr"}
 # textures_test.osl:16
-# 	if(resultF > 1)
-	gt		$tmp1 resultF $const3 	%line{16} %argrw{"wrr"}
-	if		$tmp1 6 13 	%argrw{"r"}
+# 	hardness_colors[0] = color(0,0,0);
+	aassign		hardness_colors $const3 $const2 	%line{16} %argrw{"wrr"}
+# textures_test.osl:17
+# hardness_colors[1] = color(1,0,1);
+	aassign		hardness_colors $const5 $const4 	%line{17} %argrw{"wrr"}
 # textures_test.osl:18
-# 	resultRGB = color(1,0,0);
-	assign		resultRGB $const4 	%line{18} %argrw{"wr"}
+# hardness_colors[2] = color(1,0,0);
+	aassign		hardness_colors $const7 $const6 	%line{18} %argrw{"wrr"}
+# textures_test.osl:19
+# hardness_colors[3] = color(0,1,1);
+	aassign		hardness_colors $const9 $const8 	%line{19} %argrw{"wrr"}
+# textures_test.osl:20
+# hardness_colors[4] = color(1,1,0);
+	aassign		hardness_colors $const11 $const10 	%line{20} %argrw{"wrr"}
+# textures_test.osl:21
+# hardness_colors[5] = color(0,0,1);
+	aassign		hardness_colors $const13 $const12 	%line{21} %argrw{"wrr"}
 # textures_test.osl:22
-# 		if(resultF <= 0 )
-	le		$tmp2 resultF $const5 	%line{22} %argrw{"wrr"}
-	if		$tmp2 9 13 	%argrw{"r"}
-# textures_test.osl:24
-# 		resultRGB = color(0,1,0);					
-	assign		resultRGB $const6 	%line{24} %argrw{"wr"}
+# hardness_colors[6] = color(0,1,0);
+	aassign		hardness_colors $const15 $const14 	%line{22} %argrw{"wrr"}
+# textures_test.osl:23
+# hardness_colors[7] = color(1,1,1);
+	aassign		hardness_colors $const17 $const16 	%line{23} %argrw{"wrr"}
+# textures_test.osl:27
+# 	color res  = texture3d("blaf",pp,"lerp",0.0);
+	texture3d	res $const18 pp $const19 $const20 	%line{27} %argrw{"wrrrr"} %argderivs{2}
 # textures_test.osl:28
-# 		if(resultF == 1 )
-	eq		$tmp3 resultF $const3 	%line{28} %argrw{"wrr"}
-	if		$tmp3 12 13 	%argrw{"r"}
+# 	float val = res[0];
+	compref		val res $const3 	%line{28} %argrw{"wrr"}
 # textures_test.osl:29
-# 			resultRGB = color(0,0,1);
-	assign		resultRGB $const7 	%line{29} %argrw{"wr"}
+# 	resultF = val;
+	assign		resultF val 	%line{29} %argrw{"wr"}
 # textures_test.osl:31
-# 			resultRGB = color(1,1,0);	
-	assign		resultRGB $const8 	%line{31} %argrw{"wr"}
+# 	if(val<0 || val>8)
+	lt		$tmp9 val $const3 	%line{31} %argrw{"wrr"}
+	neq		$tmp10 $tmp9 $const3 	%argrw{"wrr"}
+	if		$tmp10 16 19 	%argrw{"r"}
+	gt		$tmp11 val $const1 	%argrw{"wrr"}
+	neq		$tmp12 $tmp11 $const3 	%argrw{"wrr"}
+	assign		$tmp10 $tmp12 	%argrw{"wr"}
+	if		$tmp10 21 24 	%argrw{"r"}
+# textures_test.osl:33
+# 		resultRGB = color(0,0,0);
+	assign		resultRGB $const2 	%line{33} %argrw{"wr"}
 # textures_test.osl:35
-# string path = "/home/pandora/thesis/AutomaticShading/Data/test_file.f3d";
-	assign		path $const9 	%line{35} %argrw{"wr"}
+# 		int index = (int) round(val);
+	round		$tmp13 val 	%line{35} %argrw{"wr"}
+	assign		___325_index $tmp13 	%argrw{"wr"}
 # textures_test.osl:36
-# color col = texture3d(path,pp);
-	texture3d	col path pp 	%line{36} %argrw{"wrr"} %argderivs{2}
+# 		resultRGB = hardness_colors[index];
+	aref		resultRGB hardness_colors ___325_index 	%line{36} %argrw{"wrr"}
 	end

@@ -44,7 +44,7 @@ void AssignSedimentationParameters(map<MyMesh::VertexHandle,sedimentationData> s
     float RBFInterp(glm::vec3 actual_point,std::vector<glm::vec3> selected_points,std::vector<float> list_of_materials);
     void AverageData();
     double RBFInterp2(glm::vec3 actual_point, std::vector<glm::vec3> selected_points);
-
+    void AverageInputData(float treshold,float detail_scale,int K);
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , std::shared_ptr<SimulationData>>::type, MyMesh> simulation_data_wrapper;
     map<MyMesh::VertexHandle, sedimentationData> SelectSedimentationPoints();
     std::vector<std::shared_ptr<AShader>> list_of_shaders;
