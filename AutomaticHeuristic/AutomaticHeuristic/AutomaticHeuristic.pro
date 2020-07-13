@@ -63,7 +63,8 @@ SOURCES += Graphics/openglvisualizer.cpp \
     Resources/outputwriter.cpp \
     Resources/apointcloudwriter.cpp \
     Resources/RIBPointCloudWriter.cpp \
-    Resources/pointcloudwriter.cpp
+    Resources/pointcloudwriter.cpp \
+    Resources/inputfilereader.cpp
 
 
 
@@ -141,7 +142,8 @@ HEADERS += Graphics/openglvisualizer.h \
     External/tps/ludecomposition.h \
     Resources/outputwriter.h \
     Resources/apointcloudwriter.h \
-    Resources/pointcloudwriter.h
+    Resources/pointcloudwriter.h \
+    Resources/inputfilereader.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system

@@ -38,12 +38,9 @@ using namespace OpenMesh;
 # define M_PI           3.14159265358979323846  /* pi */
 
 
-#include <iostream>
-#include <string>
 
-#include <Field3D/DenseField.h>
-#include <Field3D/InitIO.h>
-#include <Field3D/Field3DFile.h>
+
+
 
 //----------------------------------------------------------------------------//
 
@@ -563,34 +560,17 @@ string obj_file = "../../Data/input.obj";
    int subdivs = 0;
    //LICMap licmap(mesh,subdivs);
    float multiplier = 3;
-   float BoxLength = 70;
-   float freq = 20*multiplier;
-   float step_size =  subdivs!= 0 ? 1/subdivs : 1;
-   int i = 0;
     string path("../../Data/");
 
    std::cout<<"wrinting mask point cloud"<<std::endl;
-   for(std::shared_ptr<AShader> shader : list_of_used_shaders )
-    {
+
        pcl::PointCloud<pcl::PointXYZL>::Ptr pp = features_finder.getPointClouds();
-    std::vector<pcl::PointXYZL,Eigen::aligned_allocator<pcl::PointXYZL>> listz = pp->points;
+        std::vector<pcl::PointXYZL,Eigen::aligned_allocator<pcl::PointXYZL>> listz = pp->points;
         //AShader mask_shader = shader->GenerateMaskShader();
        APointCloudWriter* pc = new RIBPointCloudWriter(mesh,path,list_of_used_shaders,features_finder.getListOfShadersWrapper(),listz);
-       pc->WritePointClouds();/*
-        shader->SetMaskShader();
-        RIBPointCloudWriter pcw(mesh,shader,subdivs,path,features_finder, true);
-        pcw.Write();
-        std::cout<<"shader cloud"<<std::endl;
-        shader->UnSetMaskShader();
-        RIBPointCloudWriter pcw1(mesh,shader,subdivs,path,features_finder,false);
-        pcw1.Write();*/
-    }
-    /*std::cout<<"wrinting shader point cloud"<<std::endl;
-   for(std::shared_ptr<AShader> shader : list_of_used_shaders )
-   {
-       PointCloudWriter pcw(mesh,shader,subdivs,path,features_finder,false);
-       pcw.Write();
-   }*/
+       pc->WritePointClouds();
+
+
 
     std::cout<<"Bye bye"<<std::endl;
     char *args_prman[]={"./myscript",NULL};

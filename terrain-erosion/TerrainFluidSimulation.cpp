@@ -208,8 +208,8 @@ std::cout<<"uppi"<<std::endl;
        }
 
 void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
-     float treshold = 1.0f; //0.1f
-     int counter_treshold = 20; //3
+     float treshold = .01f; //0.1f
+     int counter_treshold = 10; //3
 
 //     float hysteresis = 0.0f;
      int stack_id;
@@ -309,7 +309,7 @@ void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
                          sed_counter(y,x).first = 0;
                        //  sed_counter(y,x).second = 0;
         }
-        if(_simulation.sedimented_terrain(y,x)<0)
+//        if(_simulation.sedimented_terrain(y,x)<0)
              _simulation.tmp_sediment_material(y,x) = temp_data;
         sed_color(y,x) =sedimentation_history(y,x).back();
         //sed_color(y,x) =_simulation.tmp_sediment_material(y,x);
