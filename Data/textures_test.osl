@@ -24,7 +24,7 @@ hardness_colors[7] = color(1,1,1);
 	
 
  
-	color res  = texture3d("brickmap",pp);
+	color res  = texture3d("brickmap01",pp);
 	float val = res[0];
 	resultF = val;
 	if(val<0 || val>8)

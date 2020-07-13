@@ -30,36 +30,46 @@ void  FeaturesFinder::Find(std::vector<std::shared_ptr<AShader>>& list_of_used_s
      InitializerSimulationData();
 
 
-
-     /*AClassifier *sc = new ScreeClassifier(_mesh,angle,treshold);
-     selected_faces = sc->ClassifyVertices();*/
-     //UpdateSimulationData(selected_faces);
-     selected_faces.clear();
-     //AClassifier *rc = new RiverClassifier(_mesh,75,20,5,34,-35);
-     //selected_faces = rc->ClassifyVertices();
-     //UpdateSimulationData(selected_faces);
      std::vector<glm::vec3> temp_list_of_points;
+     temp_list_of_points.clear();
      std::vector<std::shared_ptr<AShader>> temp_list_of_shader;
      float details;
-/*
-     AClassifier *fc = new FlowClassifier(_mesh,simulation_data_map);
+
+    AClassifier *fc = new FlowClassifier(_mesh,simulation_data_map,0);
       fc->ClassifyVertices(temp_list_of_points,temp_list_of_shader,details);
-     //if(selected_faces.size()>0)
-     {
-         UpdateSimulationData(temp_list_of_points,temp_list_of_shader,details);
-         std::shared_ptr<AShader> shad = fc->GetShader();
-         list_of_used_shaders.push_back(shad);
-         selected_faces.clear();
-     }
-    delete fc;*/
+      if(temp_list_of_points.size() != temp_list_of_shader.size()){
+          std::cout<<"The two output list don't match!";
+      }
+      else{
+          if(temp_list_of_points.size()>0)
+          {
+              UpdateSharedData(temp_list_of_points,temp_list_of_shader,details);
+              std::shared_ptr<AShader> shad = fc->GetShader();
+              list_of_used_shaders.push_back(shad);
+              selected_faces.clear();
+          }
+      }
+      temp_list_of_points.clear();
+      temp_list_of_shader.clear();
 
       AClassifier *sc = new SedimentationClassifier(_mesh,simulation_data_map);
       sc->ClassifyVertices(temp_list_of_points,temp_list_of_shader,details);
-      UpdateSimulationData(temp_list_of_points,temp_list_of_shader,details);
-      std::shared_ptr<AShader> shad = sc->GetShader();
-     list_of_used_shaders.push_back(shad);
-     selected_faces.clear();
-     delete sc;
+
+
+      if(temp_list_of_points.size() != temp_list_of_shader.size()){
+          std::cout<<"The two output list don't match!";
+
+      }else{
+          if(temp_list_of_points.size()>0)
+          {
+           UpdateSharedData(temp_list_of_points,temp_list_of_shader,details);
+           std::shared_ptr<AShader> shad = sc->GetShader();
+          list_of_used_shaders.push_back(shad);
+          selected_faces.clear();
+          }
+      }
+
+    // delete sc;
 
 
      /*UpdateSimulationData(selected_faces);
@@ -86,7 +96,7 @@ vector<VertexEditTag> FeaturesFinder::GetVertexEditTags()
     return _vertex_edit_tags;
 }
 
-void FeaturesFinder::UpdateSimulationData(std::vector<glm::vec3> list_of_points, std::vector<std::shared_ptr<AShader>> list_of_data,float density){
+void FeaturesFinder::UpdateSharedData(std::vector<glm::vec3> list_of_points, std::vector<std::shared_ptr<AShader>> list_of_data,float density){
 
     int previous_width = point_cloud->width;
     if(list_of_points.size() != list_of_data.size()){
@@ -114,9 +124,7 @@ void FeaturesFinder::UpdateSimulationData(std::vector<glm::vec3> list_of_points,
     }else   {
 
         pcl::PointCloud<pcl::PointXYZL>::Ptr cloud1 ( new pcl::PointCloud<pcl::PointXYZL>);
-        cloud1->points.resize (list_of_points.size());
-
-
+        //cloud1->points.resize (list_of_points.size());
         for(size_t i = 0;i<list_of_points.size();i++){
             std::cout<<" i "<<i<<" over "<<list_of_points.size()<<std::endl;
             glm::vec3 actual_point= list_of_points[i];
@@ -141,7 +149,7 @@ void FeaturesFinder::UpdateSimulationData(std::vector<glm::vec3> list_of_points,
                 }
             }
         }
-        for(size_t i = 0;i<list_of_points.size();i++){
+        for(size_t i = 0;i<cloud1->points.size();i++){
             pcl::PointXYZL searchPoint =  cloud1->points[i];
             point_cloud->points.push_back(searchPoint);
         }

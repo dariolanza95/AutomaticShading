@@ -25,9 +25,9 @@ uniform vec4 uColor; // Material Color
 // Input from Vertex Shader
 /////////////////////////////////////////////////
 
-in vec2  vGridCoord;
+//in vec2  vGridCoord;
 in float vTerrainHeight;
-in float vWaterHeight;
+//in float vWaterHeight;
 in float vSediment;
 in float vSimData;
 
@@ -61,9 +61,9 @@ void main(void)
     vec4 terrainColor =  vec4(17.0/255.0,132.0/255.0,5.0/255.0,1);
     vec4 sedimentColor = vec4(194.0/255.0,141.0/255.0,76.0/255.0,1);
     vec4 simDataColor =  vec4(190.0/255.0,70.0/255.0,103.0/255.0,1);
-    float factor = clamp((min(vWaterHeight,6.0)/6.0), 0.0, 1.0);
-    factor = 1-pow((1-factor),4);
- 
+    //float factor = clamp((min(vWaterHeight,6.0)/6.0), 0.0, 1.0);
+    //factor = 1-pow((1-factor),4);
+    float factor = 1;
     fColor = (factor*waterColor+(1.0-factor)*terrainColor)*light;
 
     float temp = 0.1;

@@ -16,9 +16,9 @@ SedimentationShader::SedimentationShader(int id, float confidence, std::vector<g
 
 
 SedimentationShader::SedimentationShader(int id): AShader(id){}
-void SedimentationShader::allocateData(std::vector<float> &data){
-    data.resize(1);
-}
+//void SedimentationShader::allocateData(std::vector<float> &data){
+//    data.resize(1);
+//}
 
 bool SedimentationShader::GetLineSedimentationStackId(int id,glm::vec3 actual_point,int &stack_id){
     float min_dist = INFINITY;
@@ -143,19 +143,19 @@ uint SedimentationShader::findClosestPointInList(glm::vec3 actual_point,float& d
         //float temp_dist = dot(actual_point-point,actual_point-point);
         float temp_dist = actual_point[2]-point[2];
 //        if(temp_dist<min_dist)
-        if(std::abs(temp_dist)<min_dist && temp_dist<0)
+        if(std::abs(temp_dist)<min_dist /*&& temp_dist<0*/)
 
         {
             min_dist = temp_dist;
             index = i;
         }
     }
-   float projection;
-    glm::vec3 projected_actual_point = ProjectAlongStackDirection(actual_point,projection);
-    if(projection<=0){
-        //note that if the project is negative then the closest point has to be lowest in the stack
-        return 0;
-    }
+   //float projection;
+   // glm::vec3 projected_actual_point = ProjectAlongStackDirection(actual_point,projection);
+   // if(projection<=0){
+   //     //note that if the project is negative then the closest point has to be lowest in the stack
+   //     return 0;
+   // }
 
     //glm::vec3 initial_point = list_of_intermediate_sedimentation_points.front();
     //float distance_actual_point = sqrtf(dot(projected_actual_point-initial_point,projected_actual_point-initial_point));
@@ -168,7 +168,9 @@ uint SedimentationShader::findClosestPointInList(glm::vec3 actual_point,float& d
 //     if(distance_actual_point>distance_closest_point && index<list_of_intermediate_sedimentation_points.size()-1){
 //        index += 1;
 //    }
-    dist = min_dist;
+   glm::vec3 final_point= list_of_intermediate_sedimentation_points[index];
+
+    dist = min_dist*dot(final_point-actual_point,final_point-actual_point);
     return index;
 }
 
@@ -345,6 +347,10 @@ std::vector<float> SedimentationShader::getListOfIntermediateSedimentationMateri
 
 float SedimentationShader::getClosestPointMatId(glm::vec3 actual_point,float& dist){
     int index = findClosestPointInList(actual_point,dist);
+    //if(list_of_intermediate_sedimentation_points.back()[2]< actual_point[2]){
+    //    dist = INFINITY;
+    //    return list_of_intermediate_sedimentation_materials.back();
+    //}
     return list_of_intermediate_sedimentation_materials[index];
 }
 
@@ -410,6 +416,7 @@ float SedimentationShader::GetMaterialId(SedimentationShader sd1,glm::vec3 actua
 
 
 void SedimentationShader::getSerializedData(std::vector<float>& data){
+    data.resize(1);
     data[0] = material_id;
 }
 std::string SedimentationShader::getShaderName(){

@@ -641,7 +641,7 @@ testpoint = pp;
                 point[2] = pp.z;
 
                 int Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, K, data);
-                float val = 1;
+                float val = 0;
                 if(Readres==1)
                 {
                     dir.x = (data[0]);
@@ -712,10 +712,10 @@ testpoint = pp;
 
  float a  = 0;
  float b = 1;
-float color_details = DDA(pp,dir_details,40,3);
+float color_details = DDA(pp,dir_details,40,0.3);//DDA(pp,dir_details,40,3);
 
- float c = 0.01;
-       d = 0.99;
+ float c = 0.01;//0.01;
+       d = 0.99;//0.99;
 //
 //
 color_details = (color_details - c)*((b-a)/(d-c)) + a;
@@ -861,7 +861,7 @@ res = RixSmoothStep(0,1 ,res );
              second_col.g = 0.13*1.5;
              second_col.b = 0.09*1.5;
 
-             float dda= DDA(pp,dir,30,0.8);
+        //     float dda= DDA(pp,dir,30,0.8);
 
         second_col.r = 0.18*1.5*0.7;
         second_col.g = 0.13*1.5*0.7;
@@ -873,13 +873,15 @@ res = RixSmoothStep(0,1 ,res );
     third_col.r = 0.18*1.5*0.3;
     third_col.g = 0.13*1.5*0.3;
     third_col.b = 0.09*1.5*0.3;
+    //std::cout<<"res"<<res<<std::endl;
 
-        //resultRGB[n].r = resultRGB[n].b = resultRGB[n].g = res;
-        resultRGB[n]=      RixLerpRGB( main_col,second_col,res);
-        //RtColorRGB temp_color = RixLerpRGB( main_col,second_col,res);
+    //RtColorRGB temp_color = RixLerpRGB( third_col,second_col,color_details);
+    //resultRGB[n]=      RixLerpRGB( main_col,temp_color,res);
+    //resultRGB[n]=      RixLerpRGB( main_col,second_col,res);
        // resultRGB[n] = RixLerpRGB( temp_color,third_col,dda);
-    //    float fbm = Fbm(pp*1.3,4,0.3);
-          resultF[n] = res;//+ 0.5*fbm;//0.5;//(res);// + displ;
+        float fbm = Fbm(pp*1.3,4,0.3);
+          resultF[n] = res + color_details*0.4+fbm*0.5;//+ 0.5*fbm;//0.5;//(res);// + displ;
+          resultRGB[n].r = resultRGB[n].b = resultRGB[n].g = (res+color_details+fbm*0.5);
           //resultF[n] = 0;//  displ;
 
 

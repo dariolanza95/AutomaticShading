@@ -62,10 +62,10 @@ public:
     {
 
         //createPerlinTerrain();
-     //  createRiverTerrain();
+       createRiverTerrain();
        //createSteepTerrain();
        //createSeaTerrain();
-        createSedimentationTerrain();
+        //createSedimentationTerrain();
         int l = 20;
         int mw = 20;
         int xmin = water.width() - l-mw;
@@ -187,6 +187,10 @@ void createSeaTerrain(){
         {
             for (uint x=0; x<water.width(); x++)
             {
+                sedimented_terrain(y,x) = 0;
+                sedimented_material(y,x)= 0;
+                sedimented_terrain_color(y,x) = glm::vec4(0,0,0,1);
+                temp_sedimented_material(y,x) = 0;
                 water(y,x) = 0.0f;
                 air(y,x) = 0.0f;
                 air_counter(y,x)=0;
@@ -196,6 +200,9 @@ void createSeaTerrain(){
                 simData(y,x) = 0.0f;
                  simData_2(y,x) = 0.0f;
                 rivers(y,x) = 0.0f;
+                float h_temp=0;
+                float temp = 0;
+                float final_h = 0;
                 if (x < (water.height()*1/3))
                 {
                     if (y > (water.height()/2))
@@ -208,20 +215,51 @@ void createSeaTerrain(){
                         //terrain(y,x) = std::max(terrain(y,x),0.2f*(-y+water.height()/2));
                     }
                     float temp= (-x+water.height()*1/3) * tan(M_PI*angle2/180);
-                   //temp = 0;
                     terrain (y,x) = std::max(terrain(y,x),temp);
-                    //terrain (y,x) = std::min(terrain(y,x),50);
-
                     sedimented_terrain(y,x) = 0;
                     sedimented_material(y,x)= 0;
                     sedimented_terrain_color(y,x) = glm::vec4(0,0,0,1);
                     temp_sedimented_material(y,x) = 0;
 
                 }
+
+               //temp = 0;
+                //terrain (y,x) = temp;
+
+                if (x < (water.height()*1/3))
+                {
+                  /*  if (y > (water.height()/2))
+                    {
+                        terrain(y,x) =offset+ (y-water.height()/2) * tan(M_PI*angle1/180);
+                                            }
+                    else
+                    {
+                        terrain(y,x) = offset+ (-y+water.height()/2) * tan(M_PI*angle1/180);
+                        //terrain(y,x) = std::max(terrain(y,x),0.2f*(-y+water.height()/2));
+                    }
+                    float temp= (-x+water.height()*2/3) * tan(M_PI*angle2/180);
+                   //temp = 0;
+                    //terrain (y,x) = temp;
+                    terrain (y,x) = std::max(terrain(y,x),temp);*/
+                    //terrain (y,x) = std::max(terrain(y,x),temp);
+                    //terrain (y,x) = std::min(terrain(y,x),50);
+                    //terrain(y,x) = final_h;
+
+
+                }
                 else
                 {
-                   // terrain(y,x) = -10;
-                     terrain(y,x) = 0;
+                    //if(x < (water.height()*2/3)){
+                    //    glm::vec2 a ();
+                    //    glm::vec2 b (water.height()*2/3,y);
+                    //    float temp= (-x+water.height()*2/3) * tan(M_PI*angle2/180);
+                    //   //temp = 0;
+                    //    terrain (y,x) = std::min(temp,final_h);
+                    //}else
+                    {
+
+                        terrain(y,x) = 0;
+                    }
                 }
 
             }

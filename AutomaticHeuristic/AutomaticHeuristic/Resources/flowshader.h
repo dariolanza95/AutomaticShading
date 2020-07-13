@@ -25,7 +25,7 @@ public:
     void SetLicValue(float new_val);
     std::string getShaderName();
     void getCloudPathName(std::string& path);
-    void allocateData(std::vector<float> &data);
+   // void allocateData(std::vector<float> &data);
     void getSerializedData(std::vector<float> &data);
     void getSerializedTypes(std::vector<char*>& types,std::vector<char*>& var_names,int& num_variables);
 

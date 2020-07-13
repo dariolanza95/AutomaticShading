@@ -15,9 +15,10 @@
 #include "featuresfinder.h"
 #include "FieldThreeDWriter.h"
 #include "PointCloudWriter.h"
-#include <memory>
-#define VISUALIZE
+#include "apointcloudwriter.h"
 
+#include <memory>
+//#define VISUALIZE
 #include "LICMap.h"
 // --------------------OpenMesh----------------------------
 #include <OpenMesh/Core/IO/MeshIO.hh>
@@ -571,11 +572,18 @@ string obj_file = "../../Data/input.obj";
    std::cout<<"wrinting mask point cloud"<<std::endl;
    for(std::shared_ptr<AShader> shader : list_of_used_shaders )
     {
-        PointCloudWriter pcw(mesh,shader,subdivs,path,features_finder, true);
+       pcl::PointCloud<pcl::PointXYZL>::Ptr pp = features_finder.getPointClouds();
+    std::vector<pcl::PointXYZL,Eigen::aligned_allocator<pcl::PointXYZL>> listz = pp->points;
+        //AShader mask_shader = shader->GenerateMaskShader();
+       APointCloudWriter* pc = new RIBPointCloudWriter(mesh,path,list_of_used_shaders,features_finder.getListOfShadersWrapper(),listz);
+       pc->WritePointClouds();/*
+        shader->SetMaskShader();
+        RIBPointCloudWriter pcw(mesh,shader,subdivs,path,features_finder, true);
         pcw.Write();
         std::cout<<"shader cloud"<<std::endl;
-        PointCloudWriter pcw1(mesh,shader,subdivs,path,features_finder,false);
-        pcw1.Write();
+        shader->UnSetMaskShader();
+        RIBPointCloudWriter pcw1(mesh,shader,subdivs,path,features_finder,false);
+        pcw1.Write();*/
     }
     /*std::cout<<"wrinting shader point cloud"<<std::endl;
    for(std::shared_ptr<AShader> shader : list_of_used_shaders )

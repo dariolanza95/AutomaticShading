@@ -26,9 +26,13 @@
 #include <pcl/kdtree/kdtree_flann.h>
 class FlowClassifier : public AClassifier
 {
+    glm::vec3 InterpolateFlowNormal( MyMesh::Point actual_point);
+    int subdiv_levels;
+    float step_size;
+    float scale;
     VertexEditTag _vertex_edit_tag;
-    int _shader_parameter_size;
-    map<MyMesh::VertexHandle,std::shared_ptr<AShader>> LIC(map<MyMesh::VertexHandle,std::shared_ptr<FlowShader>>const map,float scale,glm::vec3 min_bb,glm::vec3 max_bb);
+  //  int _shader_parameter_size;
+    map<MyMesh::VertexHandle,std::shared_ptr<AShader>> LIC(map<MyMesh::VertexHandle,std::shared_ptr<FlowShader>>const map,glm::vec3 min_bb,glm::vec3 max_bb);
     template <typename T,typename FuncType>
     map<MyMesh::VertexHandle,T> BFS(int max_depth,map<MyMesh::VertexHandle,T> frontier_map,FuncType pred);
 
@@ -52,8 +56,8 @@ class FlowClassifier : public AClassifier
     //void LIC2(float box_length,float frequency,float step_size,MyMesh mesh);
     //void RefineShaderParameters(MyMesh::VertexHandle vertex,ShaderParameters *shader_parameters);
 public:
-    VertexEditTag GetVertexEditTag();
-    FlowClassifier(MyMesh mesh, SimulationDataMap simulation_data_map);
+   // VertexEditTag GetVertexEditTag();
+    FlowClassifier(MyMesh mesh, SimulationDataMap simulation_data_map,int subdivision_level = 1,float scale = 1200.0f,float step_size=0.15f);
     std::shared_ptr<AShader> GetShader();
     //map<MyMesh::VertexHandle,std::shared_ptr<AShader>> ClassifyVertices();
     void ClassifyVertices(std::vector<glm::vec3>& list_of_points,std::vector<std::shared_ptr<AShader>>& list_of_data,float& details);

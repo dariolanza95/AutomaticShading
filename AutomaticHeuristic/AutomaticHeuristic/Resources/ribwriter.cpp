@@ -219,7 +219,10 @@ string RIBWriter::WriteTransformationMatrix()
  // ss<<" Transform [  1 0 0 0 -0 -0.112574 -0.993599 0 0 0.993599 -0.112574 0 -149.168 7.9066 249.287 1 ]"<<std::endl;
  // ss<<" Transform [  1 0 0 0 -0 -0.0928982 -0.995632 0 0 0.995632 -0.0928982 0 -83.0555 -23.9474 357.319 1 ]"<<std::endl;
 //ss<<" Transform [  1 0 0 0 -0 -0.0580986 -0.998269 0 0 0.998269 -0.0580986 0 -150.165 11.0433 303.321 1 ]"<<std::endl;
-    ss<<" Transform [  1 0 0 0 -0 -0.0476369 -0.998823 0 0 0.998823 -0.0476369 0 -146.51 1.70848 266.912 1 ]"<<std::endl;
+  //  ss<<" Transform [  1 0 0 0 -0 -0.0476369 -0.998823 0 0 0.998823 -0.0476369 0 -146.51 1.70848 266.912 1 ]"<<std::endl;
+  //ss<<" Transform [  1 0 0 0 -0 -0.104526 -0.99452 0 0 0.99452 -0.104526 0 -146.178 7.41385 219.542 1 ]"<<std::endl;
+//ss<<" Transform [  1 0 0 0 -0 -0.150683 -0.98858 0 0 0.98858 -0.150683 0 -146.178 23.0928 251.91 1 ]"<<std::endl;
+ss<<"Transform [  1 0 0 0 -0 -0.173645 -0.984805 0 0 0.984805 -0.173645 0 -146.178 18.0465 225.074 1 ]"<<std::endl;
     return ss.str();
 }
 
@@ -466,38 +469,46 @@ void RIBWriter::WriteDisplacementLogic(){
     RIBNode* rib_result;
     RIBNode* rib_mix;
     int i = 0;
-    for(std::shared_ptr<AShader> shader : _list_of_used_shaders){
-        BlendMode displ_blend_mode = shader->GetDisplBlendMode();
-        if(i==0){
-            rib_shader1 = new RIBConstant(glm::vec3( 0.0f, 0.0f, 0.0f));
-        }else   {
-            rib_shader1 = rib_result;
-        }
-        rib_shader2 = new RIBShaderNode(shader);
-        if(displ_blend_mode == BlendMode::Add)
-        {
-            rib_result = new RIBAddNode(rib_shader1,rib_shader2);
-        }
-        else
-        {
-            rib_mask = new RIBMaskNode(shader);
-            rib_result =     new RIBMixNode(rib_mask,rib_shader1,rib_shader2,true);
+
+    if(_list_of_used_shaders.empty()){
+        rib_shader1 = new RIBConstant(glm::vec3( 0.0f, 0.0f, 0.0f));
+         string_to_write<< rib_shader1->WriteNode()<<std::endl;
+    }else{
+        for(std::shared_ptr<AShader> shader : _list_of_used_shaders){
+            BlendMode displ_blend_mode = shader->GetDisplBlendMode();
+            if(i==0){
+                rib_shader1 = new RIBConstant(glm::vec3( 0.0f, 0.0f, 0.0f));
+            }else   {
+                rib_shader1 = rib_result;
+            }
+            rib_shader2 = new RIBShaderNode(shader);
+            if(displ_blend_mode == BlendMode::Add)
+            {
+                rib_result = new RIBAddNode(rib_shader1,rib_shader2);
+            }
+            else
+            {
+                rib_mask = new RIBMaskNode(shader);
+                rib_result =     new RIBMixNode(rib_mask,rib_shader1,rib_shader2,true);
+
+            }
+            string_to_write<< rib_result->WriteNode()<<std::endl;
+
+            //string_to_write<<rib_mask->WriteNode()<<std::endl;
+            //if(i==0)
+            //    string_to_write<<rib_shader1->WriteNode()<<std::endl;
+            //string_to_write<<rib_shader2->WriteNode()<<std::endl;
+            //string_to_write<<rib_mix->WriteNode()<<std::endl;
+
+            _rib_file<<string_to_write.str();
+            string_to_write.str(std::string());
+            std::cout<<string_to_write.str()<<std::endl;
+            i++;
 
         }
-        string_to_write<< rib_result->WriteNode()<<std::endl;
-
-        //string_to_write<<rib_mask->WriteNode()<<std::endl;
-        //if(i==0)
-        //    string_to_write<<rib_shader1->WriteNode()<<std::endl;
-        //string_to_write<<rib_shader2->WriteNode()<<std::endl;
-        //string_to_write<<rib_mix->WriteNode()<<std::endl;
-
-        _rib_file<<string_to_write.str();
-        string_to_write.str(std::string());
-        std::cout<<string_to_write.str()<<std::endl;
-        i++;
-
     }
+
+
 
 }
 
@@ -512,42 +523,53 @@ void RIBWriter::WriteShadersList()
     RIBNode* rib_mix = nullptr;
     RIBNode* rib_displ = nullptr;
     RIBNode* previous_rib_displ;
-    for(std::shared_ptr<AShader> shader : _list_of_used_shaders){
-
-        BlendMode displ_blend_mode = shader->GetDisplBlendMode();
-
-        rib_mask = new RIBMaskNode(shader);
-        if(i==0){
-            rib_shader1 = new RIBConstant(glm::vec3(((float)186)/256,((float)151)/256,((float)90)/256));
-        }else   {
-            rib_shader1 = rib_mix;
-        }
-        rib_shader2 = new RIBShaderNode(shader);
-        rib_mix =     new RIBMixNode(rib_mask,rib_shader1,rib_shader2);
-
-        string_to_write<<rib_mask->WriteNode()<<std::endl;
-        if(i==0)
-            string_to_write<<rib_shader1->WriteNode()<<std::endl;
-        string_to_write<<rib_shader2->WriteNode()<<std::endl;
+    if(_list_of_used_shaders.empty()){
+        rib_mix = new RIBConstant(glm::vec3(((float)186)/256,((float)151)/256,((float)90)/256));
         string_to_write<<rib_mix->WriteNode()<<std::endl;
-        if(i==0)
-            rib_shader1 = new RIBConstant(0);
-        else
-            rib_shader1 = rib_displ;
-        if(displ_blend_mode == BlendMode::Add)
-        {
-            rib_displ= new RIBAddNode(rib_shader1,rib_shader2);
-        }
-        else
-        {
-            rib_displ= new RIBAddNode(rib_shader1,rib_shader2,rib_mask,BlendMode::Overlay);
-        }
+        rib_displ = new RIBConstant(0);
         string_to_write<<rib_displ->WriteNode()<<std::endl;
-        _rib_file<<string_to_write.str();
-        string_to_write.str("");
 
-    i++;
-    }
+}else{
+        for(std::shared_ptr<AShader> shader : _list_of_used_shaders){
+
+            BlendMode displ_blend_mode = shader->GetDisplBlendMode();
+
+            rib_mask = new RIBMaskNode(shader);
+            if(i==0){
+                rib_shader1 = new RIBConstant(glm::vec3(((float)186)/256,((float)151)/256,((float)90)/256));
+            }else   {
+                rib_shader1 = rib_mix;
+            }
+            rib_shader2 = new RIBShaderNode(shader);
+            rib_mix =     new RIBMixNode(rib_mask,rib_shader1,rib_shader2);
+
+            string_to_write<<rib_mask->WriteNode()<<std::endl;
+            if(i==0)
+                string_to_write<<rib_shader1->WriteNode()<<std::endl;
+            string_to_write<<rib_shader2->WriteNode()<<std::endl;
+            string_to_write<<rib_mix->WriteNode()<<std::endl;
+            if(i==0)
+                rib_shader1 = new RIBConstant(0);
+            else
+                rib_shader1 = rib_displ;
+            if(displ_blend_mode == BlendMode::Add)
+            {
+                rib_displ= new RIBAddNode(rib_shader1,rib_shader2);
+            }
+            else
+            {
+                rib_displ= new RIBAddNode(rib_shader1,rib_shader2,rib_mask,BlendMode::Overlay);
+            }
+            string_to_write<<rib_displ->WriteNode()<<std::endl;
+            _rib_file<<string_to_write.str();
+            string_to_write.str("");
+
+        i++;
+        }
+}
+
+
+
 
 
     BXDFNode* rib_bxdf = new BXDFNode(rib_mix);

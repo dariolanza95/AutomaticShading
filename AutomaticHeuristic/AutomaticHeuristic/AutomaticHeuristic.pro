@@ -35,7 +35,6 @@ SOURCES += Graphics/openglvisualizer.cpp \
     Resources/ribwriter.cpp \
     Resources/VertexEditTag.cpp \
     Resources/FieldThreeDWriter.cpp \
-    Resources/PointCloudWriter.cpp \
     Resources/pointcloudwritertester.cpp \
     Resources/materialclassifier.cpp \
     Resources/LICMap.cpp \
@@ -60,7 +59,11 @@ SOURCES += Graphics/openglvisualizer.cpp \
     Resources/AShader.cpp \
     Resources/airpressureclassifier.cpp \
     Resources/airpressureshader.cpp \
-    Resources/sedimentationdata.cpp
+    Resources/sedimentationdata.cpp \
+    Resources/outputwriter.cpp \
+    Resources/apointcloudwriter.cpp \
+    Resources/RIBPointCloudWriter.cpp \
+    Resources/pointcloudwriter.cpp
 
 
 
@@ -135,7 +138,10 @@ HEADERS += Graphics/openglvisualizer.h \
     Resources/sedimentationdata.h \
     External/tps/gauss-elim.h \
     External/tps/linalg3d.h \
-    External/tps/ludecomposition.h
+    External/tps/ludecomposition.h \
+    Resources/outputwriter.h \
+    Resources/apointcloudwriter.h \
+    Resources/pointcloudwriter.h
 
 unix|win32: LIBS += -lglfw
     LIBS+=-lboost_system

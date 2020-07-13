@@ -32,7 +32,11 @@ std::string BXDFNode::WriteNode(){
     if(_node == nullptr)
         return "";
     name<<"PxrSurface"<<_unique_id;
-    res<<"Bxdf \"PxrSurface\" \""<<GetName()<<"\" \"reference color diffuseColor\" [\""<<_node->GetName()<<":resultRGB\"] ";
+    if(dynamic_cast<RIBConstant*>(_node)!=0){
+        res<<"Bxdf \"PxrSurface\" \""<<GetName()<<"\" \"color diffuseColor\" ["<<_node->GetName()<<"] ";
+    }else{
+        res<<"Bxdf \"PxrSurface\" \""<<GetName()<<"\" \"reference color diffuseColor\" [\""<<_node->GetName()<<":resultRGB\"] ";
+    }
     res<<"\"string __materialid\" [\""<<GetMaterialId()<<"\"]"<<std::endl;
     return res.str();
 
