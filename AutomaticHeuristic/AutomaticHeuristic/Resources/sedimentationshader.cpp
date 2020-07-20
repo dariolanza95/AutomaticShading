@@ -51,26 +51,32 @@ bool SedimentationShader::GetLineId2(int material_id,glm::vec3 actual_point,int 
     if(list_of_intermediate_stack_ids.size()!=list_of_intermediate_sedimentation_points.size()){
         std::cout<<"list sizes dont match"<<std::endl;
     }
-    if(actual_point[0]==0 && actual_point[1] == 212)
-        std::cout<<"poi"<<std::endl;
+  //  if(actual_point[0]==0 && actual_point[1] == 212)
+//        std::cout<<"poi"<<std::endl;
 
-    for(int i=0;i<list_of_intermediate_stack_ids.size();i++){
+    for(int i=0;i<list_of_intermediate_sedimentation_materials.size();i++){
           if(list_of_intermediate_sedimentation_materials[i]==material_id){
               float dist = dot(actual_point-list_of_intermediate_sedimentation_points[i],actual_point-list_of_intermediate_sedimentation_points[i]);
               if(dist<min_dist){
                   min_dist = dist;
                   found = true;
                   min_point = list_of_intermediate_sedimentation_points[i];
-                  if(i<list_of_intermediate_stack_ids.size()-1)
+                  if(i<list_of_intermediate_sedimentation_materials.size()-1)
                     max_point = list_of_intermediate_sedimentation_points[i+1];
                   else{
                       max_point = min_point;
                       max_point[2]+=1;
                   }
-                  stack_id =list_of_intermediate_stack_ids[i];
+//                  stack_id = -1;
+//                  stack_id =list_of_intermediate_stack_ids[i];
+                  stack_id = list_of_intermediate_sedimentation_materials[i];
               }
           }
       }
+    if(max_point[2]<actual_point[2])
+        found = false;
+  //  max_point[2]+= 10;
+  //  min_point[2]+= 10;
     return found;
 }
 
@@ -81,8 +87,8 @@ bool SedimentationShader::GetLineId(int stack_id,glm::vec3 actual_point,glm::vec
     if(list_of_intermediate_sedimentation_materials.size()!=list_of_intermediate_sedimentation_points.size()){
         std::cout<<"list sizes dont match"<<std::endl;
     }
-    if(actual_point[0]==0 && actual_point[1] == 212)
-        std::cout<<"poi"<<std::endl;
+   // if(actual_point[0]==0 && actual_point[1] == 212)
+   //     std::cout<<"poi"<<std::endl;
     for(int i=0;i<list_of_intermediate_sedimentation_materials.size();i++){
           if(list_of_intermediate_stack_ids[i]==stack_id){
               float dist = dot(actual_point-list_of_intermediate_sedimentation_points[i],actual_point-list_of_intermediate_sedimentation_points[i]);

@@ -27,6 +27,7 @@
 
 class SedimentationClassifier : public AClassifier
 {
+    void SelectTopMostVertices(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
     SimulationDataMap simulation_data_map;
     pcl::KdTreeFLANN<pcl::PointXYZLNormal> kdtree_input;
     pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud_input;

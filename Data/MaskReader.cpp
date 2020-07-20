@@ -305,6 +305,7 @@ PxrTexture::ComputeOutputParams(RixShadingContext const *sctx,
 
         // transform P in object space by default
         //
+
         sctx->Transform(RixShadingContext::k_AsPoints,
                         Rix::k_current, Rix::k_object, sP, NULL);
 
@@ -421,7 +422,7 @@ float maxdist = 1.25; //3;
            val= data[0];
            RtPoint3 pp = sP[i];
            RtPoint3 max,min;
-           if(val>0.001||true ){
+           if(false ){
 
 
 

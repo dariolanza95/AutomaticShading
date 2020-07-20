@@ -34,25 +34,42 @@ void  FeaturesFinder::Find(std::vector<std::shared_ptr<AShader>>& list_of_used_s
      temp_list_of_points.clear();
      std::vector<std::shared_ptr<AShader>> temp_list_of_shader;
      float details;
+AClassifier *fc;
+    //FOR testing purposes
+     using namespace std::chrono;
+    int iterations = 15;
+    high_resolution_clock clock;
+    high_resolution_clock::time_point currentTime, newTime;
+    high_resolution_clock::duration totalTime;
+    high_resolution_clock::duration accumulator(0);
+    currentTime = clock.now();
+    for(int i = 0;i<iterations;i++)
+     {
+         fc = new FlowClassifier(_mesh,simulation_data_map,1);
+           fc->ClassifyVertices(temp_list_of_points,temp_list_of_shader,details);
+    }
+    newTime = clock.now();
+        totalTime = newTime - currentTime;
+        double ms = std::chrono::duration_cast<milliseconds>(totalTime).count();
+        double avg = ms / (double) iterations;
+        std::cout<<"total time "<< ms << " ms, iterations "<<iterations<<" avg "<<avg<<std::endl;
+           if(temp_list_of_points.size() != temp_list_of_shader.size()){
+               std::cout<<"The two output list don't match!";
+           }
+           else{
+               if(temp_list_of_points.size()>0)
+               {
+                   UpdateSharedData(temp_list_of_points,temp_list_of_shader,details);
+                   std::shared_ptr<AShader> shad = fc->GetShader();
+                   list_of_used_shaders.push_back(shad);
+                   selected_faces.clear();
+               }
+           }
+           temp_list_of_points.clear();
+           temp_list_of_shader.clear();
 
-    AClassifier *fc = new FlowClassifier(_mesh,simulation_data_map,0);
-      fc->ClassifyVertices(temp_list_of_points,temp_list_of_shader,details);
-      if(temp_list_of_points.size() != temp_list_of_shader.size()){
-          std::cout<<"The two output list don't match!";
-      }
-      else{
-          if(temp_list_of_points.size()>0)
-          {
-              UpdateSharedData(temp_list_of_points,temp_list_of_shader,details);
-              std::shared_ptr<AShader> shad = fc->GetShader();
-              list_of_used_shaders.push_back(shad);
-              selected_faces.clear();
-          }
-      }
-      temp_list_of_points.clear();
-      temp_list_of_shader.clear();
 
-      AClassifier *sc = new SedimentationClassifier(_mesh,simulation_data_map);
+    /*  AClassifier *sc = new SedimentationClassifier(_mesh,simulation_data_map);
       sc->ClassifyVertices(temp_list_of_points,temp_list_of_shader,details);
 
 
@@ -68,7 +85,7 @@ void  FeaturesFinder::Find(std::vector<std::shared_ptr<AShader>>& list_of_used_s
           selected_faces.clear();
           }
       }
-
+*/
     // delete sc;
 
 

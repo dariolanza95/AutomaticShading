@@ -634,7 +634,7 @@ testpoint = pp;
 
                 int K = 8;
                 float maxdist = 5;
-            RtVector3 dir(0,0,0);
+            RtVector3 dir(0,1,0);
 
                 point[0] = pp.x;
                 point[1] = pp.y;
@@ -644,9 +644,17 @@ testpoint = pp;
                 float val = 0;
                 if(Readres==1)
                 {
-                    dir.x = (data[0]);
+                    dir.x = (data[2]);//0//2
                     dir.y = (data[1]);
-                    dir.z = (data[2]);
+                    dir.z = (data[0]);
+                    //if(data[1]>0)
+                    //    dir.y = (data[1]);//2//1
+                    //else
+                    //    dir.y = -(data[1]);
+                    if(data[0]>0)
+                        dir.z = -(data[0]);//2//1
+                    else
+                        dir.z = (data[0]);
                     val = data[3];
                 }
                 K = 5;
@@ -712,7 +720,8 @@ testpoint = pp;
 
  float a  = 0;
  float b = 1;
-float color_details = DDA(pp,dir_details,40,0.3);//DDA(pp,dir_details,40,3);
+
+float color_details = DDA(pp,dir_details,40,4);//DDA(pp,dir_details,40,3);
 
  float c = 0.01;//0.01;
        d = 0.99;//0.99;
@@ -879,9 +888,12 @@ res = RixSmoothStep(0,1 ,res );
     //resultRGB[n]=      RixLerpRGB( main_col,temp_color,res);
     //resultRGB[n]=      RixLerpRGB( main_col,second_col,res);
        // resultRGB[n] = RixLerpRGB( temp_color,third_col,dda);
-        float fbm = Fbm(pp*1.3,4,0.3);
-          resultF[n] = res + color_details*0.4+fbm*0.5;//+ 0.5*fbm;//0.5;//(res);// + displ;
-          resultRGB[n].r = resultRGB[n].b = resultRGB[n].g = (res+color_details+fbm*0.5);
+        float fbm = Fbm(pp*4.3,4,0.3);
+//        resultF[n] = res*0.6 + 0.4*(color_details+fbm*0.4);
+        float rez = res+ color_details+fbm*0.3;
+
+          resultF[n] = rez;//+fbm*0.5;//+ 0.5*fbm;//0.5;//(res);// + displ;
+          resultRGB[n].r = resultRGB[n].b = resultRGB[n].g = (res+color_details);//+fbm*0.5);
           //resultF[n] = 0;//  displ;
 
 

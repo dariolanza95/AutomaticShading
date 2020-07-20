@@ -11,10 +11,9 @@ enum class  BlendMode{Add,Overlay};
 
 class AShader
 {
-
+    bool mask_pointcloud=false;
     const int  _id ;
     float _confidence;
-    bool mask_pointcloud = false;
     BlendMode _displ_blend_mode;
 
 public:
@@ -25,8 +24,6 @@ public:
     AShader(int id);
     virtual ~AShader();
 
-    void SetMaskShader();
-    void UnSetMaskShader();
 
 
    // AShader(int _id,BlendMode displ_blend_mode = BlendMode::Overlay);

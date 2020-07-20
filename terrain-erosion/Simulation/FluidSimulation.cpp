@@ -1838,7 +1838,7 @@ void FluidSimulation::update(ulong time, double dt, bool rain, bool flood,bool w
     // 5. Simulate Evaporation
     simulateEvaporation(dt);
 
-    //smoothSediment();
+    smoothSediment();
     smoothTerrain();
     computeSurfaceNormals();
     EraseWater();

@@ -175,9 +175,11 @@ map<MyMesh::VertexHandle,glm::vec3> FlowClassifier::selectFlowVertices(glm::vec3
          glm::vec3 sim_data_normal;
          sd->getData(SimulationDataEnum::flow_normal,sim_data_normal);
          sim_data_normal = glm::normalize(sim_data_normal);
+         //invert part of the normals
          float tmp = sim_data_normal[0];
          sim_data_normal[0] = sim_data_normal[1];
          sim_data_normal[1] = tmp;
+
          if(glm::any(glm::isnan(sim_data_normal)))
                  continue;
 
@@ -501,7 +503,7 @@ map<MyMesh::VertexHandle,std::shared_ptr<AShader>> FlowClassifier:: LIC(map<MyMe
 
     //float step_size = 0.15;//0.26;0.5;//scale;
     float frequency = scale;//200;//longest_dimension/2;//scale*2;
-    //box_length = step_size;// 20;//150;
+    box_length = step_size;// 20;//150;
     FastNoise noise;
     std::map<MyMesh::VertexHandle,std::shared_ptr<AShader>> output_map;
    std::map<MyMesh::VertexHandle,std::shared_ptr<AShader>> intermediate_map;

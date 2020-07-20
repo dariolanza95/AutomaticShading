@@ -208,8 +208,8 @@ std::cout<<"uppi"<<std::endl;
        }
 
 void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
-     float treshold = .01f; //0.1f
-     int counter_treshold = 10; //3
+     float treshold = .01f;  //0.01//0.1f
+     int counter_treshold = 10; //10 //3
 
 //     float hysteresis = 0.0f;
      int stack_id;
@@ -312,7 +312,7 @@ void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
 //        if(_simulation.sedimented_terrain(y,x)<0)
              _simulation.tmp_sediment_material(y,x) = temp_data;
         sed_color(y,x) =sedimentation_history(y,x).back();
-        //sed_color(y,x) =_simulation.tmp_sediment_material(y,x);
+     //   sed_color(y,x) =_simulation.tmp_sediment_material(y,x);
         if(sedimentation && removal){
             std::cout <<" sedimentation and erosion at saame time?"<<std::endl;
         }
@@ -1048,7 +1048,7 @@ initial_sedimentation_points = Grid2D<std::vector<glm::vec3>>(_simulation.water.
                                ids.push_back(mat_id);
                                mat++;
                                mat_id++;
-                               if(mat>4)
+                               if(mat>8)
                                    mat = 1;
                            }
                            std::reverse(v.begin(),v.end());
