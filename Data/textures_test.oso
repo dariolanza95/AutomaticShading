@@ -3,88 +3,90 @@ OpenShadingLanguage 1.00
 # options: 
 shader textures_test
 param	point	Pobj	0 0 0		%meta{int,lockgeom,0}  %read{0,0} %write{2147483647,-1} %derivs
-oparam	float	resultF	0		%read{13,16} %write{11,11}
-oparam	color	resultRGB	0 0 0		%read{2147483647,-1} %write{20,21}
+oparam	float	resultF	0		%read{2147483647,-1} %write{11,11}
+oparam	color	resultRGB	0 0 0		%read{2147483647,-1} %write{19,22}
 local	point	pp	%read{9,9} %write{0,0} %derivs
-local	color[6]	materials	%read{20,20} %write{1,6}
-local	float	val	%read{11,12} %write{7,10}
-local	normal	Nn	%read{2147483647,-1} %write{8,8}
-local	color	rez	%read{10,10} %write{9,9}
-local	int	index	%read{20,20} %write{12,12}
-const	color	$const1	0 0 0		%read{1,1} %write{2147483647,-1}
-const	int	$const2	0		%read{1,17} %write{2147483647,-1}
-const	color	$const3	1 1 0		%read{2,2} %write{2147483647,-1}
+local	color[8]	hardness_colors	%read{22,22} %write{1,8}
+local	color	res	%read{10,10} %write{9,9}
+local	float	val	%read{11,20} %write{10,10}
+local	int	___325_index	%read{22,22} %write{21,21}
+const	color	$const1	0 0 0		%read{1,19} %write{2147483647,-1}
+const	int	$const2	0		%read{1,16} %write{2147483647,-1}
+const	color	$const3	1 0 1		%read{2,2} %write{2147483647,-1}
 const	int	$const4	1		%read{2,2} %write{2147483647,-1}
-const	color	$const5	0 1 0		%read{3,6} %write{2147483647,-1}
+const	color	$const5	1 0 0		%read{3,3} %write{2147483647,-1}
 const	int	$const6	2		%read{3,3} %write{2147483647,-1}
 const	color	$const7	0 1 1		%read{4,4} %write{2147483647,-1}
 const	int	$const8	3		%read{4,4} %write{2147483647,-1}
-const	color	$const9	0 0 1		%read{5,5} %write{2147483647,-1}
+const	color	$const9	1 1 0		%read{5,5} %write{2147483647,-1}
 const	int	$const10	4		%read{5,5} %write{2147483647,-1}
-const	int	$const11	5		%read{6,6} %write{2147483647,-1}
-const	normal	$const12	0 0 0		%read{8,8} %write{2147483647,-1}
-const	string	$const13	"blaf"		%read{9,9} %write{2147483647,-1}
-const	string	$const14	"blur"		%read{9,9} %write{2147483647,-1}
-const	float	$const15	0.5		%read{9,9} %write{2147483647,-1}
-temp	int	$tmp7	%read{14,14} %write{13,13}
-temp	int	$tmp8	%read{15,19} %write{14,18}
-const	int	$const16	6		%read{16,16} %write{2147483647,-1}
-temp	int	$tmp9	%read{17,17} %write{16,16}
-temp	int	$tmp10	%read{18,18} %write{17,17}
-const	color	$const17	1 1 1		%read{21,21} %write{2147483647,-1}
+const	color	$const11	0 0 1		%read{6,6} %write{2147483647,-1}
+const	int	$const12	5		%read{6,6} %write{2147483647,-1}
+const	color	$const13	0 1 0		%read{7,7} %write{2147483647,-1}
+const	int	$const14	6		%read{7,7} %write{2147483647,-1}
+const	color	$const15	1 1 1		%read{8,8} %write{2147483647,-1}
+const	int	$const16	7		%read{8,8} %write{2147483647,-1}
+const	string	$const17	"brickmap01"		%read{9,9} %write{2147483647,-1}
+temp	int	$tmp9	%read{13,13} %write{12,12}
+temp	int	$tmp10	%read{14,18} %write{13,17}
+const	int	$const18	8		%read{15,15} %write{2147483647,-1}
+temp	int	$tmp11	%read{16,16} %write{15,15}
+temp	int	$tmp12	%read{17,17} %write{16,16}
+temp	float	$tmp13	%read{21,21} %write{20,20}
 code ___main___
 # textures_test.osl:13
 # 	point pp = Pobj;
-	assign		pp Pobj 	%filename{"textures_test.osl"} %line{13} %argrw{"wr"}
+	assign		pp Pobj 	%filename{"textures_test.osl"} %line{12} %argrw{"wr"}
 # textures_test.osl:16
-# materials[0] = color(0,0,0);
-	aassign		materials $const2 $const1 	%line{16} %argrw{"wrr"}
+# hardness_colors[0] = color(0,0,0);
+	aassign		hardness_colors $const2 $const1 	%line{16} %argrw{"wrr"}
 # textures_test.osl:17
-# materials[1] = color(1,1,0);
-	aassign		materials $const4 $const3 	%line{17} %argrw{"wrr"}
+# hardness_colors[1] = color(1,0,1);
+	aassign		hardness_colors $const4 $const3 	%line{17} %argrw{"wrr"}
 # textures_test.osl:18
-# materials[2] = color(0,1,0);
-	aassign		materials $const6 $const5 	%line{18} %argrw{"wrr"}
+# hardness_colors[2] = color(1,0,0);
+	aassign		hardness_colors $const6 $const5 	%line{18} %argrw{"wrr"}
 # textures_test.osl:19
-# materials[3] = color(0,1,1);
-	aassign		materials $const8 $const7 	%line{19} %argrw{"wrr"}
+# hardness_colors[3] = color(0,1,1);
+	aassign		hardness_colors $const8 $const7 	%line{19} %argrw{"wrr"}
 # textures_test.osl:20
-# materials[4] = color(0,0,1);
-	aassign		materials $const10 $const9 	%line{20} %argrw{"wrr"}
+# hardness_colors[4] = color(1,1,0);
+	aassign		hardness_colors $const10 $const9 	%line{20} %argrw{"wrr"}
 # textures_test.osl:21
-# materials[5] = color(0,1,0);
-	aassign		materials $const11 $const5 	%line{21} %argrw{"wrr"}
+# hardness_colors[5] = color(0,0,1);
+	aassign		hardness_colors $const12 $const11 	%line{21} %argrw{"wrr"}
 # textures_test.osl:22
-# float val = 0;
-	assign		val $const2 	%line{22} %argrw{"wr"}
+# hardness_colors[6] = color(0,1,0);
+	aassign		hardness_colors $const14 $const13 	%line{22} %argrw{"wrr"}
 # textures_test.osl:23
-# normal Nn = normal(0,0,0);
-	assign		Nn $const12 	%line{23} %argrw{"wr"}
-# textures_test.osl:25
-# rez = texture3d("blaf",pp,"blur",0.5);
-	texture3d	rez $const13 pp $const14 $const15 	%line{25} %argrw{"wrrrr"} %argderivs{2}
-# textures_test.osl:26
-# val = rez[0];
-	compref		val rez $const2 	%line{26} %argrw{"wrr"}
+# hardness_colors[7] = color(1,1,1);
+	aassign		hardness_colors $const16 $const15 	%line{23} %argrw{"wrr"}
+# textures_test.osl:27
+# 	color res  = texture3d("brickmap01",pp);
+	texture3d	res $const17 pp 	%line{27} %argrw{"wrr"} %argderivs{2}
 # textures_test.osl:28
-# resultF = val;
-	assign		resultF val 	%line{28} %argrw{"wr"}
+# 	float val = res[0];
+	compref		val res $const2 	%line{28} %argrw{"wrr"}
 # textures_test.osl:29
-# int index = (int) val;
-	assign		index val 	%line{29} %argrw{"wr"}
+# 	resultF = val;
+	assign		resultF val 	%line{29} %argrw{"wr"}
 # textures_test.osl:30
-# 	if(resultF>=0 && resultF<6)
-	ge		$tmp7 resultF $const2 	%line{30} %argrw{"wrr"}
-	neq		$tmp8 $tmp7 $const2 	%argrw{"wrr"}
-	if		$tmp8 19 19 	%argrw{"r"}
-	lt		$tmp9 resultF $const16 	%argrw{"wrr"}
+# 	if(val<0 || val>8)
+	lt		$tmp9 val $const2 	%line{30} %argrw{"wrr"}
 	neq		$tmp10 $tmp9 $const2 	%argrw{"wrr"}
-	assign		$tmp8 $tmp10 	%argrw{"wr"}
-	if		$tmp8 21 22 	%argrw{"r"}
-# textures_test.osl:31
-# 		resultRGB = materials[index];
-	aref		resultRGB materials index 	%line{31} %argrw{"wrr"}
-# textures_test.osl:33
-# 		resultRGB = color(1,1,1);	
-	assign		resultRGB $const17 	%line{33} %argrw{"wr"}
+	if		$tmp10 15 18 	%argrw{"r"}
+	gt		$tmp11 val $const18 	%argrw{"wrr"}
+	neq		$tmp12 $tmp11 $const2 	%argrw{"wrr"}
+	assign		$tmp10 $tmp12 	%argrw{"wr"}
+	if		$tmp10 20 23 	%argrw{"r"}
+# textures_test.osl:32
+# 		resultRGB = color(0,0,0);
+	assign		resultRGB $const1 	%line{32} %argrw{"wr"}
+# textures_test.osl:34
+# 		int index = (int) round(val);
+	round		$tmp13 val 	%line{34} %argrw{"wr"}
+	assign		___325_index $tmp13 	%argrw{"wr"}
+# textures_test.osl:35
+# 		resultRGB = hardness_colors[index];
+	aref		resultRGB hardness_colors ___325_index 	%line{35} %argrw{"wrr"}
 	end

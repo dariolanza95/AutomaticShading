@@ -81,7 +81,7 @@ void main(void)
    // vec4 simDataColor =  vec4(0,0,0,1);
     vec4 sedimentColor = vec4(194.0/255.0,141.0/255.0,76.0/255.0,1);
     vec4 sedimentedTerrainColor;
-    if(vSedimentedTerrainColor == 0 || vSedimentedTerrainColor>5)
+    if(vSedimentedTerrainColor == 0 )
         sedimentedTerrainColor = vec4(0.3,0.3,0.3,1);
     else{
         if(vSedimentedTerrainColor == 1)
@@ -98,7 +98,23 @@ void main(void)
                     else{
                         if(vSedimentedTerrainColor == 5)
                             sedimentedTerrainColor = vec4(0,0,1,1);
-
+                        else{
+                            if(vSedimentedTerrainColor == 6)
+                                sedimentedTerrainColor = vec4(0,1,0,1);
+                            else{
+                                if(vSedimentedTerrainColor == 7)
+                                    sedimentedTerrainColor = vec4(0.7,0.3,0.7,1);
+                                else{
+                                    if(vSedimentedTerrainColor == 7)
+                                        sedimentedTerrainColor = vec4(0.7,0.3,0.0,1);
+                                    else{
+                                        if(vSedimentedTerrainColor == 8)
+                                            sedimentedTerrainColor = vec4(0.3,0.7,0.7,1);
+                                        else
+                                            sedimentedTerrainColor = vec4(0,0,0,1);
+                                    }
+                                }
+                    }}
                     }
                 }
             }

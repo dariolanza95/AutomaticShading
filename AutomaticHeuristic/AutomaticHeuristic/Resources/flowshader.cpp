@@ -11,12 +11,13 @@ FlowShader::FlowShader(int id, float confidence, glm::vec3 flow_normal) : AShade
 FlowShader::FlowShader(int id, float confidence, glm::vec3 flow_normal, float lic_value) : AShader(id,confidence),flow_normal(flow_normal),lic_val(lic_value)
 {}
 
-void FlowShader::allocateData(std::vector<float> &data){
-    data.resize(4);
-}
+//void FlowShader::allocateData(std::vector<float> &data){
+//    data.resize(4);
+//}
 
 void FlowShader::getSerializedData(std::vector<float>& data)
 {
+    data.resize(4);
     for(int k = 0;k<3;k++)
         data[k] = flow_normal[k];
     data[3] = lic_val;
@@ -42,10 +43,11 @@ void FlowShader::getSerializedTypes(std::vector<char*>& types,std::vector<char*>
         types[i] = AutomaticShaders::Utils::fromStringToChar("float");
     }
 
-    std::stringstream strm;
+
     for(int i = 0;i<4;i++){
+        std::stringstream strm;
         strm<<"shader_parameter_"<<i;
         var_names[i] = AutomaticShaders::Utils::fromStringToChar(strm.str());
-        strm.str("");
+        //strm.str("");
     }
 }

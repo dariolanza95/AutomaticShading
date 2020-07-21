@@ -485,7 +485,7 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
         void *data_2;
         float point[3];
         float normal[3];
-        int hardness_levels = 8;
+        int hardness_levels = 9;
         float hardness_values[hardness_levels];
         float max_hardness_value;
         hardness_values[0] = 23;
@@ -495,38 +495,69 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
 
         RtColorRGB hardness_colors[hardness_levels];
 
-        hardness_colors[0].r =0;// 0.3456;//0.18;
-        hardness_colors[0].g =0;// 0.3456;//0.13;
-        hardness_colors[0].b =0;// 0.3456;//0.09;
+        hardness_colors[0].r =0;//0.18;//0;// 0.3456;//
+        hardness_colors[0].g =0;//0.13;//0;// 0.3456;//
+        hardness_colors[0].b =0;//0.09;//0;// 0.3456;//
+
+        float val_1,val_2,val_3;
+        val_1 =180/(float)255;
+        val_2 =167/(float)255;
+        val_3 =141/(float)255;
+
+        hardness_colors[1].r = val_1;//1;//0.219;
+        hardness_colors[1].g = val_2;//0;//0.112;
+        hardness_colors[1].b = val_3;//1;//0.074;
+
+        val_1 =137/(float)255;
+        val_2 =127/(float)255;
+        val_3 =107/(float)255; //
+        hardness_colors[2].r = val_1;//1; //0.16;
+        hardness_colors[2].g = val_2;//0;//0.13;
+        hardness_colors[2].b = val_3;//0; //0.07;
+
+        val_1 =169/(float)255;
+        val_2 =153/(float)255;
+        val_3 =121/(float)255; //
+        hardness_colors[3].r = val_1;//0; //0.17;
+        hardness_colors[3].g = val_2;//1;//0.11;
+        hardness_colors[3].b = val_3;//1; //0.09;
+
+        val_1 =147/(float)255;
+        val_2 =115/(float)255;
+        val_3 =55/(float)255;//
+        hardness_colors[4].r = val_1;//1; //0.15;
+        hardness_colors[4].g = val_2;//1; //0.9;
+        hardness_colors[4].b = val_3;//0;//0.075;
+        val_1 =168/(float)255;
+        val_2 =120/(float)255;
+        val_3 =81/(float)255;
 
 
-        hardness_colors[1].r = 1;//0.19;
-        hardness_colors[1].g = 0;//0.12;
-        hardness_colors[1].b = 1;//0.08;
+                                  //
+        hardness_colors[5].r = val_1;//0; //0.15;
+        hardness_colors[5].g = val_2;//0;//0.13;
+        hardness_colors[5].b = val_3;//1; //0.07;
+        val_1 =128/(float)255;
+        val_2 =87/(float)255;
+        val_3 =54/(float)255;//
+                                 //
+        hardness_colors[6].r = val_1;//0; //0.16;
+        hardness_colors[6].g = val_2;//1;//0.16;
+        hardness_colors[6].b = val_3;//0; //0.09;
+         //
+        val_1 =110/(float)255;
+        val_2 =86/(float)255;
+        val_3 =40/(float)255;//              //
+        hardness_colors[7].r = val_1;//0.7; //0.16;
+        hardness_colors[7].g = val_2;//0.3; //0.1;
+        hardness_colors[7].b = val_3;//0.7; //0.02;
+        val_1 =176/(float)255;
+        val_2 =144/(float)255;
+        val_3 =84/(float)255;//
 
-        hardness_colors[2].r = 1;//0.16;
-        hardness_colors[2].g = 0;//0.1;
-        hardness_colors[2].b = 0;//0.07;
-
-        hardness_colors[3].r = 0;//0.16;
-        hardness_colors[3].g = 1;//0.1;
-        hardness_colors[3].b = 1;//0.07;
-
-        hardness_colors[4].r = 1;//0.16;
-        hardness_colors[4].g = 1;//0.1;
-        hardness_colors[4].b = 0;//0.07;
-
-        hardness_colors[5].r = 0;//0.16;
-        hardness_colors[5].g = 0;//0.1;
-        hardness_colors[5].b = 1;//0.07;
-
-        hardness_colors[6].r = 0;//0.16;
-        hardness_colors[6].g = 0;//0.1;
-        hardness_colors[6].b = 1;//0.07;
-
-        hardness_colors[7].r = 0;//0.16;
-        hardness_colors[7].g = 1;//0.1;
-        hardness_colors[7].b = 1;//0.07;
+        hardness_colors[8].r = val_1;//0.3; //0.16;
+        hardness_colors[8].g = val_2;//0.7; //0.1;
+        hardness_colors[8].b = val_3;//0.7; //0.02;
 
 
         RtColorRGB hardness_colors_secondary[hardness_levels];
@@ -646,7 +677,7 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
                  }
              }
          }
-
+*/
 
         /*if (shape == k_thin)
         {
@@ -1005,7 +1036,7 @@ int index5 = roundf(dy_minus_val);*/
 //col = hardness_colors[index1];
 
 float displ =0 ;
-        if(index1>=0)
+        if(index1>=0 && index1<hardness_levels)
         {
         //    std::cout<<"sedimentation"<<std::endl;
             col = hardness_colors[index1];
@@ -1032,9 +1063,9 @@ float displ =0 ;
         {
                        // resultF[n] = 0 ;
             displ = 0;
-            col.r = 1;
-            col.g = 0.5;
-            col.b = 0.5;
+            col.r = 0;
+            col.g = 0;
+            col.b = 0;
         }
 /*
         if (randomScale[n] != 0.f &&  index1!=index2)
@@ -1077,7 +1108,7 @@ float displ =0 ;
 
           //   resultRGB[n].r = resultRGB[n].b = resultRGB[n].g =res;
             resultRGB[n] = col;
-
+    //resultRGB[n] = RtColorRGB(1,0,0);
           resultF[n] = 0;
                   //(1-res)*displ_mult + displ;
           //resultDispl[n] = 0;//  displ;

@@ -257,7 +257,7 @@ void OpenGlVisualizer::ParseInputFile(std::vector<glm::vec3>& gridCoords,std::ve
 
 void OpenGlVisualizer::CameraMovement(float dt)
 {
-    float dtSeconds = dt/15000.0f;
+    float dtSeconds = dt/(5*300.0f);
 
     // camera control
     float camSpeed = 1.0f*dtSeconds;

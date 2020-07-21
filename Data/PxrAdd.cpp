@@ -37,12 +37,12 @@
 #include "RixPattern.h"
 #include "RixShadingUtils.h"
 
-class PxrMix : public RixPattern
+class AddNode : public RixPattern
 {
 public:
 
-    PxrMix();
-    virtual ~PxrMix();
+    AddNode();
+    virtual ~AddNode();
 
     virtual int Init(RixContext &, RtUString const pluginpath) override;
     virtual RixSCParamInfo const *GetParamTable() override;
@@ -85,7 +85,7 @@ private:
     RtFloat const m_mix;
 };
 
-PxrMix::PxrMix() :
+AddNode::AddNode() :
     m_float1(0.f),
     m_float2(0.f),
     m_addMode(0),
@@ -94,12 +94,12 @@ PxrMix::PxrMix() :
 {
 }
 
-PxrMix::~PxrMix()
+AddNode::~AddNode()
 {
 }
 
 int
-PxrMix::Init(RixContext &ctx, RtUString const pluginpath)
+AddNode::Init(RixContext &ctx, RtUString const pluginpath)
 {
     PIXAR_ARGUSED(ctx);
     PIXAR_ARGUSED(pluginpath);
@@ -119,7 +119,7 @@ enum paramId
 };
 
 RixSCParamInfo const *
-PxrMix::GetParamTable()
+AddNode::GetParamTable()
 {
     static RixSCParamInfo s_ptable[] =
     {
@@ -139,7 +139,7 @@ PxrMix::GetParamTable()
 }
 
 void
-PxrMix::Finalize(RixContext &ctx)
+AddNode::Finalize(RixContext &ctx)
 {
     PIXAR_ARGUSED(ctx);
 }
@@ -152,7 +152,7 @@ enum mixResult
 };
 
 int
-PxrMix::ComputeOutputParams(RixShadingContext const *sctx,
+AddNode::ComputeOutputParams(RixShadingContext const *sctx,
                                 RtInt *noutputs, OutputSpec **outputs,
                                 RtPointer instanceData,
                                 RixSCParamInfo const *ignored)
@@ -236,18 +236,15 @@ PxrMix::ComputeOutputParams(RixShadingContext const *sctx,
 
         sctx->EvalParam(k_float1, -1, &float1, &m_float1, varying);
         sctx->EvalParam(k_float2, -1, &float2, &m_float2, varying);
-        sctx->EvalParam(k_addMode, -1, &addMode, &m_addMode, !varying);
+        sctx->EvalParam(k_addMode, -1, &addMode, &m_addMode, varying);
         sctx->EvalParam(k_clampMix, -1, &clampMix, &m_clampMix, !varying);
         sctx->EvalParam(k_mix, -1, &mix, &m_mix, varying);
-
-    for (int i = 0; i < sctx->numPts; ++i)
+  for (int i = 0; i < sctx->numPts; ++i)
     {
-        if( addMode != 0){
-          //  std::cout<<"mixing"<<std::endl;
+        if( addMode[0] != 0){
             resultF[i] = RixMix(float1[i], float2[i],
                                 clampMix[0]? RixClamp(mix[i], 0.f, 1.f): mix[i]);
         }else   {
-            std::cout<<"addMode"<< addMode<<std::endl;
             resultF[i] = float1[i] + float2[i];
             resultF[i] =  clampMix[0] ? RixClamp(mix[i], 0.f, 1.f) : resultF[i];
             }
@@ -288,11 +285,11 @@ RIX_PATTERNCREATE
 {
     PIXAR_ARGUSED(hint);
 
-    return new PxrMix();
+    return new AddNode();
 }
 
 
 RIX_PATTERNDESTROY
 {
-    delete ((PxrMix*)pattern);
+    delete ((AddNode*)pattern);
 }

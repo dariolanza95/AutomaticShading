@@ -15,9 +15,10 @@
 #include "featuresfinder.h"
 #include "FieldThreeDWriter.h"
 #include "PointCloudWriter.h"
+#include "apointcloudwriter.h"
+#include "inputfilereader.h"
 #include <memory>
-#define VISUALIZE
-
+//#define VISUALIZE
 #include "LICMap.h"
 // --------------------OpenMesh----------------------------
 #include <OpenMesh/Core/IO/MeshIO.hh>
@@ -37,12 +38,9 @@ using namespace OpenMesh;
 # define M_PI           3.14159265358979323846  /* pi */
 
 
-#include <iostream>
-#include <string>
 
-#include <Field3D/DenseField.h>
-#include <Field3D/InitIO.h>
-#include <Field3D/Field3DFile.h>
+
+
 
 //----------------------------------------------------------------------------//
 
@@ -531,16 +529,18 @@ int main(int argc, char **argv)
 
 
 string obj_file = "../../Data/input.obj";
-//   string obj_file = "../../Data/cube2.obj";
   string data_file = "../../Data/simulationData.txt";
 
 
   MyMesh mesh;
   SimulationDataMap simulation_data_map;
-  LoadMesh(obj_file,data_file,mesh,simulation_data_map);
-  FeaturesFinder features_finder(mesh,simulation_data_map);
-  std::vector<std::shared_ptr<AShader>> list_of_used_shaders;
-  features_finder.Find(list_of_used_shaders);
+  InputFileReader input_file_reader(obj_file,data_file,mesh,simulation_data_map);
+  input_file_reader.ReadInputFiles();
+//  LoadMesh(obj_file,data_file,mesh,simulation_data_map);
+
+
+  ClassificationAndDataComputationModule classification_module(mesh,simulation_data_map);
+  classification_module.Find();
   GLFWwindow* window = OpenGLInit();
   OpenGlVisualizer visualizer(window, 300, 300,mesh,obj_file);
 #ifndef VISUALIZE
@@ -552,39 +552,23 @@ string obj_file = "../../Data/input.obj";
   string plugins_path("@:./");
   string output_name_image("try03");
 
-  RIBWriter writer(mesh,"../../Data/mountainsceneTemplateOutput.rib",shaders_path,plugins_path,output_name_image ,visualizer.GetCamera(),list_of_used_shaders);
+  RIBWriter writer(mesh,"../../Data/mountainsceneTemplateOutput.rib",shaders_path,plugins_path,output_name_image ,visualizer.GetCamera(),classification_module.getListOfUsedShaders());
   writer.Write();
 
   //WriteOnRibFile(mesh);
   // Call initIO() to initialize standard I/O methods and load plugins
 
-  string filename("../../Data/pointcloud");
-  stringstream filename_str("../../Data/pointcloud");
-   int subdivs = 0;
-   //LICMap licmap(mesh,subdivs);
-   float multiplier = 3;
-   float BoxLength = 70;
-   float freq = 20*multiplier;
-   float step_size =  subdivs!= 0 ? 1/subdivs : 1;
-   int i = 0;
     string path("../../Data/");
 
    std::cout<<"wrinting mask point cloud"<<std::endl;
-   for(std::shared_ptr<AShader> shader : list_of_used_shaders )
-    {
-        PointCloudWriter pcw(mesh,shader,subdivs,path,features_finder, true);
-        pcw.Write();
-        std::cout<<"shader cloud"<<std::endl;
-        PointCloudWriter pcw1(mesh,shader,subdivs,path,features_finder,false);
-        //pcw1.Write();
-        pcw1.WriteSpecialData();
-    }
-    /*std::cout<<"wrinting shader point cloud"<<std::endl;
-   for(std::shared_ptr<AShader> shader : list_of_used_shaders )
-   {
-       PointCloudWriter pcw(mesh,shader,subdivs,path,features_finder,false);
-       pcw.Write();
-   }*/
+
+       pcl::PointCloud<pcl::PointXYZL>::Ptr pp = classification_module.getPointClouds();
+        std::vector<pcl::PointXYZL,Eigen::aligned_allocator<pcl::PointXYZL>> listz = pp->points;
+        //AShader mask_shader = shader->GenerateMaskShader();
+       APointCloudWriter* pc = new RIBPointCloudWriter(mesh,path,classification_module.getListOfUsedShaders(),classification_module.getListOfShadersWrapper(),listz);
+       pc->WritePointClouds();
+
+
 
     std::cout<<"Bye bye"<<std::endl;
     char *args_prman[]={"./myscript",NULL};

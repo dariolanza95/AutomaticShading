@@ -16,7 +16,8 @@ string RIBMaskNode::GetName(){
 
 string RIBMaskNode::WriteNode(){
     string cloud_file_name;
-    _shader->getCloudPathName(cloud_file_name);
+    _shader->getCloudPathNameInterface(cloud_file_name);
+//    _shader->getCloudPathName(cloud_file_name);
     cloud_file_name+"_mask";
     stringstream res;
     res<< "Pattern \"MaskReader\" \"MaskReader"<< _id <<

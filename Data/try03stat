@@ -169,9 +169,15 @@
 	    <string name="timersNote" description="Note:">Sum of component times may exceed total in multi-threaded renders.</string>
 	    <stats name="timers" kind="timers">
 		<timer name="totaltime" description="Total time">
+<<<<<<< HEAD
 		    <elapsed>60.650339</elapsed>
 		    <user>342.281439</user>
 		    <system>43.896454</system>
+=======
+		    <elapsed>199.887790</elapsed>
+		    <user>1159.915211</user>
+		    <system>197.741469</system>
+>>>>>>> SecondaryBranch
 		</timer>
 		<timer name="allProceduralTimers" description="All procedurals">
 		    <elapsed>0.000000</elapsed>
@@ -185,7 +191,11 @@
 		    <elapsed>0.000000</elapsed>
 		</timer>
 		<timer name="rayTraceTime" description="Tracing rays">
+<<<<<<< HEAD
 		    <elapsed>82.216901</elapsed>
+=======
+		    <elapsed>152.238538</elapsed>
+>>>>>>> SecondaryBranch
 		</timer>
 		<timer name="textureTime" description="Texture">
 		    <elapsed>0.000000</elapsed>
@@ -194,6 +204,7 @@
 		    <elapsed>0</elapsed>
 		</timer>
 		<timer name="pluginTimers" description="Plugin timers">
+<<<<<<< HEAD
 		    <elapsed>82.164917</elapsed>
 		</timer>
 		<stats name="plugins" description="Plugin statistics" kind="timers">
@@ -205,12 +216,26 @@
 		    <elapsed>0.245551</elapsed>
 		    <user>0.088973</user>
 		    <system>0.090445</system>
+=======
+		    <elapsed>793.513733</elapsed>
+		</timer>
+		<stats name="plugins" description="Plugin statistics" kind="timers">
+		    <timer name="PxrSurface[PxrSurface0]::BeginBxdf" description="PxrSurface[PxrSurface0]::BeginBxdf">
+			<elapsed>793.513733</elapsed>
+		    </timer>
+		</stats>
+		<timer name="ribInitTimer" description="Initial rib parsing and setup">
+		    <elapsed>0.311582</elapsed>
+		    <user>0.122344</user>
+		    <system>0.122104</system>
+>>>>>>> SecondaryBranch
 		</timer>
 	    </stats>
 	</stats>
 	<stats name="memory" description="Memory usage summary" kind="section">
 	    <stats name="systemMem" description="System memory">
 		<memory name="heapMemory" description="Total heap memory">
+<<<<<<< HEAD
 		    <peak>2819743744</peak>
 		    <current>2819743744</current>
 		</memory>
@@ -225,18 +250,43 @@
 		<memory name="geometryMem" description="Geometry Memory">
 		    <peak>1005637879</peak>
 		    <current>54260164</current>
+=======
+		    <peak>2572836864</peak>
+		    <current>2572836864</current>
+		</memory>
+		<memory name="peakResidentSize" description="Peak resident size">
+		    <peak>1917575168</peak>
+		    <current>1917575168</current>
+		</memory>
+		<int name="pageFaults">0</int>
+		<int name="pageReclaims">540901</int>
+	    </stats>
+	    <stats name="subsystems" kind="memstats">
+		<memory name="geometryMem" description="Geometry Memory">
+		    <peak>1050316053</peak>
+		    <current>57307292</current>
+>>>>>>> SecondaryBranch
 		</memory>
 		<memory name="implicitPluginMemory" description="Implicit and Volume plugin Memory">
 		    <peak>0</peak>
 		    <current>0</current>
 		</memory>
 		<memory name="gridMemByType" description="Grid memory">
+<<<<<<< HEAD
 		    <peak>80778984</peak>
 		    <current>0</current>
 		</memory>
 		<memory name="rayAccelMem" description="Ray Accelerator Subsystem">
 		    <peak>8026004</peak>
 		    <current>2519020</current>
+=======
+		    <peak>59329664</peak>
+		    <current>0</current>
+		</memory>
+		<memory name="rayAccelMem" description="Ray Accelerator Subsystem">
+		    <peak>9032344</peak>
+		    <current>3172272</current>
+>>>>>>> SecondaryBranch
 		</memory>
 		<memory name="gutCacheMem" description="Tessellation (GUT) cache">
 		    <peak>33751048</peak>
@@ -275,8 +325,13 @@
 		    <current>3880176</current>
 		</memory>
 		<memory name="SymbolMem" description="Ri Symbol Table memory">
+<<<<<<< HEAD
 		    <peak>37392</peak>
 		    <current>37392</current>
+=======
+		    <peak>37296</peak>
+		    <current>37296</current>
+>>>>>>> SecondaryBranch
 		</memory>
 		<memory name="displayMem" description="Display driver memory">
 		    <peak>7680000</peak>
@@ -310,8 +365,13 @@
 		</memory>
 	    </stats>
 	    <memory name="subsystemMem" description="Subsystem memory total">
+<<<<<<< HEAD
 		<peak>1660655625</peak>
 		<current>563704339</current>
+=======
+		<peak>1687902043</peak>
+		<current>569891526</current>
+>>>>>>> SecondaryBranch
 	    </memory>
 	</stats>
 	<stats name="geometry" description="Geometry stats" kind="section">
@@ -345,6 +405,7 @@
 	    </memory>
 	    <range name="gprimCount" description="GPrim count">
 		<current>0</current>
+<<<<<<< HEAD
 		<total>755934</total>
 		<min>0</min>
 		<max>536933</max>
@@ -354,6 +415,17 @@
 	    <memory name="gprimMem" description="GPrim memory">
 		<peak>83295591</peak>
 		<current>11153764</current>
+=======
+		<total>766782</total>
+		<min>0</min>
+		<max>536789</max>
+		<average>1</average>
+		<count>766782</count>
+	    </range>
+	    <memory name="gprimMem" description="GPrim memory">
+		<peak>83366042</peak>
+		<current>14223932</current>
+>>>>>>> SecondaryBranch
 	    </memory>
 	    <memory name="instanceMem" description="Instance memory">
 		<peak>768</peak>
@@ -364,7 +436,11 @@
 		<current>-576</current>
 	    </memory>
 	    <memory name="gopDynamicMem" description="Dynamic GOP memory">
+<<<<<<< HEAD
 		<peak>28577616</peak>
+=======
+		<peak>27213744</peak>
+>>>>>>> SecondaryBranch
 		<current>0</current>
 	    </memory>
 	    <memory name="stitchMem" description="Crack reduction memory">
@@ -373,6 +449,7 @@
 	    </memory>
 	    <range name="vvCount" description="Vertex vector count">
 		<current>0</current>
+<<<<<<< HEAD
 		<total>80097</total>
 		<min>0</min>
 		<max>40049</max>
@@ -382,19 +459,38 @@
 	    <memory name="vvMem" description="Vertex vector memory">
 		<peak>397676356</peak>
 		<current>83520</current>
+=======
+		<total>102181</total>
+		<min>0</min>
+		<max>51087</max>
+		<average>1</average>
+		<count>102181</count>
+	    </range>
+	    <memory name="vvMem" description="Vertex vector memory">
+		<peak>488790415</peak>
+		<current>60480</current>
+>>>>>>> SecondaryBranch
 	    </memory>
 	    <memory name="vvBVHMem" description="Vertex vector BVH memory">
 		<peak>0</peak>
 		<current>0</current>
 	    </memory>
 	    <memory name="vvOverheadMem" description="Vertex vector overhead memory">
+<<<<<<< HEAD
 		<peak>9769676</peak>
+=======
+		<peak>12463116</peak>
+>>>>>>> SecondaryBranch
 		<current>0</current>
 	    </memory>
 	    <stats name="implicitSurfacePlugins" description="Stats for each Implicit and Volume plugin" kind="implicitplugins">
 	    </stats>
 	    <memory name="catmarkMem" description="Catmull-Clark subdivision memory">
+<<<<<<< HEAD
 		<peak>443289344</peak>
+=======
+		<peak>395453440</peak>
+>>>>>>> SecondaryBranch
 		<current>0</current>
 	    </memory>
 	    <memory name="loopMem" description="Loop subdivision memory">
@@ -420,6 +516,7 @@
 	    <stats name="gridsCount" description="Grid count">
 		<range name="rectangular" description="">
 		    <current>0</current>
+<<<<<<< HEAD
 		    <total>537276</total>
 		    <min>0</min>
 		    <max>423023</max>
@@ -433,10 +530,26 @@
 		    <max>9327</max>
 		    <average>1</average>
 		    <count>122766</count>
+=======
+		    <total>537036</total>
+		    <min>0</min>
+		    <max>447175</max>
+		    <average>1</average>
+		    <count>537036</count>
+		</range>
+		<range name="irregular" description="">
+		    <current>0</current>
+		    <total>140275</total>
+		    <min>0</min>
+		    <max>7069</max>
+		    <average>1</average>
+		    <count>140275</count>
+>>>>>>> SecondaryBranch
 		</range>
 	    </stats>
 	    <stats name="gridSizeByType" description="Grid size">
 		<range name="rectangular" description="">
+<<<<<<< HEAD
 		    <current>42</current>
 		    <total>4774241</total>
 		    <min>0</min>
@@ -451,21 +564,46 @@
 		    <max>455</max>
 		    <average>27.3208</average>
 		    <count>122766</count>
+=======
+		    <current>100</current>
+		    <total>5626642</total>
+		    <min>0</min>
+		    <max>2305</max>
+		    <average>10.4772</average>
+		    <count>537036</count>
+		</range>
+		<range name="irregular" description="">
+		    <current>7</current>
+		    <total>4585920</total>
+		    <min>0</min>
+		    <max>456</max>
+		    <average>32.6924</average>
+		    <count>140275</count>
+>>>>>>> SecondaryBranch
 		</range>
 	    </stats>
 	    <stats name="gridMemByType" description="Grid memory">
 		<memory name="rectangular" description="">
+<<<<<<< HEAD
 		    <peak>54485496</peak>
 		    <current>0</current>
 		</memory>
 		<memory name="irregular" description="">
 		    <peak>26293488</peak>
+=======
+		    <peak>32597232</peak>
+		    <current>0</current>
+		</memory>
+		<memory name="irregular" description="">
+		    <peak>26732432</peak>
+>>>>>>> SecondaryBranch
 		    <current>0</current>
 		</memory>
 	    </stats>
 	</stats>
 	<stats name="rayAccel" description="Ray accelerator stats" kind="section">
 	    <int name="initialRTPrims" description="Initial gprims">2</int>
+<<<<<<< HEAD
 	    <int name="finalRTPrims" description="All gprims after splits">40003</int>
 	    <int name="raysShot" description="Total rays">55732914</int>
 	    <int name="gprimBBoxTests" description="Gprim BBox tests">0</int>
@@ -485,11 +623,33 @@
 	    <int name="transmissionBeforeCull" description="Transmission Rays before Culling">18767141</int>
 	    <timer name="cameraTime" description="Time tracing camera rays">
 		<elapsed>26.218015</elapsed>
+=======
+	    <int name="finalRTPrims" description="All gprims after splits">51037</int>
+	    <int name="raysShot" description="Total rays">56655553</int>
+	    <int name="gprimBBoxTests" description="Gprim BBox tests">0</int>
+	    <stats name="primTestsByType" description="Primitive tests by type">
+		<int name="hedronsplit" description="">106096537</int>
+	    </stats>
+	    <stats name="primHitsByType" description="Primitive hits by type">
+		<int name="hedronsplit" description="">22244511</int>
+	    </stats>
+	    <int name="transmissionRayContinuations" description="Transmission ray continuations">0</int>
+	    <stats name="raysByType" description="Rays by type">
+		<int name="camera" description="">11514453</int>
+		<int name="transmission" description="">20606119</int>
+		<int name="directlight" description="">13736915</int>
+		<int name="indirect" description="">10798066</int>
+	    </stats>
+	    <int name="transmissionBeforeCull" description="Transmission Rays before Culling">20606119</int>
+	    <timer name="cameraTime" description="Time tracing camera rays">
+		<elapsed>33.203060</elapsed>
+>>>>>>> SecondaryBranch
 	    </timer>
 	    <timer name="photonTime" description="Time tracing photon rays">
 		<elapsed>0.000000</elapsed>
 	    </timer>
 	    <timer name="transmissionTime" description="Time tracing transmission rays">
+<<<<<<< HEAD
 		<elapsed>36.135374</elapsed>
 	    </timer>
 	    <timer name="indirectTime" description="Time tracing indirect rays">
@@ -506,13 +666,36 @@
 	    </timer>
 	    <timer name="subAccelBuildTime" description="Time building sub-acceleration data structures">
 		<elapsed>2.029483</elapsed>
+=======
+		<elapsed>77.475748</elapsed>
+	    </timer>
+	    <timer name="indirectTime" description="Time tracing indirect rays">
+		<elapsed>37.300050</elapsed>
+	    </timer>
+	    <timer name="directlightTime" description="Time tracing direct lighting rays">
+		<elapsed>4.259679</elapsed>
+	    </timer>
+	    <timer name="splitTime" description="Time splitting prims">
+		<elapsed>57.811730</elapsed>
+	    </timer>
+	    <timer name="buildTime" description="Time building hierarchy">
+		<elapsed>0.000100</elapsed>
+	    </timer>
+	    <timer name="subAccelBuildTime" description="Time building sub-acceleration data structures">
+		<elapsed>3.571567</elapsed>
+>>>>>>> SecondaryBranch
 	    </timer>
 	    <timer name="subAccelDispTime" description="Time displacing sub-acceleration data structures">
 		<elapsed>0.000000</elapsed>
 	    </timer>
 	    <histogram name="rayDepthHistogram" description="Ray depth histogram">
+<<<<<<< HEAD
 		<bin label="0">24454923</bin>
 		<bin label="1">31277991</bin>
+=======
+		<bin label="0">22312519</bin>
+		<bin label="1">34343034</bin>
+>>>>>>> SecondaryBranch
 		<bin label="2">0</bin>
 		<bin label="3">0</bin>
 		<bin label="4">0</bin>
@@ -524,11 +707,19 @@
 		<bin label="more">0</bin>
 	    </histogram>
 	    <memory name="acceleratorMem" description="Ray accelerator memory">
+<<<<<<< HEAD
 		<peak>8026004</peak>
 		<current>2519020</current>
 	    </memory>
 	    <int name="primTests" description="Primitive tests">64486119</int>
 	    <int name="primHits" description="Primitive hits">13491759</int>
+=======
+		<peak>9032344</peak>
+		<current>3172272</current>
+	    </memory>
+	    <int name="primTests" description="Primitive tests">106096537</int>
+	    <int name="primHits" description="Primitive hits">22244511</int>
+>>>>>>> SecondaryBranch
 	</stats>
 	<stats name="rayGprim" description="Ray gprim stats" kind="section">
 	    <int name="triTests" description="Triangle hit tests">0</int>
@@ -540,7 +731,11 @@
 	    <int name="nurbsHitTrimmed" description="NURB hits that were trimmed">0</int>
 	    <int name="catmarkGridCacheHits" description="Catmark grid cache hits">0</int>
 	    <int name="catmarkGridCacheMisses" description="Catmark grid cache misses">0</int>
+<<<<<<< HEAD
 	    <int name="gutDisplacementShaded" description="Displacement shaded points during tessellation">4756199</int>
+=======
+	    <int name="gutDisplacementShaded" description="Displacement shaded points during tessellation">5612383</int>
+>>>>>>> SecondaryBranch
 	    <timer name="gutFirstTimeToFill" description="Tessellation (GUT) cache creating entries (compulsory misses)">
 		<elapsed>0.000000</elapsed>
 	    </timer>
@@ -626,8 +821,8 @@
 		    <string name="objectName">|input:Mesh|input:MeshShape</string>
 		    <string name="displacementShader">PxrDisplace</string>
 		    <float name="displacementBound">1.000000</float>
-		    <float name="displacement">0.000000</float>
-		    <float name="ratio">0.000000</float>
+		    <float name="displacement">1.366680</float>
+		    <float name="ratio">1.366680</float>
 		</stats>
 	    </stats>
 	</stats>
@@ -833,11 +1028,18 @@
 	</stats>
 	<stats name="system" description="System stats" kind="section">
 	    <timer name="totaltime" description="Total time">
+<<<<<<< HEAD
 		<elapsed>60.650339</elapsed>
 		<user>342.281439</user>
 		<system>43.896454</system>
+=======
+		<elapsed>199.887790</elapsed>
+		<user>1159.915211</user>
+		<system>197.741469</system>
+>>>>>>> SecondaryBranch
 	    </timer>
 	    <set name="fileLog" description="Files accessed">
+		<member>.///FlowShader</member>
 		<member>.///MaskReader</member>
 		<member>.///PxrAdd</member>
 		<member>.///SedimentationShader</member>
@@ -853,23 +1055,36 @@
 		<member>/opt/pixar/RenderManProServer-23.3/lib/plugins//PxrPathTracer</member>
 		<member>/opt/pixar/RenderManProServer-23.3/lib/plugins//PxrPerspective</member>
 		<member>/opt/pixar/RenderManProServer-23.3/lib/plugins//PxrSurface</member>
+<<<<<<< HEAD
 		<member>/opt/pixar/RenderManProServer-23.3/lib/plugins//PxrVariable</member>
 		<member>/opt/pixar/RenderManProServer-23.3/lib/plugins//abind</member>
 		<member>/opt/pixar/RenderManProServer-23.3/lib/plugins//lib_b8_AVX_oslexec.so</member>
+=======
+		<member>/opt/pixar/RenderManProServer-23.3/lib/plugins//abind</member>
+>>>>>>> SecondaryBranch
 	    </set>
 	    <int name="filesOpened" description="Files opened">0</int>
 	    <int name="filesReopened" description="Files reopened">0</int>
 	    <int name="filesReclaimed" description="Files reclaimed">0</int>
 	    <int name="filesOpenError" description="Files not successfully opened">0</int>
 	    <string name="osName" description="OS name">Linux</string>
+<<<<<<< HEAD
 	    <string name="osRelease" description="OS release">4.15.0-108-generic</string>
 	    <string name="osVersion" description="OS version">#109-Ubuntu SMP Fri Jun 19 11:33:10 UTC 2020</string>
+=======
+	    <string name="osRelease" description="OS release">4.15.0-111-generic</string>
+	    <string name="osVersion" description="OS version">#112-Ubuntu SMP Thu Jul 9 20:32:34 UTC 2020</string>
+>>>>>>> SecondaryBranch
 	    <string name="arch" description="System architecture">x86_64</string>
 	    <string name="hostname" description="Host name">pandora-GL753VD</string>
 	</stats>
 	<stats name="plugins" description="Plugin statistics" kind="section">
 	    <timer name="PxrSurface[PxrSurface0]::BeginBxdf" description="PxrSurface[PxrSurface0]::BeginBxdf">
+<<<<<<< HEAD
 		<elapsed>82.164917</elapsed>
+=======
+		<elapsed>793.513733</elapsed>
+>>>>>>> SecondaryBranch
 	    </timer>
 	    <int name="PxrSurface Type::Diffuse" description="PxrSurface Type::Diffuse">1</int>
 	    <float name="diffuse" description="PxrSurface::diffuse usage">1</float>
@@ -919,7 +1134,11 @@
 	    <string name="linkTime">linked Sun May 17 20:14:32 2020 PDT @2069290</string>
 	    <string name="build">build linuxRHEL7_x86-64_gcc63icc190_external_release</string>
 	    <string name="licenseDigest">  @  @|10=jT42knY9d|66&gt;;dCCJ;eF06AR00J8Y38:9R25&lt;NUAE|83?AV3098fD6&lt;JT03?IP33ILX4A8?fCE|C3&gt;:RBD&lt;&lt;f06JMPB0I@cBF;If6D?KUDE</string>
+<<<<<<< HEAD
 	    <string name="timestamp">Mon Jun 29 08:38:02 CEST 2020</string>
+=======
+	    <string name="timestamp">Tue Jul 21 15:22:43 CEST 2020</string>
+>>>>>>> SecondaryBranch
 	    <int name="threads">8</int>
 	    <int name="xRes">600</int>
 	    <int name="yRes">400</int>
@@ -992,17 +1211,27 @@
 		    <current>1657240</current>
 		</memory>
 		<memory name="patternMem" description="Pattern memory">
+<<<<<<< HEAD
 		    <peak>181820</peak>
 		    <current>164792</current>
 		</memory>
 		<memory name="ictxWaste" description="Waste in memory pools">
 		    <peak>1634848</peak>
 		    <current>1634848</current>
+=======
+		    <peak>297640</peak>
+		    <current>277464</current>
+		</memory>
+		<memory name="ictxWaste" description="Waste in memory pools">
+		    <peak>2413876</peak>
+		    <current>2413876</current>
+>>>>>>> SecondaryBranch
 		</memory>
 	    </stats>
 	    <stats name="sctx" description="RixShadingContext" kind="section">
 		<range name="numPts" description="Shading Points (total)">
 		    <current>0</current>
+<<<<<<< HEAD
 		    <total>17412545</total>
 		    <min>0</min>
 		    <max>3759</max>
@@ -1016,6 +1245,21 @@
 		<memory name="shadingMem" description="Bxdf memory">
 		    <peak>1744343</peak>
 		    <current>1679200</current>
+=======
+		    <total>20483431</total>
+		    <min>0</min>
+		    <max>4614</max>
+		    <average>31.9499</average>
+		    <count>641111</count>
+		</range>
+		<int name="stcxExecCount" description="Invocations">641111</int>
+		<timer name="sctxExecTime" description="Shading Time (total)">
+		    <elapsed>1111.304089</elapsed>
+		</timer>
+		<memory name="shadingMem" description="Bxdf memory">
+		    <peak>2623564</peak>
+		    <current>2476304</current>
+>>>>>>> SecondaryBranch
 		</memory>
 	    </stats>
 	    <stats name="osctx" description="Overlay RixShadingContext" kind="section">
@@ -1037,6 +1281,7 @@
 		</memory>
 	    </stats>
 	    <stats name="Lighting" description="RixLightingServices" kind="section">
+<<<<<<< HEAD
 		<int name="nPoints" description="Num points">12510911</int>
 		<int name="nInvocations" description="Num invocations (Begin/End or BeginEmission/End)">114104</int>
 		<int name="nLightSamples" description="Num light samples">12510911</int>
@@ -1077,6 +1322,48 @@
 		</timer>
 		<timer name="lightingLightSampleTimeExcluding" description="Time in light sample generation  exlcuding subordinate systems">
 		    <elapsed>2.610709</elapsed>
+=======
+		<int name="nPoints" description="Num points">14253285</int>
+		<int name="nInvocations" description="Num invocations (Begin/End or BeginEmission/End)">98507</int>
+		<int name="nLightSamples" description="Num light samples">14253285</int>
+		<int name="nMaterialSamples" description="Num material samples">14253285</int>
+		<int name="nMaterialAreaHits" description="Num material sample hits on area lights">0</int>
+		<int name="nMaterialEnvHits" description="Num material sample hits on env lights">13736915</int>
+		<int name="mPhotonSamples" description="Num photon samples">0</int>
+		<int name="mPhotonHits" description="Num photon sample hits">0</int>
+		<timer name="lightingTotalTime" description="Total time in lighting services">
+		    <elapsed>156.983090</elapsed>
+		</timer>
+		<timer name="lightingShadowTime" description="Total time in shadowing">
+		    <elapsed>82.800658</elapsed>
+		</timer>
+		<timer name="lightingInternalTime" description="Total time in lighting services excluding subordinate systems">
+		    <elapsed>11.659515</elapsed>
+		</timer>
+		<timer name="lightingMaterialTime" description="Time in material sample evaluation (EvaluateSamples)">
+		    <elapsed>68.778527</elapsed>
+		</timer>
+		<timer name="lightingMaterialShadowTime" description="Time in material sample evaluation - shadowing">
+		    <elapsed>50.767925</elapsed>
+		</timer>
+		<timer name="lightingMaterialTraceTime" description="Time in material sample evaluation - trace">
+		    <elapsed>6.504103</elapsed>
+		</timer>
+		<timer name="lightingMaterialTimeExcluding" description="Time in material sample evaluation excluding subordinate systems">
+		    <elapsed>3.954709</elapsed>
+		</timer>
+		<timer name="lightingLightSampleTime" description="Time in light sample generation (GenerateSamples)">
+		    <elapsed>76.545048</elapsed>
+		</timer>
+		<timer name="lightingLightShadowTime" description="Time in light sample generation - shadowing">
+		    <elapsed>32.032733</elapsed>
+		</timer>
+		<timer name="lightingLightEvalTime" description="Time in light sample generation - Bxdf evaluation">
+		    <elapsed>11.840083</elapsed>
+		</timer>
+		<timer name="lightingLightSampleTimeExcluding" description="Time in light sample generation  exlcuding subordinate systems">
+		    <elapsed>3.912409</elapsed>
+>>>>>>> SecondaryBranch
 		</timer>
 		<timer name="lightingPhotonSampleTime" description="Time in photon generation (GenerateEmission)">
 		    <elapsed>0.000000</elapsed>
@@ -1103,8 +1390,13 @@
 		    <current>0</current>
 		</memory>
 		<memory name="selectionLearningMem" description="Memory consumed by selection learning scheme">
+<<<<<<< HEAD
 		    <peak>3480768</peak>
 		    <current>3480768</current>
+=======
+		    <peak>4712768</peak>
+		    <current>4712768</current>
+>>>>>>> SecondaryBranch
 		</memory>
 		<timer name="lightingLightSampleTraceLightTime" description="Time to trace light samples against lighting db">
 		    <elapsed>0.000000</elapsed>
@@ -1113,6 +1405,7 @@
 		    <elapsed>0.000000</elapsed>
 		</timer>
 		<timer name="lightingMaterialSelectEvalTime" description="Time to compute an intersected light&apos;s probability of being chosen">
+<<<<<<< HEAD
 		    <elapsed>5.385689</elapsed>
 		</timer>
 		<timer name="lightingLightSampleSelectTime" description="Time to select a light">
@@ -1120,6 +1413,15 @@
 		</timer>
 		<timer name="lightingLightSelectBeginTime" description="Time to prepare for light selection">
 		    <elapsed>8.613785</elapsed>
+=======
+		    <elapsed>7.551789</elapsed>
+		</timer>
+		<timer name="lightingLightSampleSelectTime" description="Time to select a light">
+		    <elapsed>28.759822</elapsed>
+		</timer>
+		<timer name="lightingLightSelectBeginTime" description="Time to prepare for light selection">
+		    <elapsed>11.428263</elapsed>
+>>>>>>> SecondaryBranch
 		</timer>
 	    </stats>
 	    <stats name="plugins" description="Plugins" kind="section">
@@ -1145,8 +1447,13 @@
 <int name="maxContinuationLength"> 256 </int>
 </stats>
 <histogram name="pathDepthTimer" description="Ray Depth Timer (sec)">
+<<<<<<< HEAD
 <bin label="1">281.126160</bin>
 <bin label="2">7.440418</bin>
+=======
+<bin label="1">1060.015747</bin>
+<bin label="2">52.478130</bin>
+>>>>>>> SecondaryBranch
 <bin label="3">0.000000</bin>
 <bin label="4">0.000000</bin>
 <bin label="5">0.000000</bin>
@@ -1157,7 +1464,11 @@
 <bin label="10">0.000000</bin>
 </histogram>
 <histogram name="pathRayCounts" description="Ray Count at Depth">
+<<<<<<< HEAD
 <bin label="1">24454923</bin>
+=======
+<bin label="1">22312519</bin>
+>>>>>>> SecondaryBranch
 <bin label="2">0</bin>
 <bin label="3">0</bin>
 <bin label="4">0</bin>
@@ -1198,9 +1509,15 @@
 			</timer>
 		    </stats>
 		    <stats name="PxrLightBxdf" description="PxrLightBxdf" kind="bxdf">
+<<<<<<< HEAD
 			<int name="NumBeginBxdf" description="">2040</int>
 			<timer name="BeginBxdfTime" description="">
 			    <elapsed>0.001299</elapsed>
+=======
+			<int name="NumBeginBxdf" description="">5192</int>
+			<timer name="BeginBxdfTime" description="">
+			    <elapsed>0.003638</elapsed>
+>>>>>>> SecondaryBranch
 			</timer>
 			<int name="NumBeginOpacity" description="">0</int>
 			<int name="NumInteriorVolume" description="">0</int>
@@ -1223,9 +1540,15 @@
 			</timer>
 		    </stats>
 		    <stats name="PxrSurface" description="PxrSurface" kind="bxdf">
+<<<<<<< HEAD
 			<int name="NumBeginBxdf" description="">99808</int>
 			<timer name="BeginBxdfTime" description="">
 			    <elapsed>72.005310</elapsed>
+=======
+			<int name="NumBeginBxdf" description="">86739</int>
+			<timer name="BeginBxdfTime" description="">
+			    <elapsed>694.520799</elapsed>
+>>>>>>> SecondaryBranch
 			</timer>
 			<int name="NumBeginOpacity" description="">0</int>
 			<int name="NumInteriorVolume" description="">0</int>
@@ -1250,6 +1573,7 @@
 		</stats>
 		<stats name="patterns" description="Patterns" kind="section">
 		    <stats name="PxrMix" description="PxrMix" kind="pattern">
+<<<<<<< HEAD
 			<int name="NumComputes" description="Number of real evaluations">99808</int>
 			<int name="CachedComputes" description="Number of evaluations avoided due to caching">0</int>
 			<timer name="ComputeTime" description="">
@@ -1289,6 +1613,40 @@
 			<int name="CachedComputes" description="Number of evaluations avoided due to caching">0</int>
 			<timer name="ComputeTime" description="">
 			    <elapsed>90.511940</elapsed>
+=======
+			<int name="NumComputes" description="Number of real evaluations">173478</int>
+			<int name="CachedComputes" description="Number of evaluations avoided due to caching">0</int>
+			<timer name="ComputeTime" description="">
+			    <elapsed>1.136314</elapsed>
+			</timer>
+		    </stats>
+		    <stats name="SedimentationShader" description="SedimentationShader" kind="pattern">
+			<int name="NumComputes" description="Number of real evaluations">556659</int>
+			<int name="CachedComputes" description="Number of evaluations avoided due to caching">0</int>
+			<timer name="ComputeTime" description="">
+			    <elapsed>76.621263</elapsed>
+			</timer>
+		    </stats>
+		    <stats name="PxrAdd" description="PxrAdd" kind="pattern">
+			<int name="NumComputes" description="Number of real evaluations">939840</int>
+			<int name="CachedComputes" description="Number of evaluations avoided due to caching">0</int>
+			<timer name="ComputeTime" description="">
+			    <elapsed>1.835856</elapsed>
+			</timer>
+		    </stats>
+		    <stats name="FlowShader" description="FlowShader" kind="pattern">
+			<int name="NumComputes" description="Number of real evaluations">556659</int>
+			<int name="CachedComputes" description="Number of evaluations avoided due to caching">0</int>
+			<timer name="ComputeTime" description="">
+			    <elapsed>736.276154</elapsed>
+			</timer>
+		    </stats>
+		    <stats name="MaskReader" description="MaskReader" kind="pattern">
+			<int name="NumComputes" description="Number of real evaluations">1113318</int>
+			<int name="CachedComputes" description="Number of evaluations avoided due to caching">0</int>
+			<timer name="ComputeTime" description="">
+			    <elapsed>144.644974</elapsed>
+>>>>>>> SecondaryBranch
 			</timer>
 		    </stats>
 		</stats>
@@ -1298,7 +1656,11 @@
 		    <int name="NumAutomataBuilds" description="Number of times automata was built">1</int>
 		    <stats name="SingleLobe" description="Automata with support for only single-lobe" kind="LPEAutomata">
 			<timer name="Build" description="Total time spent building automata">
+<<<<<<< HEAD
 			    <elapsed>0.000106</elapsed>
+=======
+			    <elapsed>0.000168</elapsed>
+>>>>>>> SecondaryBranch
 			</timer>
 			<memory name="Memory" description="Memory used for automata">
 			    <peak>692</peak>
@@ -1320,11 +1682,16 @@
 			<count>4</count>
 		    </memory>
 		    <timer name="creationTime" description="creationTime">
+<<<<<<< HEAD
 			<elapsed>0.000328</elapsed>
+=======
+			<elapsed>0.001177</elapsed>
+>>>>>>> SecondaryBranch
 		    </timer>
 		</stats>
 		<stats name="Pattern" description="Time and memory used by Pattern">
 		    <memory name="memory" description="memory">
+<<<<<<< HEAD
 			<peak>1520</peak>
 			<current>1520</current>
 			<total>1520</total>
@@ -1332,6 +1699,15 @@
 		    </memory>
 		    <timer name="creationTime" description="creationTime">
 			<elapsed>0.002527</elapsed>
+=======
+			<peak>1552</peak>
+			<current>1552</current>
+			<total>1552</total>
+			<count>12</count>
+		    </memory>
+		    <timer name="creationTime" description="creationTime">
+			<elapsed>0.000178</elapsed>
+>>>>>>> SecondaryBranch
 		    </timer>
 		</stats>
 		<stats name="Other" description="Time and memory used by other RixShadingPlugin">
@@ -1342,7 +1718,11 @@
 			<count>2</count>
 		    </memory>
 		    <timer name="creationTime" description="creationTime">
+<<<<<<< HEAD
 			<elapsed>0.000181</elapsed>
+=======
+			<elapsed>0.000390</elapsed>
+>>>>>>> SecondaryBranch
 		    </timer>
 		</stats>
 	    </stats>
@@ -1351,7 +1731,11 @@
 		    <peak>6019986</peak>
 		    <current>175506</current>
 		</memory>
+<<<<<<< HEAD
 		<float name="adaptSkipped" description="Adaptive sampling fraction skipped">0.205838</float>
+=======
+		<float name="adaptSkipped" description="Adaptive sampling fraction skipped">0.256569</float>
+>>>>>>> SecondaryBranch
 		<histogram name="adaptActive" description="Average active pixels by increment">
 		    <bin label="1">242004</bin>
 		    <bin label="2">242004</bin>
@@ -1361,6 +1745,7 @@
 		    <bin label="6">242004</bin>
 		    <bin label="7">242004</bin>
 		    <bin label="8">242004</bin>
+<<<<<<< HEAD
 		    <bin label="9">240912</bin>
 		    <bin label="10">231318</bin>
 		    <bin label="11">231319</bin>
@@ -1417,12 +1802,71 @@
 		    <bin label="62">105502</bin>
 		    <bin label="63">104119</bin>
 		    <bin label="64">102702</bin>
+=======
+		    <bin label="9">234936</bin>
+		    <bin label="10">181517</bin>
+		    <bin label="11">181533</bin>
+		    <bin label="12">181530</bin>
+		    <bin label="13">181516</bin>
+		    <bin label="14">181508</bin>
+		    <bin label="15">181495</bin>
+		    <bin label="16">181473</bin>
+		    <bin label="17">181468</bin>
+		    <bin label="18">181456</bin>
+		    <bin label="19">181448</bin>
+		    <bin label="20">181439</bin>
+		    <bin label="21">181434</bin>
+		    <bin label="22">181412</bin>
+		    <bin label="23">181397</bin>
+		    <bin label="24">181380</bin>
+		    <bin label="25">181358</bin>
+		    <bin label="26">181323</bin>
+		    <bin label="27">181269</bin>
+		    <bin label="28">181186</bin>
+		    <bin label="29">181075</bin>
+		    <bin label="30">180963</bin>
+		    <bin label="31">180784</bin>
+		    <bin label="32">180547</bin>
+		    <bin label="33">180188</bin>
+		    <bin label="34">179770</bin>
+		    <bin label="35">179278</bin>
+		    <bin label="36">178656</bin>
+		    <bin label="37">177940</bin>
+		    <bin label="38">177092</bin>
+		    <bin label="39">176320</bin>
+		    <bin label="40">175246</bin>
+		    <bin label="41">174199</bin>
+		    <bin label="42">172724</bin>
+		    <bin label="43">171397</bin>
+		    <bin label="44">169927</bin>
+		    <bin label="45">168499</bin>
+		    <bin label="46">167064</bin>
+		    <bin label="47">165649</bin>
+		    <bin label="48">164137</bin>
+		    <bin label="49">162611</bin>
+		    <bin label="50">160799</bin>
+		    <bin label="51">159289</bin>
+		    <bin label="52">157671</bin>
+		    <bin label="53">155991</bin>
+		    <bin label="54">154269</bin>
+		    <bin label="55">152769</bin>
+		    <bin label="56">151107</bin>
+		    <bin label="57">149355</bin>
+		    <bin label="58">147416</bin>
+		    <bin label="59">145565</bin>
+		    <bin label="60">143525</bin>
+		    <bin label="61">141497</bin>
+		    <bin label="62">139636</bin>
+		    <bin label="63">137725</bin>
+		    <bin label="64">135663</bin>
+>>>>>>> SecondaryBranch
 		</histogram>
 		<FloatMap2D name="adaptMap" description="adaptMap">
 		    <int name="width" description="width">38</int>
 		    <int name="height" description="height">26</int>
 		    <float name="min" description="min">8.843750</float>
 		    <float name="max" description="max">64.000000</float>
+<<<<<<< HEAD
 		    <float name="avg" description="avg">50.667076</float>
 		    <FloatArray name="values" description="values">
 			<el>0.000637</el>
@@ -1437,6 +1881,21 @@
 			<el>0.862535</el>
 			<el>0.412181</el>
 			<el>0.033074</el>
+=======
+		    <float name="avg" description="avg">48.097362</float>
+		    <FloatArray name="values" description="values">
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
 			<el>0.000637</el>
 			<el>0.000637</el>
 			<el>0.000637</el>
@@ -1451,6 +1910,160 @@
 			<el>0.000637</el>
 			<el>0.000637</el>
 			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000000</el>
+			<el>0.001204</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.001700</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.017068</el>
+			<el>0.233768</el>
+			<el>0.828399</el>
+			<el>0.396246</el>
+			<el>0.025425</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.001700</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.015793</el>
+			<el>0.410269</el>
+			<el>0.847946</el>
+			<el>0.999887</el>
+			<el>0.999717</el>
+			<el>0.999929</el>
+			<el>0.901771</el>
+			<el>0.476558</el>
+			<el>0.071813</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.001700</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.045397</el>
+			<el>0.442989</el>
+			<el>0.907224</el>
+			<el>0.999929</el>
+			<el>0.999646</el>
+			<el>0.998754</el>
+			<el>1.000000</el>
+			<el>0.997521</el>
+			<el>0.999929</el>
+			<el>1.000000</el>
+			<el>0.967705</el>
+			<el>0.630524</el>
+			<el>0.176416</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+>>>>>>> SecondaryBranch
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.001700</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+<<<<<<< HEAD
 			<el>0.142918</el>
 			<el>0.603116</el>
 			<el>0.970538</el>
@@ -1477,6 +2090,33 @@
 			<el>0.913598</el>
 			<el>0.485127</el>
 			<el>0.067068</el>
+=======
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.165297</el>
+			<el>0.559348</el>
+			<el>0.947450</el>
+			<el>0.999858</el>
+			<el>0.999929</el>
+			<el>0.993484</el>
+			<el>0.986119</el>
+			<el>0.979717</el>
+			<el>0.997875</el>
+			<el>0.985127</el>
+			<el>0.997805</el>
+			<el>0.990793</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.996601</el>
+			<el>0.745467</el>
+			<el>0.271246</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
 			<el>0.000637</el>
 			<el>0.000637</el>
 			<el>0.000637</el>
@@ -1487,6 +2127,84 @@
 			<el>0.000637</el>
 			<el>0.000637</el>
 			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.252054</el>
+			<el>0.703045</el>
+			<el>0.995822</el>
+			<el>1.000000</el>
+			<el>0.999433</el>
+			<el>0.993839</el>
+			<el>0.995326</el>
+			<el>0.984419</el>
+			<el>0.999363</el>
+			<el>1.000000</el>
+			<el>0.999079</el>
+			<el>0.992705</el>
+			<el>0.990581</el>
+			<el>0.996742</el>
+			<el>0.943130</el>
+			<el>0.983286</el>
+			<el>0.988810</el>
+			<el>1.000000</el>
+			<el>0.999858</el>
+			<el>0.791218</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.001700</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.237181</el>
+			<el>0.799150</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.999575</el>
+			<el>0.998300</el>
+			<el>0.999079</el>
+			<el>0.996742</el>
+			<el>0.990156</el>
+			<el>0.999858</el>
+			<el>0.999079</el>
+			<el>1.000000</el>
+			<el>0.999929</el>
+			<el>0.999788</el>
+			<el>0.997521</el>
+			<el>0.993626</el>
+			<el>0.986331</el>
+			<el>0.999929</el>
+			<el>0.995963</el>
+			<el>0.999717</el>
+			<el>0.998159</el>
+			<el>0.995467</el>
+			<el>0.250283</el>
+			<el>0.040864</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+>>>>>>> SecondaryBranch
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.001700</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+<<<<<<< HEAD
 			<el>0.206445</el>
 			<el>0.670538</el>
 			<el>0.992351</el>
@@ -2413,11 +3131,712 @@
 			<el>0.741076</el>
 			<el>0.669688</el>
 			<el>0.664589</el>
+=======
+			<el>0.000637</el>
+			<el>0.056657</el>
+			<el>0.691501</el>
+			<el>0.995042</el>
+			<el>0.972238</el>
+			<el>0.993697</el>
+			<el>0.962606</el>
+			<el>0.999363</el>
+			<el>1.000000</el>
+			<el>0.996955</el>
+			<el>0.985198</el>
+			<el>0.999858</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.999858</el>
+			<el>0.937110</el>
+			<el>0.960836</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.999717</el>
+			<el>0.992918</el>
+			<el>0.987606</el>
+			<el>0.968909</el>
+			<el>0.768980</el>
+			<el>0.538810</el>
+			<el>0.319334</el>
+			<el>0.060057</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.000637</el>
+			<el>0.001700</el>
+			<el>0.000637</el>
+			<el>0.075496</el>
+			<el>0.207011</el>
+			<el>0.392351</el>
+			<el>0.713031</el>
+			<el>0.927975</el>
+			<el>0.929533</el>
+			<el>0.972734</el>
+			<el>0.999008</el>
+			<el>0.998867</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.999929</el>
+			<el>0.999858</el>
+			<el>0.999292</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.999858</el>
+			<el>1.000000</el>
+			<el>0.994972</el>
+			<el>0.999292</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.997663</el>
+			<el>0.996530</el>
+			<el>0.995680</el>
+			<el>0.992422</el>
+			<el>0.987323</el>
+			<el>0.949858</el>
+			<el>0.929178</el>
+			<el>0.944405</el>
+			<el>0.173938</el>
+			<el>0.000637</el>
+			<el>0.140864</el>
+			<el>0.963739</el>
+			<el>0.930737</el>
+			<el>0.980878</el>
+			<el>0.949858</el>
+			<el>0.994476</el>
+			<el>0.994193</el>
+			<el>0.997167</el>
+			<el>0.999433</el>
+			<el>0.998442</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.999858</el>
+			<el>1.000000</el>
+			<el>0.992918</el>
+			<el>0.999717</el>
+			<el>0.999929</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.997805</el>
+			<el>0.999079</el>
+			<el>0.999717</el>
+			<el>0.999788</el>
+			<el>0.999008</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.997309</el>
+			<el>0.999717</el>
+			<el>1.000000</el>
+			<el>0.999646</el>
+			<el>0.987890</el>
+			<el>0.998796</el>
+			<el>0.999575</el>
+			<el>0.999858</el>
+			<el>0.999858</el>
+			<el>0.480382</el>
+			<el>0.000637</el>
+			<el>0.524079</el>
+			<el>1.000000</el>
+			<el>0.998229</el>
+			<el>0.998938</el>
+			<el>0.996955</el>
+			<el>0.997946</el>
+			<el>0.999008</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.997734</el>
+			<el>0.998017</el>
+			<el>0.995397</el>
+			<el>0.997663</el>
+			<el>1.000000</el>
+			<el>0.996671</el>
+			<el>1.000000</el>
+			<el>0.999788</el>
+			<el>0.999717</el>
+			<el>1.000000</el>
+			<el>0.975212</el>
+			<el>0.999008</el>
+			<el>0.999008</el>
+			<el>1.000000</el>
+			<el>0.998938</el>
+			<el>0.994618</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.999221</el>
+			<el>0.999646</el>
+			<el>0.999858</el>
+			<el>0.997309</el>
+			<el>1.000000</el>
+			<el>0.998371</el>
+			<el>0.996176</el>
+			<el>0.999929</el>
+			<el>1.000000</el>
+			<el>0.680382</el>
+			<el>0.000637</el>
+			<el>0.785552</el>
+			<el>0.998159</el>
+			<el>0.993414</el>
+			<el>0.997238</el>
+			<el>0.999788</el>
+			<el>0.988810</el>
+			<el>0.997734</el>
+			<el>0.973159</el>
+			<el>0.990439</el>
+			<el>0.999150</el>
+			<el>0.998725</el>
+			<el>0.982720</el>
+			<el>0.993980</el>
+			<el>0.996955</el>
+			<el>0.992989</el>
+			<el>0.986190</el>
+			<el>0.997946</el>
+			<el>0.999363</el>
+			<el>0.989122</el>
+			<el>0.993768</el>
+			<el>0.994193</el>
+			<el>0.994122</el>
+			<el>0.999221</el>
+			<el>0.993980</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.999292</el>
+			<el>1.000000</el>
+			<el>0.878824</el>
+			<el>0.804037</el>
+			<el>0.961331</el>
+			<el>0.980595</el>
+			<el>0.989660</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.845963</el>
+			<el>0.002833</el>
+			<el>0.963952</el>
+			<el>1.000000</el>
+			<el>0.997309</el>
+			<el>0.976416</el>
+			<el>0.999150</el>
+			<el>0.938244</el>
+			<el>0.936686</el>
+			<el>0.882861</el>
+			<el>0.882861</el>
+			<el>0.913598</el>
+			<el>0.875071</el>
+			<el>0.942351</el>
+			<el>1.000000</el>
+			<el>0.998938</el>
+			<el>0.958569</el>
+			<el>0.999788</el>
+			<el>0.998584</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.998654</el>
+			<el>0.974575</el>
+			<el>0.959844</el>
+			<el>0.996601</el>
+			<el>1.000000</el>
+			<el>0.999717</el>
+			<el>0.990227</el>
+			<el>0.999221</el>
+			<el>0.948442</el>
+			<el>0.908499</el>
+			<el>0.972450</el>
+			<el>0.986969</el>
+			<el>1.000000</el>
+			<el>0.999646</el>
+			<el>1.000000</el>
+			<el>0.999079</el>
+			<el>0.780241</el>
+			<el>1.000000</el>
+			<el>0.999858</el>
+			<el>0.999788</el>
+			<el>0.932932</el>
+			<el>0.890156</el>
+			<el>0.861473</el>
+			<el>0.862110</el>
+			<el>0.921742</el>
+			<el>0.780666</el>
+			<el>0.796317</el>
+			<el>0.900921</el>
+			<el>0.993272</el>
+			<el>0.998017</el>
+			<el>0.999646</el>
+			<el>0.989873</el>
+			<el>0.998159</el>
+			<el>0.987252</el>
+			<el>0.998938</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.987110</el>
+			<el>0.974292</el>
+			<el>0.995963</el>
+			<el>0.993909</el>
+			<el>0.989023</el>
+			<el>0.971246</el>
+			<el>0.980737</el>
+			<el>0.949363</el>
+			<el>0.883499</el>
+			<el>0.889873</el>
+			<el>0.982861</el>
+			<el>0.998867</el>
+			<el>0.994618</el>
+			<el>1.000000</el>
+			<el>0.999363</el>
+			<el>0.999858</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.996388</el>
+			<el>0.998867</el>
+			<el>0.984278</el>
+			<el>0.914589</el>
+			<el>0.788244</el>
+			<el>0.719547</el>
+			<el>0.720892</el>
+			<el>0.801771</el>
+			<el>0.947592</el>
+			<el>0.975283</el>
+			<el>0.994476</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.999646</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.995184</el>
+			<el>0.993059</el>
+			<el>0.999221</el>
+			<el>0.994263</el>
+			<el>0.966714</el>
+			<el>0.917847</el>
+			<el>0.744547</el>
+			<el>0.735411</el>
+			<el>0.915368</el>
+			<el>0.993768</el>
+			<el>1.000000</el>
+			<el>0.996246</el>
+			<el>0.997875</el>
+			<el>0.998088</el>
+			<el>1.000000</el>
+			<el>0.999929</el>
+			<el>0.997592</el>
+			<el>0.996388</el>
+			<el>0.974858</el>
+			<el>0.998938</el>
+			<el>0.923938</el>
+			<el>0.959348</el>
+			<el>0.800992</el>
+			<el>0.783003</el>
+			<el>0.883144</el>
+			<el>0.913881</el>
+			<el>0.850567</el>
+			<el>0.893626</el>
+			<el>0.998371</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.997592</el>
+			<el>0.974221</el>
+			<el>0.877691</el>
+			<el>0.831303</el>
+			<el>0.763456</el>
+			<el>0.806657</el>
+			<el>0.773442</el>
+			<el>0.857578</el>
+			<el>0.917351</el>
+			<el>0.979533</el>
+			<el>0.999929</el>
+			<el>0.988456</el>
+			<el>0.989093</el>
+			<el>0.994972</el>
+			<el>0.999504</el>
+			<el>1.000000</el>
+			<el>0.993839</el>
+			<el>0.997309</el>
+			<el>0.993484</el>
+			<el>0.988244</el>
+			<el>0.996884</el>
+			<el>0.975212</el>
+			<el>0.935340</el>
+			<el>0.772734</el>
+			<el>0.646176</el>
+			<el>0.791218</el>
+			<el>0.974363</el>
+			<el>0.893626</el>
+			<el>0.839306</el>
+			<el>0.751629</el>
+			<el>0.969476</el>
+			<el>0.989731</el>
+			<el>1.000000</el>
+			<el>0.999646</el>
+			<el>1.000000</el>
+			<el>0.999887</el>
+			<el>0.927620</el>
+			<el>0.908003</el>
+			<el>0.792068</el>
+			<el>0.622805</el>
+			<el>0.593343</el>
+			<el>0.626841</el>
+			<el>0.700992</el>
+			<el>0.765652</el>
+			<el>0.819476</el>
+			<el>0.810482</el>
+			<el>0.956799</el>
+			<el>0.999150</el>
+			<el>0.999858</el>
+			<el>0.972946</el>
+			<el>0.986969</el>
+			<el>0.987819</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.999008</el>
+			<el>0.993272</el>
+			<el>0.988314</el>
+			<el>0.985694</el>
+			<el>0.999929</el>
+			<el>0.858428</el>
+			<el>0.838527</el>
+			<el>0.752762</el>
+			<el>0.890227</el>
+			<el>0.775496</el>
+			<el>0.739377</el>
+			<el>0.651346</el>
+			<el>0.797025</el>
+			<el>0.859915</el>
+			<el>0.825283</el>
+			<el>0.949221</el>
+			<el>0.893697</el>
+			<el>0.880241</el>
+			<el>0.959207</el>
+			<el>0.738810</el>
+			<el>0.845538</el>
+			<el>0.620680</el>
+			<el>0.621530</el>
+			<el>0.704745</el>
+			<el>0.703966</el>
+			<el>0.730524</el>
+			<el>0.740014</el>
+			<el>0.808003</el>
+			<el>0.887394</el>
+			<el>0.990085</el>
+			<el>0.979462</el>
+			<el>0.967422</el>
+			<el>0.985765</el>
+			<el>0.995963</el>
+			<el>0.997380</el>
+			<el>1.000000</el>
+			<el>0.999929</el>
+			<el>0.991289</el>
+			<el>0.995113</el>
+			<el>0.980737</el>
+			<el>0.996388</el>
+			<el>0.982436</el>
+			<el>0.999150</el>
+			<el>0.974150</el>
+			<el>0.936756</el>
+			<el>0.890510</el>
+			<el>0.821317</el>
+			<el>0.857365</el>
+			<el>0.786048</el>
+			<el>0.819972</el>
+			<el>0.782224</el>
+			<el>0.942210</el>
+			<el>0.969476</el>
+			<el>0.987535</el>
+			<el>0.942776</el>
+			<el>0.889802</el>
+			<el>0.826062</el>
+			<el>0.758640</el>
+			<el>0.636190</el>
+			<el>0.591289</el>
+			<el>0.706303</el>
+			<el>0.792493</el>
+			<el>0.769476</el>
+			<el>0.759136</el>
+			<el>0.841643</el>
+			<el>0.949717</el>
+			<el>0.999788</el>
+			<el>0.999504</el>
+			<el>0.954178</el>
+			<el>0.971459</el>
+			<el>0.970609</el>
+			<el>0.945892</el>
+			<el>0.996459</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.980807</el>
+			<el>0.998796</el>
+			<el>0.958003</el>
+			<el>0.986969</el>
+			<el>0.964377</el>
+			<el>0.987040</el>
+			<el>0.996388</el>
+			<el>0.987819</el>
+			<el>0.967776</el>
+			<el>0.933428</el>
+			<el>0.963031</el>
+			<el>0.955878</el>
+			<el>0.865864</el>
+			<el>0.843980</el>
+			<el>0.798442</el>
+			<el>0.951062</el>
+			<el>0.965368</el>
+			<el>0.981728</el>
+			<el>0.991076</el>
+			<el>0.975637</el>
+			<el>0.673088</el>
+			<el>0.588244</el>
+			<el>0.634065</el>
+			<el>0.750850</el>
+			<el>0.728470</el>
+			<el>0.769618</el>
+			<el>0.751275</el>
+			<el>0.926629</el>
+			<el>0.987748</el>
+			<el>0.972734</el>
+			<el>0.963810</el>
+			<el>0.961686</el>
+			<el>0.978470</el>
+			<el>0.990439</el>
+			<el>0.995255</el>
+			<el>0.998584</el>
+			<el>0.999929</el>
+			<el>0.979108</el>
+			<el>1.000000</el>
+			<el>0.998229</el>
+			<el>0.987181</el>
+			<el>0.984348</el>
+			<el>0.979958</el>
+			<el>0.961190</el>
+			<el>0.997805</el>
+			<el>0.993555</el>
+			<el>0.993555</el>
+			<el>0.958074</el>
+			<el>0.893484</el>
+			<el>0.944547</el>
+			<el>0.888031</el>
+			<el>0.816360</el>
+			<el>0.822946</el>
+			<el>0.910977</el>
+			<el>0.880666</el>
+			<el>0.839943</el>
+			<el>0.795680</el>
+			<el>0.888385</el>
+			<el>0.554108</el>
+			<el>0.700992</el>
+			<el>0.700354</el>
+			<el>0.774433</el>
+			<el>0.828045</el>
+			<el>0.808994</el>
+			<el>0.762677</el>
+			<el>0.949008</el>
+			<el>0.982932</el>
+			<el>0.874717</el>
+			<el>0.866501</el>
+			<el>0.986331</el>
+			<el>0.970113</el>
+			<el>0.988669</el>
+			<el>0.988456</el>
+			<el>0.998938</el>
+			<el>0.997450</el>
+			<el>0.963952</el>
+			<el>1.000000</el>
+			<el>0.999575</el>
+			<el>0.986544</el>
+			<el>0.964731</el>
+			<el>0.997592</el>
+			<el>0.953329</el>
+			<el>0.997946</el>
+			<el>0.993414</el>
+			<el>0.961756</el>
+			<el>0.925921</el>
+			<el>0.849575</el>
+			<el>0.771813</el>
+			<el>0.758569</el>
+			<el>0.721176</el>
+			<el>0.688173</el>
+			<el>0.718130</el>
+			<el>0.908569</el>
+			<el>0.755170</el>
+			<el>0.768980</el>
+			<el>0.850198</el>
+			<el>0.731445</el>
+			<el>0.693059</el>
+			<el>0.671671</el>
+			<el>0.830028</el>
+			<el>0.795538</el>
+			<el>0.862252</el>
+			<el>0.919759</el>
+			<el>0.998796</el>
+			<el>0.980949</el>
+			<el>0.925496</el>
+			<el>0.943059</el>
+			<el>0.937960</el>
+			<el>0.973017</el>
+			<el>0.958428</el>
+			<el>0.960057</el>
+			<el>0.935623</el>
+			<el>0.880241</el>
+			<el>0.881586</el>
+			<el>0.947025</el>
+			<el>1.000000</el>
+			<el>0.988173</el>
+			<el>0.971813</el>
+			<el>0.940368</el>
+			<el>0.943059</el>
+			<el>0.981374</el>
+			<el>0.996317</el>
+			<el>0.958286</el>
+			<el>0.869759</el>
+			<el>0.636331</el>
+			<el>0.812890</el>
+			<el>0.788173</el>
+			<el>0.913173</el>
+			<el>0.623017</el>
+			<el>0.777833</el>
+			<el>0.753683</el>
+			<el>0.812606</el>
+			<el>0.738031</el>
+			<el>0.673088</el>
+			<el>0.723442</el>
+			<el>0.759278</el>
+			<el>0.821105</el>
+			<el>0.832507</el>
+			<el>0.819051</el>
+			<el>0.880949</el>
+			<el>0.999717</el>
+			<el>0.967493</el>
+			<el>0.968201</el>
+			<el>0.883853</el>
+			<el>0.975425</el>
+			<el>0.926204</el>
+			<el>0.982507</el>
+			<el>0.988669</el>
+			<el>0.978541</el>
+			<el>0.888739</el>
+			<el>0.841714</el>
+			<el>0.916926</el>
+			<el>0.992705</el>
+			<el>1.000000</el>
+			<el>0.981374</el>
+			<el>0.940510</el>
+			<el>0.973584</el>
+			<el>0.900142</el>
+			<el>0.989731</el>
+			<el>0.999079</el>
+			<el>0.998442</el>
+			<el>0.959348</el>
+			<el>0.769759</el>
+			<el>0.591572</el>
+			<el>0.646884</el>
+			<el>0.803895</el>
+			<el>0.881657</el>
+			<el>0.683074</el>
+			<el>0.909703</el>
+			<el>0.938031</el>
+			<el>0.952195</el>
+			<el>0.977564</el>
+			<el>0.578612</el>
+			<el>0.653895</el>
+			<el>0.747734</el>
+			<el>0.662465</el>
+			<el>0.715652</el>
+			<el>0.936898</el>
+			<el>0.995892</el>
+			<el>0.962465</el>
+			<el>0.896105</el>
+			<el>0.923867</el>
+			<el>0.988244</el>
+			<el>0.985057</el>
+			<el>0.969051</el>
+			<el>0.977266</el>
+			<el>0.982720</el>
+			<el>0.846246</el>
+			<el>0.968909</el>
+			<el>0.859915</el>
+			<el>0.954178</el>
+			<el>1.000000</el>
+			<el>0.995184</el>
+			<el>0.964448</el>
+			<el>0.972025</el>
+			<el>0.987323</el>
+			<el>0.947734</el>
+			<el>0.989377</el>
+			<el>0.998938</el>
+			<el>0.986615</el>
+			<el>0.885765</el>
+			<el>0.683357</el>
+			<el>0.652195</el>
+			<el>0.682578</el>
+			<el>0.839377</el>
+			<el>0.651133</el>
+			<el>0.786119</el>
+			<el>0.973371</el>
+			<el>0.719263</el>
+			<el>0.947082</el>
+			<el>0.839093</el>
+			<el>0.818130</el>
+			<el>0.806232</el>
+			<el>0.736544</el>
+			<el>0.886119</el>
+			<el>0.997734</el>
+			<el>0.950708</el>
+			<el>0.911048</el>
+			<el>0.954674</el>
+			<el>1.000000</el>
+			<el>0.999433</el>
+			<el>1.000000</el>
+			<el>0.969972</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.951841</el>
+			<el>1.000000</el>
+			<el>0.886686</el>
+			<el>0.960340</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.999433</el>
+			<el>1.000000</el>
+			<el>0.997734</el>
+			<el>1.000000</el>
+			<el>0.995467</el>
+			<el>1.000000</el>
+			<el>1.000000</el>
+			<el>0.988102</el>
+			<el>0.928612</el>
+			<el>0.767139</el>
+			<el>0.798867</el>
+			<el>0.752408</el>
+			<el>0.882720</el>
+			<el>0.631728</el>
+			<el>0.971671</el>
+			<el>0.879320</el>
+			<el>0.978244</el>
+>>>>>>> SecondaryBranch
 		    </FloatArray>
 		</FloatMap2D>
 		<FloatMap2D name="cpuTimeMap" description="cpuTimeMap">
 		    <int name="width" description="width">38</int>
 		    <int name="height" description="height">26</int>
+<<<<<<< HEAD
 		    <float name="min" description="min">0.000019</float>
 		    <float name="max" description="max">0.002373</float>
 		    <float name="avg" description="avg">0.001234</float>
@@ -3410,6 +4829,1000 @@
 			<el>0.495380</el>
 			<el>0.468378</el>
 			<el>0.540441</el>
+=======
+		    <float name="min" description="min">0.000013</float>
+		    <float name="max" description="max">0.010890</float>
+		    <float name="avg" description="avg">0.004671</float>
+		    <FloatArray name="values" description="values">
+			<el>0.000000</el>
+			<el>0.001184</el>
+			<el>0.001053</el>
+			<el>0.001047</el>
+			<el>0.000960</el>
+			<el>0.001975</el>
+			<el>0.001020</el>
+			<el>0.001639</el>
+			<el>0.000917</el>
+			<el>0.001010</el>
+			<el>0.001118</el>
+			<el>0.002155</el>
+			<el>0.001004</el>
+			<el>0.001049</el>
+			<el>0.001010</el>
+			<el>0.000961</el>
+			<el>0.001030</el>
+			<el>0.002070</el>
+			<el>0.000906</el>
+			<el>0.000911</el>
+			<el>0.001650</el>
+			<el>0.001234</el>
+			<el>0.001055</el>
+			<el>0.001054</el>
+			<el>0.001099</el>
+			<el>0.000969</el>
+			<el>0.001057</el>
+			<el>0.000995</el>
+			<el>0.000969</el>
+			<el>0.000973</el>
+			<el>0.001211</el>
+			<el>0.000980</el>
+			<el>0.000995</el>
+			<el>0.001059</el>
+			<el>0.000996</el>
+			<el>0.001098</el>
+			<el>0.001097</el>
+			<el>0.001237</el>
+			<el>0.001149</el>
+			<el>0.001157</el>
+			<el>0.001211</el>
+			<el>0.001324</el>
+			<el>0.001342</el>
+			<el>0.001127</el>
+			<el>0.001065</el>
+			<el>0.000985</el>
+			<el>0.001046</el>
+			<el>0.001087</el>
+			<el>0.000960</el>
+			<el>0.000963</el>
+			<el>0.000972</el>
+			<el>0.001015</el>
+			<el>0.000948</el>
+			<el>0.001005</el>
+			<el>0.000911</el>
+			<el>0.000950</el>
+			<el>0.001123</el>
+			<el>0.000980</el>
+			<el>0.001068</el>
+			<el>0.001052</el>
+			<el>0.000954</el>
+			<el>0.001030</el>
+			<el>0.001162</el>
+			<el>0.001102</el>
+			<el>0.001011</el>
+			<el>0.001170</el>
+			<el>0.001005</el>
+			<el>0.001088</el>
+			<el>0.001157</el>
+			<el>0.001090</el>
+			<el>0.001172</el>
+			<el>0.000966</el>
+			<el>0.001029</el>
+			<el>0.001640</el>
+			<el>0.003599</el>
+			<el>0.082993</el>
+			<el>0.258639</el>
+			<el>0.177750</el>
+			<el>0.008510</el>
+			<el>0.001132</el>
+			<el>0.001060</el>
+			<el>0.001209</el>
+			<el>0.001037</el>
+			<el>0.001035</el>
+			<el>0.001070</el>
+			<el>0.001036</el>
+			<el>0.001052</el>
+			<el>0.001087</el>
+			<el>0.001087</el>
+			<el>0.001066</el>
+			<el>0.001751</el>
+			<el>0.000981</el>
+			<el>0.001038</el>
+			<el>0.001278</el>
+			<el>0.001905</el>
+			<el>0.000999</el>
+			<el>0.000992</el>
+			<el>0.000947</el>
+			<el>0.001010</el>
+			<el>0.001231</el>
+			<el>0.001773</el>
+			<el>0.001121</el>
+			<el>0.000876</el>
+			<el>0.001016</el>
+			<el>0.001205</el>
+			<el>0.001028</el>
+			<el>0.001055</el>
+			<el>0.001044</el>
+			<el>0.001138</el>
+			<el>0.001126</el>
+			<el>0.002936</el>
+			<el>0.195804</el>
+			<el>0.518854</el>
+			<el>0.684458</el>
+			<el>0.467832</el>
+			<el>0.681337</el>
+			<el>0.552035</el>
+			<el>0.221047</el>
+			<el>0.018074</el>
+			<el>0.001049</el>
+			<el>0.001099</el>
+			<el>0.001007</el>
+			<el>0.000951</el>
+			<el>0.001647</el>
+			<el>0.001101</el>
+			<el>0.001028</el>
+			<el>0.001064</el>
+			<el>0.001161</el>
+			<el>0.001004</el>
+			<el>0.000972</el>
+			<el>0.000971</el>
+			<el>0.001007</el>
+			<el>0.001169</el>
+			<el>0.001130</el>
+			<el>0.000989</el>
+			<el>0.001066</el>
+			<el>0.001101</el>
+			<el>0.001092</el>
+			<el>0.001110</el>
+			<el>0.001112</el>
+			<el>0.001029</el>
+			<el>0.001105</el>
+			<el>0.001124</el>
+			<el>0.001266</el>
+			<el>0.001298</el>
+			<el>0.001165</el>
+			<el>0.010301</el>
+			<el>0.219387</el>
+			<el>0.536315</el>
+			<el>0.699092</el>
+			<el>0.721933</el>
+			<el>0.687979</el>
+			<el>0.602245</el>
+			<el>0.649577</el>
+			<el>0.713332</el>
+			<el>0.656106</el>
+			<el>0.596709</el>
+			<el>0.334119</el>
+			<el>0.063664</el>
+			<el>0.001052</el>
+			<el>0.001059</el>
+			<el>0.001087</el>
+			<el>0.001141</el>
+			<el>0.000982</el>
+			<el>0.001041</el>
+			<el>0.001057</el>
+			<el>0.001177</el>
+			<el>0.001013</el>
+			<el>0.010032</el>
+			<el>0.000941</el>
+			<el>0.000973</el>
+			<el>0.000978</el>
+			<el>0.000912</el>
+			<el>0.000981</el>
+			<el>0.002487</el>
+			<el>0.001073</el>
+			<el>0.001035</el>
+			<el>0.001026</el>
+			<el>0.001039</el>
+			<el>0.001099</el>
+			<el>0.001145</el>
+			<el>0.001227</el>
+			<el>0.076853</el>
+			<el>0.304146</el>
+			<el>0.611071</el>
+			<el>0.697015</el>
+			<el>0.690345</el>
+			<el>0.653037</el>
+			<el>0.629009</el>
+			<el>0.588216</el>
+			<el>0.642796</el>
+			<el>0.581462</el>
+			<el>0.574806</el>
+			<el>0.606044</el>
+			<el>0.670634</el>
+			<el>0.675845</el>
+			<el>0.627414</el>
+			<el>0.410543</el>
+			<el>0.111217</el>
+			<el>0.001135</el>
+			<el>0.001114</el>
+			<el>0.001010</el>
+			<el>0.000946</el>
+			<el>0.000559</el>
+			<el>0.000844</el>
+			<el>0.001197</el>
+			<el>0.000865</el>
+			<el>0.001043</el>
+			<el>0.000896</el>
+			<el>0.001325</el>
+			<el>0.001048</el>
+			<el>0.001036</el>
+			<el>0.001106</el>
+			<el>0.000933</el>
+			<el>0.000974</el>
+			<el>0.000983</el>
+			<el>0.001087</el>
+			<el>0.001059</el>
+			<el>0.111775</el>
+			<el>0.401945</el>
+			<el>0.667281</el>
+			<el>0.646345</el>
+			<el>0.641371</el>
+			<el>0.638720</el>
+			<el>0.605981</el>
+			<el>0.517738</el>
+			<el>0.583467</el>
+			<el>0.653728</el>
+			<el>0.638371</el>
+			<el>0.642585</el>
+			<el>0.540686</el>
+			<el>0.566194</el>
+			<el>0.516480</el>
+			<el>0.588894</el>
+			<el>0.649033</el>
+			<el>0.679908</el>
+			<el>0.691918</el>
+			<el>0.426792</el>
+			<el>0.001036</el>
+			<el>0.001123</el>
+			<el>0.001267</el>
+			<el>0.001100</el>
+			<el>0.004244</el>
+			<el>0.000952</el>
+			<el>0.000932</el>
+			<el>0.001057</el>
+			<el>0.001135</el>
+			<el>0.000908</el>
+			<el>0.000885</el>
+			<el>0.000929</el>
+			<el>0.000962</el>
+			<el>0.000994</el>
+			<el>0.000966</el>
+			<el>0.001048</el>
+			<el>0.134475</el>
+			<el>0.470576</el>
+			<el>0.697557</el>
+			<el>0.726813</el>
+			<el>0.708833</el>
+			<el>0.620515</el>
+			<el>0.596811</el>
+			<el>0.603585</el>
+			<el>0.601791</el>
+			<el>0.562092</el>
+			<el>0.558886</el>
+			<el>0.644641</el>
+			<el>0.682872</el>
+			<el>0.629882</el>
+			<el>0.581436</el>
+			<el>0.595800</el>
+			<el>0.509972</el>
+			<el>0.585541</el>
+			<el>0.613507</el>
+			<el>0.628996</el>
+			<el>0.620799</el>
+			<el>0.639385</el>
+			<el>0.080708</el>
+			<el>0.003002</el>
+			<el>0.001000</el>
+			<el>0.001088</el>
+			<el>0.000697</el>
+			<el>0.000951</el>
+			<el>0.000951</el>
+			<el>0.000959</el>
+			<el>0.001715</el>
+			<el>0.001010</el>
+			<el>0.000933</el>
+			<el>0.000995</el>
+			<el>0.000961</el>
+			<el>0.001120</el>
+			<el>0.001124</el>
+			<el>0.003679</el>
+			<el>0.382269</el>
+			<el>0.697386</el>
+			<el>0.621590</el>
+			<el>0.602190</el>
+			<el>0.535116</el>
+			<el>0.643984</el>
+			<el>0.628551</el>
+			<el>0.588216</el>
+			<el>0.525365</el>
+			<el>0.606598</el>
+			<el>0.622259</el>
+			<el>0.660857</el>
+			<el>0.651191</el>
+			<el>0.646797</el>
+			<el>0.606394</el>
+			<el>0.528807</el>
+			<el>0.552420</el>
+			<el>0.660004</el>
+			<el>0.706928</el>
+			<el>0.649126</el>
+			<el>0.603981</el>
+			<el>0.569792</el>
+			<el>0.528571</el>
+			<el>0.551880</el>
+			<el>0.372371</el>
+			<el>0.240062</el>
+			<el>0.134240</el>
+			<el>0.014166</el>
+			<el>0.000857</el>
+			<el>0.001011</el>
+			<el>0.001162</el>
+			<el>0.000878</el>
+			<el>0.001026</el>
+			<el>0.009596</el>
+			<el>0.074340</el>
+			<el>0.173358</el>
+			<el>0.341426</el>
+			<el>0.444459</el>
+			<el>0.521046</el>
+			<el>0.612653</el>
+			<el>0.621308</el>
+			<el>0.609042</el>
+			<el>0.629487</el>
+			<el>0.641541</el>
+			<el>0.685275</el>
+			<el>0.663859</el>
+			<el>0.596045</el>
+			<el>0.562427</el>
+			<el>0.584909</el>
+			<el>0.608192</el>
+			<el>0.699249</el>
+			<el>0.652180</el>
+			<el>0.630560</el>
+			<el>0.588507</el>
+			<el>0.610511</el>
+			<el>0.642209</el>
+			<el>0.667659</el>
+			<el>0.671233</el>
+			<el>0.658515</el>
+			<el>0.594794</el>
+			<el>0.605170</el>
+			<el>0.585932</el>
+			<el>0.513165</el>
+			<el>0.561045</el>
+			<el>0.492851</el>
+			<el>0.478725</el>
+			<el>0.559378</el>
+			<el>0.080993</el>
+			<el>0.001037</el>
+			<el>0.059649</el>
+			<el>0.501559</el>
+			<el>0.442153</el>
+			<el>0.520247</el>
+			<el>0.499789</el>
+			<el>0.509055</el>
+			<el>0.577327</el>
+			<el>0.554089</el>
+			<el>0.617718</el>
+			<el>0.646294</el>
+			<el>0.587593</el>
+			<el>0.596600</el>
+			<el>0.639657</el>
+			<el>0.697651</el>
+			<el>0.563307</el>
+			<el>0.584122</el>
+			<el>0.645161</el>
+			<el>0.629236</el>
+			<el>0.647008</el>
+			<el>0.675490</el>
+			<el>0.623055</el>
+			<el>0.572738</el>
+			<el>0.572593</el>
+			<el>0.606646</el>
+			<el>0.679847</el>
+			<el>0.638828</el>
+			<el>0.671451</el>
+			<el>0.569335</el>
+			<el>0.616172</el>
+			<el>0.719810</el>
+			<el>0.546532</el>
+			<el>0.525991</el>
+			<el>0.547481</el>
+			<el>0.572338</el>
+			<el>0.585979</el>
+			<el>0.621782</el>
+			<el>0.280062</el>
+			<el>0.001079</el>
+			<el>0.284626</el>
+			<el>0.565106</el>
+			<el>0.524220</el>
+			<el>0.549619</el>
+			<el>0.533779</el>
+			<el>0.594794</el>
+			<el>0.560768</el>
+			<el>0.565102</el>
+			<el>0.578876</el>
+			<el>0.667835</el>
+			<el>0.597199</el>
+			<el>0.644793</el>
+			<el>0.670460</el>
+			<el>0.690560</el>
+			<el>0.584339</el>
+			<el>0.635655</el>
+			<el>0.633925</el>
+			<el>0.602717</el>
+			<el>0.600684</el>
+			<el>0.654284</el>
+			<el>0.629207</el>
+			<el>0.584290</el>
+			<el>0.652384</el>
+			<el>0.654913</el>
+			<el>0.650305</el>
+			<el>0.696166</el>
+			<el>0.719230</el>
+			<el>0.569154</el>
+			<el>0.646121</el>
+			<el>0.603235</el>
+			<el>0.559894</el>
+			<el>0.550520</el>
+			<el>0.527397</el>
+			<el>0.542977</el>
+			<el>0.561668</el>
+			<el>0.618312</el>
+			<el>0.445014</el>
+			<el>0.001085</el>
+			<el>0.462264</el>
+			<el>0.580135</el>
+			<el>0.524019</el>
+			<el>0.527826</el>
+			<el>0.536278</el>
+			<el>0.515659</el>
+			<el>0.545653</el>
+			<el>0.531729</el>
+			<el>0.594640</el>
+			<el>0.603831</el>
+			<el>0.705109</el>
+			<el>0.624092</el>
+			<el>0.699566</el>
+			<el>0.667609</el>
+			<el>0.658399</el>
+			<el>0.606808</el>
+			<el>0.595172</el>
+			<el>0.599328</el>
+			<el>0.634051</el>
+			<el>0.740255</el>
+			<el>0.661911</el>
+			<el>0.597525</el>
+			<el>0.664368</el>
+			<el>0.655188</el>
+			<el>0.730306</el>
+			<el>0.738049</el>
+			<el>0.632376</el>
+			<el>0.590526</el>
+			<el>0.692755</el>
+			<el>0.570925</el>
+			<el>0.523812</el>
+			<el>0.589044</el>
+			<el>0.513170</el>
+			<el>0.542580</el>
+			<el>0.624593</el>
+			<el>0.658502</el>
+			<el>0.549765</el>
+			<el>0.001175</el>
+			<el>0.612125</el>
+			<el>0.624212</el>
+			<el>0.517808</el>
+			<el>0.496859</el>
+			<el>0.542888</el>
+			<el>0.478914</el>
+			<el>0.560287</el>
+			<el>0.496981</el>
+			<el>0.508938</el>
+			<el>0.564494</el>
+			<el>0.587985</el>
+			<el>0.627882</el>
+			<el>0.706504</el>
+			<el>0.700144</el>
+			<el>0.568978</el>
+			<el>0.669163</el>
+			<el>0.645302</el>
+			<el>0.671546</el>
+			<el>0.647171</el>
+			<el>0.685654</el>
+			<el>0.682483</el>
+			<el>0.617264</el>
+			<el>0.572928</el>
+			<el>0.592931</el>
+			<el>0.671497</el>
+			<el>0.691060</el>
+			<el>0.653351</el>
+			<el>0.596932</el>
+			<el>0.631918</el>
+			<el>0.574950</el>
+			<el>0.505540</el>
+			<el>0.540746</el>
+			<el>0.542369</el>
+			<el>0.597033</el>
+			<el>0.596344</el>
+			<el>0.646327</el>
+			<el>0.731204</el>
+			<el>0.561949</el>
+			<el>0.706867</el>
+			<el>0.626384</el>
+			<el>0.588091</el>
+			<el>0.438044</el>
+			<el>0.454513</el>
+			<el>0.496696</el>
+			<el>0.529236</el>
+			<el>0.518631</el>
+			<el>0.389040</el>
+			<el>0.440906</el>
+			<el>0.624841</el>
+			<el>0.671123</el>
+			<el>0.676765</el>
+			<el>0.647933</el>
+			<el>0.612176</el>
+			<el>0.692814</el>
+			<el>0.677184</el>
+			<el>0.678101</el>
+			<el>0.661955</el>
+			<el>0.674552</el>
+			<el>0.682020</el>
+			<el>0.596201</el>
+			<el>0.587879</el>
+			<el>0.672265</el>
+			<el>0.667373</el>
+			<el>0.646645</el>
+			<el>0.603577</el>
+			<el>0.604174</el>
+			<el>0.556067</el>
+			<el>0.485609</el>
+			<el>0.513953</el>
+			<el>0.523906</el>
+			<el>0.592627</el>
+			<el>0.625915</el>
+			<el>0.638359</el>
+			<el>0.712404</el>
+			<el>0.750800</el>
+			<el>0.770234</el>
+			<el>0.693033</el>
+			<el>0.664932</el>
+			<el>0.582793</el>
+			<el>0.500066</el>
+			<el>0.416194</el>
+			<el>0.428865</el>
+			<el>0.420245</el>
+			<el>0.407022</el>
+			<el>0.405132</el>
+			<el>0.508114</el>
+			<el>0.518311</el>
+			<el>0.583201</el>
+			<el>0.681016</el>
+			<el>0.655104</el>
+			<el>0.665896</el>
+			<el>0.625615</el>
+			<el>0.628442</el>
+			<el>0.658940</el>
+			<el>0.669282</el>
+			<el>0.676879</el>
+			<el>0.674123</el>
+			<el>0.608221</el>
+			<el>0.615615</el>
+			<el>0.637526</el>
+			<el>0.643783</el>
+			<el>0.650760</el>
+			<el>0.669522</el>
+			<el>0.597774</el>
+			<el>0.544212</el>
+			<el>0.431905</el>
+			<el>0.457827</el>
+			<el>0.541493</el>
+			<el>0.631424</el>
+			<el>0.651987</el>
+			<el>0.647970</el>
+			<el>0.710181</el>
+			<el>0.676365</el>
+			<el>0.706644</el>
+			<el>0.679363</el>
+			<el>0.628441</el>
+			<el>0.554793</el>
+			<el>0.578878</el>
+			<el>0.449923</el>
+			<el>0.463203</el>
+			<el>0.396667</el>
+			<el>0.413467</el>
+			<el>0.458545</el>
+			<el>0.490543</el>
+			<el>0.533955</el>
+			<el>0.514859</el>
+			<el>0.609613</el>
+			<el>0.664699</el>
+			<el>0.612287</el>
+			<el>0.667577</el>
+			<el>0.700756</el>
+			<el>0.683809</el>
+			<el>0.647784</el>
+			<el>0.770303</el>
+			<el>0.649823</el>
+			<el>0.615865</el>
+			<el>0.567744</el>
+			<el>0.508385</el>
+			<el>0.471500</el>
+			<el>0.468315</el>
+			<el>0.459766</el>
+			<el>0.455994</el>
+			<el>0.476944</el>
+			<el>0.520541</el>
+			<el>0.497064</el>
+			<el>0.564244</el>
+			<el>0.541301</el>
+			<el>0.685639</el>
+			<el>0.668798</el>
+			<el>0.652844</el>
+			<el>0.614106</el>
+			<el>0.647912</el>
+			<el>0.646635</el>
+			<el>0.608821</el>
+			<el>0.572502</el>
+			<el>0.554135</el>
+			<el>0.537796</el>
+			<el>0.479067</el>
+			<el>0.390785</el>
+			<el>0.348732</el>
+			<el>0.431669</el>
+			<el>0.633446</el>
+			<el>0.467829</el>
+			<el>0.428223</el>
+			<el>0.422670</el>
+			<el>0.567358</el>
+			<el>0.637563</el>
+			<el>0.594656</el>
+			<el>0.633541</el>
+			<el>0.604764</el>
+			<el>0.583494</el>
+			<el>0.570791</el>
+			<el>0.531058</el>
+			<el>0.451011</el>
+			<el>0.346434</el>
+			<el>0.313025</el>
+			<el>0.318261</el>
+			<el>0.382045</el>
+			<el>0.428844</el>
+			<el>0.447743</el>
+			<el>0.411348</el>
+			<el>0.584292</el>
+			<el>0.605955</el>
+			<el>0.566522</el>
+			<el>0.605338</el>
+			<el>0.601245</el>
+			<el>0.684256</el>
+			<el>0.655123</el>
+			<el>0.572792</el>
+			<el>0.611647</el>
+			<el>0.645180</el>
+			<el>0.642140</el>
+			<el>0.551656</el>
+			<el>0.570593</el>
+			<el>0.573952</el>
+			<el>0.427422</el>
+			<el>0.403722</el>
+			<el>0.359100</el>
+			<el>0.512226</el>
+			<el>0.515078</el>
+			<el>0.434615</el>
+			<el>0.403598</el>
+			<el>0.437411</el>
+			<el>0.456871</el>
+			<el>0.416345</el>
+			<el>0.507445</el>
+			<el>0.521035</el>
+			<el>0.538507</el>
+			<el>0.565852</el>
+			<el>0.467825</el>
+			<el>0.487268</el>
+			<el>0.347342</el>
+			<el>0.354116</el>
+			<el>0.409663</el>
+			<el>0.382975</el>
+			<el>0.375311</el>
+			<el>0.377727</el>
+			<el>0.452051</el>
+			<el>0.473508</el>
+			<el>0.569761</el>
+			<el>0.634187</el>
+			<el>0.549471</el>
+			<el>0.609624</el>
+			<el>0.677833</el>
+			<el>0.681526</el>
+			<el>0.612121</el>
+			<el>0.560114</el>
+			<el>0.603576</el>
+			<el>0.626940</el>
+			<el>0.647227</el>
+			<el>0.614759</el>
+			<el>0.603010</el>
+			<el>0.553166</el>
+			<el>0.551612</el>
+			<el>0.465789</el>
+			<el>0.424320</el>
+			<el>0.440506</el>
+			<el>0.472238</el>
+			<el>0.428994</el>
+			<el>0.472304</el>
+			<el>0.399727</el>
+			<el>0.507792</el>
+			<el>0.512104</el>
+			<el>0.503490</el>
+			<el>0.486906</el>
+			<el>0.452610</el>
+			<el>0.436627</el>
+			<el>0.498107</el>
+			<el>0.398519</el>
+			<el>0.352292</el>
+			<el>0.386912</el>
+			<el>0.461588</el>
+			<el>0.413220</el>
+			<el>0.412660</el>
+			<el>0.461432</el>
+			<el>0.480097</el>
+			<el>0.632623</el>
+			<el>0.638879</el>
+			<el>0.574322</el>
+			<el>0.568227</el>
+			<el>0.562334</el>
+			<el>0.597500</el>
+			<el>0.699615</el>
+			<el>0.601171</el>
+			<el>0.636467</el>
+			<el>0.612143</el>
+			<el>0.723181</el>
+			<el>0.595565</el>
+			<el>0.551192</el>
+			<el>0.544318</el>
+			<el>0.621670</el>
+			<el>0.561701</el>
+			<el>0.519533</el>
+			<el>0.469464</el>
+			<el>0.478581</el>
+			<el>0.474462</el>
+			<el>0.533192</el>
+			<el>0.468170</el>
+			<el>0.498268</el>
+			<el>0.448004</el>
+			<el>0.585528</el>
+			<el>0.574790</el>
+			<el>0.518111</el>
+			<el>0.525936</el>
+			<el>0.502831</el>
+			<el>0.381361</el>
+			<el>0.307876</el>
+			<el>0.311945</el>
+			<el>0.403305</el>
+			<el>0.386828</el>
+			<el>0.383699</el>
+			<el>0.373351</el>
+			<el>0.511331</el>
+			<el>0.566551</el>
+			<el>0.586369</el>
+			<el>0.541467</el>
+			<el>0.596101</el>
+			<el>0.610656</el>
+			<el>0.654013</el>
+			<el>0.696948</el>
+			<el>0.671841</el>
+			<el>0.583736</el>
+			<el>0.627831</el>
+			<el>0.607997</el>
+			<el>0.744591</el>
+			<el>0.671180</el>
+			<el>0.576171</el>
+			<el>0.572228</el>
+			<el>0.513645</el>
+			<el>0.593526</el>
+			<el>0.544278</el>
+			<el>0.557236</el>
+			<el>0.468515</el>
+			<el>0.444316</el>
+			<el>0.507238</el>
+			<el>0.499218</el>
+			<el>0.476630</el>
+			<el>0.483949</el>
+			<el>0.530567</el>
+			<el>0.534491</el>
+			<el>0.515999</el>
+			<el>0.458873</el>
+			<el>0.570914</el>
+			<el>0.280964</el>
+			<el>0.346649</el>
+			<el>0.343482</el>
+			<el>0.395767</el>
+			<el>0.420199</el>
+			<el>0.398429</el>
+			<el>0.381400</el>
+			<el>0.495384</el>
+			<el>0.563923</el>
+			<el>0.487680</el>
+			<el>0.463444</el>
+			<el>0.618587</el>
+			<el>0.596868</el>
+			<el>0.741839</el>
+			<el>0.791983</el>
+			<el>0.693075</el>
+			<el>0.563843</el>
+			<el>0.572995</el>
+			<el>0.564964</el>
+			<el>0.671218</el>
+			<el>0.671966</el>
+			<el>0.576187</el>
+			<el>0.619583</el>
+			<el>0.566808</el>
+			<el>0.604753</el>
+			<el>0.563559</el>
+			<el>0.517545</el>
+			<el>0.452574</el>
+			<el>0.414008</el>
+			<el>0.398070</el>
+			<el>0.423925</el>
+			<el>0.377973</el>
+			<el>0.372916</el>
+			<el>0.375155</el>
+			<el>0.507067</el>
+			<el>0.424361</el>
+			<el>0.470970</el>
+			<el>0.551723</el>
+			<el>0.350511</el>
+			<el>0.345945</el>
+			<el>0.328095</el>
+			<el>0.403124</el>
+			<el>0.397061</el>
+			<el>0.444922</el>
+			<el>0.472791</el>
+			<el>0.542700</el>
+			<el>0.552150</el>
+			<el>0.519851</el>
+			<el>0.536519</el>
+			<el>0.573697</el>
+			<el>0.665718</el>
+			<el>0.620395</el>
+			<el>0.679084</el>
+			<el>0.604973</el>
+			<el>0.570847</el>
+			<el>0.561718</el>
+			<el>0.574093</el>
+			<el>0.664072</el>
+			<el>0.633924</el>
+			<el>0.588296</el>
+			<el>0.573089</el>
+			<el>0.573555</el>
+			<el>0.630688</el>
+			<el>0.565410</el>
+			<el>0.457252</el>
+			<el>0.453389</el>
+			<el>0.330506</el>
+			<el>0.444177</el>
+			<el>0.461059</el>
+			<el>0.562936</el>
+			<el>0.370204</el>
+			<el>0.435966</el>
+			<el>0.389708</el>
+			<el>0.440256</el>
+			<el>0.436009</el>
+			<el>0.440577</el>
+			<el>0.305926</el>
+			<el>0.392986</el>
+			<el>0.413659</el>
+			<el>0.423152</el>
+			<el>0.407487</el>
+			<el>0.460296</el>
+			<el>0.643783</el>
+			<el>0.550673</el>
+			<el>0.625354</el>
+			<el>0.492472</el>
+			<el>0.575657</el>
+			<el>0.584049</el>
+			<el>0.656059</el>
+			<el>0.752306</el>
+			<el>0.672297</el>
+			<el>0.539978</el>
+			<el>0.508560</el>
+			<el>0.671061</el>
+			<el>0.678803</el>
+			<el>0.693565</el>
+			<el>0.700667</el>
+			<el>0.692458</el>
+			<el>0.583692</el>
+			<el>0.513124</el>
+			<el>0.579230</el>
+			<el>0.592356</el>
+			<el>0.515673</el>
+			<el>0.485571</el>
+			<el>0.406872</el>
+			<el>0.332146</el>
+			<el>0.354335</el>
+			<el>0.463183</el>
+			<el>0.554351</el>
+			<el>0.411980</el>
+			<el>0.486536</el>
+			<el>0.505815</el>
+			<el>0.551710</el>
+			<el>0.560467</el>
+			<el>0.195074</el>
+			<el>0.342976</el>
+			<el>0.384188</el>
+			<el>0.332495</el>
+			<el>0.344968</el>
+			<el>0.475986</el>
+			<el>0.600962</el>
+			<el>0.590376</el>
+			<el>0.484025</el>
+			<el>0.550030</el>
+			<el>0.660357</el>
+			<el>0.680570</el>
+			<el>0.631384</el>
+			<el>0.737625</el>
+			<el>0.648792</el>
+			<el>0.508712</el>
+			<el>0.586091</el>
+			<el>0.572205</el>
+			<el>0.584615</el>
+			<el>0.630069</el>
+			<el>0.702774</el>
+			<el>0.625095</el>
+			<el>0.649349</el>
+			<el>0.623862</el>
+			<el>0.544117</el>
+			<el>0.560644</el>
+			<el>0.575253</el>
+			<el>0.584890</el>
+			<el>0.418817</el>
+			<el>0.345528</el>
+			<el>0.319357</el>
+			<el>0.366954</el>
+			<el>0.481488</el>
+			<el>0.401655</el>
+			<el>0.427146</el>
+			<el>0.530231</el>
+			<el>0.387501</el>
+			<el>0.532935</el>
+			<el>0.408764</el>
+			<el>0.458019</el>
+			<el>0.477040</el>
+			<el>0.464856</el>
+			<el>0.521624</el>
+			<el>0.533309</el>
+			<el>0.554296</el>
+			<el>0.525119</el>
+			<el>0.558869</el>
+			<el>0.676947</el>
+			<el>0.639501</el>
+			<el>0.654435</el>
+			<el>0.711358</el>
+			<el>0.769769</el>
+			<el>0.690584</el>
+			<el>0.568957</el>
+			<el>0.614700</el>
+			<el>0.605506</el>
+			<el>0.579416</el>
+			<el>0.694824</el>
+			<el>0.789928</el>
+			<el>1.000000</el>
+			<el>0.630461</el>
+			<el>0.676091</el>
+			<el>0.627220</el>
+			<el>0.623138</el>
+			<el>0.660973</el>
+			<el>0.612464</el>
+			<el>0.510181</el>
+			<el>0.470713</el>
+			<el>0.441843</el>
+			<el>0.417578</el>
+			<el>0.415563</el>
+			<el>0.496177</el>
+			<el>0.358010</el>
+			<el>0.619996</el>
+			<el>0.527221</el>
+			<el>0.612601</el>
+>>>>>>> SecondaryBranch
 		    </FloatArray>
 		</FloatMap2D>
 		<timer name="checkpointTimer" description="Time writing checkpoints">

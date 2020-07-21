@@ -17,6 +17,7 @@
 #include "Math/PerlinNoise.h"
 #include "SimulationState.h"
 #include <map>
+#include <algorithm>
 using namespace glm;
 
 
@@ -102,7 +103,7 @@ public:
     float getSedimentMaterial(int y, int x);
 
     void EraseAll();
-
+    void smoothSediment();
     inline float getRFlux_air(int y, int x);
     inline float getLFlux_air(int y, int x);
     inline float getBFlux_air(int y, int x);

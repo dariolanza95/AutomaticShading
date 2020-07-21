@@ -88,6 +88,7 @@ protected:
     float getSedimentHistorySize(int y, int x);
     std::vector<int> CreateMockUpData(int y,int x,int num_levels,int num_materials);
 
+    void updatePositions();
     void SmoothData(std::vector<int>& local_sediments_history, std::vector<int> &local_sediments_stack_ids, std::vector<glm::vec3>& local_sediments_points);
 
     void AveragePositionSedimentationPoints(int y,int x);
@@ -106,6 +107,7 @@ protected:
     Grid2D<float> sed_color;
     Grid2D<std::vector<int>> sedimentation_history;
     Grid2D<std::vector<int>> sedimentation_stack_id;
+    Grid2D<std::pair<int,int>> sed_counter;
     Grid2D<int> tmp_sedimentation_history;
     Grid2D<std::pair<int,int>> sed_counter;
     Grid2D<float> sedimentated_terrain;

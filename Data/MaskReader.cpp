@@ -296,15 +296,16 @@ PxrTexture::ComputeOutputParams(RixShadingContext const *sctx,
 
 
       //  if (*surfacePosition == k_usePo)
-           // sctx->GetBuiltinVar(RixShadingContext::k_Po, &Q);
+            sctx->GetBuiltinVar(RixShadingContext::k_Po, &Q);
         //else
-            sctx->GetBuiltinVar(RixShadingContext::k_P, &Q);
+           // sctx->GetBuiltinVar(RixShadingContext::k_P, &Q);
 
         sP = pool.AllocForPattern<RtPoint3>(sctx->numPts);
         memcpy(sP, Q, sizeof(RtPoint3)*sctx->numPts);
 
         // transform P in object space by default
         //
+
         sctx->Transform(RixShadingContext::k_AsPoints,
                         Rix::k_current, Rix::k_object, sP, NULL);
 
@@ -415,13 +416,13 @@ float maxdist = 1.25; //3;
 
         int Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, K, data);
         float val = 0;
-        float cell_scale = 0.1;//sRR[i];
-        if(Readres==1)
+        float cell_scale = 1.0f;//sRR[i];
+        if(Readres==1 || true)
         {
            val= data[0];
            RtPoint3 pp = sP[i];
            RtPoint3 max,min;
-           if(val>0.001 && false){
+           if(false ){
 
 
 

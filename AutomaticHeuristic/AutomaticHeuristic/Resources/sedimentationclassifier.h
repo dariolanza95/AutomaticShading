@@ -27,6 +27,8 @@
 
 class SedimentationClassifier : public AClassifier
 {
+    int subdiv_levels;
+    void SelectTopMostVertices(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
     SimulationDataMap simulation_data_map;
     pcl::KdTreeFLANN<pcl::PointXYZLNormal> kdtree_input;
     pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud_input;
@@ -49,7 +51,7 @@ void AssignSedimentationParameters(map<MyMesh::VertexHandle,sedimentationData> s
     float RBFInterp(glm::vec3 actual_point,std::vector<glm::vec3> selected_points,std::vector<float> list_of_materials);
     void AverageData();
     double RBFInterp2(glm::vec3 actual_point, std::vector<glm::vec3> selected_points);
-
+    void AverageInputData(float treshold,float detail_scale,int K);
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , std::shared_ptr<SimulationData>>::type, MyMesh> simulation_data_wrapper;
     map<MyMesh::VertexHandle, sedimentationData> SelectSedimentationPoints();
     std::vector<std::shared_ptr<AShader>> list_of_shaders;
@@ -61,7 +63,7 @@ void AssignSedimentationParameters(map<MyMesh::VertexHandle,sedimentationData> s
 public:
 std::vector<glm::vec3> list_of_normals;
      ~SedimentationClassifier();
-    SedimentationClassifier(MyMesh mesh,SimulationDataMap simulation_data_map);
+    SedimentationClassifier(MyMesh mesh,SimulationDataMap simulation_data_map,int subdivision_levels = 1 );
      std::shared_ptr<AShader> GetShader();
     void ClassifyVertices(std::vector<glm::vec3>& list_of_points,
                                                    std::vector<std::shared_ptr<AShader>>& list_of_data,

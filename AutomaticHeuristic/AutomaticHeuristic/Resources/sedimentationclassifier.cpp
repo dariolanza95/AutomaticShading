@@ -7,7 +7,6 @@ using namespace boost::numeric::ublas;
 
 double SedimentationClassifier::RBFInterp2(glm::vec3 actual_point,std::vector<glm::vec3> selected_points){
 int number_of_samples = selected_points.size();
-    constexpr double noise_intensity   = 0.1;
 
     Eigen::MatrixXd  X(2, number_of_samples);
     Eigen::VectorXd  y(number_of_samples);
@@ -26,7 +25,7 @@ int number_of_samples = selected_points.size();
     // Define interpolation settings
     const auto     kernel             = mathtoolbox::ThinPlateSplineRbfKernel();
     const auto     kernel_2           = mathtoolbox::InverseQuadraticRbfKernel();
-    constexpr bool use_regularization = true;
+    constexpr bool use_regularization = false;
 
     // Instantiate an interpolator
     //mathtoolbox::RbfInterpolator rbf_interpolator(kernel);
@@ -58,6 +57,9 @@ int number_of_samples = selected_points.size();
 
     Eigen::MatrixXd  X(3, number_of_samples);
     Eigen::VectorXd  y(number_of_samples);
+    if(selected_points.size()<=0){
+        return -1;
+    }
 
     for (int index = 0;index<number_of_samples;index++)
     {
@@ -67,7 +69,7 @@ int number_of_samples = selected_points.size();
     }
 
     // Define interpolation settings
-    const auto     kernel             = mathtoolbox::ThinPlateSplineRbfKernel();
+    const auto     kernel             = mathtoolbox::RbfInterpolator();
     constexpr bool use_regularization = true;
 
     // Instantiate an interpolator
@@ -203,8 +205,8 @@ float SedimentationClassifier::CalculateTPS(std::vector<glm::vec3> control_point
 return bending_energy;
 }
 
-SedimentationClassifier::SedimentationClassifier(MyMesh mesh, SimulationDataMap simulation_data_map) : AClassifier(mesh)
-,simulation_data_map(simulation_data_map)
+SedimentationClassifier::SedimentationClassifier(MyMesh mesh, SimulationDataMap simulation_data_map, int subdivision_levels ) : AClassifier(mesh)
+,simulation_data_map(simulation_data_map),subdiv_levels(subdivision_levels)
 {_shader = std::shared_ptr<AShader>(new SedimentationShader(_id)); }
 
 SedimentationClassifier::~SedimentationClassifier(){
@@ -439,7 +441,9 @@ std::vector<int> SedimentationClassifier::SelectNeighbours(glm::vec3 actual_poin
     Up_vector.x = 0;
     Up_vector.y = 0;
     Up_vector.z = 1;
-    std::set<int,greater<int>> set_of_indices;
+    std::set<int>::iterator it;
+     std::pair<std::set<int>::iterator,bool> ret;
+    std::set<int> set_of_indices;
     int K = 2;//or 27
     std::vector<int> pointIdxNKNSearch(K);
     std::vector<float> pointNKNSquaredDistance(K);
@@ -449,26 +453,30 @@ std::vector<int> SedimentationClassifier::SelectNeighbours(glm::vec3 actual_poin
         //list_of_indices.push_back(pointIdxNKNSearch[0]);
         int val = pointIdxNKNSearch[0];
         set_of_indices.insert(val);
-        K = 5;
-        float scale=1.0f;
+        K = 3;
+        float scale=2.0f;
         probe = new_point;
         probe.z+= scale;
         if ( kdtree_input.nearestKSearch (probe, K, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 ){
             for(uint j=0;j<pointIdxNKNSearch.size();j++){
                 if(set_of_indices.count(pointIdxNKNSearch[j])==0){
                     int val = pointIdxNKNSearch[j];
-                    set_of_indices.insert(val);
+                    ret = set_of_indices.insert(val);
+                 //   std::cout<< *(ret.first)<<std::endl;
                 }
             }
         }
 
+        pointIdxNKNSearch.clear();
+        pointNKNSquaredDistance.clear();
         probe = new_point;
         probe.z-= scale;
         if ( kdtree_input.nearestKSearch (probe, K, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 ){
             for(uint j=0;j<pointIdxNKNSearch.size();j++){
                 if(set_of_indices.count(pointIdxNKNSearch[j])==0){
                     int val = pointIdxNKNSearch[j];
-                    set_of_indices.insert(val);
+                    ret = set_of_indices.insert(val);
+                //    std::cout<< *(ret.first)<<std::endl;
                 }
         }}
 
@@ -506,7 +514,14 @@ std::vector<int> SedimentationClassifier::SelectNeighbours(glm::vec3 actual_poin
                     set_of_indices.insert(val);                }
         }
     }
+        int f = 0;
         for(int index: set_of_indices){
+
+            if(f==0){
+                f++;
+                continue;
+            }
+
             list_of_indices.push_back(index);
         }}
 return list_of_indices;
@@ -536,8 +551,8 @@ float CalculateVariance(std::vector<glm::vec3> input_points){
     glm::vec3 value_p(0,0,0);
     for(glm::vec3 point : input_points){
         float height = point[2];
-//        value += (height -average)*(height -average);
-        value += dot(point-centroid,point-centroid);
+        value += (height -average)*(height -average);
+//        value += dot(point-centroid,point-centroid);
     }
     value = sqrtf(value/(float)counter);
 
@@ -548,7 +563,6 @@ float CalculateVariance(std::vector<glm::vec3> input_points){
 void SedimentationClassifier::TPSSecondApproach(map<MyMesh::VertexHandle,sedimentationData> selected_vertices){
     std::vector<std::shared_ptr<AShader>>  temporary_list_of_shaders;
     std::vector<glm::vec3> temporary_list_of_sedimentation_points;
-    //uint i = 0;i<selected_vertices.size();i++
     int f = 0;
     int percentil_part = selected_vertices.size()/100;
     for(auto const entry : selected_vertices){
@@ -557,69 +571,68 @@ void SedimentationClassifier::TPSSecondApproach(map<MyMesh::VertexHandle,sedimen
         }
         f++;
 
-        if(f/percentil_part<55 ){
-            continue;
-        }
+        //if(f/percentil_part<55 ){
+        //    continue;
+        //}
         pcl::PointXYZLNormal new_point;
         MyMesh::Point actual_point = _mesh.point(entry.first);
-
+        int num_materials = 4;
         new_point.x = actual_point[0];
         new_point.y = actual_point[1];
         new_point.z = actual_point[2];
-    int id = 0;
-        pcl::PointXYZLNormal temp_point;
         int K = 1;//or 27
         std::vector<int> pointIdxNKNSearch(K);
-      //  std::vector<SedimentationShader*> sedimentation_materials_list(K);
-        std::vector<float> dists_list(K);
-        std::vector<float> ids_list(K);
-        float total_dist=0;
-        float total= 0;
-        std::vector<glm::vec3> interp_points;
-        std::vector<float> list_of_materials;
         std::vector<float> pointNKNSquaredDistance(K);
-int final_id = 0;
+        int final_id = 0;
         float val_1,val_2;
         int id_candidate = 0;
-        int stack_id_candidate;
-        int stack_id;
-        float min_succesful_dist = -INFINITY;
+        int expected_res = 0;
         std::vector<glm::vec3> min_points,max_points;
         if ( kdtree_input.nearestKSearch (new_point, K, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 ){
             glm::vec3 pp(actual_point[0],actual_point[1],actual_point[2]);
             float offset = std::sin(pp[1]);
+            offset = 0;
             int z_height =ceilf(pp[2]+offset);
-            int expected_res = z_height%3;
+           expected_res  = z_height%num_materials;
             //expected_res+=2;
             if(expected_res==0)
-                expected_res = 3;
-            for(int i=1;i<6;i++){
+                expected_res = num_materials;
+            if(pp[0]==171.5 && pp[1] == 145.5){
+                std::cout<<"roi"<<std::endl;
+            }
+            float min_dist = INFINITY;
+            float min_dist_2 = INFINITY;
+
+
+        for(int i=1;i<6;i++){
            std::vector<int> list = SelectNeighbours(pp);
-           if(list.size()<=0){
-               std::cout<<"eerr"<<std::endl;
-           }
-
-
            float min_height = INFINITY;
            float max_height = -INFINITY;
            float min_centroid = 0;
            float max_centroid = 0;
-           std::set<int,greater<int>> selected_stack;
-           std::map<int,std::pair<std::vector<glm::vec3>,std::vector<glm::vec3>>> map_of_stack_id_to_material_id;
+     //      std::map<int,std::pair<std::vector<glm::vec3>,std::vector<glm::vec3>>> map_of_stack_id_to_material_id;
            std::shared_ptr<SedimentationShader>  shad;
            glm::vec3 min_point;
            glm::vec3 max_point;
-//           for(int j=0;j<pointIdxNKNSearch.size();j++){
-//          std::shared_ptr<SedimentationShader> shad = std::static_pointer_cast<SedimentationShader>(list_of_shaders[pointIdxNKNSearch[j]]);
-
+           min_centroid = INFINITY;
+           max_centroid = -INFINITY;
            for(int j:list){
 
             shad = std::static_pointer_cast<SedimentationShader>(list_of_shaders[j]);
             if(shad==nullptr)
                 continue;
             int stack_id = -1;
+
                 if(shad->GetLineId2(i,pp,stack_id,min_point,max_point)){
-                    if(map_of_stack_id_to_material_id.count(stack_id)>0){
+                    min_points.push_back(min_point);
+                    max_points.push_back(max_point);
+                    if(min_point[2]<min_centroid){
+                        min_centroid = min_point[2];
+                    }
+                    if(max_point[2]>max_centroid){
+                        max_centroid = max_point[2];
+                    }
+                   /* if(map_of_stack_id_to_material_id.count(stack_id)>0){
                         std::pair<std::vector<glm::vec3>,std::vector<glm::vec3>> &element = map_of_stack_id_to_material_id[stack_id];
                         element.first.push_back(min_point);
                         element.second.push_back(max_point);
@@ -629,15 +642,15 @@ int final_id = 0;
                         min_points.push_back(min_point);
                         max_points.push_back(max_point);
                         map_of_stack_id_to_material_id.insert(std::make_pair(stack_id,std::make_pair(min_points,max_points)));
-                    }
+                    }*/
                 }
            }
-           std::vector<glm::vec3> min_points;
-           std::vector<glm::vec3> max_points;
+      //     std::vector<glm::vec3> min_points;
+      //     std::vector<glm::vec3> max_points;
            //if(map_of_stack_id_to_material_id.size()>1){
            //    std::cout<<"interesting"<<std::endl;
            //}
-          for(auto const map_entry:map_of_stack_id_to_material_id){
+         /* for(auto const map_entry:map_of_stack_id_to_material_id){
             std::pair<std::vector<glm::vec3>,std::vector<glm::vec3>> couple = map_entry.second;
             min_points = couple.first;
             max_points = couple.second;
@@ -657,53 +670,22 @@ int final_id = 0;
                     min_height = min_point[2];
                 if( max_point[2]> max_height)
                     max_height = max_point[2];
-          //  if(std::abs(pp[2]-pp[2])>1*2){
+          //  if(std::abs(min_point[2]-pp[2])>4 || std::abs(max_point[2]-pp[2])>4){
           //      min_points.erase(it);
           //      max_points.erase(it_max);
-          //  }
             }
-        min_centroid = min_centroid/(float) counter;
-        max_centroid = max_centroid/(float) counter;
-        /*   for(int j:list){
+            }*/
+        //min_centroid = min_centroid/(float) counter;
+        //max_centroid = max_centroid/(float) counter;
 
-            shad = std::static_pointer_cast<SedimentationShader>(list_of_shaders[j]);
-            if(shad==nullptr)
-                continue;
-            int stack_id = -1;
-                if(shad->GetLineSedimentationStackId(i,pp,stack_id)){
-                    selected_stack.insert(stack_id);
-                
-                }
-           }
+        if(min_points.size()==0){
 
-
-           for(int const stack_id : selected_stack){
-               //if(selected_stack.size()>1){
-               //    std::cout<<">2"<<std::endl;
-               //}
-            for(int const j:list){
-                   glm::vec3 min_point;
-                   glm::vec3 max_point;
-                   shad = std::static_pointer_cast<SedimentationShader>(list_of_shaders[j]);
-                   int val = stack_id;
-                   if(!shad->GetLineId(val,pp,min_point,max_point))
-                       continue;
-
-
-
-
-                if(min_point[2]<min_height)
-                    min_height = min_point[2];
-                if( max_point[2]> max_height)
-                    max_height = max_point[2];
-                //if(std::abs(min_point[2]-pp[2])>1*2)
-                //    continue;
-                min_points.push_back(min_point);
-                max_points.push_back(max_point);
-
-        }*/
-        if(min_points.size()==0)
-            continue;
+            min_height = INFINITY;
+            max_height = -INFINITY;
+           min_points.clear();
+           max_points.clear();
+           continue;
+        }
           //  for(int k = 0;k<min_points.size();k++){
           //      min_centroid += min_points[k][2];
           //      max_centroid += max_points[k][2];
@@ -713,19 +695,34 @@ int final_id = 0;
           //  max_centroid = max_centroid/(float) min_points.size();
             float eps = 0.01;
             float dist;
-            float min_dist = INFINITY;
 
-            if(min_points.size()>3){
+
+            if(min_points.size()>=3){
                 val_1 = RBFInterp2(pp,min_points);
                 val_2 = RBFInterp2(pp,max_points);
-                    if(pp[2]>=val_1-eps)  {
+                 float var_1=CalculateVariance(min_points);
+                 //float var_2=CalculateVariance(max_points);
+                float dist = std::abs(val_1-pp[2]) + std::abs(val_2-pp[2]);
+                float err1 = std::abs(val_1 - min_centroid);
+                float err2 = std::abs(val_2 - max_centroid);
+                dist = dist + var_1  ;
+                float dist_2 = dist+ err1*err1+err2*err2;
+
+              //  dist = x-val_1 + x-val_2;
+      // float         dist = std::abs(min_centroid-pp[2]) + std::abs(max_cent"roi"d-pp[2]);
+                if(dist_2<min_dist){
+                    min_dist = dist_2;
+                    final_id = i;
+                }
+
+                 /*   if(pp[2]>=val_1-eps)  {
 
                         if(pp[2]<=val_2+eps && (min_height<=val_1 && val_2<=max_height) ){
-                            float dist;// = max_height-min_height;
+                         //   float dist;// = max_height-min_height;
                           //  dist = min_centroid-pp[2];
-                            //float dist = std::abs(pp[2]-val_2+eps);
-                            //dist += std::abs(pp[2]-val_1-eps);
-                            dist = val_2-val_1;// CalculateVariance(min_points);
+                            float dist = std::abs(pp[2]-val_2+eps);
+                            dist += std::abs(pp[2]-val_1-eps);
+                           // dist =  val_2-val_1;//CalculateVariance(min_points);
                             if(dist>min_succesful_dist){
                                 min_succesful_dist = dist;
                                 final_id = i;
@@ -739,58 +736,61 @@ int final_id = 0;
                             float range = val_2-val_1;
                             float dist = std::abs(pp[2]-val_2+eps);
                             dist += std::abs(pp[2]-val_1-eps);
-                            dist = dist;//+1/range;
-                dist = std::abs(pp[2]-max_centroid) +std::abs(pp[2]-min_centroid) ;
 
-                            if(dist<min_dist && min_height<=pp[2] && max_height>=pp[2]){
+            //    dist = std::abs(pp[2]-max_centroid) +std::abs(pp[2]-min_centroid) ;
+
+                            if(dist<min_dist //&& min_height<=pp[2] && max_height>=pp[2]
+){
                                 min_dist = dist;
                                 id_candidate = i;
                                 stack_id_candidate = map_entry.first;
                             }
                         }
-                    }else{
+                    }
+                    else{
                         float range = val_2-val_1;
                         float dist = std::abs(pp[2]-val_2+eps);
                         dist += std::abs(pp[2]-val_1-eps);
-                        dist = pp[2]-min_height + max_height - pp[2];//+1/range;
-                        dist = std::abs(pp[2]-max_centroid) +std::abs(pp[2]-min_centroid) ;
-                        if(dist<min_dist && min_height<=pp[2] && max_height>=pp[2]){
+                     //   dist = pp[2]-min_height + max_height - pp[2];//+1/range;
+                   //     dist = std::abs(pp[2]-max_centroid) +std::abs(pp[2]-min_centroid) ;
+                        if(dist<min_dist) //&& min_height<=pp[2] && max_height>=pp[2])
+                        {
                             min_dist = dist;
                             id_candidate = i;
                             stack_id_candidate = map_entry.first;
-
                         }
-                    }
+                    }*/
 
             }
             min_points.clear();
             max_points.clear();
 }
 
-        min_height = INFINITY;
-        max_height = -INFINITY;
+      //  min_height = INFINITY;
+      //  max_height = -INFINITY;
        min_points.clear();
        max_points.clear();
 
-        }
+     //   }
 
-            float err_treshold = pp[2]-floorf(pp[2]);
-
-       //    if(final_id != expected_res && final_id!=0 && pp[2]>1 && err_treshold>0.02  ){
-       //        std::cout<<"mistake: id is "<<final_id << " expected "<<expected_res << " err "<<err_treshold<<std::endl;
-       //    }
-           id_candidate = 0;
+                   //   id_candidate = 0;
 
 
             if(final_id==0)
             {
                 final_id = id_candidate;
-                stack_id = stack_id_candidate;
+              //  stack_id = stack_id_candidate;
             }
+
+            float err_treshold = pp[2]-floorf(pp[2]);
+
+       //  if(final_id != expected_res && final_id!=0 && pp[2]>1 && err_treshold>0.02  ){
+       //     std::cout<<"mistake: id is "<<final_id << " expected "<<expected_res << " err "<<err_treshold<< " pp.x "<<pp[0]<<" pp.y "<<pp[1]<<std::endl;
+       // }
             if(final_id!=0){
-                temporary_list_of_sedimentation_points.push_back(pp);
-                std::shared_ptr<AShader> shad  = std::shared_ptr<SedimentationShader>(new SedimentationShader(_id,1.0f,final_id,stack_id));
-                temporary_list_of_shaders.push_back(shad);
+              temporary_list_of_sedimentation_points.push_back(pp);
+              std::shared_ptr<AShader> shad  = std::shared_ptr<SedimentationShader>(new SedimentationShader(_id,1.0f,final_id));
+              temporary_list_of_shaders.push_back(shad);
             }
 
 
@@ -872,6 +872,8 @@ void SedimentationClassifier::TPSFirstApprach(map<MyMesh::VertexHandle,sedimenta
      list_of_shaders = temporary_list_of_shaders;
 }
 
+
+
 void SedimentationClassifier::AssignSedimentationParameters3(map<MyMesh::VertexHandle,sedimentationData> selected_vertices) {
 
     std::vector<std::shared_ptr<AShader>>  temporary_list_of_shaders;
@@ -923,6 +925,10 @@ void SedimentationClassifier::AssignSedimentationParameters(map<MyMesh::VertexHa
     //uint i = 0;i<selected_vertices.size();i++
     int percentual_part = selected_vertices.size()/100;
     int step = 0;
+
+
+
+
     for(auto const entry : selected_vertices){
         if((step%percentual_part)==0)
         std::cout<<step/percentual_part<<" % completed"<<std::endl;
@@ -932,9 +938,11 @@ void SedimentationClassifier::AssignSedimentationParameters(map<MyMesh::VertexHa
         new_point.x = actual_point[0];
         new_point.y = actual_point[1];
         new_point.z = actual_point[2];
+
+
     int id = 0;
         pcl::PointXYZLNormal temp_point;
-        int K = 30;//or 27
+        int K = 25;//or 27
         std::vector<int> pointIdxNKNSearch(K);
       //  std::vector<SedimentationShader*> sedimentation_materials_list(K);
         std::vector<float> dists_list(K);
@@ -946,11 +954,18 @@ void SedimentationClassifier::AssignSedimentationParameters(map<MyMesh::VertexHa
             temporary_list_of_sedimentation_points.push_back(glm::vec3(actual_point[0],actual_point[1],actual_point[2]));
             glm::vec3 pp(actual_point[0],actual_point[1],actual_point[2]);
             float system_energy = 0;
+            int z_height =ceilf(pp[2]);
+            int expected_id = z_height%4;
+            if(pp[0]==150 && pp[1]==5)
+                std::cout<<"point of interest"<<std::endl;
+            if(expected_id==0)
+                expected_id = 4;
+
             int first_id = -1;
             int second_id = -1;
-            std::shared_ptr<SedimentationShader> shad2 = std::static_pointer_cast<SedimentationShader>(list_of_shaders[pointIdxNKNSearch[0]]);
+      //      std::shared_ptr<SedimentationShader> shad2 = std::static_pointer_cast<SedimentationShader>(list_of_shaders[pointIdxNKNSearch[0]]);
           //  uint index = shad2->getClosestPointIndex(pp);
-            uint min_index = 0;
+    //        uint min_index = 0;
             int final_id =-1;
             float min_energy = INFINITY;
             float dist ;
@@ -991,22 +1006,24 @@ total_dist = normalization;
                     temp_id= shad->getClosestPointMatId(pp,dist);
                     if(dist<min_dist){
                         min_dist = dist;
-                        if(temp_id!= first_id && first_id != -1){
+                        first_id = temp_id;
+                        /*if(temp_id!= first_id && first_id != -1){
                             min_second_dist = min_dist;
                             second_id = first_id;
 
-                        }
-                        first_id = temp_id;
-                    }else{
+                        }*/
+
+                    }
+                    /*else{
                         if(dist<min_second_dist && temp_id!= first_id){
                             min_second_dist = dist;
                             second_id = temp_id;
                         }
-                    }
+                    }*/
                 }
                 float weight;
                 energy = 0;
-        for(int i = 1;i<7;i++){
+        /*for(int i = 1;i<7;i++){
             system_energy = 0;
             for(uint j = 0;j< pointIdxNKNSearch.size();j++){
                 std::shared_ptr<SedimentationShader> shad = std::static_pointer_cast<SedimentationShader>(list_of_shaders[pointIdxNKNSearch[j]]);
@@ -1021,10 +1038,12 @@ total_dist = normalization;
                 min_energy = system_energy;
                 final_id = i;
             }
-        }
+        }*/
 
         id = first_id;
-  //      id = final_id;
+    //    if(id==-1)
+    //        std::cout<<"err"<<std::endl;
+        //id = final_id;
         /*min_energy = INFINITY;
         if(first_id!= final_id){
              for(int i = 1;i<6;i++){
@@ -1090,6 +1109,10 @@ total_dist = normalization;
 //id = list[min_index];
 
             //id = total/(float )pointIdxNKNSearch.size();
+ //       if(id!=expected_id && expected_id>0) {
+ //           std::cout<<"mistake id"<<id<<" expected "<< expected_id<<std::endl;
+ //       }
+
             std::shared_ptr<AShader> shad  = std::shared_ptr<SedimentationShader>(new SedimentationShader(_id,1.0f,id,second_id));
             /*     std::shared_ptr<AShader> shad = new SedimentationShader(*shdr);*/
             temporary_list_of_shaders.push_back(shad);
@@ -1201,10 +1224,10 @@ void SedimentationClassifier::ComputeMockUpData_2(glm::vec3 actual_point,glm::ve
             val =num_materials;
         intermediate_materials.push_back(val);
         intermediate_stacks_id.push_back(mat);
-        intermediate_normals.push_back(normal);
-        double rez = modf((double)i,&int_part);
-        if(rez <=0.001 || rez>=0.999)
-            mat++;
+    mat++;
+        //double rez = modf((double)i,&int_part);
+        //if(rez <=0.001 || rez>=0.999)
+        //    mat++;
     }
     if(intermediate_points.size()>0){
         sedimentation_shader =std::shared_ptr<SedimentationShader> (new SedimentationShader(_id,1.0f,intermediate_points,intermediate_normals, intermediate_materials,intermediate_stacks_id));
@@ -1244,7 +1267,7 @@ void SedimentationClassifier::ComputeMockUpData(glm::vec3 actual_point,glm::vec3
     std::shared_ptr<AShader> sedimentation_shader;
     int mat = 1;
     for(float i=0;i<actual_point[2];i+=size){
-        intermediate_points.push_back(glm::vec3(actual_point[0],actual_point[1],i));
+        intermediate_points.push_back(glm::vec3(actual_point[0],actual_point[1],(i)));
         int val = mat%num_materials;
         if (val==0)
             val = num_materials;
@@ -1272,7 +1295,7 @@ void SedimentationClassifier::ComputeSedimentationParametersForVertex(glm::vec3 
         intermediate_points.push_back(actual_point);
         intermediate_materials.push_back(sedimenation_data.sediment_history[0]);
         intermediate_stack_id.push_back(sedimenation_data.material_stack_id[0]);
-/*        if(actual_point[2]- sedimenation_data.initial_position[2] > 0.01  ){
+/*      if(actual_point[2]- sedimenation_data.initial_position[2] > 0.01  ){
 //            intermediate_materials.push_back(0.0f);
             intermediate_points.push_back(sedimenation_data.initial_position);
             intermediate_materials.push_back(sedimenation_data.sediment_history[0]);
@@ -1292,23 +1315,46 @@ void SedimentationClassifier::ComputeSedimentationParametersForVertex(glm::vec3 
         glm::vec3 normalized_distance_vector = distance_vector/mod;
         glm::vec3 new_sedimentation_point;
     float bin_size = 0.4;
+    float step_size = 0.25;
+    float total_height = 0.0f;
+    int index = 0;
+    /*int material = sedimenation_data.sediment_history[index];
+    int stack_id = sedimenation_data.material_stack_id[index];
+    intermediate_materials.push_back(material);
+    intermediate_stack_id.push_back (stack_id);
+    intermediate_points.push_back(initial_point);
+    for(float i = initial_point[2];i<actual_point[2];i+=step_size){
+        new_sedimentation_point =  initial_point;
+        new_sedimentation_point[2]+= i;
+        if(i>sedimenation_data.material_stack_width[index]){
+            if(index<sedimenation_data.sediment_history.size()-1)
+                index++;
+            material =sedimenation_data.sediment_history[index];
+            stack_id =sedimenation_data.material_stack_id[index];
+        }
+        if(actual_point[2]-initial_point[2]<0)
+        {
+            intermediate_materials.push_back(0.0f);
+            intermediate_stack_id.push_back(0);
+        }else{
+            intermediate_materials.push_back(material);
+            intermediate_stack_id.push_back (stack_id);
+        }
+        intermediate_points.push_back(new_sedimentation_point);
+    }*/
+
+
 //        for(uint i = 1 ;i<sedimenation_data.sediment_history.size()-1;i++){
             for(uint i = 0 ;i<sedimenation_data.sediment_history.size();i++)    {
             //new_sedimentation_point=  initial_point + normalized_distance_vector * step_length * (float )i ;
             new_sedimentation_point =  initial_point;
-            //new_sedimentation_point[2] +=  bin_size * roundf(sedimenation_data.material_stack_width[i]/bin_size) ;//* (float )i ;
+//            new_sedimentation_point[2] +=  bin_size * roundf(sedimenation_data.material_stack_width[i]/bin_size) ;//* (float )i ;
             new_sedimentation_point[2] +=  sedimenation_data.material_stack_width[i] ;//* (float )i ;
 
             intermediate_points.push_back(new_sedimentation_point);
-            if(actual_point[2]-initial_point[2]<0)
-            {
-                intermediate_materials.push_back(0.0f);
-                intermediate_stack_id.push_back(0);
-            }else{
-                intermediate_normals.push_back(normal);
-                intermediate_materials.push_back(sedimenation_data.sediment_history[i]);
-                intermediate_stack_id.push_back(sedimenation_data.material_stack_id[i]);
-            }
+            intermediate_materials.push_back(sedimenation_data.sediment_history[i]);
+            intermediate_stack_id.push_back (sedimenation_data.material_stack_id[i]);
+
         }
             intermediate_normals.push_back(normal);
             intermediate_points.push_back(actual_point);
@@ -1340,8 +1386,7 @@ set<MyMesh::FaceHandle> SedimentationClassifier::GetSetOfFaces(map<MyMesh::Verte
     }
     return selected_faces;
 }
-
-void SedimentationClassifier::AverageOutputData(float treshold,float detail_scale,int K){
+void SedimentationClassifier::AverageInputData(float treshold,float detail_scale,int K){
     CreatePointCloud();
     std::vector<glm::vec3> new_list_of_sedimentation_points;
     std::vector<std::shared_ptr<AShader>> new_list_of_shaders;
@@ -1372,6 +1417,146 @@ void SedimentationClassifier::AverageOutputData(float treshold,float detail_scal
              for(uint j = 0;j<pointIdxNKNSearch.size();j++){
                  std::shared_ptr<SedimentationShader> sd =  std::static_pointer_cast<SedimentationShader>(list_of_shaders[pointIdxNKNSearch[j]]);
                  float id = sd->GetStackId();//sd->GetMaterialId();
+                 if(id==target_id){
+                    total_position+= list_of_sedimentation_points[pointIdxNKNSearch[j]];
+                    total_height += list_of_sedimentation_points[pointIdxNKNSearch[j]][2];
+                    counter++;
+                 }
+
+                 glm::vec3 point = list_of_sedimentation_points[pointIdxNKNSearch[j]];
+                 //if(point[2]-entry[2]>detail_scale && point[2]-entry[2]<detail_scale*2){
+                 //    if(sd->GetMaterialId()>target_id  && sd->GetMaterialId()!= sd->GetMaterialSecondId()){
+                 //        int new_id = target_id+1;
+                 //        if(new_id == 6)
+                 //            new_id = 1;
+                 //        list_of_shaders[pointIdxNKNSearch[j]] = std::shared_ptr<AShader>(new SedimentationShader(_id,1.0f,new_id));
+                 //    }
+                 //}
+             }
+
+             /*for(uint j = 0;j<pointIdxNKNSearch.size();j++){
+                 std::shared_ptr<SedimentationShader> sd =  std::static_pointer_cast<SedimentationShader>(list_of_shaders[pointIdxNKNSearch[j]]);
+
+
+
+             } */
+
+             float avg = counter /((float) pointIdxNKNSearch.size()) ;
+             if(avg>treshold){
+                std::shared_ptr<SedimentationShader> sd = std::shared_ptr<SedimentationShader>(new SedimentationShader(_id,1.0f,mat_id));
+                new_list_of_shaders.push_back(sd);
+                glm::vec3 new_position;
+                new_position[0] = total_position[0]/(float)counter;
+                new_position[1] = total_position[1]/(float)counter;
+                new_position[2] = total_position[2]/(float)counter;
+                float new_height = total_height/(float) counter;
+                new_list_of_sedimentation_points.push_back(new_position);
+               // new_position = list_of_sedimentation_points[pointIdxNKNSearch[0]];
+               // new_position[2] = new_height;
+               // new_list_of_sedimentation_points.push_back(new_position);
+             }
+/*             for(uint j = 0;j<pointIdxNKNSearch.size();j++){
+                 std::shared_ptr<SedimentationShader> sd =  std::static_pointer_cast<SedimentationShader>(list_of_shaders[pointIdxNKNSearch[j]]);
+                 float val = sd->GetMaterialId();
+               //  avg += val;
+                 if(list_of_used_materials.empty()) {
+
+                     list_of_used_materials.insert(std::make_pair(val,0));
+
+                 }else{
+                     if(list_of_used_materials.count(val)>0)
+                     {
+                         list_of_used_materials[val]++;
+                     }else{
+                         list_of_used_materials.insert(std::make_pair(val,0));
+                     }
+
+                 }
+             }
+             float max = -INFINITY;
+             float final_id = -1;
+             for(std::pair<int,float>entry:list_of_used_materials){
+                if(entry.second>max){
+                    max = entry.second;
+                    final_id = entry.first;
+                }
+             }
+
+            // float mean = avg/(float)pointIdxNKNSearch.size();
+           /*  float min_dist = INFINITY;
+             float final_id = -1;
+             for(std::pair<int,float>entry:list_of_used_materials){
+                 float dist =std::abs(entry.second-mean);
+                 if(dist<min_dist){
+                     min_dist = dist;
+                    final_id = entry.first;
+                 }
+             }*/
+           // list_of_shaders[pointIdxNKNSearch[0]] = std::shared_ptr<SedimentationShader>(new SedimentationShader(_id,1.0f,target_id));
+        }
+    }
+     list_of_sedimentation_points = new_list_of_sedimentation_points;
+     list_of_shaders = new_list_of_shaders;
+
+}
+
+
+void  SedimentationClassifier::SelectTopMostVertices(map<MyMesh::VertexHandle,sedimentationData> selected_vertices) {
+    std::vector<std::shared_ptr<AShader>>  temporary_list_of_shaders;
+    std::vector<glm::vec3> temporary_list_of_sedimentation_points;
+    //uint i = 0;i<selected_vertices.size();i++
+
+int i = 0;
+    for(auto const entry : list_of_shaders){
+       i++;
+        std::vector<float> temp_mat;
+       std::vector<glm::vec3> temp_pts;
+        std::shared_ptr<SedimentationShader> sd =std::static_pointer_cast<SedimentationShader>(entry);
+       temp_mat = sd->getListOfIntermediateSedimentationMaterials();
+       temp_pts = sd->getListOfIntermediateSedimentationPoints();
+       int l = temp_mat.size();
+
+        //if(i==l-1){
+            temporary_list_of_shaders.push_back(std::shared_ptr<SedimentationShader> (new SedimentationShader(_id,1.0f,temp_mat.back())));
+            temporary_list_of_sedimentation_points.push_back(temp_pts.back());
+      //  }
+
+    }
+list_of_sedimentation_points= temporary_list_of_sedimentation_points;
+list_of_shaders = temporary_list_of_shaders;
+}
+
+void SedimentationClassifier::AverageOutputData(float treshold,float detail_scale,int K){
+    CreatePointCloud();
+    std::vector<glm::vec3> new_list_of_sedimentation_points;
+    std::vector<std::shared_ptr<AShader>> new_list_of_shaders;
+     for(uint i = 0;i<list_of_sedimentation_points.size();i++){
+         glm::vec3 const entry = list_of_sedimentation_points[i];
+         pcl::PointXYZLNormal new_point;
+         //int K = 5;//or 27
+         new_point.x = entry[0];
+         new_point.y = entry[1];
+         new_point.z = entry[2];
+         std::vector<int> pointIdxNKNSearch(K);
+       //  std::vector<SedimentationShader*> sedimentation_materials_list(K);
+         std::vector<float> dists_list(K);
+         std::vector<float> ids_list(K);
+         float total_dist=0;
+         float total= 0;
+        float avg = 0;
+
+        std::map<int,float> list_of_used_materials;
+         std::vector<float> pointNKNSquaredDistance(K);
+         if ( kdtree_input.nearestKSearch (new_point, K, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 ){
+             glm::vec3 total_position(0,0,0);
+             float total_height = 0;
+             int counter = 0;
+             std::shared_ptr<SedimentationShader> sd =  std::static_pointer_cast<SedimentationShader>(list_of_shaders[pointIdxNKNSearch[0]]);
+             float target_id = sd->GetMaterialId();
+            float mat_id = sd->GetMaterialId();
+             for(uint j = 0;j<pointIdxNKNSearch.size();j++){
+                 std::shared_ptr<SedimentationShader> sd =  std::static_pointer_cast<SedimentationShader>(list_of_shaders[pointIdxNKNSearch[j]]);
+                 float id = sd->GetMaterialId();//sd->GetStackId();//sd->GetMaterialId();
                  if(id==target_id){
                     total_position+= list_of_sedimentation_points[pointIdxNKNSearch[j]];
                     total_height += list_of_sedimentation_points[pointIdxNKNSearch[j]][2];
@@ -1490,19 +1675,19 @@ void SedimentationClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_p
         MyMesh::Point point = _mesh.point(entry.first);
         MyMesh::Normal op_normal = _mesh.normal(entry.first);
         glm::vec3 actual_point (point[0],point[1],point[2]);
-        glm::vec3 normal (op_normal[0],op_normal[1],op_normal[2]);
-        //ComputeMockUpData_2(actual_point,normal,0.2f,3);
-      //  ComputeMockUpData_2(actual_point,normal,1.0f,3);
-        ComputeMockUpData(actual_point,normal,2.0f,4);
-        //ComputeSedimentationParametersForVertex(actual_point,normal,entry.second);
+
+
+      //  ComputeMockUpData(actual_point,0.5,4);
+
+        ComputeSedimentationParametersForVertex(actual_point,entry.second);
         //delete entry.second;
     }
 
    auto selected_vertices_copy = selected_vertices;
  /* CreatePointCloud();
 
-     int _subdiv_levels = 2;
-     for(int i=0;i<_subdiv_levels;i++){
+
+     for(int i=0;i<subdiv_levels;i++){
          if(i!=0)
          selected_vertices = SelectSedimentationPoints();
           selected_vertices =  SelectPointsForAdaptiveSubdivision(selected_vertices);
@@ -1513,19 +1698,19 @@ void SedimentationClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_p
              catmull.detach();
     }*/
  selected_vertices = SelectSedimentationPoints();
-//    AssignSedimentationParameters(selected_vertices);
-//    TPSFirstApprach(selected_vertices);
-    //TPSSecondApproach(selected_vertices);
-    //AverageOutputData(0.3,0.0,15);
-//    AverageOutputData(0,0.0,15);
+    AssignSedimentationParameters(selected_vertices);
+    //TPSFirstApprach(selected_vertices);
+   //TPSSecondApproach(selected_vertices);
+   AverageOutputData(0.0,0.0,10);
+   //AverageOutputData(0.0,0.0,10);
 //    AverageOutputData(0,0.0,5);
     //AverageOutputData(0.2,0.0);
   //  AverageOutputData(0.2,0.1);
    // AverageData();
-    //AssignSedimentationParameters2(selected_vertices);
-     AssignSedimentationParameter5(selected_vertices);
+//  AssignSedimentationParameters2(selected_vertices);
    // CreatePointCloud();
-   //   AssignSedimentationParameters3(selected_vertices);
+    //  AssignSedimentationParameters3(selected_vertices);
+  // SelectTopMostVertices(selected_vertices);
     list_of_points = list_of_sedimentation_points;
     list_of_data = list_of_shaders;
     details = 0.5;
