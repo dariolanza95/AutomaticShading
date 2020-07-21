@@ -16,7 +16,7 @@
 #include "FieldThreeDWriter.h"
 #include "PointCloudWriter.h"
 #include "apointcloudwriter.h"
-
+#include "inputfilereader.h"
 #include <memory>
 //#define VISUALIZE
 #include "LICMap.h"
@@ -535,7 +535,9 @@ string obj_file = "../../Data/input.obj";
 
   MyMesh mesh;
   SimulationDataMap simulation_data_map;
-  LoadMesh(obj_file,data_file,mesh,simulation_data_map);
+  InputFileReader input_file_reader(obj_file,data_file,mesh,simulation_data_map);
+//  LoadMesh(obj_file,data_file,mesh,simulation_data_map);
+  input_file_reader.ReadInputFiles();
   FeaturesFinder features_finder(mesh,simulation_data_map);
   std::vector<std::shared_ptr<AShader>> list_of_used_shaders;
   features_finder.Find(list_of_used_shaders);

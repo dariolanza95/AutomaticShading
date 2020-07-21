@@ -18,12 +18,14 @@ class InputFileReader
     std::string data_file_path;
     MyMesh& mesh;
     SimulationDataMap& simulation_data_map;
-    void ReadInputFiles();
     void LoadGeometryData();
     bool LoadMesh();
+
     void AttachDataFromSimulationToEachVertex();
 public:
     InputFileReader(std::string obj_file_path,std::string data_file_path,MyMesh& mesh,SimulationDataMap& simulation_data_map);
+    void ReadInputFiles();
+
 };
 
 #endif // INPUTFILEREADER_H

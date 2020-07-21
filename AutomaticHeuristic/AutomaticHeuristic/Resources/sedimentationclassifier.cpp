@@ -1559,16 +1559,16 @@ void SedimentationClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_p
              catmull.detach();
     }
  selected_vertices = SelectSedimentationPoints();
-  //  AssignSedimentationParameters(selected_vertices);
+    AssignSedimentationParameters(selected_vertices);
     //TPSFirstApprach(selected_vertices);
-   TPSSecondApproach(selected_vertices);
-   AverageOutputData(0.0,0.0,8);
+   //TPSSecondApproach(selected_vertices);
+   AverageOutputData(0.0,0.0,10);
    //AverageOutputData(0.0,0.0,10);
 //    AverageOutputData(0,0.0,5);
     //AverageOutputData(0.2,0.0);
   //  AverageOutputData(0.2,0.1);
    // AverageData();
-  //AssignSedimentationParameters2(selected_vertices);
+//  AssignSedimentationParameters2(selected_vertices);
    // CreatePointCloud();
     //  AssignSedimentationParameters3(selected_vertices);
   // SelectTopMostVertices(selected_vertices);

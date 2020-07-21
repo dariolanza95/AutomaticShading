@@ -37,22 +37,18 @@ void  FeaturesFinder::Find(std::vector<std::shared_ptr<AShader>>& list_of_used_s
 AClassifier *fc;
     //FOR testing purposes
      using namespace std::chrono;
-    int iterations = 15;
+    int iterations = 1;
     high_resolution_clock clock;
     high_resolution_clock::time_point currentTime, newTime;
     high_resolution_clock::duration totalTime;
     high_resolution_clock::duration accumulator(0);
     currentTime = clock.now();
-    for(int i = 0;i<iterations;i++)
-     {
-         fc = new FlowClassifier(_mesh,simulation_data_map,1);
+  //  for(int i = 0;i<iterations;i++)
+  //   {
+         fc = new FlowClassifier(_mesh,simulation_data_map,2);
            fc->ClassifyVertices(temp_list_of_points,temp_list_of_shader,details);
-    }
-    newTime = clock.now();
-        totalTime = newTime - currentTime;
-        double ms = std::chrono::duration_cast<milliseconds>(totalTime).count();
-        double avg = ms / (double) iterations;
-        std::cout<<"total time "<< ms << " ms, iterations "<<iterations<<" avg "<<avg<<std::endl;
+    //}
+
            if(temp_list_of_points.size() != temp_list_of_shader.size()){
                std::cout<<"The two output list don't match!";
            }
@@ -69,7 +65,7 @@ AClassifier *fc;
            temp_list_of_shader.clear();
 
 
-    /*  AClassifier *sc = new SedimentationClassifier(_mesh,simulation_data_map);
+     AClassifier *sc = new SedimentationClassifier(_mesh,simulation_data_map);
       sc->ClassifyVertices(temp_list_of_points,temp_list_of_shader,details);
 
 
@@ -85,26 +81,12 @@ AClassifier *fc;
           selected_faces.clear();
           }
       }
-*/
+      newTime = clock.now();
+          totalTime = newTime - currentTime;
+          double ms = std::chrono::duration_cast<milliseconds>(totalTime).count();
+          double avg = ms / (double) iterations;
+          std::cout<<"total time "<< ms << " ms, iterations "<<iterations<<" avg "<<avg<<std::endl;
     // delete sc;
-
-
-     /*UpdateSimulationData(selected_faces);
-     AClassifier *mt = new MaterialClassifier(_mesh);
-
-     selected_faces = mt->ClassifyVertices();
-
-     if(selected_faces.size()>0)
-     {
-         UpdateSimulationData(selected_faces);
-         selected_faces.clear();
-         //std::shared_ptr<AShader> shad = mt->GetShader();
-        //list_of_used_shaders.push_back(shad);
-     }
-*/
-     //RiverClassifierTester rct;
-     //rct.Test();
-  //  return _mesh;
 }
 
 
@@ -177,24 +159,6 @@ void FeaturesFinder::UpdateSharedData(std::vector<glm::vec3> list_of_points, std
 }
 
 
-/*
-void FeaturesFinder::UpdateSimulationData(map<MyMesh::VertexHandle,std::shared_ptr<AShader>> selected_vertices)
-{
-    std::cout<<"UpdateSimData"<<std::endl;
-    auto shader_parameters_property = getOrMakeProperty<VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
-    for (auto const& x : selected_vertices)    {
-        MyMesh::VertexHandle vertex_handle = x.first;
-        if(vertex_handle.idx() == 90010){
-            std::cout<<"breakpoint"<<std::endl;
-        }
-        std::shared_ptr<AShader> shader = x.second;
-        ShadersWrapper* shaders_wrapper = shader_parameters_property[vertex_handle];
-        shaders_wrapper->AddShaderParameters(shader);
-        //        shader_parameters_property[vertex_handle] = shader_parameter;
-
-    }
-}
-*/
 void FeaturesFinder::InitializerSimulationData()
 {
 //auto shader_parameters_data_wrapper= getOrMakeProperty<VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
@@ -204,11 +168,9 @@ void FeaturesFinder::InitializerSimulationData()
     for(vertex_iterator = _mesh.vertices_begin();vertex_iterator != vertex_iterator_end;++vertex_iterator)
     {
         if(simulation_data_map.count(*vertex_iterator)<=0){
-
+            std::cout<<"Shouldnt happen"<<std::endl;
             simulation_data_map.insert(make_pair(*vertex_iterator,std::shared_ptr<SimulationData>(new SimulationData())));
-//                    [*vertex_iterator] = new SimulationData();
         }
-//        ShadersWrapper* shaders_wrapper= new ShadersWrapper();
-//        shader_parameters_data_wrapper[*vertex_iterator] = shaders_wrapper;
+
     }
 }
