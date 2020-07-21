@@ -1,6 +1,6 @@
 #include "featuresfinder.h"
 
-FeaturesFinder::FeaturesFinder(MyMesh mesh, SimulationDataMap simulation_data_map): _mesh(mesh),
+ClassificationAndDataComputationModule::ClassificationAndDataComputationModule(MyMesh mesh, SimulationDataMap simulation_data_map): _mesh(mesh),
     simulation_data_map(simulation_data_map){
     pcl::PointCloud<pcl::PointXYZL>::Ptr cloud1 ( new pcl::PointCloud<pcl::PointXYZL>);
 point_cloud = cloud1;
@@ -9,93 +9,113 @@ point_cloud = cloud1;
 }
 
 
-pcl::PointCloud<pcl::PointXYZL>::Ptr  const FeaturesFinder::getPointClouds(){
+pcl::PointCloud<pcl::PointXYZL>::Ptr  const ClassificationAndDataComputationModule::getPointClouds(){
     return point_cloud ;
 }
 
-std::vector<std::shared_ptr<ShadersWrapper>> FeaturesFinder::getListOfShadersWrapper(){
+std::vector<std::shared_ptr<ShadersWrapper>> ClassificationAndDataComputationModule::getListOfShadersWrapper(){
     return list_of_shaders_wrappers;
 }
+std::vector<std::shared_ptr<AShader>> ClassificationAndDataComputationModule::getListOfUsedShaders(){
+    return list_of_used_shaders;
+}
 
-FeaturesFinder::~FeaturesFinder(){}
-void  FeaturesFinder::Find(std::vector<std::shared_ptr<AShader>>& list_of_used_shaders)
+ClassificationAndDataComputationModule::~ClassificationAndDataComputationModule(){}
+void  ClassificationAndDataComputationModule::Find()
 {
+    std::vector<glm::vec3> list_of_points;
+    std::vector<std::shared_ptr<AShader>> list_of_appearance_data;
+    float details = 0.1;
+    std::vector<std::shared_ptr<AClassifier>> list_of_classifiers;
 
+    list_of_classifiers.push_back(std::shared_ptr<AClassifier>(new FlowClassifier(_mesh,simulation_data_map,1)));
+    list_of_classifiers.push_back(std::shared_ptr<AClassifier>(new SedimentationClassifier(_mesh,simulation_data_map,1)));
 
+    int iterations = 1;
 
-    //angle of repose is usually between 33-37 degreee depending on the rock type
-    float angle = 10;
-    float treshold = 3;
-     map<MyMesh::VertexHandle,std::shared_ptr<AShader>> selected_faces;
-     InitializerSimulationData();
+    InitializerSimulationData();
 
+    std::chrono::high_resolution_clock clock;
+    std::chrono::high_resolution_clock::time_point currentTime, newTime;
+    std::chrono::high_resolution_clock::duration totalTime;
+    currentTime = clock.now();
+    list_of_points.clear();
+    list_of_appearance_data.clear();
+    /*for(std::shared_ptr<AClassifier> classifier : list_of_classifiers){
+        classifier->ClassifyVertices(list_of_points,list_of_appearance_data,details);
 
-     std::vector<glm::vec3> temp_list_of_points;
-     temp_list_of_points.clear();
-     std::vector<std::shared_ptr<AShader>> temp_list_of_shader;
-     float details;
+        if(list_of_points.size() != list_of_appearance_data.size()){
+            std::cout<<"The two output list don't match!";
+        }
+        else{
+            if(list_of_points.size()>0)
+            {
+                UpdateSharedData(list_of_points,list_of_appearance_data,details);
+
+                //Add the related AShader class to the list of used shaders
+                std::shared_ptr<AShader> shad = classifier->GetShader();
+                list_of_used_shaders.push_back(shad);
+
+            }
+        }
+        list_of_points.clear();
+        list_of_appearance_data.clear();
+    }
+    newTime = clock.now();
+        totalTime = newTime - currentTime;
+        double ms = std::chrono::duration_cast<std::chrono::milliseconds>(totalTime).count();
+        double avg = ms / (double) iterations;
+        std::cout<<"total time "<< ms << " ms, iterations "<<iterations<<" avg "<<avg<<std::endl;
+*/
 AClassifier *fc;
     //FOR testing purposes
-     using namespace std::chrono;
-    int iterations = 1;
-    high_resolution_clock clock;
-    high_resolution_clock::time_point currentTime, newTime;
-    high_resolution_clock::duration totalTime;
-    high_resolution_clock::duration accumulator(0);
-    currentTime = clock.now();
+
   //  for(int i = 0;i<iterations;i++)
   //   {
-         fc = new FlowClassifier(_mesh,simulation_data_map,2);
-           fc->ClassifyVertices(temp_list_of_points,temp_list_of_shader,details);
+         fc = new FlowClassifier(_mesh,simulation_data_map,1);
+           fc->ClassifyVertices(list_of_points,list_of_appearance_data,details);
     //}
 
-           if(temp_list_of_points.size() != temp_list_of_shader.size()){
+           if(list_of_points.size() != list_of_appearance_data.size()){
                std::cout<<"The two output list don't match!";
            }
            else{
-               if(temp_list_of_points.size()>0)
+               if(list_of_points.size()>0)
                {
-                   UpdateSharedData(temp_list_of_points,temp_list_of_shader,details);
+                   UpdateSharedData(list_of_points,list_of_appearance_data,details);
                    std::shared_ptr<AShader> shad = fc->GetShader();
                    list_of_used_shaders.push_back(shad);
-                   selected_faces.clear();
                }
            }
-           temp_list_of_points.clear();
-           temp_list_of_shader.clear();
+            list_of_points.clear();
+           list_of_appearance_data.clear();
 
 
      AClassifier *sc = new SedimentationClassifier(_mesh,simulation_data_map);
-      sc->ClassifyVertices(temp_list_of_points,temp_list_of_shader,details);
+      sc->ClassifyVertices(list_of_points,list_of_appearance_data,details);
 
 
-      if(temp_list_of_points.size() != temp_list_of_shader.size()){
+      if(list_of_points.size() != list_of_appearance_data.size()){
           std::cout<<"The two output list don't match!";
 
       }else{
-          if(temp_list_of_points.size()>0)
+          if(list_of_points.size()>0)
           {
-           UpdateSharedData(temp_list_of_points,temp_list_of_shader,details);
+           UpdateSharedData(list_of_points,list_of_appearance_data,details);
            std::shared_ptr<AShader> shad = sc->GetShader();
           list_of_used_shaders.push_back(shad);
-          selected_faces.clear();
           }
       }
       newTime = clock.now();
           totalTime = newTime - currentTime;
-          double ms = std::chrono::duration_cast<milliseconds>(totalTime).count();
-          double avg = ms / (double) iterations;
-          std::cout<<"total time "<< ms << " ms, iterations "<<iterations<<" avg "<<avg<<std::endl;
-    // delete sc;
+          double mins = std::chrono::duration_cast<std::chrono::minutes>(totalTime).count();
+          double avg = mins / (double) iterations;
+          std::cout<<"total time "<< mins << " mins, iterations "<<iterations<<" avg "<<avg<<std::endl;
+    // delete sc;*/
 }
 
 
-vector<VertexEditTag> FeaturesFinder::GetVertexEditTags()
-{
-    return _vertex_edit_tags;
-}
-
-void FeaturesFinder::UpdateSharedData(std::vector<glm::vec3> list_of_points, std::vector<std::shared_ptr<AShader>> list_of_data,float density){
+void ClassificationAndDataComputationModule::UpdateSharedData(std::vector<glm::vec3> list_of_points, std::vector<std::shared_ptr<AShader>> list_of_data,float density){
 
     int previous_width = point_cloud->width;
     if(list_of_points.size() != list_of_data.size()){
@@ -122,10 +142,14 @@ void FeaturesFinder::UpdateSharedData(std::vector<glm::vec3> list_of_points, std
             kdtree.setInputCloud(point_cloud);
     }else   {
 
+        int percentual_part = list_of_points.size()/100;
         pcl::PointCloud<pcl::PointXYZL>::Ptr cloud1 ( new pcl::PointCloud<pcl::PointXYZL>);
         //cloud1->points.resize (list_of_points.size());
         for(size_t i = 0;i<list_of_points.size();i++){
-            std::cout<<" i "<<i<<" over "<<list_of_points.size()<<std::endl;
+
+            if(i%percentual_part == 0)
+                std::cout<< "Data transfer to shared kd-tree "<<i / percentual_part<< " %  completed"<< std::endl;
+
             glm::vec3 actual_point= list_of_points[i];
             pcl::PointXYZL searchPoint;
             searchPoint.x = actual_point[0];
@@ -159,7 +183,7 @@ void FeaturesFinder::UpdateSharedData(std::vector<glm::vec3> list_of_points, std
 }
 
 
-void FeaturesFinder::InitializerSimulationData()
+void ClassificationAndDataComputationModule::InitializerSimulationData()
 {
 //auto shader_parameters_data_wrapper= getOrMakeProperty<VertexHandle, ShadersWrapper*>(_mesh, "shader_parameters");
 //

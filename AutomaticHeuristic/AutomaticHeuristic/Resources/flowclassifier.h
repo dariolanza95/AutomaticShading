@@ -40,7 +40,7 @@ class FlowClassifier : public AClassifier
     pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud;
     pcl::KdTreeFLANN<pcl::PointXYZLNormal> kdtree_input;
     pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud_input;
-
+float box_length;
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , std::shared_ptr<SimulationData>>::type, MyMesh> simulation_data_wrapper;
     SimulationDataMap simulation_data_map;
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , std::shared_ptr<FlowShader>>::type, MyMesh> flow_shader_temp_propery;
@@ -57,7 +57,8 @@ class FlowClassifier : public AClassifier
     //void RefineShaderParameters(MyMesh::VertexHandle vertex,ShaderParameters *shader_parameters);
 public:
    // VertexEditTag GetVertexEditTag();
-    FlowClassifier(MyMesh mesh, SimulationDataMap simulation_data_map,int subdivision_level = 1,float scale = 1200.0f,float step_size=0.15f);
+
+    FlowClassifier(MyMesh mesh, SimulationDataMap simulation_data_map,int subdivision_level = 1,float box_length = 0.15f,float scale = 1200.0f,float step_size=0.15f);
     std::shared_ptr<AShader> GetShader();
     //map<MyMesh::VertexHandle,std::shared_ptr<AShader>> ClassifyVertices();
     void ClassifyVertices(std::vector<glm::vec3>& list_of_points,std::vector<std::shared_ptr<AShader>>& list_of_data,float& details);

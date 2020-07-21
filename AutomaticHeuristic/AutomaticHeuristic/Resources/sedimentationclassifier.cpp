@@ -205,8 +205,8 @@ float SedimentationClassifier::CalculateTPS(std::vector<glm::vec3> control_point
 return bending_energy;
 }
 
-SedimentationClassifier::SedimentationClassifier(MyMesh mesh, SimulationDataMap simulation_data_map) : AClassifier(mesh)
-,simulation_data_map(simulation_data_map)
+SedimentationClassifier::SedimentationClassifier(MyMesh mesh, SimulationDataMap simulation_data_map, int subdivision_levels ) : AClassifier(mesh)
+,simulation_data_map(simulation_data_map),subdiv_levels(subdivision_levels)
 {_shader = std::shared_ptr<AShader>(new SedimentationShader(_id)); }
 
 SedimentationClassifier::~SedimentationClassifier(){
@@ -1547,8 +1547,8 @@ void SedimentationClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_p
    auto selected_vertices_copy = selected_vertices;
   CreatePointCloud();
 
-     int _subdiv_levels = 2;
-     for(int i=0;i<_subdiv_levels;i++){
+
+     for(int i=0;i<subdiv_levels;i++){
          if(i!=0)
          selected_vertices = SelectSedimentationPoints();
           selected_vertices =  SelectPointsForAdaptiveSubdivision(selected_vertices);

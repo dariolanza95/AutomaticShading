@@ -529,18 +529,18 @@ int main(int argc, char **argv)
 
 
 string obj_file = "../../Data/input.obj";
-//   string obj_file = "../../Data/cube2.obj";
   string data_file = "../../Data/simulationData.txt";
 
 
   MyMesh mesh;
   SimulationDataMap simulation_data_map;
   InputFileReader input_file_reader(obj_file,data_file,mesh,simulation_data_map);
-//  LoadMesh(obj_file,data_file,mesh,simulation_data_map);
   input_file_reader.ReadInputFiles();
-  FeaturesFinder features_finder(mesh,simulation_data_map);
-  std::vector<std::shared_ptr<AShader>> list_of_used_shaders;
-  features_finder.Find(list_of_used_shaders);
+//  LoadMesh(obj_file,data_file,mesh,simulation_data_map);
+
+
+  ClassificationAndDataComputationModule classification_module(mesh,simulation_data_map);
+  classification_module.Find();
   GLFWwindow* window = OpenGLInit();
   OpenGlVisualizer visualizer(window, 300, 300,mesh,obj_file);
 #ifndef VISUALIZE
@@ -552,24 +552,19 @@ string obj_file = "../../Data/input.obj";
   string plugins_path("@:./");
   string output_name_image("try03");
 
-  RIBWriter writer(mesh,"../../Data/mountainsceneTemplateOutput.rib",shaders_path,plugins_path,output_name_image ,visualizer.GetCamera(),list_of_used_shaders);
+  RIBWriter writer(mesh,"../../Data/mountainsceneTemplateOutput.rib",shaders_path,plugins_path,output_name_image ,visualizer.GetCamera(),classification_module.getListOfUsedShaders());
   writer.Write();
   //WriteOnRibFile(mesh);
   // Call initIO() to initialize standard I/O methods and load plugins
 
-  string filename("../../Data/pointcloud");
-  stringstream filename_str("../../Data/pointcloud");
-   int subdivs = 0;
-   //LICMap licmap(mesh,subdivs);
-   float multiplier = 3;
     string path("../../Data/");
 
    std::cout<<"wrinting mask point cloud"<<std::endl;
 
-       pcl::PointCloud<pcl::PointXYZL>::Ptr pp = features_finder.getPointClouds();
+       pcl::PointCloud<pcl::PointXYZL>::Ptr pp = classification_module.getPointClouds();
         std::vector<pcl::PointXYZL,Eigen::aligned_allocator<pcl::PointXYZL>> listz = pp->points;
         //AShader mask_shader = shader->GenerateMaskShader();
-       APointCloudWriter* pc = new RIBPointCloudWriter(mesh,path,list_of_used_shaders,features_finder.getListOfShadersWrapper(),listz);
+       APointCloudWriter* pc = new RIBPointCloudWriter(mesh,path,classification_module.getListOfUsedShaders(),classification_module.getListOfShadersWrapper(),listz);
        pc->WritePointClouds();
 
 

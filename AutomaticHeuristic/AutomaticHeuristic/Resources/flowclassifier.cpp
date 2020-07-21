@@ -4,8 +4,8 @@ using namespace  OpenMesh;
 #define MULTCONSTANT 1000000
 
 
-FlowClassifier::FlowClassifier(MyMesh mesh, SimulationDataMap simulation_data_map,int subdivision_level, float scale, float step_size) : AClassifier(mesh),
-    simulation_data_map(simulation_data_map),subdiv_levels(subdivision_level), scale(scale),step_size(step_size)
+FlowClassifier::FlowClassifier(MyMesh mesh, SimulationDataMap simulation_data_map,int subdivision_level,float box_length, float scale, float step_size) : AClassifier(mesh),
+    simulation_data_map(simulation_data_map),subdiv_levels(subdivision_level), scale(scale),step_size(step_size),box_length(box_length)
 {
 //simulation_data_wrapper = OpenMesh::getOrMakeProperty<MyMesh::VertexHandle,std::shared_ptr<SimulationData>>(_mesh, "simulation_data");
      _shader = std::shared_ptr<AShader>(new FlowShader(_id));
@@ -397,12 +397,8 @@ void FlowClassifier::ContrastEnhancement(map<MyMesh::VertexHandle,std::shared_pt
         }
     }
 
-    MyMesh::VertexIter vertex_iterator;//=_mesh.vertices_begin();
-    //MyMesh::VertexIter vertex_iterator_end=_mesh.vertices_end();
-    //shader_parameters_data_wrapper = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, ShaderParameters*>(_mesh, "shader_parameters");
     int out_of_range_vertices= 0;
     std::shared_ptr<FlowShader> shader;
-    //std::shared_ptr<FlowShader> shader;
 int i = 0;
 std::cout<<"c "<< c << " d "<< d << std::endl;
 
@@ -434,17 +430,9 @@ if(z==1){
         cloud->points[j].label = val*MULTCONSTANT;
     }
 }
-
+std::cout<<"Contrast Enhanchement"<<std::endl;
     std::cout<<" "<<out_of_range_vertices << " vertices were out of range over "<< num_vertices<<" which is "<< out_of_range_vertices/(float)num_vertices*100<<" %"<<std::endl;
-      // for(;vertex_iterator!= vertex_iterator_end;++vertex_iterator)
-      // {
-           //shader_param = shader_parameters_data_wrapper[mesh_vertex_iterator];
 
-
-         //shader_param->setValue(5,val);
-         //shader_parameters_data_wrapper[mesh_vertex_iterator] = shader_param;
-         //new_point_cloud->points[k].intensity = val;
-    //   }
 }
 
 glm::vec3 FlowClassifier::InterpolateFlowNormal( MyMesh::Point actual_point){
@@ -499,11 +487,11 @@ map<MyMesh::VertexHandle,std::shared_ptr<AShader>> FlowClassifier:: LIC(map<MyMe
         }
     }
 
-    float box_length = longest_dimension/4;
+   box_length = longest_dimension/4;
 
     //float step_size = 0.15;//0.26;0.5;//scale;
     float frequency = scale;//200;//longest_dimension/2;//scale*2;
-  // box_length = step_size;// 20;//150;
+   box_length = step_size;// 20;//150;
     FastNoise noise;
     std::map<MyMesh::VertexHandle,std::shared_ptr<AShader>> output_map;
    std::map<MyMesh::VertexHandle,std::shared_ptr<AShader>> intermediate_map;

@@ -119,20 +119,20 @@ void Camera::LocalRotate(const vec3 &axis, float angle)
     if(ax[0]==1 && ax[1]==0 && ax[2]==0)
     {
         rotX += angle;
-        std::cout<<"Rot along X"<<-1*rotX<<std::endl;
+
     }
     else
     {
         if(ax[0]==0 && ax[1]==1 && ax[2]==0)
         {
             rotY += angle;
-            std::cout<<"Rot along Y "<<rotY<<std::endl;
+
         }
         else
             if(ax[0]==0 && ax[1]==0 && ax[2]==1)
             {
                 rotZ += angle;
-                std::cout<<"Rot along Z"<<rotZ<<std::endl;
+
             }
     }
     ax *= sina;
@@ -144,8 +144,6 @@ void Camera::LocalRotate(const vec3 &axis, float angle)
 
 
 
-    //    fquat RIBoffset(-s,ax);
-    //    _forward_RIB = RIBoffset * _forward_RIB;
 
 }
 
@@ -181,20 +179,19 @@ void Camera::GlobalRotate(const vec3 &axis, float angle)
     if(ax[0]==1 && ax[1]==0 && ax[2]==0)
     {
         rotX += angle;
-        std::cout<<"Rot along X"<<-1*rotX<<std::endl;
+
     }
     else
     {
         if(ax[0]==0 && ax[1]==1 && ax[2]==0)
         {
             rotY += angle;
-            std::cout<<"Rot along Y "<<rotY<<std::endl;
+
         }
         else
             if(ax[0]==0 && ax[1]==0 && ax[2]==1)
             {
                 rotZ += angle;
-                std::cout<<"Rot along Z"<<rotZ<<std::endl;
             }
     }
     ax *= sina;
@@ -212,10 +209,7 @@ void Camera::recomputeRIBMatrix()
 {
     normalize(_forward_RIB);
 
-    glm::mat4 Identity = glm::mat4(1.0f); // identity matrix
-//    before was
-//    _viewMatrix =  mat4_cast(_forward)*glm::translate(Identity,-_position);
-
+    glm::mat4 Identity = glm::mat4(1.0f);
     _RIBMatrix =  glm::translate(Identity,-_position)*mat4_cast(_forward_RIB);
 
 }
@@ -223,10 +217,8 @@ void Camera::recomputeRIBMatrix()
 void Camera::recomputeViewMatrix()
 {
     normalize(_forward);
-    glm::mat4 Identity = glm::mat4(1.0f); // identity matrix
-//Identity = Mirror;
-    //    before was
-//    _viewMatrix =  mat4_cast(_forward)*glm::translate(Identity,-_position);
+    glm::mat4 Identity = glm::mat4(1.0f);
+
 
     _viewMatrix =  glm::translate(Identity,-_position)*mat4_cast(_forward);
 

@@ -27,6 +27,7 @@
 
 class SedimentationClassifier : public AClassifier
 {
+    int subdiv_levels;
     void SelectTopMostVertices(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
     SimulationDataMap simulation_data_map;
     pcl::KdTreeFLANN<pcl::PointXYZLNormal> kdtree_input;
@@ -56,7 +57,7 @@ void AssignSedimentationParameters(map<MyMesh::VertexHandle,sedimentationData> s
 public:
 
      ~SedimentationClassifier();
-    SedimentationClassifier(MyMesh mesh,SimulationDataMap simulation_data_map);
+    SedimentationClassifier(MyMesh mesh,SimulationDataMap simulation_data_map,int subdivision_levels = 1 );
      std::shared_ptr<AShader> GetShader();
     void ClassifyVertices(std::vector<glm::vec3>& list_of_points,
                                                    std::vector<std::shared_ptr<AShader>>& list_of_data,

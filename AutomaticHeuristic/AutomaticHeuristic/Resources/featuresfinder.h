@@ -13,9 +13,9 @@
 #include "sedimentationclassifier.h"
 #include <pcl/kdtree/kdtree_flann.h>
 #include <math.h>
-class  FeaturesFinder
+class  ClassificationAndDataComputationModule
 {
-
+    std::vector<std::shared_ptr<AShader>> list_of_used_shaders;
     pcl::KdTreeFLANN<pcl::PointXYZL> kdtree;
     pcl::PointCloud<pcl::PointXYZL>::Ptr point_cloud;
     std::vector<std::shared_ptr<ShadersWrapper>>   list_of_shaders_wrappers;
@@ -25,14 +25,13 @@ class  FeaturesFinder
     void UpdateSharedData(std::vector<glm::vec3> list_of_points, std::vector<std::shared_ptr<AShader>> list_of_data,float density);
 
     void InitializerSimulationData();
-    vector<VertexEditTag> _vertex_edit_tags;
 public:
-    ~FeaturesFinder();
+    ~ClassificationAndDataComputationModule();
     std::vector<std::shared_ptr<ShadersWrapper>>  getListOfShadersWrapper();
+    std::vector<std::shared_ptr<AShader>> getListOfUsedShaders();
     pcl::PointCloud<pcl::PointXYZL>::Ptr  const getPointClouds();
-    FeaturesFinder(MyMesh mesh,SimulationDataMap simulation_data_map);
-    vector<VertexEditTag> GetVertexEditTags();
-    void Find(std::vector<std::shared_ptr<AShader> > &list_of_used_shaders);
+    ClassificationAndDataComputationModule(MyMesh mesh,SimulationDataMap simulation_data_map);
+    void Find();
 };
 
 #endif // FEATURESFINDER_H
