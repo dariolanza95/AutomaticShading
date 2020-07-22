@@ -21,7 +21,8 @@ protected:
 
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , SimulationData*>::type, MyMesh> simulation_data_wrapper;
     MyMesh _mesh;
-    static int _id;
+    int _id;
+    static int shared_id;
     template <typename FuncType>
     map<typename MyMesh::VertexHandle,std::shared_ptr<AShader>> SelectClassVertices(FuncType functor);
     std::shared_ptr<AShader> _shader;

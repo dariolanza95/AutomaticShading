@@ -211,13 +211,20 @@ unix: PKGCONFIG += pcl_kdtree-1.8
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../mathtoolbox/mathtoolbox/build/release/ -lmathtoolbox
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../mathtoolbox/mathtoolbox/build/debug/ -lmathtoolbox
-else:unix: LIBS += -L$$PWD/../../../../mathtoolbox/mathtoolbox/build/ -lmathtoolbox
+#else:unix: LIBS += -L$$PWD/../../../../mathtoolbox/mathtoolbox/build/ -lmathtoolbox
+else:unix: LIBS += -L$$PWD/External/MathtoolBox/ -lmathtoolbox
 
-INCLUDEPATH += $$PWD/../../../../mathtoolbox/mathtoolbox/build
-DEPENDPATH += $$PWD/../../../../mathtoolbox/mathtoolbox/build
+
+INCLUDEPATH += $$PWD/External/MathtoolBox/
+DEPENDPATH +=  $$PWD/External/MathtoolBox/
+
+
+#INCLUDEPATH += $$PWD/../../../../mathtoolbox/mathtoolbox/build
+#DEPENDPATH += $$PWD/../../../../mathtoolbox/mathtoolbox/build
 
 win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../../../mathtoolbox/mathtoolbox/build/release/libmathtoolbox.a
 else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../../../mathtoolbox/mathtoolbox/build/debug/libmathtoolbox.a
 else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../../../mathtoolbox/mathtoolbox/build/release/mathtoolbox.lib
 else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../../../mathtoolbox/mathtoolbox/build/debug/mathtoolbox.lib
-else:unix: PRE_TARGETDEPS += $$PWD/../../../../mathtoolbox/mathtoolbox/build/libmathtoolbox.a
+#else:unix: PRE_TARGETDEPS += $$PWD/../../../../mathtoolbox/mathtoolbox/build/libmathtoolbox.a
+else:unix: PRE_TARGETDEPS += $$PWD/External/MathtoolBox/libmathtoolbox.a
