@@ -554,6 +554,7 @@ string obj_file = "../../Data/input.obj";
 
   RIBWriter writer(mesh,"../../Data/mountainsceneTemplateOutput.rib",shaders_path,plugins_path,output_name_image ,visualizer.GetCamera(),classification_module.getListOfUsedShaders());
   writer.Write();
+
   //WriteOnRibFile(mesh);
   // Call initIO() to initialize standard I/O methods and load plugins
 

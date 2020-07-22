@@ -20,6 +20,7 @@ class  ClassificationAndDataComputationModule
     pcl::PointCloud<pcl::PointXYZL>::Ptr point_cloud;
     std::vector<std::shared_ptr<ShadersWrapper>>   list_of_shaders_wrappers;
     MyMesh _mesh;
+
     SimulationDataMap simulation_data_map;
   //  void UpdateSimulationData(map<MyMesh::VertexHandle,std::shared_ptr<AShader>> selected_vertices);
     void UpdateSharedData(std::vector<glm::vec3> list_of_points, std::vector<std::shared_ptr<AShader>> list_of_data,float density);

@@ -22,6 +22,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/norm.hpp>
+#include <algorithm>
 #include <random>
 typedef std::mt19937 RANDOM;
 using namespace glm;
@@ -282,6 +283,8 @@ void TerrainFluidSimulation::updateSedimentationHistory(ulong time){
                                // tmp_sedimentation_history(y,x) = sedimentation_history(y,x).back();
                             }else   {
                                 initial_sedimentation_points(y,x).pop_back();
+                           //     _simulation.tmp_sediment_material(y,x) = sedimentation_history(y,x).back();
+
                                 sedimentation_history(y,x).pop_back();
                                 sedimentation_stack_id(y,x).pop_back();/*
                                 for(int i=0;i<initial_sedimentation_points(y,x).size();i++){

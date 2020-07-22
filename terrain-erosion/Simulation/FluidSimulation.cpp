@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include "FluidSimulation.h"
-
+#include <algorithm>
 #include <random>
 typedef std::mt19937 RANDOM;  // the Mersenne Twister with a popular choice of parameters
 
@@ -1419,6 +1419,7 @@ void FluidSimulation::simulateErosion(double dt,ulong time)
                 water(y,x)    += d;
                 sediment(y,x) += d;
               //  if(water(y,x)>0.01)
+              //  tmp_sediment_material(y,x) = sedimented_material(y,x);
                     sedimented_terrain(y,x) -= d;
                   //if(tmp_sediment_material(y,x)!=0)
                   //  tmp_sediment_material(y,x) = 0;
@@ -1436,7 +1437,7 @@ void FluidSimulation::simulateErosion(double dt,ulong time)
                 water(y,x)    += d;
                 sediment(y,x) += d;
                sedimented_terrain(y,x) -= d;//
-               sedimented_material(y,x) = tmp_sediment_material(y,x);
+              // sedimented_material(y,x) = tmp_sediment_material(y,x);
           //     tmp_sediment_material(y,x) = 0;
                //    if( sedimented_terrain_color(y,x) == black_col)
 
@@ -1510,6 +1511,11 @@ float FluidSimulation::GetTerrainCapacity(float x,float y,float z ,float frequen
 return kc;
 }
 
+bool sortByVal(const pair<int, float> &a,
+               const pair<int, float> &b)
+{
+    return (a.second < b.second);
+}
 
 
 void FluidSimulation::simulateSedimentTransportation(double dt,ulong time)
@@ -1707,6 +1713,7 @@ void FluidSimulation::simulateSedimentTransportation(double dt,ulong time)
                 tmp_sediment_material_2(y,x) = tmp_sediment_material(y,x);
         }
     }
+    }
 #if defined(__APPLE__) || defined(__MACH__)
     );
 #endif
@@ -1823,6 +1830,8 @@ void FluidSimulation::update(ulong time, double dt, bool rain, bool flood,bool w
     //makeFlood(dt,time);
 //    if (flood || time>260)
 //       makeRiver(dt,time);// makeFlood(dt);
+    if (flood )
+           makeRiver(dt,time);// makeFlood(dt);
     if(wind)
         makeWind(dt);
     // 2. Simulate Flow

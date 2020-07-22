@@ -11,9 +11,6 @@ FlowClassifier::FlowClassifier(MyMesh mesh, SimulationDataMap simulation_data_ma
      _shader = std::shared_ptr<AShader>(new FlowShader(_id));
 }
 
-
-
-
 class splitInGroupsFunctorClass
 {
     public:

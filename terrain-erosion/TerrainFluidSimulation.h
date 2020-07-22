@@ -109,6 +109,7 @@ protected:
     Grid2D<std::vector<int>> sedimentation_stack_id;
     Grid2D<std::pair<int,int>> sed_counter;
     Grid2D<int> tmp_sedimentation_history;
+    Grid2D<std::pair<int,int>> sed_counter;
     Grid2D<float> sedimentated_terrain;
     Grid2D<std::vector<glm::vec3>> initial_sedimentation_points;
     Graphics::ShaderManager             _shaderManager;
