@@ -34,13 +34,12 @@
 # ------------------------------------------------------------------------------
 */
 
-//#include "RixPredefinedStrings.hpp"
+#include "RixPredefinedStrings.hpp"
 #include "RixPattern.h"
 #include "RixShadingUtils.h"
 #include "pointcloud.h"
 #include <math.h>
 #include <bits/stdc++.h>
-#include "RixInterfaces.h"
 
 
 class PxrWorleyD : public RixPattern
@@ -89,7 +88,6 @@ public:
     }
 
 private:
-    RixTexture3d* tex;
     // Defaults
     RtInt const m_surfacePosition;
     RtFloat const m_frequency;
@@ -142,7 +140,7 @@ int
 PxrWorleyD::Init(RixContext &ctx, RtUString const pluginpath)
 {
     PIXAR_ARGUSED(pluginpath);
-      tex = (RixTexture3d*)ctx.GetRixInterface(k_RixTexture3d);
+
     m_sFuncs = (RixShadeFunctions*)ctx.GetRixInterface(k_RixShadeFunctions);
     if (!m_sFuncs)
         return 1;
@@ -409,26 +407,20 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
     RixSCConnectionInfo cinfo;
 
     RtPoint3 *sP;
-    RtNormal3 *sN;
     sctx->GetParamInfo(k_manifold, &type, &cinfo);
     if (cinfo != k_RixSCNetworkValue)
     {
         // We want P by default (not st)
         RtPoint3 const *Q;
-        RtNormal3 const *N;
+
 
       //  if (*surfacePosition == k_usePo)
             sctx->GetBuiltinVar(RixShadingContext::k_Po, &Q);
-        sctx->GetBuiltinVar(RixShadingContext::k_Nn, &N);
-
         //else
        //     sctx->GetBuiltinVar(RixShadingContext::k_P, &Q);
 
         sP = pool.AllocForPattern<RtPoint3>(sctx->numPts);
         memcpy(sP, Q, sizeof(RtPoint3)*sctx->numPts);
-
-        sN = pool.AllocForPattern<RtNormal3>(sctx->numPts);
-        memcpy(sN, N, sizeof(RtNormal3)*sctx->numPts);
 
         // transform P in object space by default
         //
@@ -443,38 +435,16 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
     }
 
 
-    //RixTexture3d* tex  = static_cast<RixTexture3d*>(sctx->GetRixInterface(k_RixTexture3d));
-    //if(tex==nullptr)
-    //    std::cout<<"nullptr"<<std::endl;
-
-    float radius = 1.50f;
-    std::string file_name2("blaf");
-    std::string data_name("parameter");
-    std::string string_1("parameter0");
-    std::string string_2("parameter1");
-    float* value;
-    value = (float *) malloc(sizeof(float));
-    int dim = 2;
-    RtUString tokens[dim];
-    RtPointer parms[dim];
-    tokens[0] = RtUString(string_1.c_str());
-    tokens[1] = RtUString(string_2.c_str());
-    //tokens[1] = RtUString("float parameter1");
-
-    parms[0] = (float *) malloc(sizeof(float));
-    parms[1] = (float *) malloc(sizeof(float));
-    RtNormal3 norm(0,1,0);
-    //std::cout<<"hola"<<std::endl;
     std::string input = "pointcloud_SedimentationShader";
     char* _output_file_name;
     _output_file_name = (char *) malloc((input.size()+1) * sizeof(char));
     input.copy(_output_file_name, input.size() + 1);
     _output_file_name[input.size()] = '\0';
-   // PtcPointCloud inptc = PtcSafeOpenPointCloudFile(_output_file_name);
-   // if (!inptc) {
-   //      std::cout<<"Error";
-   //      exit(1);
-   //  }
+    PtcPointCloud inptc = PtcSafeOpenPointCloudFile( _output_file_name);
+        if (!inptc) {
+         std::cout<<"Error";
+         exit(1);
+        }
 
         float scaler = 4;
         float scale =2 * M_PI/scaler;
@@ -482,7 +452,6 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
         //cell_scale;
       //  scale = scale   / cell_scale;
         float *data;
-        void *data_2;
         float point[3];
         float normal[3];
         int hardness_levels = 9;
@@ -587,9 +556,8 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
         int datasize;
         normal[0] = normal[1] = normal[2] = 0;
 
-       // PtcGetPointCloudInfo(inptc, "datasize", &datasize);
-       // data = (float *) malloc(datasize * sizeof(float));
-       // data_2 = (float *) malloc(1 * sizeof(float));
+        PtcGetPointCloudInfo(inptc, "datasize", &datasize);
+        data = (float *) malloc(datasize * sizeof(float));
         float val1 = 0;
         float val2 =0;
         float Readres = -1;
@@ -598,18 +566,9 @@ PxrWorleyD::ComputeOutputParams(RixShadingContext const *sctx,
     RtPoint3 f1cell, f2cell;
     for (int n = 0; n < sctx->numPts; ++n)
     {
-     RtPoint3 pp =  sP[n];
-    if(tex==nullptr || tex==NULL)
-        std::cout<<"is null"<<std::endl;
-    //    Readres = tex->RxTexture3d(file_name2.c_str(),sP[n],sN[n],radius,data_name.c_str(),value,NULL);
-        //res = tex->RxTexture3d(file_name2.c_str(),sP[n],sN[n],radius,RtUString("mask"),value,NULL);
-        //if(res==1){
-        //    std::cout<<"read"<<std::endl;
-        //}
-    //file_name2
+         RtPoint3 pp =  sP[n];
 
-    //tex->RxTexture3dV(file_name2.c_str(),pp,sN[n],radius,dim,tokens,parms);
-     /*        float f1,f2,f3,f4,d;
+/*        float f1,f2,f3,f4,d;
         float nois = m_sFuncs->Noise(scaler*sP[n]/scale);
         nois = 0;
 
@@ -718,64 +677,13 @@ std::map<int,int> used_id;
                 point[0] = pp.x;//thiscell.x;
                 point[1] = pp.y;//thiscell.y;
                 point[2] = pp.z;//thiscell.z;
-                int Readres  = 0;
-                //Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, K, data);
+                int Readres = PtcGetNearestPointsData (inptc, point, normal,maxdist, K, data);
                 float val = 0;
 
 
-     std::string input_2 = "pcl_SedShader0_1.bkm";
-     char* file_name;
-    char* shad_par;
-    std::string file_name_2("pcl_SedShader0_1.bkm");
-    std::string par("shader_parameter_0");
-    file_name = (char *) malloc((input_2.size()+1) * sizeof(char));
-
-    input_2.copy(file_name, input_2.size() + 1);
-    file_name[input_2.size()] = '\0';
-               /* int RxTexture3d(
-                        char const* filename,
-                        RtPoint3 point,
-                        RtNormal3 normal,
-                        float filterradius,
-                        ...) = 0;*/
-    input = "shader_parameter_0";
-    shad_par = (char *) malloc((input.size()+1) * sizeof(char));
-    input.copy(shad_par, input.size() + 1);
-    shad_par[input.size()] = '\0';
-    void* val_2;
-    val_2 = (float *) malloc(sizeof(float));
-    RtUString *shady;//("shader_parameter_0");
-
-    shady = (RtUString*) malloc(1 * sizeof(RtUString));
-    shady[0] = RtUString("shader_parameter_0");
-    //tex->RxTexture3d(file_name2.c_str(),pp,norm,radius,data_name.c_str(),value,NULL);
-    //float radius = 0.5;
-
-  //  tex->RxTexture3dV(file_name_2.c_str(),pp,norm,radius,10,tokens,parms);
-   /* virtual int RxTexture3dV(
-        char const* filename,
-        RtPoint3 point,
-        RtNormal3 normal,
-        float filterradius,
-        int n,
-        RtUString tokens[],
-        void* parms[]) = 0;*/
-
-
-//    tex->RxTexture3d(file_name_2.c_str(),pp,norm,radius,NULL);
-    //RixTexture3d* tex   = (RixTexture3d*)sctx->GetRixInterface(k_RixTexture3d);
-
-
-    //  RixTexture::TxProperties txProps;
-        //  if (tex->AcquireTexture(m_iesProfile.mapName, RixTexture::AtlasNone,
-        //      RixTexture::TxParams txParams;
-        //  RixTexture3d* tex =  RixTexture3d(file_name,pp,norm,1.0f,data);
-
                 if(Readres==1)
                 {
-
-                    val = value[0];
-//                   val = data[0];
+                   val= data[0];
                   // RtPoint3 pp = sP[n];
                    /*RtPoint3 max,min;
                    {
