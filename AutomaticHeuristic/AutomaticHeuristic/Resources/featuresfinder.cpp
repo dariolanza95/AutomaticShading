@@ -26,11 +26,12 @@ void  ClassificationAndDataComputationModule::Find()
     std::vector<glm::vec3> list_of_points;
     std::vector<std::shared_ptr<AShader>> list_of_appearance_data;
     float details = 0.1;
-    std::vector<std::shared_ptr<AClassifier>> list_of_classifiers(2);
-    std::shared_ptr<AClassifier> fc(new FlowClassifier(_mesh,simulation_data_map,1));
-    std::shared_ptr<AClassifier> sc(new SedimentationClassifier(_mesh,simulation_data_map,1)); //=list_of_classifiers[1];
-list_of_classifiers[0] = fc;
-list_of_classifiers[1] = sc;
+    std::vector<std::shared_ptr<AClassifier>> list_of_classifiers;
+    std::shared_ptr<AClassifier> fc(new FlowClassifier(_mesh,simulation_data_map,2));
+    std::shared_ptr<AClassifier> sc(new SedimentationClassifier(_mesh,simulation_data_map,1,SedimentationClassifierAlgorithms::RBF)); //=list_of_classifiers[1];
+    list_of_classifiers.push_back(fc);
+   // list_of_classifiers.push_back(sc);
+//list_of_classifiers[1] = sc;
 //list_of_classifiers.push_back(sc);
 //    list_of_classifiers.push_back(std::shared_ptr<AClassifier>(new FlowClassifier(_mesh,simulation_data_map,1)));
 //    list_of_classifiers.push_back(std::shared_ptr<AClassifier>(new SedimentationClassifier(_mesh,simulation_data_map,1)));
@@ -46,7 +47,7 @@ list_of_classifiers[1] = sc;
     list_of_points.clear();
     list_of_appearance_data.clear();
     for(std::shared_ptr<AClassifier> classifier : list_of_classifiers){
-        classifier->ClassifyVertices(list_of_points,list_of_appearance_data,details);
+        classifier->ClassifyVertices(list_of_points,list_of_appearance_data,details, point_cloud, list_of_shaders_wrappers);
 
         if(list_of_points.size() != list_of_appearance_data.size()){
             std::cout<<"The two output list don't match!";
@@ -67,9 +68,9 @@ list_of_classifiers[1] = sc;
     }
     newTime = clock.now();
         totalTime = newTime - currentTime;
-        double ms = std::chrono::duration_cast<std::chrono::milliseconds>(totalTime).count();
+        double ms = std::chrono::duration_cast<std::chrono::seconds>(totalTime).count();
         double avg = ms / (double) iterations;
-        std::cout<<"total time "<< ms << " ms, iterations "<<iterations<<" avg "<<avg<<std::endl;
+        std::cout<<" total time "<< ms << " ms, iterations "<<iterations<<" avg "<<avg<<std::endl;
 /*
 //AClassifier *fc;
     //FOR testing purposes

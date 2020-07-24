@@ -528,17 +528,18 @@ int main(int argc, char **argv)
 {
 
 
-string obj_file = "../../Data/input.obj";
+  string obj_file = "../../Data/input.obj";
   string data_file = "../../Data/simulationData.txt";
+
+  string shaders_path("@:./");
+  string plugins_path("@:./");
+  string output_name_image("try03");
 
 
   MyMesh mesh;
   SimulationDataMap simulation_data_map;
   InputFileReader input_file_reader(obj_file,data_file,mesh,simulation_data_map);
   input_file_reader.ReadInputFiles();
-//  LoadMesh(obj_file,data_file,mesh,simulation_data_map);
-
-
   ClassificationAndDataComputationModule classification_module(mesh,simulation_data_map);
   classification_module.Find();
   GLFWwindow* window = OpenGLInit();
@@ -548,9 +549,6 @@ string obj_file = "../../Data/input.obj";
   visualizer.Initialize();
   visualizer.Visualize();
  #endif
-  string shaders_path("@:./");
-  string plugins_path("@:./");
-  string output_name_image("try03");
 
   RIBWriter writer(mesh,"../../Data/mountainsceneTemplateOutput.rib",shaders_path,plugins_path,output_name_image ,visualizer.GetCamera(),classification_module.getListOfUsedShaders());
   writer.Write();

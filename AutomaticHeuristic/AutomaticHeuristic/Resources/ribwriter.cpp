@@ -170,7 +170,7 @@ void RIBWriter::RotateAlongX(glm::mat4x4 & mat,float angle)
 
 string RIBWriter::WriteTransformationMatrix()
 {
-    stringstream ss;
+    stringstream ss;/*
     ss<<" Transform [ ";
     glm::mat4x4 viewMatrix = _cam.ViewMatrix();
     viewMatrix = _cam.RIBMatrix();
@@ -195,7 +195,7 @@ string RIBWriter::WriteTransformationMatrix()
     }
     ss<<" ]"<<std::endl;
 
-
+*/
 
     //ss << "Rotate "<< -1*_cam.rotX<<" 1 0 0"<<std::endl;
     //ss << "Rotate "<< _cam.rotY<<" 0 1 0"<<std::endl;
@@ -225,6 +225,7 @@ string RIBWriter::WriteTransformationMatrix()
 //ss<<"Transform [  1 0 0 0 -0 -0.173645 -0.984805 0 0 0.984805 -0.173645 0 -146.178 18.0465 225.074 1 ]"<<std::endl;
   //  ss<<" Transform [  0.999729 -1.86265e-09 -0.0232689 0 -0.0232437 -0.0465244 -0.998645 0 -0.00108261 0.998915 -0.0465119 0 -146.178 -3.21153 215.795 1 ]"<<std::endl;
   // ss<<" Transform [  0.999932 3.25963e-09 0.0116352 0 0.0115401 -0.127641 -0.991752 0 0.00148515 0.991819 -0.127633 0 -152.782 0.655807 372.244 1 ]"<<std::endl;
+   ss<<" Transform [  0.998505 5.58794e-09 0.0546532 0 0.0544339 -0.0893556 -0.994381 0 0.00489066 0.995869 -0.0892218 0 -172.423 16.756 312.531 1 ]"<<std::endl;
     return ss.str();
 }
 

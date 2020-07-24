@@ -20,32 +20,38 @@
 #include "sedimentationdata.h"
 #include <Eigen/Core>
 #include <iostream>
-#include <mathtoolbox/rbf-interpolation.hpp>
+#include "External/MathtoolBox/rbf-interpolation.hpp"
 #include <random>
 #include <vector>
 #include "External/tps/ludecomposition.h"
 
+enum class SedimentationClassifierAlgorithms{NP,NPTS,RBF};
+
 class SedimentationClassifier : public AClassifier
 {
     int subdiv_levels;
+    bool useMockUp;
     void SelectTopMostVertices(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
     SimulationDataMap simulation_data_map;
     pcl::KdTreeFLANN<pcl::PointXYZLNormal> kdtree_input;
     pcl::PointCloud<pcl::PointXYZLNormal>::Ptr cloud_input;
-    void AverageOutputData(float treshold, float detail_scale, int K);
+    SedimentationClassifierAlgorithms algorithm;
+    void AverageOutputData(float treshold, int K);
     float CalculateTPS(std::vector<glm::vec3> control_points);
     void TPSFirstApprach(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
-    void TPSSecondApproach(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
-std::vector<int> SelectNeighbours(glm::vec3 actual_point);
+    std::vector<int> SelectNeighbours(glm::vec3 actual_point);
     map<MyMesh::VertexHandle,sedimentationData> SelectPointsForAdaptiveSubdivision(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
-void ComputeMockUpData(glm::vec3 actual_point,float size,int num_materials);
-void ComputeMockUpData_2(glm::vec3 actual_point,float size,int num_materials);
-void AssignSedimentationParameters(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
-    void AssignSedimentationParameters2(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
-    void AssignSedimentationParameters3(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
-    float RBFInterp(glm::vec3 actual_point,std::vector<glm::vec3> selected_points,std::vector<float> list_of_materials);
+    void ComputeMockUpData(glm::vec3 actual_point,float size,int num_materials);
+    void ComputeMockUpData_2(glm::vec3 actual_point,float size,int num_materials);
+
+    void NP();
+    void NPTS(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
+    void RBF(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
+
+    //void AssignSedimentationParameters3(map<MyMesh::VertexHandle,sedimentationData> selected_vertices);
+    //float RBFInterp(glm::vec3 actual_point,std::vector<glm::vec3> selected_points,std::vector<float> list_of_materials);
     void AverageData();
-    double RBFInterp2(glm::vec3 actual_point, std::vector<glm::vec3> selected_points);
+    double RBFInterp(glm::vec3 actual_point, std::vector<glm::vec3> selected_points);
     void AverageInputData(float treshold,float detail_scale,int K);
     OpenMesh::PropertyManager<typename OpenMesh::HandleToPropHandle<MyMesh::VertexHandle , std::shared_ptr<SimulationData>>::type, MyMesh> simulation_data_wrapper;
     map<MyMesh::VertexHandle, sedimentationData> SelectSedimentationPoints();
@@ -57,10 +63,19 @@ void AssignSedimentationParameters(map<MyMesh::VertexHandle,sedimentationData> s
 public:
 
      ~SedimentationClassifier();
-    SedimentationClassifier(MyMesh mesh,SimulationDataMap simulation_data_map,int subdivision_levels = 1 );
+    SedimentationClassifier(MyMesh mesh,
+                            SimulationDataMap simulation_data_map,
+                            int subdivision_levels = 1 ,
+                            SedimentationClassifierAlgorithms algorithm = SedimentationClassifierAlgorithms::NPTS,
+                            bool useMockUp = false);
      std::shared_ptr<AShader> GetShader();
-    void ClassifyVertices(std::vector<glm::vec3>& list_of_points,
-                                                   std::vector<std::shared_ptr<AShader>>& list_of_data,
-                                                   float& details);
+     void ClassifyVertices(std::vector<glm::vec3>& list_of_points,
+                      std::vector<std::shared_ptr<AShader>>& list_of_data,
+                      float& details,
+                      const pcl::PointCloud<pcl::PointXYZL>::Ptr point_cloud,
+                      const std::vector<std::shared_ptr<ShadersWrapper>>   list_of_shaders_wrappers);
+    //void ClassifyVertices(std::vector<glm::vec3>& list_of_points,
+    //                                               std::vector<std::shared_ptr<AShader>>& list_of_data,
+    //                                               float& details);
 };
 #endif // SEDIMENTATIONCLASSIFIER_H

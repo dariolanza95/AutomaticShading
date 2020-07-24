@@ -61,7 +61,11 @@ public:
     FlowClassifier(MyMesh mesh, SimulationDataMap simulation_data_map,int subdivision_level = 1,float box_length = 0.15f,float scale = 1200.0f,float step_size=0.15f);
     std::shared_ptr<AShader> GetShader();
     //map<MyMesh::VertexHandle,std::shared_ptr<AShader>> ClassifyVertices();
-    void ClassifyVertices(std::vector<glm::vec3>& list_of_points,std::vector<std::shared_ptr<AShader>>& list_of_data,float& details);
+    void ClassifyVertices(std::vector<glm::vec3>& list_of_points,
+                          std::vector<std::shared_ptr<AShader>>& list_of_data,
+                          float& details,
+                          const pcl::PointCloud<pcl::PointXYZL>::Ptr point_cloud,
+                          const std::vector<std::shared_ptr<ShadersWrapper> > list_of_shaders_wrappers);
 
 };
 

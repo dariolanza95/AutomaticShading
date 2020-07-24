@@ -230,7 +230,8 @@ map<MyMesh::VertexHandle,glm::vec3> FlowClassifier::selectFlowVertices(glm::vec3
 
  std::shared_ptr<AShader> FlowClassifier::GetShader(){return _shader;}
 
-void FlowClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_points, std::vector<std::shared_ptr<AShader>>& list_of_data, float& details)
+void FlowClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_points, std::vector<std::shared_ptr<AShader>>& list_of_data, float& details,const pcl::PointCloud<pcl::PointXYZL>::Ptr point_cloud,
+                                      const std::vector<std::shared_ptr<ShadersWrapper>>   list_of_shaders_wrappers)
 {
 
     map<MyMesh::VertexHandle,std::shared_ptr<AShader>> selected_vertices;
@@ -322,6 +323,7 @@ void FlowClassifier::ClassifyVertices(std::vector<glm::vec3>& list_of_points, st
     temporary_selected_vertices = ComputeShaderParameters(flow_vertices);
     selectFrontier(temporary_selected_vertices);
     //float scale= subdiv_levels>0?  subdiv_levels:1;
+    std::cout<<"secondary points"<<temporary_selected_vertices.size();
     selected_vertices = LIC(temporary_selected_vertices,min_bb,max_bb);
 
     for(pair<MyMesh::VertexHandle,std::shared_ptr<AShader>> entry : selected_vertices){
@@ -491,7 +493,7 @@ map<MyMesh::VertexHandle,std::shared_ptr<AShader>> FlowClassifier:: LIC(map<MyMe
 
     //float step_size = 0.15;//0.26;0.5;//scale;
     float frequency = scale;//200;//longest_dimension/2;//scale*2;
-   box_length = step_size;// 20;//150;
+ //  box_length = step_size;// 20;//150;
     FastNoise noise;
     std::map<MyMesh::VertexHandle,std::shared_ptr<AShader>> output_map;
    std::map<MyMesh::VertexHandle,std::shared_ptr<AShader>> intermediate_map;
@@ -602,7 +604,7 @@ for(int z = 0;z<2;z++){
                                           searchPoint.y = actual_point[1];
                                           searchPoint.z = actual_point[2];
                                     pcl::PointXYZLNormal new_point;
-                                          int K = 6;//or 27
+                                          int K = 3;//or 27
                                           std::vector<int> pointIdxNKNSearch(K);
                                           std::vector<float> pointNKNSquaredDistance(K);
                                           if ( kdtree.nearestKSearch (searchPoint, K, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 ){

@@ -12,8 +12,8 @@
 #include <OpenMesh/Tools/Subdivider/Adaptive/Composite/CompositeT.hh>
 //typedef OpenMesh::TriMesh_ArrayKernelT<OpenMesh::Subdivider::Adaptive::CompositeTraits>  MyMesh;
 using namespace std;
-
-
+#include <pcl/point_cloud.h>
+#include <pcl/kdtree/kdtree_flann.h>
 
 class AClassifier
 {
@@ -27,7 +27,7 @@ protected:
     map<typename MyMesh::VertexHandle,std::shared_ptr<AShader>> SelectClassVertices(FuncType functor);
     std::shared_ptr<AShader> _shader;
 public:
-    virtual void ClassifyVertices(std::vector<glm::vec3>& list_of_points,std::vector<std::shared_ptr<AShader>>& list_of_data,float& details) = 0;
+    virtual void ClassifyVertices(std::vector<glm::vec3>& list_of_points,std::vector<std::shared_ptr<AShader>>& list_of_data,float& details, const pcl::PointCloud<pcl::PointXYZL>::Ptr point_cloud,const std::vector<std::shared_ptr<ShadersWrapper>>   list_of_shaders_wrappers) = 0;
     virtual ~AClassifier();
     virtual std::shared_ptr<AShader> GetShader() = 0;
 
