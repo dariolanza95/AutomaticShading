@@ -1,5 +1,7 @@
 AutomaticShading
+
 -----------Installation------------
+
 This project requires 
 -OpenMesh 8.0
 -QtCreator
@@ -7,11 +9,10 @@ This project requires
 RenderMan 23.3 (only for render the final scene).
 
 This software has been developed in Ubuntu 18.04.2 LTS and hasn't been tested in any other platform.
-Since having RenderMan working on this version of Ubuntu is quite a tedious and tricky task we also provide here the headers and the libraries needed by our project.
-Note that the scene that will be outputted must still be rendered using Renderman but this second part can be done in another O.S.
+Since having RenderMan working on this version of Ubuntu is quite a tedious and tricky task we also provide here the headers and the libraries needed to create a scene that could be rendered using RenderMan.
 To do the user have to  simply copy the folder named "Data" and then use Renderman.
 It's possible to also use the modified simulation to create new landscaped that can be passed as input to our framework.
-We refer the reader to the initial project for the 
+The modified simulation has been developed using this [terrain-errosion](https://github.com/karhu/terrain-erosion) project.
 
 | Keys       | Action                       |
 | -----------|------------------------------|
